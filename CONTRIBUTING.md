@@ -130,9 +130,15 @@ export const getProduct = async (id: string) => {
 
 ## Testing
 
+### Test Frameworks
+- **Frontend**: Vitest + React Testing Library
+- **Backend**: Jest
+- **E2E**: Playwright
+
 ### Frontend Tests
 ```typescript
 import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
 import { ProductCard } from './ProductCard';
 
 describe('ProductCard', () => {
@@ -140,12 +146,21 @@ describe('ProductCard', () => {
     render(<ProductCard product={mockProduct} />);
     expect(screen.getByText(mockProduct.name)).toBeInTheDocument();
   });
+
+  it('calls onAddToCart when button clicked', async () => {
+    const mockOnAddToCart = vi.fn();
+    render(<ProductCard product={mockProduct} onAddToCart={mockOnAddToCart} />);
+    
+    await userEvent.click(screen.getByRole('button', { name: /add to cart/i }));
+    expect(mockOnAddToCart).toHaveBeenCalledWith(mockProduct.id);
+  });
 });
 ```
 
 ### Backend Tests
 ```typescript
 import { getProduct } from '../services/productService';
+import { prisma } from '../lib/prisma';
 
 describe('getProduct', () => {
   it('returns a product', async () => {
@@ -159,12 +174,55 @@ describe('getProduct', () => {
 });
 ```
 
+### E2E Tests (Playwright)
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('Checkout Flow', () => {
+  test('completes purchase via WhatsApp', async ({ page }) => {
+    await page.goto('/');
+    
+    // Browse products
+    await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();
+    
+    // Add to cart
+    await page.getByRole('button', { name: 'Add to Cart' }).first().click();
+    
+    // Navigate to cart
+    await page.getByRole('link', { name: 'Cart' }).click();
+    await expect(page.getByRole('heading', { name: 'Your Cart' })).toBeVisible();
+    
+    // Checkout
+    await page.getByRole('button', { name: 'Checkout with WhatsApp' }).click();
+  });
+});
+```
+
+### Running Tests
+```bash
+# Frontend tests
+npm run test --workspace=frontend
+npm run test:watch --workspace=frontend
+npm run test:coverage --workspace=frontend
+
+# Backend tests
+npm run test --workspace=backend
+npm run test:watch --workspace=backend
+npm run test:coverage --workspace=backend
+
+# E2E tests
+npx playwright test
+npx playwright test --ui
+```
+
 ## Pull Request Guidelines
 
 ### PR Title
 Follow Conventional Commits format:
 - `feat(cart): add offline sync support`
 - `fix(api): resolve price validation bug`
+- `test(products): add unit tests for product service`
+- `docs(api): add Swagger documentation`
 
 ### PR Description Template
 ```markdown
@@ -179,10 +237,33 @@ Testing approach and results.
 
 ## Checklist
 - [ ] Code follows style guidelines
-- [ ] Tests added/updated
-- [ ] Documentation updated
+- [ ] Tests added/updated (if applicable)
+- [ ] Documentation updated (if applicable)
+- [ ] API docs updated (if backend route changed)
 - [ ] Type checking passes
 - [ ] Linting passes
+- [ ] No console errors or warnings
+```
+
+### API Documentation
+For backend route changes, add JSDoc annotations:
+```typescript
+/**
+ * @openapi
+ * /api/products:
+ *   get:
+ *     summary: Get all products
+ *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         default: 1
+ *     responses:
+ *       200:
+ *         description: List of products
+ */
 ```
 
 ## Release Process

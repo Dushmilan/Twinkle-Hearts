@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useCartStore } from '../store/cartStore';
 
 export function useOnlineStatus() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
