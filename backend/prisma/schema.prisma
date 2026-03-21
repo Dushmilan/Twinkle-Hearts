@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// ORDER STATUS ENUM
+// ============================================
+enum OrderStatus {
+  PENDING_WHATSAPP_CONFIRMATION
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  EXPIRED
+}
+
+// ============================================
+// USER MODEL (For future authentication)
+// ============================================
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  phone         String?
+  passwordHash  String?
+  role          UserRole  @default(CUSTOMER)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  orders        Order[]
+  
+  @@index([email])
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  VENDOR
+}
+
+// ============================================
+// PRODUCT MODEL
+// ============================================
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Decimal  @db.Decimal(10, 2)
+  stock       Int      @default(0)
+  sku         String   @unique
+  category    String?
+  images      String[] @default([])
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  orderItems  OrderItem[]
+  
+  @@index([name])
+  @@index([category])
+  @@index([isActive])
+}
+
+// ============================================
+// ORDER MODEL
+// ============================================
+model Order {
+  id              String      @id @default(uuid())
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
+  
+  customerName    String
+  customerPhone   String
+  
+  status          OrderStatus @default(PENDING_WHATSAPP_CONFIRMATION)
+  
+  subtotal        Decimal     @db.Decimal(10, 2)
+  tax             Decimal     @db.Decimal(10, 2)
+  total           Decimal     @db.Decimal(10, 2)
+  
+  // Store prices at time of order (for audit)
+  priceSnapshot   Json        @default("[]")
+  
+  // WhatsApp integration
+  whatsappMessageId String?
+  whatsappStatus    String?
+  
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  expiresAt     DateTime?
+  confirmedAt   DateTime?
+  updatedAt     DateTime  @updatedAt
+  
+  items         OrderItem[]
+  
+  @@index([status])
+  @@index([customerPhone])
+  @@index([createdAt])
+  @@index([expiresAt])
+}
+
+// ============================================
+// ORDER ITEM MODEL
+// ============================================
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  // Product snapshot (denormalized for historical accuracy)
+  productId   String
+  productName String  // Store name in case product changes
+  quantity    Int
+  price       Decimal @db.Decimal(10, 2)
+  
+  @@unique([orderId, productId])
+  @@index([orderId])
+  @@index([productId])
+}
