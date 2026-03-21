@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import testPrisma from './db.js';
+import { testPrisma } from './db.js';
 
 /**
  * Product factory - creates a product with customizable attributes
@@ -14,6 +14,7 @@ export async function createProduct(overrides: Partial<Prisma.ProductCreateInput
       sku: `TEST-${Date.now()}`,
       category: 'Test',
       images: [],
+      isFeatured: false,
       isActive: true,
       ...overrides,
     },
@@ -57,29 +58,49 @@ export async function createOrder(overrides: {
   const customerPhone = overrides.customerPhone || '+919876543210';
   const items = overrides.items || [];
 
-  const order = await testPrisma.order.create({
-    data: {
-      userId: overrides.userId || null,
-      customerName,
-      customerPhone,
-      status: (overrides.status as any) || 'PENDING_WHATSAPP_CONFIRMATION',
-      subtotal: items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-      tax: items.reduce((sum, item) => sum + item.price * item.quantity, 0) * 0.18,
-      total: items.reduce((sum, item) => sum + item.price * item.quantity, 0) * 1.18,
-      priceSnapshot: items.map(item => ({
+  // Create a user if userId is not provided
+  let userId = overrides.userId;
+  if (userId === undefined || userId === null) {
+    const user = await testPrisma.user.create({
+      data: {
+        email: `order-test-${Date.now()}@example.com`,
+        name: 'Test User',
+        phone: customerPhone,
+        role: 'CUSTOMER',
+        isActive: true,
+      },
+    });
+    userId = user.id;
+  }
+
+  const orderData: any = {
+    userId,
+    customerName,
+    customerPhone,
+    status: (overrides.status as any) || 'PENDING_WHATSAPP_CONFIRMATION',
+    subtotal: items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    tax: items.reduce((sum, item) => sum + item.price * item.quantity, 0) * 0.18,
+    total: items.reduce((sum, item) => sum + item.price * item.quantity, 0) * 1.18,
+    priceSnapshot: items.map(item => ({
+      productId: item.productId,
+      priceAtOrder: item.price,
+    })),
+  };
+
+  // Only add items if there are any
+  if (items.length > 0) {
+    orderData.items = {
+      create: items.map(item => ({
         productId: item.productId,
-        priceAtOrder: item.price,
+        productName: item.productName,
+        quantity: item.quantity,
+        price: item.price,
       })),
-      items: items.length > 0 ? {
-        create: items.map(item => ({
-          productId: item.productId,
-          productName: item.productName,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-      } : undefined,
-      ...overrides,
-    },
+    };
+  }
+
+  const order = await testPrisma.order.create({
+    data: orderData,
     include: {
       items: true,
     },

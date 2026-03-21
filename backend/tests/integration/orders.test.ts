@@ -6,7 +6,7 @@
 import request from 'supertest';
 import { createTestApp } from '../helpers/testApp.js';
 import testPrisma from '../helpers/db.js';
-import { createProduct, createOrder } from '../helpers/factories.js';
+import { createProduct, createOrder, createUser } from '../helpers/factories.js';
 
 const app = createTestApp();
 
@@ -14,7 +14,7 @@ describe('Orders API', () => {
   describe('POST /api/orders/create', () => {
     it('should create an order successfully', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-001' });
+      const product = await createProduct({ sku: 'TEST-ORDER-API-001' });
 
       const orderData = {
         items: [
@@ -45,8 +45,8 @@ describe('Orders API', () => {
 
     it('should create an order with multiple items', async () => {
       // Arrange
-      const product1 = await createProduct({ sku: 'TEST-ORDER-002' });
-      const product2 = await createProduct({ sku: 'TEST-ORDER-003' });
+      const product1 = await createProduct({ sku: 'TEST-ORDER-API-002' });
+      const product2 = await createProduct({ sku: 'TEST-ORDER-API-003' });
 
       const orderData = {
         items: [
@@ -89,7 +89,7 @@ describe('Orders API', () => {
 
     it('should reject order with invalid customer name', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-004' });
+      const product = await createProduct({ sku: 'TEST-ORDER-API-004' });
 
       const orderData = {
         items: [{ productId: product.id, quantity: 1 }],
@@ -109,7 +109,7 @@ describe('Orders API', () => {
 
     it('should reject order with invalid phone number', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-005' });
+      const product = await createProduct({ sku: 'TEST-ORDER-API-005' });
 
       const orderData = {
         items: [{ productId: product.id, quantity: 1 }],
@@ -147,7 +147,7 @@ describe('Orders API', () => {
 
     it('should reject order when stock is insufficient', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-006', stock: 2 });
+      const product = await createProduct({ sku: 'TEST-ORDER-API-006', stock: 2 });
 
       const orderData = {
         items: [{ productId: product.id, quantity: 10 }], // More than stock
@@ -167,7 +167,7 @@ describe('Orders API', () => {
 
     it('should calculate tax and total correctly', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-007', price: 1000 });
+      const product = await createProduct({ sku: 'TEST-ORDER-API-007', price: 1000 });
 
       const orderData = {
         items: [{ productId: product.id, quantity: 2, price: 1000 }],
@@ -189,7 +189,7 @@ describe('Orders API', () => {
 
     it('should set expiration to 15 minutes from creation', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-008' });
+      const product = await createProduct({ sku: 'TEST-ORDER-API-008' });
 
       const beforeOrder = Date.now();
       const orderData = {
@@ -216,7 +216,7 @@ describe('Orders API', () => {
 
     it('should generate WhatsApp deep link with mock number', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-009' });
+      const product = await createProduct({ sku: 'TEST-ORDER-API-009' });
 
       const orderData = {
         items: [{ productId: product.id, quantity: 1 }],
@@ -238,7 +238,7 @@ describe('Orders API', () => {
     it('should reject order with inactive product', async () => {
       // Arrange
       const inactiveProduct = await createProduct({
-        sku: 'TEST-ORDER-010',
+        sku: 'TEST-ORDER-API-010',
         isActive: false,
       });
 
@@ -262,8 +262,10 @@ describe('Orders API', () => {
   describe('GET /api/orders/:id', () => {
     it('should return an order by ID', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-GET-ORDER-001' });
+      const user = await createUser({ email: 'get-order-test@example.com' });
+      const product = await createProduct({ sku: 'TEST-GET-ORDER-API-001' });
       const order = await createOrder({
+        userId: user.id,
         customerName: 'Get Order Test',
         customerPhone: '+919876543220',
         items: [{
@@ -296,8 +298,10 @@ describe('Orders API', () => {
 
     it('should include order items in response', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-GET-ORDER-002' });
+      const user = await createUser({ email: 'items-order-test@example.com' });
+      const product = await createProduct({ sku: 'TEST-GET-ORDER-API-002' });
       const order = await createOrder({
+        userId: user.id,
         customerName: 'Items Test',
         customerPhone: '+919876543221',
         items: [{
@@ -321,8 +325,10 @@ describe('Orders API', () => {
   describe('POST /api/orders/:id/confirm', () => {
     it('should confirm a pending order', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-CONFIRM-ORDER-001' });
+      const user = await createUser({ email: 'confirm-order-test@example.com' });
+      const product = await createProduct({ sku: 'TEST-CONFIRM-ORDER-API-001' });
       const order = await createOrder({
+        userId: user.id,
         customerName: 'Confirm Test',
         customerPhone: '+919876543230',
         status: 'PENDING_WHATSAPP_CONFIRMATION',
@@ -347,8 +353,10 @@ describe('Orders API', () => {
 
     it('should confirm order without whatsapp message id', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-CONFIRM-ORDER-002' });
+      const user = await createUser({ email: 'confirm-order-test-2@example.com' });
+      const product = await createProduct({ sku: 'TEST-CONFIRM-ORDER-API-002' });
       const order = await createOrder({
+        userId: user.id,
         customerName: 'Confirm Test 2',
         customerPhone: '+919876543231',
         status: 'PENDING_WHATSAPP_CONFIRMATION',

@@ -1,7 +1,7 @@
 // User service
 // Private Commercial Project - Confidential
 
-import { prisma } from '../lib/prisma.js';
+import prisma from '../lib/prisma.js';
 import { cacheDelete, cacheGet, cacheSet, CACHE_TTL, CacheKeys } from '../lib/cache.js';
 import { logger } from '../lib/logger.js';
 import { NotFoundError, ForbiddenError, BadRequestError } from '../middleware/errorHandler.js';

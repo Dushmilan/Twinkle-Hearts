@@ -1,9 +1,5 @@
 import winston from 'winston';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const logFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
@@ -34,14 +30,14 @@ export const logger = winston.createLogger({
     }),
     // File output for errors
     new winston.transports.File({
-      filename: path.join(__dirname, '../../logs/error.log'),
+      filename: path.join(process.cwd(), 'logs/error.log'),
       level: 'error',
       maxsize: 5242880, // 5MB
       maxFiles: 5
     }),
     // File output for all logs
     new winston.transports.File({
-      filename: path.join(__dirname, '../../logs/combined.log'),
+      filename: path.join(process.cwd(), 'logs/combined.log'),
       maxsize: 5242880, // 5MB
       maxFiles: 5
     })

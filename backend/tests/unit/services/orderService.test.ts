@@ -17,9 +17,10 @@ describe('Order Service', () => {
   describe('createOrder', () => {
     it('should create an order with items successfully', async () => {
       // Arrange
-      const product = await createProduct();
+      const user = await createUser({ email: 'order-test-1@example.com' });
+      const product = await createProduct({ sku: 'TEST-ORDER-SVC-001' });
       const input = {
-        userId: null,
+        userId: user.id,
         customerName: 'John Doe',
         customerPhone: '+919876543210',
         items: [
@@ -41,6 +42,7 @@ describe('Order Service', () => {
       // Assert
       expect(order).toBeDefined();
       expect(order.id).toBeDefined();
+      expect(order.userId).toBe(user.id);
       expect(order.customerName).toBe('John Doe');
       expect(order.customerPhone).toBe('+919876543210');
       expect(order.status).toBe('PENDING_WHATSAPP_CONFIRMATION');
@@ -55,10 +57,11 @@ describe('Order Service', () => {
 
     it('should create an order with multiple items', async () => {
       // Arrange
-      const product1 = await createProduct({ sku: 'TEST-MULTI-001' });
-      const product2 = await createProduct({ sku: 'TEST-MULTI-002' });
+      const user = await createUser({ email: 'order-test-2@example.com' });
+      const product1 = await createProduct({ sku: 'TEST-ORDER-SVC-002' });
+      const product2 = await createProduct({ sku: 'TEST-ORDER-SVC-003' });
       const input = {
-        userId: null,
+        userId: user.id,
         customerName: 'Jane Smith',
         customerPhone: '+919876543211',
         items: [
@@ -88,43 +91,16 @@ describe('Order Service', () => {
       expect(order.total).toBe(9435.28);
     });
 
-    it('should create an order with a user association', async () => {
-      // Arrange
-      const user = await createUser({ email: 'order-test@example.com' });
-      const product = await createProduct({ sku: 'TEST-USER-001' });
-      const input = {
-        userId: user.id,
-        customerName: user.name!,
-        customerPhone: user.phone!,
-        items: [
-          {
-            productId: product.id,
-            quantity: 1,
-            currentPrice: Number(product.price),
-            productName: product.name,
-          },
-        ],
-        subtotal: 1999,
-        tax: 359.82,
-        total: 2358.82,
-      };
-
-      // Act
-      const order = await createOrder(input);
-
-      // Assert
-      expect(order.userId).toBe(user.id);
-    });
-
     it('should set expiration time to 15 minutes from creation', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-EXP-001' });
+      const user = await createUser({ email: 'order-test-3@example.com' });
+      const product = await createProduct({ sku: 'TEST-ORDER-SVC-004' });
       const beforeCreate = new Date();
 
       // Act
       const order = await createOrder({
-        userId: null,
-        customerName: 'Test',
+        userId: user.id,
+        customerName: 'Test User',
         customerPhone: '+919876543210',
         items: [
           {
@@ -155,11 +131,12 @@ describe('Order Service', () => {
   describe('getOrderById', () => {
     it('should return an order with items', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-GET-001' });
+      const user = await createUser({ email: 'order-test-4@example.com' });
+      const product = await createProduct({ sku: 'TEST-ORDER-SVC-005' });
       const createdOrder = await createOrder({
-        userId: null,
+        userId: user.id,
         customerName: 'Get Order Test',
-        customerPhone: '+919876543210',
+        customerPhone: '+919876543212',
         items: [
           {
             productId: product.id,
@@ -194,11 +171,12 @@ describe('Order Service', () => {
   describe('confirmOrder', () => {
     it('should confirm a pending order', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-CONFIRM-001' });
+      const user = await createUser({ email: 'order-test-5@example.com' });
+      const product = await createProduct({ sku: 'TEST-ORDER-SVC-006' });
       const order = await createOrder({
-        userId: null,
+        userId: user.id,
         customerName: 'Confirm Test',
-        customerPhone: '+919876543210',
+        customerPhone: '+919876543213',
         items: [
           {
             productId: product.id,
@@ -213,7 +191,7 @@ describe('Order Service', () => {
       });
 
       // Act
-      const confirmedOrder = await confirmOrder(order.id, 'wamid.test123');
+      const confirmedOrder = await confirmOrder(order.id, user.id, 'wamid.test123');
 
       // Assert
       expect(confirmedOrder.status).toBe('CONFIRMED');
@@ -223,11 +201,12 @@ describe('Order Service', () => {
 
     it('should confirm an order without whatsapp message id', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-CONFIRM-002' });
+      const user = await createUser({ email: 'order-test-6@example.com' });
+      const product = await createProduct({ sku: 'TEST-ORDER-SVC-007' });
       const order = await createOrder({
-        userId: null,
+        userId: user.id,
         customerName: 'Confirm Test 2',
-        customerPhone: '+919876543211',
+        customerPhone: '+919876543214',
         items: [
           {
             productId: product.id,
@@ -242,7 +221,7 @@ describe('Order Service', () => {
       });
 
       // Act
-      const confirmedOrder = await confirmOrder(order.id);
+      const confirmedOrder = await confirmOrder(order.id, user.id);
 
       // Assert
       expect(confirmedOrder.status).toBe('CONFIRMED');
@@ -254,11 +233,12 @@ describe('Order Service', () => {
   describe('cancelOrder', () => {
     it('should cancel an order', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-CANCEL-001' });
+      const user = await createUser({ email: 'order-test-7@example.com' });
+      const product = await createProduct({ sku: 'TEST-ORDER-SVC-008' });
       const order = await createOrder({
-        userId: null,
+        userId: user.id,
         customerName: 'Cancel Test',
-        customerPhone: '+919876543210',
+        customerPhone: '+919876543215',
         items: [
           {
             productId: product.id,
@@ -283,14 +263,15 @@ describe('Order Service', () => {
   describe('expirePendingOrders', () => {
     it('should expire orders past their expiration time', async () => {
       // Arrange - create an order with past expiration
-      const product = await createProduct({ sku: 'TEST-EXPIRE-001' });
+      const user = await createUser({ email: 'order-test-8@example.com' });
+      const product = await createProduct({ sku: 'TEST-ORDER-SVC-009' });
       const pastDate = new Date(Date.now() - 60000).toISOString(); // 1 minute ago
 
       await testPrisma.order.create({
         data: {
-          userId: null,
+          userId: user.id,
           customerName: 'Expire Test',
-          customerPhone: '+919876543210',
+          customerPhone: '+919876543216',
           status: 'PENDING_WHATSAPP_CONFIRMATION',
           subtotal: 1999,
           tax: 359.82,
@@ -316,21 +297,22 @@ describe('Order Service', () => {
 
       // Verify the order status changed
       const updatedOrder = await testPrisma.order.findFirst({
-        where: { customerPhone: '+919876543210', customerName: 'Expire Test' },
+        where: { customerPhone: '+919876543216', customerName: 'Expire Test' },
       });
       expect(updatedOrder?.status).toBe('EXPIRED');
     });
 
     it('should not expire orders that are not pending', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-EXPIRE-002' });
+      const user = await createUser({ email: 'order-test-9@example.com' });
+      const product = await createProduct({ sku: 'TEST-ORDER-SVC-010' });
       const pastDate = new Date(Date.now() - 60000).toISOString();
 
       await testPrisma.order.create({
         data: {
-          userId: null,
+          userId: user.id,
           customerName: 'Not Expire Test',
-          customerPhone: '+919876543211',
+          customerPhone: '+919876543217',
           status: 'CONFIRMED', // Not pending
           subtotal: 1999,
           tax: 359.82,
@@ -353,7 +335,7 @@ describe('Order Service', () => {
 
       // Assert - should not count the confirmed order
       const confirmedOrder = await testPrisma.order.findFirst({
-        where: { customerPhone: '+919876543211', customerName: 'Not Expire Test' },
+        where: { customerPhone: '+919876543217', customerName: 'Not Expire Test' },
       });
       expect(confirmedOrder?.status).toBe('CONFIRMED');
     });

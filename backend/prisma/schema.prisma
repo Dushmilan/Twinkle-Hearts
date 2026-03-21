@@ -125,8 +125,9 @@ model Wishlist {
   userId     String
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade, name: "ProductWishlist")
   createdAt  DateTime @default(now())
-  
+
   @@unique([userId, productId])
   @@index([userId])
   @@index([productId])
@@ -148,10 +149,10 @@ model Product {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   orderItems  OrderItem[]
-  wishlistBy  Wishlist[]
-  
+  wishlistBy  Wishlist[] @relation("ProductWishlist")
+
   @@index([name])
   @@index([category])
   @@index([isFeatured])
@@ -204,13 +205,14 @@ model OrderItem {
   id        String  @id @default(uuid())
   orderId   String
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  
+
   // Product snapshot (denormalized for historical accuracy)
   productId   String
+  product     Product @relation(fields: [productId], references: [id], onDelete: Restrict)
   productName String  // Store name in case product changes
   quantity    Int
   price       Decimal @db.Decimal(10, 2)
-  
+
   @@unique([orderId, productId])
   @@index([orderId])
   @@index([productId])

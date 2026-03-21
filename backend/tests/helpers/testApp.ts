@@ -6,9 +6,12 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import authRoutes from '../../src/routes/authRoutes.js';
+import userRoutes from '../../src/routes/userRoutes.js';
 import productRoutes from '../../src/routes/productRoutes.js';
 import cartRoutes from '../../src/routes/cartRoutes.js';
 import orderRoutes from '../../src/routes/orderRoutes.js';
+import adminRoutes from '../../src/routes/adminRoutes.js';
 import { errorHandler } from '../../src/middleware/errorHandler.js';
 import { rateLimiter } from '../../src/middleware/rateLimiter.js';
 
@@ -30,17 +33,20 @@ export function createTestApp() {
   app.use(rateLimiter);
 
   // Health check
-  app.get('/health', (req, res) => {
+  app.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
   // API Routes
+  app.use('/api/auth', authRoutes);
+  app.use('/api/users', userRoutes);
   app.use('/api/products', productRoutes);
   app.use('/api/cart', cartRoutes);
   app.use('/api/orders', orderRoutes);
+  app.use('/api/admin', adminRoutes);
 
   // 404 handler
-  app.use((req, res) => {
+  app.use((_req, res) => {
     res.status(404).json({ error: 'Route not found' });
   });
 

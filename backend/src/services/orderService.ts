@@ -95,7 +95,10 @@ export const getUserOrders = async (userId: string, page: number = 1, limit: num
       skip,
       take: limit,
       orderBy: { createdAt: 'desc' },
-      include: {
+      select: {
+        id: true,
+        status: true,
+        total: true,
         items: {
           select: {
             productId: true,
@@ -104,12 +107,6 @@ export const getUserOrders = async (userId: string, page: number = 1, limit: num
             price: true,
           },
         },
-      },
-      select: {
-        id: true,
-        status: true,
-        total: true,
-        items: true,
         createdAt: true,
         confirmedAt: true,
       },

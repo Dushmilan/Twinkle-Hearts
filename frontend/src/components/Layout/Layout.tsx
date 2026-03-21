@@ -1,6 +1,8 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
+import { useAuth } from '../../context/AuthContext';
 import CartIcon from '../UI/CartIcon';
+import { useState } from 'react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,6 +11,15 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const itemCount = useCartStore((state) => state.getItemCount());
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    setIsMenuOpen(false);
+    navigate('/');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -21,7 +32,7 @@ export default function Layout({ children }: LayoutProps) {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <HeartIcon className="w-8 h-8 text-primary-500" />
+              <HeartIcon className="w-8 h-8 text-pink-600" />
               <span className="text-xl font-bold text-gray-900">Twinkle-Hearts</span>
             </Link>
 
@@ -31,21 +42,146 @@ export default function Layout({ children }: LayoutProps) {
                 to="/"
                 className={`text-sm font-medium transition-colors ${
                   location.pathname === '/'
-                    ? 'text-primary-500'
+                    ? 'text-pink-600'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
                 Shop
               </Link>
-              
+
+              {isAuthenticated && (
+                <>
+                  <Link
+                    to="/wishlist"
+                    className={`text-sm font-medium transition-colors ${
+                      location.pathname === '/wishlist'
+                        ? 'text-pink-600'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Wishlist
+                  </Link>
+                  <Link
+                    to="/orders"
+                    className={`text-sm font-medium transition-colors ${
+                      location.pathname === '/orders'
+                        ? 'text-pink-600'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Orders
+                  </Link>
+                </>
+              )}
+
               <Link to="/cart" className="relative">
                 <CartIcon className="w-6 h-6 text-gray-600 hover:text-gray-900" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 bg-pink-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {itemCount}
                   </span>
                 )}
               </Link>
+
+              {isAuthenticated ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className="flex items-center space-x-2 text-gray-700 hover:text-gray-900"
+                  >
+                    <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
+                      <span className="text-pink-600 font-semibold">
+                        {user?.name?.charAt(0).toUpperCase() || 'U'}
+                      </span>
+                    </div>
+                    <svg
+                      className={`w-4 h-4 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {isMenuOpen && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setIsMenuOpen(false)}
+                      />
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-20 border border-gray-100 overflow-hidden">
+                        <div className="px-4 py-3 border-b border-gray-100">
+                          <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                          <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                        </div>
+                        <div className="py-2">
+                          <Link
+                            to="/profile"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            Profile
+                          </Link>
+                          <Link
+                            to="/orders"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            Orders
+                          </Link>
+                          <Link
+                            to="/addresses"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            Addresses
+                          </Link>
+                          <Link
+                            to="/wishlist"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            Wishlist
+                          </Link>
+                          {user?.role === 'ADMIN' && (
+                            <Link
+                              to="/admin"
+                              className="block px-4 py-2 text-sm text-pink-600 hover:bg-pink-50"
+                              onClick={() => setIsMenuOpen(false)}
+                            >
+                              Admin Dashboard
+                            </Link>
+                          )}
+                        </div>
+                        <div className="border-t border-gray-100 py-2">
+                          <button
+                            onClick={handleLogout}
+                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                          >
+                            Logout
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center space-x-4">
+                  <Link
+                    to="/login"
+                    className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-pink-700 transition"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
             </nav>
           </div>
         </div>
@@ -69,8 +205,16 @@ export default function Layout({ children }: LayoutProps) {
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-4">Quick Links</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link to="/" className="hover:text-primary-500">Shop All</Link></li>
-                <li><Link to="/cart" className="hover:text-primary-500">Cart</Link></li>
+                <li><Link to="/" className="hover:text-pink-600">Shop All</Link></li>
+                <li><Link to="/cart" className="hover:text-pink-600">Cart</Link></li>
+                <li><Link to="/orders" className="hover:text-pink-600">Orders</Link></li>
+                {isAuthenticated && (
+                  <>
+                    <li><Link to="/profile" className="hover:text-pink-600">Profile</Link></li>
+                    <li><Link to="/addresses" className="hover:text-pink-600">Addresses</Link></li>
+                    <li><Link to="/wishlist" className="hover:text-pink-600">Wishlist</Link></li>
+                  </>
+                )}
               </ul>
             </div>
             <div>
@@ -98,7 +242,7 @@ function OfflineBanner() {
   if (isOnline) return null;
 
   return (
-    <div className="offline-banner">
+    <div className="bg-yellow-100 border-b border-yellow-200 text-yellow-800 px-4 py-2 text-center text-sm">
       You're offline. Changes will sync when you're back online.
     </div>
   );

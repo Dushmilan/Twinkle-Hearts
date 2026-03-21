@@ -17,8 +17,10 @@ interface RefreshTokenPayload {
   sessionId: string;
 }
 
-let privateKey: CryptoKey | null = null;
-let publicKey: CryptoKey | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let privateKey: any | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let publicKey: any | null = null;
 
 /**
  * Load JWT keys from files

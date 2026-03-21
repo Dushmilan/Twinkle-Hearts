@@ -1,7 +1,9 @@
-// Use mock database for demo (no database required)
-// For production, switch to real Prisma client
-import { mockDB } from './mockDB.js';
+// Use real Prisma client for tests with actual database
+import { PrismaClient } from '@prisma/client';
 
-export const prisma = mockDB;
+// Create singleton Prisma client for tests
+const prisma = new PrismaClient({
+  log: process.env.NODE_ENV === 'test' ? ['error'] : ['query', 'info', 'warn', 'error'],
+});
 
 export default prisma;

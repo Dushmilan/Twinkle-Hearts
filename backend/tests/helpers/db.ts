@@ -1,23 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 
 // Create a separate Prisma client for testing
-const testPrisma = new PrismaClient({
+export const testPrisma = new PrismaClient({
   log: ['error'], // Only log errors during tests
 });
-
-/**
- * Initialize test database - ensure schema is up to date
- */
-export async function initializeDatabase() {
-  try {
-    // Verify connection
-    await testPrisma.$connect();
-    console.log('Test database connected');
-  } catch (error) {
-    console.error('Error connecting to test database:', error);
-    throw error;
-  }
-}
 
 /**
  * Clean all tables in the database (truncate)
@@ -29,8 +15,6 @@ export async function cleanDatabase() {
     await testPrisma.order.deleteMany({});
     await testPrisma.product.deleteMany({});
     await testPrisma.user.deleteMany({});
-    
-    console.log('Database cleaned');
   } catch (error) {
     console.error('Error cleaning database:', error);
     throw error;
@@ -106,7 +90,6 @@ export async function seedDatabase() {
       }),
     ]);
 
-    console.log(`Database seeded with ${products.length} products`);
     return { products };
   } catch (error) {
     console.error('Error seeding database:', error);
@@ -115,3 +98,4 @@ export async function seedDatabase() {
 }
 
 export default testPrisma;
+export { testPrisma };

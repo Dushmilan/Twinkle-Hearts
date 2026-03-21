@@ -4,7 +4,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../lib/jwt.js';
 import { cacheGet, CacheKeys } from '../lib/cache.js';
-import { prisma } from '../lib/prisma.js';
+import prisma from '../lib/prisma.js';
 import { UnauthorizedError, ForbiddenError } from '../middleware/errorHandler.js';
 
 // Extend Express Request type

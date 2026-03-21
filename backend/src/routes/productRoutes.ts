@@ -72,6 +72,48 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
+ * GET /api/products/search
+ * Search products
+ * Note: This route must be defined BEFORE /:id to avoid conflicts
+ */
+router.get('/search', async (req, res, next) => {
+  try {
+    const q = req.query.q as string;
+
+    if (!q || q.length < 2) {
+      res.json({ products: [], pagination: { total: 0 } });
+      return;
+    }
+
+    const products = await prisma.product.findMany({
+      where: {
+        isActive: true,
+        OR: [
+          { name: { contains: q, mode: 'insensitive' } },
+          { description: { contains: q, mode: 'insensitive' } },
+        ],
+      },
+      take: 20,
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        images: true,
+      },
+    });
+
+    res.json({
+      products: products.map((p: any) => ({
+        ...p,
+        price: Number(p.price),
+      }))
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * GET /api/products/:id
  * Get single product by ID
  */
@@ -97,51 +139,11 @@ router.get('/:id', async (req, res, next) => {
       throw new NotFoundError('Product not found');
     }
 
-    res.json({ 
+    res.json({
       product: {
         ...product,
         price: Number(product.price),
       }
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-/**
- * GET /api/products/search
- * Search products
- */
-router.get('/search', async (req, res, next) => {
-  try {
-    const q = req.query.q as string;
-
-    if (!q || q.length < 2) {
-      return res.json({ products: [], pagination: { total: 0 } });
-    }
-
-    const products = await prisma.product.findMany({
-      where: {
-        isActive: true,
-        OR: [
-          { name: { contains: q, mode: 'insensitive' } },
-          { description: { contains: q, mode: 'insensitive' } },
-        ],
-      },
-      take: 20,
-      select: {
-        id: true,
-        name: true,
-        price: true,
-        images: true,
-      },
-    });
-
-    res.json({ 
-      products: products.map((p: any) => ({
-        ...p,
-        price: Number(p.price),
-      }))
     });
   } catch (error) {
     next(error);

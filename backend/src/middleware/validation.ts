@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
-import { prisma } from '../lib/prisma.js';
+import prisma from '../lib/prisma.js';
 import { BadRequestError, StockUnavailableError } from './errorHandler.js';
 
 // Cart item schema (what frontend sends)
@@ -62,10 +62,10 @@ export const validateOrder = async (
 
     // Build lookup maps
     const productMap = new Map(
-      products.map(p => [p.id, { 
-        price: p.price.toNumber(), 
+      products.map(p => [p.id, {
+        price: Number(p.price),
         name: p.name,
-        stock: p.stock 
+        stock: p.stock
       }])
     );
 
@@ -138,9 +138,9 @@ export const validateCartSync = async (
     });
 
     const productMap = new Map(
-      products.map(p => [p.id, { 
-        price: p.price.toNumber(), 
-        stock: p.stock 
+      products.map(p => [p.id, {
+        price: Number(p.price),
+        stock: p.stock
       }])
     );
 

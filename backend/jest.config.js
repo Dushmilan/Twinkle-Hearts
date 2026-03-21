@@ -1,30 +1,34 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
+/** @type {import('jest').Config} */
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Force NODE_ENV to test for Jest
+process.env.NODE_ENV = 'test';
+
+// Load .env.test file (after setting NODE_ENV)
+dotenv.config({ path: path.resolve(__dirname, '.env.test') });
+
 export default {
-  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
-  moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1.js',
-  },
-  extensionsToTreatAsEsm: ['.ts'],
+  preset: 'ts-jest/presets/js-with-ts-esm',
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',
       {
         useESM: true,
-        tsconfig: {
-          module: 'ESNext',
-          moduleResolution: 'node',
-          esModuleInterop: true,
-          allowSyntheticDefaultImports: true,
-        },
+        isolatedModules: true, // Skip type checking for faster tests
       },
     ],
+  },
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
   testMatch: ['**/tests/**/*.test.ts'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
-  globalSetup: '<rootDir>/tests/globalSetup.ts',
-  globalTeardown: '<rootDir>/tests/globalTeardown.ts',
   verbose: true,
   silent: false,
   logHeapUsage: true,

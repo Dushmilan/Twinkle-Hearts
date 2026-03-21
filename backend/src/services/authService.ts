@@ -1,7 +1,7 @@
 // Authentication service
 // Private Commercial Project - Confidential
 
-import { prisma } from '../lib/prisma.js';
+import prisma from '../lib/prisma.js';
 import { hashPassword, comparePassword, validatePasswordStrength } from '../utils/password.js';
 import { signAccessToken, signRefreshToken, verifyToken } from '../lib/jwt.js';
 import { cacheSet, cacheDelete, cacheGet, CACHE_TTL, CacheKeys } from '../lib/cache.js';
@@ -134,6 +134,14 @@ export async function login(input: LoginInput): Promise<AuthResponse> {
 export async function googleOAuth(email: string, name: string, avatar?: string): Promise<AuthResponse> {
   let user = await prisma.user.findUnique({
     where: { email: email.toLowerCase() },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      phone: true,
+      role: true,
+      avatar: true,
+    },
   });
 
   if (!user) {
