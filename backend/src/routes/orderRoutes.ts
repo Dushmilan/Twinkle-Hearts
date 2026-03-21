@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { validateOrder } from '../middleware/validation.js';
 import { orderRateLimit } from '../middleware/rateLimiter.js';
 import { authenticate } from '../middleware/auth.js';
-import { createOrder, getOrderById, confirmOrder, getUserOrders } from '../services/orderService.js';
+import { createOrder, getOrderById, getUserOrders } from '../services/orderService.js';
 
 const router = Router();
 
@@ -43,7 +43,6 @@ router.post('/create', orderRateLimit, validateOrder, async (req, res, next) => 
 
     res.json({
       orderId: order.id,
-      status: order.status,
       items: order.items.map((item: any) => ({
         productId: item.productId,
         productName: item.productName,
@@ -54,7 +53,6 @@ router.post('/create', orderRateLimit, validateOrder, async (req, res, next) => 
       tax: order.tax,
       total: order.total,
       whatsappDeepLink,
-      expiresAt: order.expiresAt,
       createdAt: order.createdAt,
     });
   } catch (error) {
@@ -70,9 +68,9 @@ router.get('/', async (req, res, next) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 20;
-    
+
     const result = await getUserOrders(req.user!.id, page, limit);
-    
+
     res.json({
       success: true,
       data: result,
@@ -98,29 +96,12 @@ router.get('/:id', async (req, res, next) => {
     res.json({
       order: {
         id: order.id,
-        status: order.status,
         total: order.total,
         items: order.items,
         customerName: order.customerName,
         createdAt: order.createdAt,
-        confirmedAt: order.confirmedAt,
       },
     });
-  } catch (error) {
-    next(error);
-  }
-});
-
-/**
- * POST /api/orders/:id/confirm
- * Confirm order (called after WhatsApp confirmation)
- */
-router.post('/:id/confirm', async (req, res, next) => {
-  try {
-    const { whatsappMessageId } = req.body;
-    const order = await confirmOrder(req.params.id, req.user!.id, whatsappMessageId);
-
-    res.json({ order });
   } catch (error) {
     next(error);
   }
@@ -148,7 +129,6 @@ ${itemsList}
 *Tax (18%):* ₹${order.tax}
 *TOTAL:* ₹${order.total}
 ━━━━━━━━━━━━━━━━━━━━
-*Please confirm this order.*
   `.trim();
 }
 

@@ -122,7 +122,11 @@ export async function getUserOrders(userId: string, page: number = 1, limit: num
       skip,
       take: limit,
       orderBy: { createdAt: 'desc' },
-      include: {
+      select: {
+        id: true,
+        subtotal: true,
+        tax: true,
+        total: true,
         items: {
           select: {
             productId: true,
@@ -131,14 +135,7 @@ export async function getUserOrders(userId: string, page: number = 1, limit: num
             price: true,
           },
         },
-      },
-      select: {
-        id: true,
-        status: true,
-        total: true,
-        items: true,
         createdAt: true,
-        confirmedAt: true,
       },
     }),
     prisma.order.count({ where: { userId } }),

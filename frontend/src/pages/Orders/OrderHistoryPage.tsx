@@ -13,19 +13,16 @@ interface OrderItem {
 
 interface Order {
   id: string;
-  status: string;
   items: OrderItem[];
   subtotal: number;
   tax: number;
   total: number;
   customerName: string;
-  customerPhone: string;
-  confirmedAt: string | null;
   createdAt: string;
 }
 
 export default function OrderHistoryPage() {
-  const { user, tokens } = useAuth();
+  const { tokens } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -57,21 +54,6 @@ export default function OrderHistoryPage() {
       fetchOrders();
     }
   }, [tokens?.accessToken]);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'CONFIRMED':
-        return 'bg-green-100 text-green-700';
-      case 'PENDING_WHATSAPP_CONFIRMATION':
-        return 'bg-yellow-100 text-yellow-700';
-      case 'CANCELLED':
-        return 'bg-red-100 text-red-700';
-      case 'EXPIRED':
-        return 'bg-gray-100 text-gray-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
-  };
 
   const formatCurrency = (amount: number) => {
     return `₹${(amount / 100).toFixed(2)}`;
@@ -132,13 +114,6 @@ export default function OrderHistoryPage() {
                     Placed on {new Date(order.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                    order.status
-                  )}`}
-                >
-                  {order.status.replace(/_/g, ' ')}
-                </span>
               </div>
 
               <div className="border-t border-b py-4 my-4 space-y-3">
@@ -170,11 +145,6 @@ export default function OrderHistoryPage() {
                   >
                     View Details
                   </Link>
-                  {order.status === 'PENDING_WHATSAPP_CONFIRMATION' && (
-                    <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                      Confirm via WhatsApp
-                    </button>
-                  )}
                 </div>
               </div>
             </div>

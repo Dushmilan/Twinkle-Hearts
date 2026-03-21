@@ -46,7 +46,6 @@ export async function createOrder(overrides: {
   userId?: string | null;
   customerName?: string;
   customerPhone?: string;
-  status?: string;
   items?: Array<{
     productId: string;
     quantity: number;
@@ -77,7 +76,6 @@ export async function createOrder(overrides: {
     userId,
     customerName,
     customerPhone,
-    status: (overrides.status as any) || 'PENDING_WHATSAPP_CONFIRMATION',
     subtotal: items.reduce((sum, item) => sum + item.price * item.quantity, 0),
     tax: items.reduce((sum, item) => sum + item.price * item.quantity, 0) * 0.18,
     total: items.reduce((sum, item) => sum + item.price * item.quantity, 0) * 1.18,

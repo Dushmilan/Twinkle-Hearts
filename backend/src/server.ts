@@ -15,7 +15,6 @@ import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
-import { startOrderExpirationCron } from './services/orderService.js';
 
 // Load environment variables
 dotenv.config({ path: '.env.local' });
@@ -80,9 +79,6 @@ const server = app.listen(PORT, () => {
   logger.info(`🚀 Server running on port ${PORT}`);
   logger.info(`📍 Environment: ${process.env.NODE_ENV}`);
   logger.info(`🔗 API URL: http://localhost:${PORT}`);
-  
-  // Start cron job for order expiration
-  startOrderExpirationCron();
 });
 
 // Graceful shutdown

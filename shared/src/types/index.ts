@@ -57,15 +57,6 @@ export interface CartSyncResponse {
 // ============================================
 // ORDER TYPES
 // ============================================
-export type OrderStatus =
-  | 'PENDING_WHATSAPP_CONFIRMATION'
-  | 'CONFIRMED'
-  | 'PROCESSING'
-  | 'SHIPPED'
-  | 'DELIVERED'
-  | 'CANCELLED'
-  | 'EXPIRED';
-
 export interface OrderItem {
   id: string;
   productId: string;
@@ -79,17 +70,11 @@ export interface Order {
   userId?: string | null;
   customerName: string;
   customerPhone: string;
-  status: OrderStatus;
   subtotal: number;
   tax: number;
   total: number;
   items: OrderItem[];
-  whatsappMessageId?: string | null;
-  whatsappStatus?: string | null;
   createdAt: string;
-  expiresAt?: string | null;
-  confirmedAt?: string | null;
-  updatedAt: string;
 }
 
 export interface CreateOrderInput {
@@ -104,7 +89,6 @@ export interface CreateOrderInput {
 
 export interface CreateOrderResponse {
   orderId: string;
-  status: OrderStatus;
   items: Array<{
     productId: string;
     productName: string;
@@ -115,7 +99,6 @@ export interface CreateOrderResponse {
   tax: number;
   total: number;
   whatsappDeepLink: string;
-  expiresAt: string;
   createdAt: string;
 }
 
@@ -134,15 +117,6 @@ export interface ProductsResponse {
 
 export interface ProductDetailResponse {
   product: Product;
-}
-
-export interface OrderResponse {
-  order: Order;
-}
-
-export interface ErrorResponse {
-  error: string;
-  details?: Record<string, any>;
 }
 
 // ============================================

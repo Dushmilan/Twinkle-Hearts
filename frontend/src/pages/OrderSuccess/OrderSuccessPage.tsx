@@ -9,9 +9,6 @@ export default function OrderSuccessPage() {
   useEffect(() => {
     if (orderId) {
       fetchOrder(orderId);
-      // Poll for order status updates
-      const interval = setInterval(() => fetchOrder(orderId), 5000);
-      return () => clearInterval(interval);
     }
   }, [orderId]);
 
@@ -66,10 +63,6 @@ export default function OrderSuccessPage() {
 
           <div className="space-y-3 mb-4">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Status</span>
-              <StatusBadge status={order.status} />
-            </div>
-            <div className="flex justify-between text-sm">
               <span className="text-gray-600">Customer</span>
               <span className="font-medium">{order.customerName}</span>
             </div>
@@ -82,7 +75,6 @@ export default function OrderSuccessPage() {
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <p className="text-sm text-yellow-800">
               <strong>Next Step:</strong> Open WhatsApp and send the pre-filled order message.
-              We'll confirm your order shortly after receiving your message.
             </p>
           </div>
         </div>
@@ -94,33 +86,5 @@ export default function OrderSuccessPage() {
         </Link>
       </div>
     </div>
-  );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const statusColors: Record<string, string> = {
-    PENDING_WHATSAPP_CONFIRMATION: 'bg-yellow-100 text-yellow-800',
-    CONFIRMED: 'bg-green-100 text-green-800',
-    PROCESSING: 'bg-blue-100 text-blue-800',
-    SHIPPED: 'bg-purple-100 text-purple-800',
-    DELIVERED: 'bg-green-100 text-green-800',
-    CANCELLED: 'bg-red-100 text-red-800',
-    EXPIRED: 'bg-gray-100 text-gray-800',
-  };
-
-  const statusLabels: Record<string, string> = {
-    PENDING_WHATSAPP_CONFIRMATION: 'Awaiting WhatsApp Confirmation',
-    CONFIRMED: 'Confirmed',
-    PROCESSING: 'Processing',
-    SHIPPED: 'Shipped',
-    DELIVERED: 'Delivered',
-    CANCELLED: 'Cancelled',
-    EXPIRED: 'Expired',
-  };
-
-  return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[status] || 'bg-gray-100 text-gray-800'}`}>
-      {statusLabels[status] || status}
-    </span>
   );
 }

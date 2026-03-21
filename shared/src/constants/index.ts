@@ -2,18 +2,6 @@
 
 export const WHATSAPP_NUMBER = process.env.WHATSAPP_BUSINESS_NUMBER || '919876543210';
 
-export const ORDER_STATUS = {
-  PENDING: 'PENDING_WHATSAPP_CONFIRMATION',
-  CONFIRMED: 'CONFIRMED',
-  PROCESSING: 'PROCESSING',
-  SHIPPED: 'SHIPPED',
-  DELIVERED: 'DELIVERED',
-  CANCELLED: 'CANCELLED',
-  EXPIRED: 'EXPIRED',
-} as const;
-
-export const ORDER_EXPIRY_MINUTES = 15;
-
 export const TAX_RATE = 0.18; // 18% GST
 
 export const CURRENCY = {
@@ -27,7 +15,6 @@ export const API_ENDPOINTS = {
   CART_SYNC: '/api/cart/sync',
   ORDERS_CREATE: '/api/orders/create',
   ORDERS_GET: (orderId: string) => `/api/orders/${orderId}`,
-  ORDERS_CONFIRM: (orderId: string) => `/api/orders/${orderId}/confirm`,
 } as const;
 
 export const WHATSAPP_MESSAGE_TEMPLATES = {
@@ -53,16 +40,6 @@ ${order.items.map((item, idx) => `${idx + 1}. ${item.name} x${item.quantity} - �
 *Tax (18%):* ₹${order.tax}
 *TOTAL:* ₹${order.total}
 ━━━━━━━━━━━━━━━━━━━━
-*Please confirm this order.*
-  `.trim(),
-
-  ORDER_CONFIRMED: (orderId: string, total: number) => `
-✅ *ORDER CONFIRMED*
-━━━━━━━━━━━━━━━━━━━━
-*Order ID:* ${orderId.slice(0, 8).toUpperCase()}
-*Total:* ₹${total}
-━━━━━━━━━━━━━━━━━━━━
-Thank you for your order! We'll process it shortly.
   `.trim(),
 };
 

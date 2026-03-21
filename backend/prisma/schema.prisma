@@ -20,19 +20,6 @@ enum UserRole {
 }
 
 // ============================================
-// ORDER STATUS ENUM
-// ============================================
-enum OrderStatus {
-  PENDING_WHATSAPP_CONFIRMATION
-  CONFIRMED
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELLED
-  EXPIRED
-}
-
-// ============================================
 // ADDRESS TYPE ENUM
 // ============================================
 enum AddressType {
@@ -166,36 +153,26 @@ model Order {
   id              String      @id @default(uuid())
   userId          String
   user            User        @relation(fields: [userId], references: [id])
-  
+
   customerName    String
   customerPhone   String
-  
-  status          OrderStatus @default(PENDING_WHATSAPP_CONFIRMATION)
-  
+
   subtotal        Decimal     @db.Decimal(10, 2)
   tax             Decimal     @db.Decimal(10, 2)
   total           Decimal     @db.Decimal(10, 2)
-  
+
   // Store prices at time of order (for audit)
   priceSnapshot   Json        @default("[]")
-  
-  // WhatsApp integration
-  whatsappMessageId String?
-  whatsappStatus    String?
-  
+
   // Timestamps
   createdAt     DateTime  @default(now())
-  expiresAt     DateTime?
-  confirmedAt   DateTime?
   updatedAt     DateTime  @updatedAt
-  
+
   items         OrderItem[]
-  
+
   @@index([userId])
-  @@index([status])
   @@index([customerPhone])
   @@index([createdAt])
-  @@index([expiresAt])
 }
 
 // ============================================

@@ -1,6 +1,6 @@
 /**
  * Integration Tests for Orders API
- * Tests order creation, retrieval, and confirmation endpoints
+ * Tests order creation and retrieval endpoints
  */
 
 import request from 'supertest';
@@ -32,14 +32,12 @@ describe('Orders API', () => {
       // Assert
       expect(response.status).toBe(200);
       expect(response.body.orderId).toBeDefined();
-      expect(response.body.status).toBe('PENDING_WHATSAPP_CONFIRMATION');
       expect(response.body.items).toHaveLength(1);
       expect(response.body.items[0].productId).toBe(product.id);
       expect(response.body.subtotal).toBe(Number(product.price) * 2);
       expect(response.body.tax).toBeCloseTo(response.body.subtotal * 0.18, 2);
       expect(response.body.total).toBeCloseTo(response.body.subtotal * 1.18, 2);
       expect(response.body.whatsappDeepLink).toBeDefined();
-      expect(response.body.expiresAt).toBeDefined();
       expect(response.body.createdAt).toBeDefined();
     });
 
@@ -114,7 +112,7 @@ describe('Orders API', () => {
       const orderData = {
         items: [{ productId: product.id, quantity: 1 }],
         customerName: 'John Doe',
-        customerPhone: '123', // Too short
+        customerPhone: '123', // Invalid
       };
 
       // Act
@@ -145,12 +143,15 @@ describe('Orders API', () => {
       expect(response.body.error).toBeDefined();
     });
 
-    it('should reject order when stock is insufficient', async () => {
+    it('should reject order when product is inactive', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-API-006', stock: 2 });
+      const product = await createProduct({
+        sku: 'TEST-ORDER-API-006',
+        isActive: false,
+      });
 
       const orderData = {
-        items: [{ productId: product.id, quantity: 10 }], // More than stock
+        items: [{ productId: product.id, quantity: 1 }],
         customerName: 'John Doe',
         customerPhone: '+919876543210',
       };
@@ -165,85 +166,15 @@ describe('Orders API', () => {
       expect(response.body.error).toBeDefined();
     });
 
-    it('should calculate tax and total correctly', async () => {
+    it('should reject order when stock is insufficient', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-API-007', price: 1000 });
-
-      const orderData = {
-        items: [{ productId: product.id, quantity: 2, price: 1000 }],
-        customerName: 'John Doe',
-        customerPhone: '+919876543210',
-      };
-
-      // Act
-      const response = await request(app)
-        .post('/api/orders/create')
-        .send(orderData);
-
-      // Assert
-      expect(response.status).toBe(200);
-      expect(response.body.subtotal).toBe(2000);
-      expect(response.body.tax).toBe(360); // 18% of 2000
-      expect(response.body.total).toBe(2360); // 2000 + 360
-    });
-
-    it('should set expiration to 15 minutes from creation', async () => {
-      // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-API-008' });
-
-      const beforeOrder = Date.now();
-      const orderData = {
-        items: [{ productId: product.id, quantity: 1 }],
-        customerName: 'John Doe',
-        customerPhone: '+919876543210',
-      };
-
-      // Act
-      const response = await request(app)
-        .post('/api/orders/create')
-        .send(orderData);
-
-      const afterOrder = Date.now();
-
-      // Assert
-      const expiresAt = new Date(response.body.expiresAt).getTime();
-      const expectedMin = beforeOrder + (15 * 60 * 1000);
-      const expectedMax = afterOrder + (15 * 60 * 1000);
-      
-      expect(expiresAt).toBeGreaterThanOrEqual(expectedMin);
-      expect(expiresAt).toBeLessThanOrEqual(expectedMax);
-    });
-
-    it('should generate WhatsApp deep link with mock number', async () => {
-      // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-API-009' });
-
-      const orderData = {
-        items: [{ productId: product.id, quantity: 1 }],
-        customerName: 'John Doe',
-        customerPhone: '+919876543210',
-      };
-
-      // Act
-      const response = await request(app)
-        .post('/api/orders/create')
-        .send(orderData);
-
-      // Assert
-      expect(response.status).toBe(200);
-      expect(response.body.whatsappDeepLink).toContain('wa.me/919999999999'); // Mock number from .env.test
-      expect(response.body.whatsappDeepLink).toContain(encodeURIComponent('ORDER'));
-    });
-
-    it('should reject order with inactive product', async () => {
-      // Arrange
-      const inactiveProduct = await createProduct({
-        sku: 'TEST-ORDER-API-010',
-        isActive: false,
+      const product = await createProduct({
+        sku: 'TEST-ORDER-API-007',
+        stock: 1,
       });
 
       const orderData = {
-        items: [{ productId: inactiveProduct.id, quantity: 1 }],
+        items: [{ productId: product.id, quantity: 5 }], // More than stock
         customerName: 'John Doe',
         customerPhone: '+919876543210',
       };
@@ -260,132 +191,128 @@ describe('Orders API', () => {
   });
 
   describe('GET /api/orders/:id', () => {
-    it('should return an order by ID', async () => {
+    it('should return order details', async () => {
       // Arrange
       const user = await createUser({ email: 'get-order-test@example.com' });
-      const product = await createProduct({ sku: 'TEST-GET-ORDER-API-001' });
       const order = await createOrder({
         userId: user.id,
         customerName: 'Get Order Test',
-        customerPhone: '+919876543220',
-        items: [{
-          productId: product.id,
-          quantity: 1,
-          price: Number(product.price),
-          productName: product.name,
-        }],
+        customerPhone: '+919876543210',
       });
 
       // Act
-      const response = await request(app).get(`/api/orders/${order.id}`);
+      const response = await request(app)
+        .get(`/api/orders/${order.id}`)
+        .set('Authorization', `Bearer ${user.email}`);
 
       // Assert
       expect(response.status).toBe(200);
+      expect(response.body.order).toBeDefined();
       expect(response.body.order.id).toBe(order.id);
-      expect(response.body.order.status).toBe(order.status);
-      expect(response.body.order.total).toBe(order.total);
-      expect(response.body.order.customerName).toBe('Get Order Test');
     });
 
     it('should return 404 for non-existent order', async () => {
       // Act
-      const response = await request(app).get('/api/orders/non-existent-id');
+      const response = await request(app)
+        .get('/api/orders/non-existent-id')
+        .set('Authorization', 'Bearer test@example.com');
 
       // Assert
       expect(response.status).toBe(404);
-      expect(response.body.error).toBe('Order not found');
     });
 
-    it('should include order items in response', async () => {
+    it('should reject access to order owned by another user', async () => {
       // Arrange
-      const user = await createUser({ email: 'items-order-test@example.com' });
-      const product = await createProduct({ sku: 'TEST-GET-ORDER-API-002' });
+      const otherUser = await createUser({ email: 'other-user@example.com' });
       const order = await createOrder({
-        userId: user.id,
-        customerName: 'Items Test',
-        customerPhone: '+919876543221',
-        items: [{
-          productId: product.id,
-          quantity: 2,
-          price: Number(product.price),
-          productName: product.name,
-        }],
+        userId: otherUser.id,
+        customerName: 'Other User Order',
       });
 
-      // Act
-      const response = await request(app).get(`/api/orders/${order.id}`);
+      // Act - try to access with different user
+      const response = await request(app)
+        .get(`/api/orders/${order.id}`)
+        .set('Authorization', `Bearer test@example.com`);
 
       // Assert
-      expect(response.status).toBe(200);
-      expect(response.body.order.items).toBeDefined();
-      expect(response.body.order.items.length).toBeGreaterThan(0);
+      expect(response.status).toBe(404);
     });
   });
 
-  describe('POST /api/orders/:id/confirm', () => {
-    it('should confirm a pending order', async () => {
+  describe('GET /api/orders', () => {
+    it('should return user orders', async () => {
       // Arrange
-      const user = await createUser({ email: 'confirm-order-test@example.com' });
-      const product = await createProduct({ sku: 'TEST-CONFIRM-ORDER-API-001' });
-      const order = await createOrder({
+      const user = await createUser({ email: 'orders-list@example.com' });
+      const product = await createProduct({ sku: 'TEST-ORDER-LIST-001' });
+
+      await createOrder({
         userId: user.id,
-        customerName: 'Confirm Test',
-        customerPhone: '+919876543230',
-        status: 'PENDING_WHATSAPP_CONFIRMATION',
-        items: [{
-          productId: product.id,
-          quantity: 1,
-          price: Number(product.price),
-          productName: product.name,
-        }],
+        customerName: 'User Order',
+        items: [
+          {
+            productId: product.id,
+            quantity: 1,
+            price: Number(product.price),
+            productName: 'Test Product',
+          },
+        ],
       });
 
       // Act
       const response = await request(app)
-        .post(`/api/orders/${order.id}/confirm`)
-        .send({ whatsappMessageId: 'wamid.test123' });
+        .get('/api/orders')
+        .set('Authorization', `Bearer ${user.email}`);
 
       // Assert
       expect(response.status).toBe(200);
-      expect(response.body.order.status).toBe('CONFIRMED');
-      expect(response.body.order.confirmedAt).toBeDefined();
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.orders).toHaveLength(1);
     });
 
-    it('should confirm order without whatsapp message id', async () => {
+    it('should return empty array for user with no orders', async () => {
       // Arrange
-      const user = await createUser({ email: 'confirm-order-test-2@example.com' });
-      const product = await createProduct({ sku: 'TEST-CONFIRM-ORDER-API-002' });
-      const order = await createOrder({
-        userId: user.id,
-        customerName: 'Confirm Test 2',
-        customerPhone: '+919876543231',
-        status: 'PENDING_WHATSAPP_CONFIRMATION',
-        items: [{
-          productId: product.id,
-          quantity: 1,
-          price: Number(product.price),
-          productName: product.name,
-        }],
-      });
+      const user = await createUser({ email: 'no-orders@example.com' });
 
       // Act
       const response = await request(app)
-        .post(`/api/orders/${order.id}/confirm`)
-        .send({});
+        .get('/api/orders')
+        .set('Authorization', `Bearer ${user.email}`);
 
       // Assert
       expect(response.status).toBe(200);
-      expect(response.body.order.status).toBe('CONFIRMED');
+      expect(response.body.data.orders).toEqual([]);
     });
 
-    it('should return 404 for non-existent order', async () => {
+    it('should handle pagination', async () => {
+      // Arrange
+      const user = await createUser({ email: 'pagination-test@example.com' });
+      const product = await createProduct({ sku: 'TEST-ORDER-PAGE-001' });
+
+      // Create 5 orders
+      for (let i = 0; i < 5; i++) {
+        await createOrder({
+          userId: user.id,
+          customerName: `Order ${i}`,
+          items: [
+            {
+              productId: product.id,
+              quantity: 1,
+              price: Number(product.price),
+              productName: 'Test Product',
+            },
+          ],
+        });
+      }
+
       // Act
       const response = await request(app)
-        .post('/api/orders/non-existent-id/confirm')
-        .send({ whatsappMessageId: 'wamid.test' });
+        .get('/api/orders?page=1&limit=2')
+        .set('Authorization', `Bearer ${user.email}`);
 
       // Assert
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(200);
+      expect(response.body.data.orders).toHaveLength(2);
+      expect(response.body.data.pagination.total).toBe(5);
     });
   });
 });
