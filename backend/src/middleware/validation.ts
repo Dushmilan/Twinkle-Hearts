@@ -4,8 +4,9 @@ import { prisma } from '../lib/prisma.js';
 import { BadRequestError, StockUnavailableError } from './errorHandler.js';
 
 // Cart item schema (what frontend sends)
+// Accept both UUID and simple IDs for demo compatibility
 const cartItemSchema = z.object({
-  productId: z.string().uuid('Invalid product ID format'),
+  productId: z.string().min(1, 'Product ID is required'),
   quantity: z.number().int().positive('Quantity must be positive'),
   price: z.number().optional(), // Frontend price (for reference only, not trusted)
 });

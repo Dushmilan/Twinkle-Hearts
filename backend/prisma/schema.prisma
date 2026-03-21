@@ -1,5 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// This is your Prisma schema file
+// Private Commercial Project - Confidential
 
 generator client {
   provider = "prisma-client-js"
@@ -8,6 +8,15 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER ROLE ENUM
+// ============================================
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  VENDOR
 }
 
 // ============================================
@@ -24,28 +33,103 @@ enum OrderStatus {
 }
 
 // ============================================
-// USER MODEL (For future authentication)
+// ADDRESS TYPE ENUM
+// ============================================
+enum AddressType {
+  HOME
+  WORK
+  BILLING
+  SHIPPING
+  OTHER
+}
+
+// ============================================
+// USER MODEL
 // ============================================
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
+  passwordHash  String?   // Null for OAuth users
   name          String?
   phone         String?
-  passwordHash  String?
+  avatar        String?   // Profile picture URL
   role          UserRole  @default(CUSTOMER)
+  emailVerified Boolean   @default(false)
   isActive      Boolean   @default(true)
+  
+  // Timestamps
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
   
+  // Relations
+  addresses     Address[]
   orders        Order[]
+  wishlist      Wishlist[]
+  sessions      Session[]
+  adminLogs     AdminLog[]
   
+  // Indexes
   @@index([email])
+  @@index([role])
+  @@index([isActive])
 }
 
-enum UserRole {
-  CUSTOMER
-  ADMIN
-  VENDOR
+// ============================================
+// SESSION MODEL (JWT Token Tracking)
+// ============================================
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash    String   @unique  // Hash of JWT token
+  refreshToken String?  @unique
+  userAgent    String?
+  ip           String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  
+  @@index([userId])
+  @@index([tokenHash])
+  @@index([expiresAt])
+}
+
+// ============================================
+// ADDRESS MODEL
+// ============================================
+model Address {
+  id         String      @id @default(uuid())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label      String      // "Home", "Work", etc.
+  type       AddressType @default(HOME)
+  street     String
+  city       String
+  state      String
+  zip        String
+  country    String      @default("LK")
+  phone      String
+  isDefault  Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  
+  @@index([userId])
+  @@index([isDefault])
+}
+
+// ============================================
+// WISHLIST MODEL
+// ============================================
+model Wishlist {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId  String
+  createdAt  DateTime @default(now())
+  
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
 }
 
 // ============================================
@@ -60,14 +144,17 @@ model Product {
   sku         String   @unique
   category    String?
   images      String[] @default([])
+  isFeatured  Boolean  @default(false)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
   orderItems  OrderItem[]
+  wishlistBy  Wishlist[]
   
   @@index([name])
   @@index([category])
+  @@index([isFeatured])
   @@index([isActive])
 }
 
@@ -76,8 +163,8 @@ model Product {
 // ============================================
 model Order {
   id              String      @id @default(uuid())
-  userId          String?
-  user            User?       @relation(fields: [userId], references: [id])
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
   
   customerName    String
   customerPhone   String
@@ -103,6 +190,7 @@ model Order {
   
   items         OrderItem[]
   
+  @@index([userId])
   @@index([status])
   @@index([customerPhone])
   @@index([createdAt])
@@ -116,16 +204,33 @@ model OrderItem {
   id        String  @id @default(uuid())
   orderId   String
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-
+  
   // Product snapshot (denormalized for historical accuracy)
   productId   String
-  product     Product @relation(fields: [productId], references: [id], onDelete: Restrict)
   productName String  // Store name in case product changes
-
   quantity    Int
   price       Decimal @db.Decimal(10, 2)
-
+  
   @@unique([orderId, productId])
   @@index([orderId])
   @@index([productId])
+}
+
+// ============================================
+// ADMIN LOG MODEL (Audit Trail)
+// ============================================
+model AdminLog {
+  id         String   @id @default(uuid())
+  adminId    String
+  admin      User     @relation(fields: [adminId], references: [id])
+  action     String   // "CREATE_PRODUCT", "UPDATE_ORDER", etc.
+  entity     String?  // "Product", "Order", etc.
+  entityId   String?
+  details    Json?    // Additional context
+  ip         String?
+  createdAt  DateTime @default(now())
+  
+  @@index([adminId])
+  @@index([action])
+  @@index([createdAt])
 }

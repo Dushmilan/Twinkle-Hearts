@@ -1,9 +1,13 @@
 import { Router } from 'express';
 import { validateOrder } from '../middleware/validation.js';
 import { orderRateLimit } from '../middleware/rateLimiter.js';
-import { createOrder, getOrderById, confirmOrder } from '../services/orderService.js';
+import { authenticate } from '../middleware/auth.js';
+import { createOrder, getOrderById, confirmOrder, getUserOrders } from '../services/orderService.js';
 
 const router = Router();
+
+// All order routes require authentication
+router.use(authenticate);
 
 /**
  * POST /api/orders/create
@@ -12,7 +16,7 @@ const router = Router();
 router.post('/create', orderRateLimit, validateOrder, async (req, res, next) => {
   try {
     const { validatedItems, customerName, customerPhone } = req.body;
-    const userId = req.headers['x-user-id'] as string | undefined;
+    const userId = req.user!.id;
 
     // Calculate totals server-side
     const subtotal = validatedItems.reduce(
@@ -22,9 +26,9 @@ router.post('/create', orderRateLimit, validateOrder, async (req, res, next) => 
     const tax = subtotal * 0.18; // 18% GST
     const total = subtotal + tax;
 
-    // Create order
+    // Create order with authenticated user
     const order = await createOrder({
-      userId: userId || null,
+      userId,
       customerName,
       customerPhone,
       items: validatedItems,
@@ -59,12 +63,32 @@ router.post('/create', orderRateLimit, validateOrder, async (req, res, next) => 
 });
 
 /**
+ * GET /api/orders
+ * Get user's order history
+ */
+router.get('/', async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    
+    const result = await getUserOrders(req.user!.id, page, limit);
+    
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * GET /api/orders/:id
- * Get order by ID
+ * Get order by ID (only if user owns it)
  */
 router.get('/:id', async (req, res, next) => {
   try {
-    const order = await getOrderById(req.params.id);
+    const order = await getOrderById(req.params.id, req.user!.id);
 
     if (!order) {
       return res.status(404).json({ error: 'Order not found' });
@@ -93,7 +117,7 @@ router.get('/:id', async (req, res, next) => {
 router.post('/:id/confirm', async (req, res, next) => {
   try {
     const { whatsappMessageId } = req.body;
-    const order = await confirmOrder(req.params.id, whatsappMessageId);
+    const order = await confirmOrder(req.params.id, req.user!.id, whatsappMessageId);
 
     res.json({ order });
   } catch (error) {

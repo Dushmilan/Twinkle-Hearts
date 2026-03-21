@@ -1,10 +1,10 @@
 import prisma from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import cron from 'node-cron';
-import { MockOrder } from '../lib/mockData.js';
+import { cacheDelete, cacheSet, cacheGet, CACHE_TTL, CacheKeys } from '../lib/cache.js';
 
 interface CreateOrderInput {
-  userId: string | null;
+  userId: string;
   customerName: string;
   customerPhone: string;
   items: Array<{
@@ -56,38 +56,100 @@ export const createOrder = async (input: CreateOrderInput): Promise<any> => {
     },
   });
 
+  // Invalidate user's orders cache
+  await cacheDelete(CacheKeys.userOrders(userId));
+
   logger.info(`Order created: ${order.id} - Total: ₹${total}`);
 
   return order;
 };
 
 /**
- * Get order by ID
+ * Get order by ID (with ownership check)
  */
-export const getOrderById = async (orderId: string): Promise<any> => {
-  return prisma.order.findUnique({
-    where: { id: orderId },
+export const getOrderById = async (orderId: string, userId: string): Promise<any> => {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId, userId },
     include: {
       items: true,
     },
   });
+
+  return order;
+};
+
+/**
+ * Get user's orders with caching
+ */
+export const getUserOrders = async (userId: string, page: number = 1, limit: number = 20) => {
+  const cacheKey = CacheKeys.userOrders(userId);
+  
+  const cached = await cacheGet(cacheKey);
+  if (cached) return cached;
+
+  const skip = (page - 1) * limit;
+
+  const [orders, total] = await Promise.all([
+    prisma.order.findMany({
+      where: { userId },
+      skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        items: {
+          select: {
+            productId: true,
+            productName: true,
+            quantity: true,
+            price: true,
+          },
+        },
+      },
+      select: {
+        id: true,
+        status: true,
+        total: true,
+        items: true,
+        createdAt: true,
+        confirmedAt: true,
+      },
+    }),
+    prisma.order.count({ where: { userId } }),
+  ]);
+
+  const result = {
+    orders,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+
+  await cacheSet(cacheKey, result, CACHE_TTL.USER_ORDERS);
+
+  return result;
 };
 
 /**
  * Confirm order after WhatsApp verification
  */
-export const confirmOrder = async (orderId: string, whatsappMessageId?: string): Promise<any> => {
+export const confirmOrder = async (orderId: string, userId: string, whatsappMessageId?: string): Promise<any> => {
   const order = await prisma.order.update({
-    where: { id: orderId },
+    where: { id: orderId, userId },
     data: {
       status: 'CONFIRMED',
-      confirmedAt: new Date().toISOString(),
+      confirmedAt: new Date(),
       whatsappMessageId,
     },
     include: {
       items: true,
     },
   });
+
+  // Invalidate cache
+  await cacheDelete(CacheKeys.userOrders(userId));
 
   logger.info(`Order confirmed: ${order.id}`);
 

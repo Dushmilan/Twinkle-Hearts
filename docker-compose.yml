@@ -1,5 +1,6 @@
 # Docker Compose for local development
 # Provides PostgreSQL and Redis services
+# Private Commercial Project - Confidential
 
 version: '3.8'
 
@@ -24,7 +25,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # Redis (Optional - for caching/sessions)
+  # Redis (Caching & Sessions)
   redis:
     image: redis:7-alpine
     container_name: twinkle-hearts-redis
@@ -33,14 +34,29 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # pgAdmin (Optional - Database GUI)
+  # Redis Commander (Redis GUI - Optional)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: twinkle-hearts-redis-gui
+    restart: unless-stopped
+    environment:
+      REDIS_HOSTS: local:redis:6379
+      HTTP_USER: admin
+      HTTP_PASSWORD: admin
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+
+  # pgAdmin (Database GUI)
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: twinkle-hearts-pgadmin

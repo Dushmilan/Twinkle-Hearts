@@ -12,6 +12,14 @@ import {
   expirePendingOrders as expireOrders
 } from './mockData.js';
 
+// Mock Decimal class to mimic Prisma Decimal
+class MockDecimal {
+  constructor(private value: number) {}
+  toNumber() { return this.value; }
+  toString() { return this.value.toString(); }
+  valueOf() { return this.value; }
+}
+
 export const mockDB = {
   // Product operations
   product: {
@@ -61,13 +69,13 @@ export const mockDB = {
       const take = options.take || result.length;
       result = result.slice(skip, skip + take);
       
-      // Apply select
+      // Apply select and convert price to MockDecimal
       if (options.select) {
         result = result.map(p => {
           const selected: any = {};
           Object.keys(options.select!).forEach(key => {
             if (options.select![key] && key in p) {
-              selected[key] = (p as any)[key];
+              selected[key] = key === 'price' ? new MockDecimal(p.price) : (p as any)[key];
             }
           });
           return selected;
@@ -86,13 +94,14 @@ export const mockDB = {
         const selected: any = {};
         Object.keys(options.select).forEach(key => {
           if (options.select![key] && key in product) {
-            selected[key] = (product as any)[key];
+            selected[key] = key === 'price' ? new MockDecimal(product.price) : (product as any)[key];
           }
         });
         return selected;
       }
       
-      return product;
+      // Convert price to MockDecimal
+      return { ...product, price: new MockDecimal(product.price) };
     },
 
     count: async (options: { 

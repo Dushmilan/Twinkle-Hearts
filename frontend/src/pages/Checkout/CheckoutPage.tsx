@@ -2,6 +2,18 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
 
+// Country codes for phone input
+const COUNTRY_CODES = [
+  { code: '+94', label: '🇱🇰 Sri Lanka', placeholder: '7X XXX XXXX' },
+  { code: '+91', label: '🇮🇳 India', placeholder: 'XXXXX XXXXX' },
+  { code: '+1', label: '🇺🇸 USA / Canada', placeholder: 'XXX XXX XXXX' },
+  { code: '+44', label: '🇬🇧 United Kingdom', placeholder: 'XXXX XXXXXX' },
+  { code: '+971', label: '🇦🇪 UAE', placeholder: 'XX XXX XXXX' },
+  { code: '+966', label: '🇸🇦 Saudi Arabia', placeholder: 'XX XXX XXXX' },
+  { code: '+92', label: '🇵🇰 Pakistan', placeholder: 'XXX XXXXXXX' },
+  { code: '+880', label: '🇧🇩 Bangladesh', placeholder: 'XX XXXXXXXX' },
+] as const;
+
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const { items, getTotal, clearCart } = useCartStore();
@@ -10,6 +22,7 @@ export default function CheckoutPage() {
 
   const [formData, setFormData] = useState({
     customerName: '',
+    countryCode: '+94', // Default to Sri Lanka
     customerPhone: '',
   });
 
@@ -27,6 +40,8 @@ export default function CheckoutPage() {
     setError(null);
 
     try {
+      const fullPhone = `${formData.countryCode}${formData.customerPhone.replace(/\s/g, '')}`;
+
       const response = await fetch('/api/orders/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -37,7 +52,7 @@ export default function CheckoutPage() {
             price: item.price,
           })),
           customerName: formData.customerName,
-          customerPhone: formData.customerPhone,
+          customerPhone: fullPhone,
         }),
       });
 
@@ -62,6 +77,8 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
+
+  const selectedCountry = COUNTRY_CODES.find(c => c.code === formData.countryCode);
 
   if (items.length === 0) {
     return (
@@ -107,18 +124,43 @@ export default function CheckoutPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                WhatsApp Number *
+                Country *
               </label>
-              <input
-                type="tel"
-                required
-                value={formData.customerPhone}
+              <select
+                value={formData.countryCode}
                 onChange={(e) =>
-                  setFormData({ ...formData, customerPhone: e.target.value })
+                  setFormData({ ...formData, countryCode: e.target.value, customerPhone: '' })
                 }
                 className="input-field"
-                placeholder="Enter your WhatsApp number"
-              />
+              >
+                {COUNTRY_CODES.map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                WhatsApp Number *
+              </label>
+              <div className="flex gap-2">
+                <span className="inline-flex items-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-l-lg font-medium text-gray-700">
+                  {formData.countryCode}
+                </span>
+                <input
+                  type="tel"
+                  required
+                  value={formData.customerPhone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, customerPhone: e.target.value })
+                  }
+                  className="input-field rounded-l-lg flex-1"
+                  placeholder={selectedCountry?.placeholder || 'Phone number'}
+                  pattern="[0-9\s]+"
+                />
+              </div>
               <p className="text-xs text-gray-500 mt-1">
                 We'll send your order details to this number via WhatsApp
               </p>
