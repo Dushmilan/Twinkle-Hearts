@@ -1,6 +1,7 @@
 import prisma from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import cron from 'node-cron';
+import { MockOrder } from '../lib/mockData.js';
 
 interface CreateOrderInput {
   userId: string | null;
@@ -20,11 +21,11 @@ interface CreateOrderInput {
 /**
  * Create a new order in PENDING_WHATSAPP_CONFIRMATION state
  */
-export const createOrder = async (input: CreateOrderInput) => {
+export const createOrder = async (input: CreateOrderInput): Promise<any> => {
   const { userId, customerName, customerPhone, items, subtotal, tax, total } = input;
 
   // Calculate expiration time (15 minutes from now)
-  const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
 
   // Create order with items
   const order = await prisma.order.create({
@@ -63,7 +64,7 @@ export const createOrder = async (input: CreateOrderInput) => {
 /**
  * Get order by ID
  */
-export const getOrderById = async (orderId: string) => {
+export const getOrderById = async (orderId: string): Promise<any> => {
   return prisma.order.findUnique({
     where: { id: orderId },
     include: {
@@ -75,12 +76,12 @@ export const getOrderById = async (orderId: string) => {
 /**
  * Confirm order after WhatsApp verification
  */
-export const confirmOrder = async (orderId: string, whatsappMessageId?: string) => {
+export const confirmOrder = async (orderId: string, whatsappMessageId?: string): Promise<any> => {
   const order = await prisma.order.update({
     where: { id: orderId },
     data: {
       status: 'CONFIRMED',
-      confirmedAt: new Date(),
+      confirmedAt: new Date().toISOString(),
       whatsappMessageId,
     },
     include: {
@@ -96,7 +97,7 @@ export const confirmOrder = async (orderId: string, whatsappMessageId?: string) 
 /**
  * Cancel order
  */
-export const cancelOrder = async (orderId: string, reason?: string) => {
+export const cancelOrder = async (orderId: string, reason?: string): Promise<any> => {
   const order = await prisma.order.update({
     where: { id: orderId },
     data: {
@@ -115,7 +116,7 @@ export const cancelOrder = async (orderId: string, reason?: string) => {
 /**
  * Expire pending orders (called by cron job)
  */
-export const expirePendingOrders = async () => {
+export const expirePendingOrders = async (): Promise<number> => {
   const result = await prisma.order.updateMany({
     where: {
       status: 'PENDING_WHATSAPP_CONFIRMATION',

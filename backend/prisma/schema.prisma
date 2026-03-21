@@ -116,13 +116,15 @@ model OrderItem {
   id        String  @id @default(uuid())
   orderId   String
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  
+
   // Product snapshot (denormalized for historical accuracy)
   productId   String
+  product     Product @relation(fields: [productId], references: [id], onDelete: Restrict)
   productName String  // Store name in case product changes
+
   quantity    Int
   price       Decimal @db.Decimal(10, 2)
-  
+
   @@unique([orderId, productId])
   @@index([orderId])
   @@index([productId])

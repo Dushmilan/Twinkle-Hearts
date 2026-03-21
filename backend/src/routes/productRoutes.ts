@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { prisma } from '../lib/prisma.js';
+import prisma from '../lib/prisma.js';
 import { NotFoundError } from '../middleware/errorHandler.js';
 
 const router = Router();
@@ -51,8 +51,14 @@ router.get('/', async (req, res, next) => {
       prisma.product.count({ where }),
     ]);
 
+    // Convert BigInt to number for JSON serialization
+    const productsJson = products.map((p: any) => ({
+      ...p,
+      price: Number(p.price),
+    }));
+
     res.json({
-      products,
+      products: productsJson,
       pagination: {
         page,
         limit,
@@ -91,7 +97,12 @@ router.get('/:id', async (req, res, next) => {
       throw new NotFoundError('Product not found');
     }
 
-    res.json({ product });
+    res.json({ 
+      product: {
+        ...product,
+        price: Number(product.price),
+      }
+    });
   } catch (error) {
     next(error);
   }
@@ -126,7 +137,12 @@ router.get('/search', async (req, res, next) => {
       },
     });
 
-    res.json({ products });
+    res.json({ 
+      products: products.map((p: any) => ({
+        ...p,
+        price: Number(p.price),
+      }))
+    });
   } catch (error) {
     next(error);
   }
