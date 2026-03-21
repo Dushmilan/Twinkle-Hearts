@@ -1,0 +1,104 @@
+// Multer middleware for file uploads
+// Private Commercial Project - Confidential
+
+import multer, { FileFilterCallback } from 'multer';
+import { Request } from 'express';
+import path from 'path';
+import fs from 'fs';
+import { BadRequestError } from './errorHandler.js';
+
+// Ensure upload directory exists
+const uploadDir = 'uploads/products/';
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Configure storage
+const storage = multer.diskStorage({
+  destination: (_req: Request, _file: Express.Multer.File, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (_req: Request, file: Express.Multer.File, cb) => {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    const ext = path.extname(file.originalname);
+    cb(null, `product-${uniqueSuffix}${ext}`);
+  },
+});
+
+// File filter for images only
+const fileFilter = (
+  _req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+) => {
+  const allowedTypes = /jpeg|jpg|png|gif|webp/;
+  const extname = allowedTypes.test(
+    path.extname(file.originalname).toLowerCase()
+  );
+  const mimetype = allowedTypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    cb(null, true);
+  } else {
+    cb(
+      new BadRequestError(
+        'Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed.'
+      )
+    );
+  }
+};
+
+// Multer configuration
+export const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max file size
+    files: 10, // Max 10 files per request
+  },
+});
+
+/**
+ * Middleware for single product image upload
+ * Usage: upload.single('image')
+ */
+export const uploadProductImage = upload.single('image');
+
+/**
+ * Middleware for multiple product images upload
+ * Usage: uploadProductImages.array('images', 5)
+ * @param fieldName - Form field name for images
+ * @param maxCount - Maximum number of images (default: 5)
+ */
+export const uploadProductImages = (fieldName = 'images', maxCount = 5) =>
+  upload.array(fieldName, maxCount);
+
+/**
+ * Error handler for multer errors
+ */
+export const handleUploadError = (
+  err: any,
+  _req: Request,
+  res: any,
+  next: any
+) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return next(
+        new BadRequestError('File too large. Maximum size is 5MB.')
+      );
+    }
+    if (err.code === 'LIMIT_FILE_COUNT') {
+      return next(
+        new BadRequestError('Too many files. Maximum 10 files allowed.')
+      );
+    }
+    return next(new BadRequestError(`Upload error: ${err.message}`));
+  }
+
+  if (err) {
+    return next(err);
+  }
+
+  next();
+};

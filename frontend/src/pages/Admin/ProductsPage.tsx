@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { AdminRoute } from '../../components/ProtectedRoute';
 import toastService from '../../utils/toast';
+import ImageUpload from '../../components/ImageUpload';
 
 interface Product {
   id: string;
@@ -31,7 +32,7 @@ function AdminProducts() {
     stock: '',
     sku: '',
     category: '',
-    images: '',
+    images: [] as string[],
     isActive: true,
   });
 
@@ -79,7 +80,7 @@ function AdminProducts() {
         stock: parseInt(formData.stock),
         sku: formData.sku,
         category: formData.category,
-        images: formData.images.split(',').map((url) => url.trim()),
+        images: formData.images,
         isActive: formData.isActive,
       };
 
@@ -150,7 +151,7 @@ function AdminProducts() {
       stock: product.stock.toString(),
       sku: product.sku,
       category: product.category,
-      images: product.images.join(', '),
+      images: product.images,
       isActive: product.isActive,
     });
     setEditingProduct(product);
@@ -165,7 +166,7 @@ function AdminProducts() {
       stock: '',
       sku: '',
       category: '',
-      images: '',
+      images: [],
       isActive: true,
     });
   };
@@ -294,18 +295,13 @@ function AdminProducts() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Image URLs (comma-separated)
-                </label>
-                <input
-                  type="text"
-                  value={formData.images}
-                  onChange={(e) => setFormData({ ...formData, images: e.target.value })}
-                  placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                />
-              </div>
+              <ImageUpload
+                images={formData.images}
+                onChange={(urls) => setFormData({ ...formData, images: urls })}
+                token={tokens?.accessToken || ''}
+                maxImages={5}
+                multiple={true}
+              />
 
               <div className="flex items-center">
                 <input

@@ -7,6 +7,15 @@ import prisma from '../lib/prisma.js';
 import { cacheDelete, CacheKeys } from '../lib/cache.js';
 import { BadRequestError, NotFoundError } from '../middleware/errorHandler.js';
 import { z } from 'zod';
+import {
+  uploadProductImages,
+  handleUploadError,
+} from '../middleware/upload.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = Router();
 
@@ -27,6 +36,40 @@ const updateProductSchema = productSchema.partial();
 const updateOrderStatusSchema = z.object({
   status: z.enum(['PENDING_WHATSAPP_CONFIRMATION', 'CONFIRMED', 'CANCELLED', 'EXPIRED']),
 });
+
+/**
+ * POST /api/admin/products/upload
+ * Upload product images
+ */
+router.post(
+  '/products/upload',
+  authenticate,
+  requireAdmin,
+  uploadProductImages('images', 10),
+  handleUploadError,
+  async (req, res, next) => {
+    try {
+      if (!req.files || req.files.length === 0) {
+        throw new BadRequestError('No files uploaded');
+      }
+
+      // Generate URLs for uploaded files
+      const urls = req.files.map((file) => {
+        return `/uploads/products/${file.filename}`;
+      });
+
+      res.json({
+        success: true,
+        data: {
+          urls,
+          count: urls.length,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 /**
  * GET /api/admin/stats
