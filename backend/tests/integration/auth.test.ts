@@ -8,6 +8,20 @@ import { createTestApp } from '../helpers/testApp.js';
 import testPrisma from '../helpers/db.js';
 import { createAuthenticatedUser, generateTestToken, createSession } from '../helpers/auth.js';
 import { hashPassword } from '../../src/utils/password.js';
+import {
+  TEST_PASSWORD,
+  TEST_PASSWORD_WEAK,
+  TEST_PASSWORD_ALT,
+  TEST_EMAIL,
+  TEST_EMAIL_ALT,
+  TEST_EMAIL_DUPLICATE,
+  TEST_EMAIL_INVALID,
+  TEST_USER_NAME,
+  TEST_USER_NAME_ALT,
+  TEST_USER_PHONE,
+  TEST_USER_ROLE,
+  HTTP_STATUS,
+} from '../helpers/constants.js';
 
 const app = createTestApp();
 
@@ -22,10 +36,10 @@ describe('Auth API', () => {
     it('should register a new user successfully', async () => {
       // Arrange
       const userData = {
-        email: 'newuser@example.com',
-        password: 'SecurePass123!',
-        name: 'New User',
-        phone: '+919876543210',
+        email: TEST_EMAIL,
+        password: TEST_PASSWORD,
+        name: TEST_USER_NAME,
+        phone: TEST_USER_PHONE,
       };
 
       // Act
@@ -34,12 +48,12 @@ describe('Auth API', () => {
         .send(userData);
 
       // Assert
-      expect(response.status).toBe(201);
+      expect(response.status).toBe(HTTP_STATUS.CREATED);
       expect(response.body.success).toBe(true);
       expect(response.body.message).toBe('Registration successful');
       expect(response.body.data.user).toBeDefined();
-      expect(response.body.data.user.email).toBe('newuser@example.com');
-      expect(response.body.data.user.name).toBe('New User');
+      expect(response.body.data.user.email).toBe(TEST_EMAIL);
+      expect(response.body.data.user.name).toBe(TEST_USER_NAME);
       expect(response.body.data.accessToken).toBeDefined();
       expect(response.body.data.refreshToken).toBeDefined();
       expect(response.body.data.sessionId).toBeDefined();
@@ -49,7 +63,7 @@ describe('Auth API', () => {
       // Arrange
       const userData = {
         email: 'weakpass@example.com',
-        password: '123', // Too short
+        password: TEST_PASSWORD_WEAK,
       };
 
       // Act
@@ -58,14 +72,14 @@ describe('Auth API', () => {
         .send(userData);
 
       // Assert
-      expect(response.status).toBeGreaterThanOrEqual(400);
+      expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST);
     });
 
     it('should reject registration with invalid email', async () => {
       // Arrange
       const userData = {
-        email: 'invalid-email',
-        password: 'SecurePass123!',
+        email: TEST_EMAIL_INVALID,
+        password: TEST_PASSWORD,
       };
 
       // Act
@@ -74,15 +88,15 @@ describe('Auth API', () => {
         .send(userData);
 
       // Assert
-      expect(response.status).toBeGreaterThanOrEqual(400);
+      expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST);
     });
 
     it('should reject duplicate email registration', async () => {
       // Arrange
       const userData = {
-        email: 'duplicate@example.com',
-        password: 'SecurePass123!',
-        name: 'First User',
+        email: TEST_EMAIL_DUPLICATE,
+        password: TEST_PASSWORD,
+        name: TEST_USER_NAME,
       };
 
       // Create first user
@@ -92,20 +106,20 @@ describe('Auth API', () => {
       const response = await request(app)
         .post('/api/auth/register')
         .send({
-          email: 'duplicate@example.com',
-          password: 'DifferentPass456!',
-          name: 'Second User',
+          email: TEST_EMAIL_DUPLICATE,
+          password: TEST_PASSWORD_ALT,
+          name: TEST_USER_NAME_ALT,
         });
 
       // Assert
-      expect(response.status).toBe(409);
+      expect(response.status).toBe(HTTP_STATUS.CONFLICT);
     });
 
     it('should register user with minimal info', async () => {
       // Arrange
       const userData = {
         email: 'minimal@example.com',
-        password: 'SecurePass123!',
+        password: TEST_PASSWORD,
       };
 
       // Act
@@ -114,31 +128,29 @@ describe('Auth API', () => {
         .send(userData);
 
       // Assert
-      expect(response.status).toBe(201);
+      expect(response.status).toBe(HTTP_STATUS.CREATED);
       expect(response.body.data.user.email).toBe('minimal@example.com');
-      expect(response.body.data.user.role).toBe('CUSTOMER');
+      expect(response.body.data.user.role).toBe(TEST_USER_ROLE);
     });
   });
 
   describe('POST /api/auth/login', () => {
-    beforeEach(async () => {
-      // Create a test user
+    it('should login with valid credentials', async () => {
+      // Arrange - create test user
+      const testEmail = 'loginuser@example.com';
       await testPrisma.user.create({
         data: {
-          email: 'loginuser@example.com',
-          passwordHash: await hashPassword('SecurePass123!'),
-          name: 'Login User',
-          phone: '+919876543210',
-          role: 'CUSTOMER',
+          email: testEmail,
+          passwordHash: await hashPassword(TEST_PASSWORD),
+          name: TEST_USER_NAME,
+          phone: TEST_USER_PHONE,
+          role: TEST_USER_ROLE,
         },
       });
-    });
 
-    it('should login with valid credentials', async () => {
-      // Arrange
       const credentials = {
-        email: 'loginuser@example.com',
-        password: 'SecurePass123!',
+        email: testEmail,
+        password: TEST_PASSWORD,
       };
 
       // Act
@@ -147,11 +159,11 @@ describe('Auth API', () => {
         .send(credentials);
 
       // Assert
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(HTTP_STATUS.OK);
       expect(response.body.success).toBe(true);
       expect(response.body.message).toBe('Login successful');
       expect(response.body.data.user).toBeDefined();
-      expect(response.body.data.user.email).toBe('loginuser@example.com');
+      expect(response.body.data.user.email).toBe(testEmail);
       expect(response.body.data.accessToken).toBeDefined();
       expect(response.body.data.refreshToken).toBeDefined();
       expect(response.body.data.sessionId).toBeDefined();
@@ -161,7 +173,7 @@ describe('Auth API', () => {
       // Arrange
       const credentials = {
         email: 'nonexistent@example.com',
-        password: 'SecurePass123!',
+        password: TEST_PASSWORD,
       };
 
       // Act
@@ -170,13 +182,24 @@ describe('Auth API', () => {
         .send(credentials);
 
       // Assert
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(HTTP_STATUS.UNAUTHORIZED);
     });
 
     it('should reject login with wrong password', async () => {
-      // Arrange
+      // Arrange - create test user
+      const testEmail = 'wrongpass@example.com';
+      await testPrisma.user.create({
+        data: {
+          email: testEmail,
+          passwordHash: await hashPassword(TEST_PASSWORD),
+          name: TEST_USER_NAME,
+          phone: TEST_USER_PHONE,
+          role: TEST_USER_ROLE,
+        },
+      });
+
       const credentials = {
-        email: 'loginuser@example.com',
+        email: testEmail,
         password: 'WrongPassword!',
       };
 
@@ -186,13 +209,24 @@ describe('Auth API', () => {
         .send(credentials);
 
       // Assert
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(HTTP_STATUS.UNAUTHORIZED);
     });
 
     it('should reject login with missing password', async () => {
-      // Arrange
+      // Arrange - create test user
+      const testEmail = 'nopass@example.com';
+      await testPrisma.user.create({
+        data: {
+          email: testEmail,
+          passwordHash: await hashPassword(TEST_PASSWORD),
+          name: TEST_USER_NAME,
+          phone: TEST_USER_PHONE,
+          role: TEST_USER_ROLE,
+        },
+      });
+
       const credentials = {
-        email: 'loginuser@example.com',
+        email: testEmail,
         password: '',
       };
 
@@ -202,15 +236,16 @@ describe('Auth API', () => {
         .send(credentials);
 
       // Assert
-      expect(response.status).toBeGreaterThanOrEqual(400);
+      expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST);
     });
 
     it('should reject login for inactive user', async () => {
       // Arrange - create inactive user
+      const testEmail = 'inactive@example.com';
       await testPrisma.user.create({
         data: {
-          email: 'inactive@example.com',
-          passwordHash: await hashPassword('SecurePass123!'),
+          email: testEmail,
+          passwordHash: await hashPassword(TEST_PASSWORD),
           name: 'Inactive User',
           isActive: false,
         },
@@ -220,12 +255,12 @@ describe('Auth API', () => {
       const response = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'inactive@example.com',
-          password: 'SecurePass123!',
+          email: testEmail,
+          password: TEST_PASSWORD,
         });
 
       // Assert
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(HTTP_STATUS.UNAUTHORIZED);
     });
   });
 
@@ -234,7 +269,7 @@ describe('Auth API', () => {
       // Arrange - create user and get tokens from login
       const userData = {
         email: `refresh-${Date.now()}@example.com`,
-        password: 'SecurePass123!',
+        password: TEST_PASSWORD,
       };
 
       const registerResponse = await request(app)
@@ -249,7 +284,7 @@ describe('Auth API', () => {
         .send({ refreshToken });
 
       // Assert
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(HTTP_STATUS.OK);
       expect(response.body.success).toBe(true);
       expect(response.body.data.accessToken).toBeDefined();
       expect(response.body.data.refreshToken).toBeDefined();
@@ -262,7 +297,7 @@ describe('Auth API', () => {
         .send({ refreshToken: 'invalid-token' });
 
       // Assert
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(HTTP_STATUS.UNAUTHORIZED);
     });
 
     it('should reject refresh with missing token', async () => {
@@ -272,7 +307,7 @@ describe('Auth API', () => {
         .send({ refreshToken: '' });
 
       // Assert
-      expect(response.status).toBeGreaterThanOrEqual(400);
+      expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST);
     });
   });
 
@@ -281,7 +316,7 @@ describe('Auth API', () => {
       // Arrange - register user to get valid tokens
       const userData = {
         email: `logout-${Date.now()}@example.com`,
-        password: 'SecurePass123!',
+        password: TEST_PASSWORD,
       };
 
       const registerResponse = await request(app)
@@ -297,7 +332,7 @@ describe('Auth API', () => {
         .send();
 
       // Assert
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(HTTP_STATUS.OK);
       expect(response.body.success).toBe(true);
       expect(response.body.message).toBe('Logout successful');
     });
@@ -309,7 +344,7 @@ describe('Auth API', () => {
         .send();
 
       // Assert
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(HTTP_STATUS.UNAUTHORIZED);
     });
   });
 
@@ -318,7 +353,7 @@ describe('Auth API', () => {
       // Arrange - register user to get valid tokens
       const userData = {
         email: `me-${Date.now()}@example.com`,
-        password: 'SecurePass123!',
+        password: TEST_PASSWORD,
         name: 'Profile User',
       };
 
@@ -334,7 +369,7 @@ describe('Auth API', () => {
         .set('Authorization', `Bearer ${token}`);
 
       // Assert
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(HTTP_STATUS.OK);
       expect(response.body.success).toBe(true);
       expect(response.body.data.email).toBe(userData.email);
       expect(response.body.data.name).toBe('Profile User');
@@ -347,7 +382,7 @@ describe('Auth API', () => {
         .send();
 
       // Assert
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(HTTP_STATUS.UNAUTHORIZED);
     });
   });
 
@@ -355,7 +390,7 @@ describe('Auth API', () => {
     it('should login/signup with Google OAuth', async () => {
       // Arrange
       const googleData = {
-        email: 'googleuser@gmail.com',
+        email: `google-${Date.now()}@gmail.com`,
         name: 'Google User',
         avatar: 'https://example.com/avatar.jpg',
       };
@@ -366,36 +401,37 @@ describe('Auth API', () => {
         .send(googleData);
 
       // Assert
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(HTTP_STATUS.OK);
       expect(response.body.success).toBe(true);
-      expect(response.body.data.user.email).toBe('googleuser@gmail.com');
+      expect(response.body.data.user.email).toBe(googleData.email);
       expect(response.body.data.accessToken).toBeDefined();
     });
 
-    it('should create new user on first Google login', async () => {
-      // Arrange
+    it('should create new user on first Google login and existing user on second', async () => {
+      // Arrange - use unique email for test isolation
+      const googleEmail = `newgoogle-${Date.now()}@gmail.com`;
       const googleData = {
-        email: 'newgoogle@gmail.com',
+        email: googleEmail,
         name: 'New Google User',
       };
 
-      // Act
+      // Act - first login (signup)
       const response = await request(app)
         .post('/api/auth/google')
         .send(googleData);
 
       // Assert first login creates user
-      expect(response.status).toBe(200);
-      expect(response.body.data.user.email).toBe('newgoogle@gmail.com');
+      expect(response.status).toBe(HTTP_STATUS.OK);
+      expect(response.body.data.user.email).toBe(googleEmail);
 
-      // Act - login again with same email
+      // Act - second login with same email (should login existing user)
       const response2 = await request(app)
         .post('/api/auth/google')
         .send(googleData);
 
       // Assert - should login existing user
-      expect(response2.status).toBe(200);
-      expect(response2.body.data.user.email).toBe('newgoogle@gmail.com');
+      expect(response2.status).toBe(HTTP_STATUS.OK);
+      expect(response2.body.data.user.email).toBe(googleEmail);
     });
 
     it('should reject Google login without email', async () => {
@@ -410,7 +446,7 @@ describe('Auth API', () => {
         .send(googleData);
 
       // Assert
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST);
     });
   });
 });
