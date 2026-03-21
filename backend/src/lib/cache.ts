@@ -4,6 +4,9 @@
 import { redis } from './redis.js';
 import { logger } from './logger.js';
 
+// Key prefix to isolate this application's cache keys
+const CACHE_PREFIX = 'twinkle-hearts:';
+
 // In-memory cache fallback (when Redis is unavailable)
 const memoryCache = new Map<string, { value: any; expiry: number }>();
 
@@ -24,25 +27,26 @@ export const CACHE_TTL = {
  * Get value from cache
  */
 export async function cacheGet<T>(key: string): Promise<T | null> {
+  const prefixedKey = `${CACHE_PREFIX}${key}`;
   try {
     if (redis) {
-      const value = await redis.get(key);
+      const value = await redis.get(prefixedKey);
       if (value) {
         return JSON.parse(value) as T;
       }
     }
-    
+
     // Fallback to memory cache
     const cached = memoryCache.get(key);
     if (cached && cached.expiry > Date.now()) {
       return cached.value as T;
     }
-    
+
     // Clean expired memory cache entry
     if (cached) {
       memoryCache.delete(key);
     }
-    
+
     return null;
   } catch (error) {
     logger.error('Cache get error:', error);
@@ -58,9 +62,10 @@ export async function cacheSet(
   value: any,
   ttlSeconds: number = CACHE_TTL.USER_PROFILE
 ): Promise<void> {
+  const prefixedKey = `${CACHE_PREFIX}${key}`;
   try {
     if (redis) {
-      await redis.setex(key, ttlSeconds, JSON.stringify(value));
+      await redis.setex(prefixedKey, ttlSeconds, JSON.stringify(value));
     } else {
       // Fallback to memory cache
       memoryCache.set(key, {
@@ -77,9 +82,10 @@ export async function cacheSet(
  * Delete value from cache
  */
 export async function cacheDelete(key: string): Promise<void> {
+  const prefixedKey = `${CACHE_PREFIX}${key}`;
   try {
     if (redis) {
-      await redis.del(key);
+      await redis.del(prefixedKey);
     } else {
       memoryCache.delete(key);
     }
@@ -92,9 +98,10 @@ export async function cacheDelete(key: string): Promise<void> {
  * Check if key exists in cache
  */
 export async function cacheExists(key: string): Promise<boolean> {
+  const prefixedKey = `${CACHE_PREFIX}${key}`;
   try {
     if (redis) {
-      const exists = await redis.exists(key);
+      const exists = await redis.exists(prefixedKey);
       return exists === 1;
     } else {
       const cached = memoryCache.get(key);
@@ -131,16 +138,21 @@ export async function cacheWrap<T>(
 }
 
 /**
- * Clear all cache (use with caution)
+ * Clear all cache for this application (uses key prefix to avoid affecting other services)
  */
 export async function cacheClear(): Promise<void> {
   try {
     if (redis) {
-      await redis.flushdb();
+      // Use SCAN to find and delete only keys with our prefix
+      const keys = await redis.keys(`${CACHE_PREFIX}*`);
+      if (keys.length > 0) {
+        await redis.del(keys);
+      }
+      logger.info(`Cache cleared: ${keys.length} keys deleted`);
     } else {
       memoryCache.clear();
+      logger.info('Memory cache cleared');
     }
-    logger.info('Cache cleared');
   } catch (error) {
     logger.error('Cache clear error:', error);
   }
@@ -158,8 +170,10 @@ export async function cacheStats(): Promise<{
   try {
     if (redis) {
       const info = await redis.info('memory');
-      const keys = await redis.dbsize();
-      
+      // Count only keys with our prefix
+      const allKeys = await redis.keys(`${CACHE_PREFIX}*`);
+      const keys = allKeys.length;
+
       return {
         type: 'redis',
         keys,
@@ -167,7 +181,7 @@ export async function cacheStats(): Promise<{
         memoryCacheSize: memoryCache.size,
       };
     }
-    
+
     return {
       type: 'memory',
       memoryCacheSize: memoryCache.size,

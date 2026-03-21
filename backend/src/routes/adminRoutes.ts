@@ -33,10 +33,6 @@ const productSchema = z.object({
 
 const updateProductSchema = productSchema.partial();
 
-const updateOrderStatusSchema = z.object({
-  status: z.enum(['PENDING_WHATSAPP_CONFIRMATION', 'CONFIRMED', 'CANCELLED', 'EXPIRED']),
-});
-
 /**
  * POST /api/admin/products/upload
  * Upload product images
@@ -77,16 +73,14 @@ router.post(
  */
 router.get('/stats', authenticate, requireAdmin, async (req, res, next) => {
   try {
-    const [totalOrders, totalRevenue, totalUsers, totalProducts, pendingOrders, recentOrders] =
+    const [totalOrders, totalRevenue, totalUsers, totalProducts, recentOrders] =
       await Promise.all([
         prisma.order.count(),
         prisma.order.aggregate({
           _sum: { total: true },
-          where: { status: 'CONFIRMED' },
         }),
         prisma.user.count(),
         prisma.product.count(),
-        prisma.order.count({ where: { status: 'PENDING_WHATSAPP_CONFIRMATION' } }),
         prisma.order.findMany({
           take: 10,
           orderBy: { createdAt: 'desc' },
@@ -105,7 +99,6 @@ router.get('/stats', authenticate, requireAdmin, async (req, res, next) => {
         totalRevenue: totalRevenue._sum.total || 0,
         totalUsers,
         totalProducts,
-        pendingOrders,
         recentOrders,
       },
     });
@@ -122,13 +115,9 @@ router.get('/orders', authenticate, requireAdmin, async (req, res, next) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 20;
-    const status = req.query.status as string;
-
-    const where: any = status ? { status } : {};
 
     const [orders, total] = await Promise.all([
       prisma.order.findMany({
-        where,
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { createdAt: 'desc' },
@@ -138,7 +127,7 @@ router.get('/orders', authenticate, requireAdmin, async (req, res, next) => {
           },
         },
       }),
-      prisma.order.count({ where }),
+      prisma.order.count(),
     ]);
 
     res.json({
@@ -152,48 +141,6 @@ router.get('/orders', authenticate, requireAdmin, async (req, res, next) => {
           totalPages: Math.ceil(total / limit),
         },
       },
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-/**
- * PUT /api/admin/orders/:id/status
- * Update order status
- */
-router.put('/orders/:id/status', authenticate, requireAdmin, async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const input = updateOrderStatusSchema.parse(req.body);
-
-    const order = await prisma.order.findUnique({
-      where: { id },
-    });
-
-    if (!order) {
-      throw new NotFoundError('Order not found');
-    }
-
-    const updatedOrder = await prisma.order.update({
-      where: { id },
-      data: {
-        status: input.status,
-        confirmedAt: input.status === 'CONFIRMED' ? new Date() : order.confirmedAt,
-      },
-      include: {
-        user: {
-          select: { name: true, email: true },
-        },
-      },
-    });
-
-    // Invalidate cache
-    await cacheDelete(CacheKeys.userOrders(order.userId));
-
-    res.json({
-      success: true,
-      data: updatedOrder,
     });
   } catch (error) {
     next(error);

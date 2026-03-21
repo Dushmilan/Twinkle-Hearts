@@ -49,11 +49,12 @@ const fileFilter = (
 };
 
 // Multer configuration
+const maxFileSizeMB = parseInt(process.env.MAX_FILE_SIZE || '5') || 5;
 export const upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB max file size
+    fileSize: maxFileSizeMB * 1024 * 1024, // Max file size from env var (default: 5MB)
     files: 10, // Max 10 files per request
   },
 });
@@ -82,10 +83,11 @@ export const handleUploadError = (
   res: any,
   next: any
 ) => {
+  const maxFileSize = process.env.MAX_FILE_SIZE || '5MB';
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return next(
-        new BadRequestError('File too large. Maximum size is 5MB.')
+        new BadRequestError(`File too large. Maximum size is ${maxFileSize}.`)
       );
     }
     if (err.code === 'LIMIT_FILE_COUNT') {
