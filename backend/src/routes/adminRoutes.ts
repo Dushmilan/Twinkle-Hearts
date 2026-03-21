@@ -8,9 +8,10 @@ import { cacheDelete, CacheKeys } from '../lib/cache.js';
 import { BadRequestError, NotFoundError } from '../middleware/errorHandler.js';
 import { z } from 'zod';
 import {
-  uploadProductImages,
-  handleUploadError,
+uploadProductImages,
+handleUploadError,
 } from '../middleware/upload.js';
+import { uploadImages, deleteImage, extractPublicId, isCloudinaryUrl } from '../lib/cloudinary.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -21,50 +22,71 @@ const router = Router();
 
 // Validation schemas
 const productSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  price: z.number().int().positive('Price must be positive'),
-  stock: z.number().int().nonnegative('Stock cannot be negative'),
-  sku: z.string().min(1, 'SKU is required'),
-  category: z.string().min(1, 'Category is required'),
-  images: z.array(z.string().url()).optional(),
-  isActive: z.boolean().optional().default(true),
+name: z.string().min(2, 'Name must be at least 2 characters'),
+description: z.string().min(10, 'Description must be at least 10 characters'),
+price: z.number().int().positive('Price must be positive'),
+stock: z.number().int().nonnegative('Stock cannot be negative'),
+sku: z.string().min(1, 'SKU is required'),
+category: z.string().min(1, 'Category is required'),
+images: z.array(z.string().url()).optional(),
+isActive: z.boolean().optional().default(true),
 });
 
 const updateProductSchema = productSchema.partial();
 
 /**
- * POST /api/admin/products/upload
- * Upload product images
- */
+* POST /api/admin/products/upload
+* Upload product images to Cloudinary
+* Uses signed uploads for security
+*/
 router.post(
-  '/products/upload',
-  authenticate,
-  requireAdmin,
-  uploadProductImages('images', 10),
-  handleUploadError,
-  async (req, res, next) => {
-    try {
-      if (!req.files || req.files.length === 0) {
-        throw new BadRequestError('No files uploaded');
-      }
+'/products/upload',
+authenticate,
+requireAdmin,
+uploadProductImages('images', 10),
+handleUploadError,
+async (req: any, res: any, next: any) => {
+try {
+if (!req.files || req.files.length === 0) {
+throw new BadRequestError('No files uploaded');
+}
 
-      // Generate URLs for uploaded files
-      const urls = req.files.map((file) => {
-        return `/uploads/products/${file.filename}`;
-      });
+// Check if Cloudinary is configured
+const cloudinaryConfigured = 
+process.env.CLOUDINARY_CLOUD_NAME && 
+process.env.CLOUDINARY_API_KEY && 
+process.env.CLOUDINARY_API_SECRET;
 
-      res.json({
-        success: true,
-        data: {
-          urls,
-          count: urls.length,
-        },
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
+let urls: string[];
+
+if (cloudinaryConfigured) {
+// Upload to Cloudinary
+const files = (req.files as Express.Multer.File[]).map((file) => file.buffer);
+const results = await uploadImages(files, {
+folder: 'twinkle-hearts/products',
+tags: ['product', 'admin-upload'],
+});
+
+urls = results.map((r) => r.secure_url);
+} else {
+// Fallback to local storage (for development without Cloudinary)
+console.warn('Cloudinary not configured, using local storage');
+urls = (req.files as Express.Multer.File[]).map((file) => {
+return `/uploads/products/${(file as any).filename || file.originalname}`;
+});
+}
+
+res.json({
+success: true,
+data: {
+urls,
+count: urls.length,
+},
+});
+} catch (error) {
+next(error);
+}
+}
 );
 
 /**

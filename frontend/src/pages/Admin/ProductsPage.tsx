@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { AdminRoute } from '../../components/ProtectedRoute';
 import toastService from '../../utils/toast';
 import ImageUpload from '../../components/ImageUpload';
-import { uploadImages, CloudinaryUploadResult } from '../../utils/cloudinary';
+import { uploadImages } from '../../utils/cloudinary';
 
 interface Product {
   id: string;
@@ -26,12 +26,12 @@ function AdminProducts() {
   const [isCreating, setIsCreating] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Track new files to upload and existing images separately
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [isUploadingImages, setIsUploadingImages] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -79,28 +79,24 @@ function AdminProducts() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const loadingToast = toastService.loading(
-      newFiles.length > 0 
-        ? 'Uploading images...' 
+      newFiles.length > 0
+        ? 'Uploading images...'
         : (editingProduct ? 'Updating product...' : 'Creating product...')
     );
 
     try {
-      // Step 1: Upload new files to Cloudinary
-      let uploadedUrls: string[] = [];
-      if (newFiles.length > 0) {
-        setIsUploadingImages(true);
-        toastService.dismiss(loadingToast);
-        toastService.loading('Uploading images to Cloudinary...');
-        
-        const results: CloudinaryUploadResult[] = await uploadImages(newFiles, {
-          folder: 'twinkle-hearts/products',
-        });
-        
-        uploadedUrls = results.map((r) => r.secure_url);
-        setIsUploadingImages(false);
-      }
+      // Step 1: Upload new files via backend API
+let uploadedUrls: string[] = [];
+if (newFiles.length > 0) {
+setIsUploadingImages(true);
+toastService.dismiss(loadingToast);
+toastService.loading('Uploading images...');
+
+uploadedUrls = await uploadImages(newFiles, tokens?.accessToken || '');
+setIsUploadingImages(false);
+}
 
       // Step 2: Combine existing images with newly uploaded URLs
       const allImages = [...existingImages, ...uploadedUrls];
