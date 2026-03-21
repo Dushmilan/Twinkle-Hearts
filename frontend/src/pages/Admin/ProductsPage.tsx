@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { AdminRoute } from '../../components/ProtectedRoute';
 import toastService from '../../utils/toast';
 import ImageUpload from '../../components/ImageUpload';
+import { uploadImages, CloudinaryUploadResult } from '../../utils/cloudinary';
 
 interface Product {
   id: string;
@@ -25,6 +26,12 @@ function AdminProducts() {
   const [isCreating, setIsCreating] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Track new files to upload and existing images separately
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -32,9 +39,11 @@ function AdminProducts() {
     stock: '',
     sku: '',
     category: '',
-    images: [] as string[],
     isActive: true,
   });
+
+  // Track if we're editing to preserve existing images
+  const isEditingRef = useRef(false);
 
   useEffect(() => {
     fetchProducts();
@@ -70,9 +79,36 @@ function AdminProducts() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const loadingToast = toastService.loading(editingProduct ? 'Updating product...' : 'Creating product...');
+    
+    const loadingToast = toastService.loading(
+      newFiles.length > 0 
+        ? 'Uploading images...' 
+        : (editingProduct ? 'Updating product...' : 'Creating product...')
+    );
 
     try {
+      // Step 1: Upload new files to Cloudinary
+      let uploadedUrls: string[] = [];
+      if (newFiles.length > 0) {
+        setIsUploadingImages(true);
+        toastService.dismiss(loadingToast);
+        toastService.loading('Uploading images to Cloudinary...');
+        
+        const results: CloudinaryUploadResult[] = await uploadImages(newFiles, {
+          folder: 'twinkle-hearts/products',
+        });
+        
+        uploadedUrls = results.map((r) => r.secure_url);
+        setIsUploadingImages(false);
+      }
+
+      // Step 2: Combine existing images with newly uploaded URLs
+      const allImages = [...existingImages, ...uploadedUrls];
+
+      // Step 3: Submit product data
+      toastService.dismiss(loadingToast);
+      toastService.loading(editingProduct ? 'Updating product...' : 'Creating product...');
+      
       const payload = {
         name: formData.name,
         description: formData.description,
@@ -80,14 +116,14 @@ function AdminProducts() {
         stock: parseInt(formData.stock),
         sku: formData.sku,
         category: formData.category,
-        images: formData.images,
+        images: allImages,
         isActive: formData.isActive,
       };
 
       const url = editingProduct
         ? `http://localhost:3001/api/admin/products/${editingProduct.id}`
         : 'http://localhost:3001/api/admin/products';
-      
+
       const method = editingProduct ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -100,19 +136,23 @@ function AdminProducts() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save product');
+        const error = await response.json().catch(() => ({ message: 'Failed to save product' }));
+        throw new Error(error.message || 'Failed to save product');
       }
 
       toastService.dismiss(loadingToast);
-      toastService.success(editingProduct ? 'Product updated' : 'Product created');
+      toastService.success(editingProduct ? 'Product updated successfully' : 'Product created successfully');
+      
       fetchProducts();
       setIsCreating(false);
       setEditingProduct(null);
       resetForm();
     } catch (error) {
       toastService.dismiss(loadingToast);
-      toastService.error('Failed to save product');
+      toastService.error(error instanceof Error ? error.message : 'Failed to save product');
       console.error('Error saving product:', error);
+    } finally {
+      setIsUploadingImages(false);
     }
   };
 
@@ -120,7 +160,7 @@ function AdminProducts() {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     const loadingToast = toastService.loading('Deleting product...');
-    
+
     try {
       const response = await fetch(`http://localhost:3001/api/admin/products/${id}`, {
         method: 'DELETE',
@@ -151,10 +191,12 @@ function AdminProducts() {
       stock: product.stock.toString(),
       sku: product.sku,
       category: product.category,
-      images: product.images,
       isActive: product.isActive,
     });
+    setExistingImages(product.images);
+    setNewFiles([]);
     setEditingProduct(product);
+    isEditingRef.current = true;
     setIsCreating(true);
   };
 
@@ -166,9 +208,19 @@ function AdminProducts() {
       stock: '',
       sku: '',
       category: '',
-      images: [],
       isActive: true,
     });
+    setExistingImages([]);
+    setNewFiles([]);
+    isEditingRef.current = false;
+  };
+
+  const handleNewFilesChange = (files: File[]) => {
+    setNewFiles(files);
+  };
+
+  const handleExistingImagesChange = (images: string[]) => {
+    setExistingImages(images);
   };
 
   const formatCurrency = (amount: number) => {
@@ -191,9 +243,14 @@ function AdminProducts() {
               </Link>
               <button
                 onClick={() => {
-                  setIsCreating(!isCreating);
-                  setEditingProduct(null);
-                  resetForm();
+                  if (isCreating) {
+                    setIsCreating(false);
+                    setEditingProduct(null);
+                    resetForm();
+                  } else {
+                    setIsCreating(true);
+                    resetForm();
+                  }
                 }}
                 className="bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition"
               >
@@ -224,6 +281,7 @@ function AdminProducts() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    disabled={isUploadingImages}
                   />
                 </div>
                 <div>
@@ -236,6 +294,7 @@ function AdminProducts() {
                     value={formData.sku}
                     onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    disabled={isUploadingImages}
                   />
                 </div>
               </div>
@@ -250,6 +309,7 @@ function AdminProducts() {
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  disabled={isUploadingImages}
                 />
               </div>
 
@@ -266,6 +326,7 @@ function AdminProducts() {
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    disabled={isUploadingImages}
                   />
                 </div>
                 <div>
@@ -279,6 +340,7 @@ function AdminProducts() {
                     value={formData.stock}
                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    disabled={isUploadingImages}
                   />
                 </div>
                 <div>
@@ -291,16 +353,20 @@ function AdminProducts() {
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    disabled={isUploadingImages}
                   />
                 </div>
               </div>
 
+              {/* Image Upload Component */}
               <ImageUpload
-                images={formData.images}
-                onChange={(urls) => setFormData({ ...formData, images: urls })}
-                token={tokens?.accessToken || ''}
+                initialImages={existingImages}
+                onFilesChange={handleNewFilesChange}
+                onExistingImagesChange={handleExistingImagesChange}
                 maxImages={5}
                 multiple={true}
+                isUploading={isUploadingImages}
+                disabled={isUploadingImages}
               />
 
               <div className="flex items-center">
@@ -310,6 +376,7 @@ function AdminProducts() {
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
                   className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                  disabled={isUploadingImages}
                 />
                 <label htmlFor="isActive" className="ml-2 text-sm text-gray-700">
                   Active (visible on store)
@@ -319,17 +386,23 @@ function AdminProducts() {
               <div className="flex gap-4">
                 <button
                   type="submit"
-                  className="bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition"
+                  disabled={isUploadingImages}
+                  className="bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {editingProduct ? 'Update' : 'Create'} Product
+                  {isUploadingImages 
+                    ? 'Uploading...' 
+                    : (editingProduct ? 'Update' : 'Create') + ' Product'
+                  }
                 </button>
                 <button
                   type="button"
                   onClick={() => {
                     setIsCreating(false);
                     setEditingProduct(null);
+                    resetForm();
                   }}
-                  className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition"
+                  disabled={isUploadingImages}
+                  className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </button>
@@ -340,13 +413,21 @@ function AdminProducts() {
 
         {/* Search */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-          />
+          <div className="flex gap-4">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+            />
+            <button
+              onClick={fetchProducts}
+              className="bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition"
+            >
+              Search
+            </button>
+          </div>
         </div>
 
         {/* Products Table */}
@@ -394,9 +475,18 @@ function AdminProducts() {
                   products.map((product) => (
                     <tr key={product.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4">
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                          <div className="text-sm text-gray-500">{product.sku}</div>
+                        <div className="flex items-center">
+                          {product.images[0] && (
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="w-10 h-10 rounded object-cover mr-3"
+                            />
+                          )}
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                            <div className="text-sm text-gray-500">{product.sku}</div>
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
