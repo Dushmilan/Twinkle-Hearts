@@ -28,7 +28,7 @@ price: z.number().int().positive('Price must be positive'),
 stock: z.number().int().nonnegative('Stock cannot be negative'),
 sku: z.string().min(1, 'SKU is required'),
 category: z.string().min(1, 'Category is required'),
-images: z.array(z.string().url()).optional(),
+images: z.array(z.string()).min(1, 'At least one product image is required'),
 isActive: z.boolean().optional().default(true),
 });
 
@@ -52,9 +52,9 @@ throw new BadRequestError('No files uploaded');
 }
 
 // Check if Cloudinary is configured
-const cloudinaryConfigured = 
-process.env.CLOUDINARY_CLOUD_NAME && 
-process.env.CLOUDINARY_API_KEY && 
+const cloudinaryConfigured =
+process.env.CLOUDINARY_CLOUD_NAME &&
+process.env.CLOUDINARY_API_KEY &&
 process.env.CLOUDINARY_API_SECRET;
 
 let urls: string[];
@@ -295,6 +295,20 @@ router.delete('/products/:id', authenticate, requireAdmin, async (req, res, next
 
     if (!product) {
       throw new NotFoundError('Product not found');
+    }
+
+    // Delete images from Cloudinary if they are Cloudinary URLs
+    if (product.images && product.images.length > 0) {
+      const { deleteImages, extractPublicId, isCloudinaryUrl } = await import('../lib/cloudinary.js');
+      
+      const publicIds = product.images
+        .filter((url) => isCloudinaryUrl(url))
+        .map((url) => extractPublicId(url))
+        .filter((id): id is string => id !== null);
+
+      if (publicIds.length > 0) {
+        await deleteImages(publicIds);
+      }
     }
 
     await prisma.product.delete({

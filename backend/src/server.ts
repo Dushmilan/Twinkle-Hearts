@@ -15,13 +15,16 @@ import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import { initCloudinary } from './lib/cloudinary.js';
 
-// Load environment variables
-// dotenv.config() checks .env, .env.local, .env.{NODE_ENV} by default
-dotenv.config();
-
+// Load environment variables from backend/.env.local
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const envPath = path.join(__dirname, '../.env.local');
+dotenv.config({ path: envPath });
+
+// Initialize Cloudinary with loaded env vars
+initCloudinary();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
