@@ -180,3 +180,116 @@ sessions/
 # Memory/state files (for AI assistant)
 .memory/
 .state/
+
+# ===========================================
+# COMMERCIAL PROJECT - ADDITIONAL PROTECTIONS
+# ===========================================
+
+# API Keys and Secrets (Critical)
+api-keys.json
+secrets.json
+credentials.json
+service-account.json
+*-credentials.json
+*.pem
+*.key
+*.p12
+*.pfx
+certs/
+private/
+
+# Business Configuration
+pricing-config.json
+business-rules.json
+vendor-config.json
+partner-credentials.json
+
+# Database Dumps (May contain customer data)
+*.dump
+*.sql.gz
+backups/
+db-backups/
+data-exports/
+
+# Analytics and Metrics
+analytics/
+metrics/
+reports/
+*analytics*.json
+*metrics*.json
+
+# Customer Data (GDPR/Privacy)
+customer-data/
+user-exports/
+orders-export.csv
+customers.csv
+
+# Internal Documentation
+internal-docs/
+business-requirements/
+stakeholder-docs/
+meeting-notes/
+
+# IDE Commercial/Enterprise
+*.iml
+.idea/
+.vs/
+*.suo
+*.user
+
+# Deployment Scripts (May contain infra details)
+deploy-prod.sh
+deploy-staging.sh
+infrastructure/
+terraform/
+kubernetes/
+
+# Monitoring and Logging (Production)
+production-logs/
+error-reports/
+crash-dumps/
+
+# Third-party Service Configs
+firebase-config.json
+aws-credentials
+azure-credentials
+gcp-credentials
+
+# Environment files (all variations)
+.env*.local
+.env*.private
+.env*.secret
+config.local.json
+config.private.json
+
+# SSL/TLS Certificates
+ssl/
+certificates/
+letsencrypt/
+
+# Commercial Tools
+*.lic
+*.license
+license.dat
+
+# Audit and Compliance
+audit-logs/
+compliance-reports/
+
+# Email Templates (Business IP)
+email-templates/
+marketing-templates/
+
+# Product Assets (Licensed/Proprietary)
+product-images-original/
+brand-assets/
+logos/
+
+# Testing Data (May contain sensitive info)
+test-data/
+fixtures/
+mock-data/
+
+# Build Artifacts with Embedded Secrets
+*.bundle.js.map
+*.chunk.js.map
