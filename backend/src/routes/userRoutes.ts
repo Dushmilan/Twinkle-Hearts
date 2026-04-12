@@ -15,7 +15,7 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from '../services/userService.js';
-import { authenticate, requireAdmin } from '../middleware/auth.js';
+import { authenticate } from '../middleware/auth.js';
 import { rateLimiter } from '../middleware/rateLimiter.js';
 import { z } from 'zod';
 
@@ -88,7 +88,7 @@ router.put('/profile', async (req, res, next) => {
  * POST /api/users/change-password
  * Change password
  */
-router.post('/change-password', async (req, res, next) => {
+router.post('/change-password', rateLimiter, async (req, res, next) => {
   try {
     const input = passwordSchema.parse(req.body);
     await changePassword(req.user!.id, input.currentPassword, input.newPassword);

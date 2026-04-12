@@ -4,6 +4,7 @@
 import { Router } from 'express';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import prisma from '../lib/prisma.js';
+import type { Prisma } from '@prisma/client';
 import { cacheDelete, CacheKeys } from '../lib/cache.js';
 import { BadRequestError, NotFoundError } from '../middleware/errorHandler.js';
 import { z } from 'zod';
@@ -12,11 +13,6 @@ uploadProductImages,
 handleUploadError,
 } from '../middleware/upload.js';
 import { uploadImages, deleteImage, extractPublicId, isCloudinaryUrl } from '../lib/cloudinary.js';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const router = Router();
 
@@ -51,15 +47,18 @@ if (!req.files || req.files.length === 0) {
 throw new BadRequestError('No files uploaded');
 }
 
-// Check if Cloudinary is configured
+// Cloudinary is required for production image uploads
 const cloudinaryConfigured =
 process.env.CLOUDINARY_CLOUD_NAME &&
 process.env.CLOUDINARY_API_KEY &&
 process.env.CLOUDINARY_API_SECRET;
 
-let urls: string[];
+if (!cloudinaryConfigured) {
+throw new BadRequestError(
+'Cloudinary not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in your environment.'
+);
+}
 
-if (cloudinaryConfigured) {
 // Upload to Cloudinary
 const files = (req.files as Express.Multer.File[]).map((file) => file.buffer);
 const results = await uploadImages(files, {
@@ -67,14 +66,7 @@ folder: 'twinkle-hearts/products',
 tags: ['product', 'admin-upload'],
 });
 
-urls = results.map((r) => r.secure_url);
-} else {
-// Fallback to local storage (for development without Cloudinary)
-console.warn('Cloudinary not configured, using local storage');
-urls = (req.files as Express.Multer.File[]).map((file) => {
-return `/uploads/products/${(file as any).filename || file.originalname}`;
-});
-}
+const urls = results.map((r) => r.secure_url);
 
 res.json({
 success: true,
@@ -180,7 +172,7 @@ router.get('/products', authenticate, requireAdmin, async (req, res, next) => {
     const category = req.query.category as string;
     const search = req.query.search as string;
 
-    const where: any = {};
+    const where: Prisma.ProductWhereInput = {};
 
     if (category) {
       where.category = category;
@@ -297,10 +289,19 @@ router.delete('/products/:id', authenticate, requireAdmin, async (req, res, next
       throw new NotFoundError('Product not found');
     }
 
+    // C6: Check if product has orders before deletion
+    const hasOrders = await prisma.orderItem.findFirst({
+      where: { productId: id },
+    });
+
+    if (hasOrders) {
+      throw new BadRequestError('Cannot delete product that has orders. Please deactivate instead.');
+    }
+
     // Delete images from Cloudinary if they are Cloudinary URLs
     if (product.images && product.images.length > 0) {
       const { deleteImages, extractPublicId, isCloudinaryUrl } = await import('../lib/cloudinary.js');
-      
+
       const publicIds = product.images
         .filter((url) => isCloudinaryUrl(url))
         .map((url) => extractPublicId(url))
@@ -339,7 +340,7 @@ router.get('/users', authenticate, requireAdmin, async (req, res, next) => {
     const limit = parseInt(req.query.limit as string) || 20;
     const search = req.query.search as string;
 
-    const where: any = {};
+    const where: Prisma.UserWhereInput = {};
 
     if (search) {
       where.OR = [
@@ -404,12 +405,28 @@ router.put('/users/:id/role', authenticate, requireAdmin, async (req, res, next)
       throw new BadRequestError('Invalid role');
     }
 
+    // H1: Prevent admin from modifying their own role
+    if (req.user!.id === id) {
+      throw new BadRequestError('Cannot modify your own role');
+    }
+
     const user = await prisma.user.findUnique({
       where: { id },
     });
 
     if (!user) {
       throw new NotFoundError('User not found');
+    }
+
+    // H2: Prevent demoting the last admin
+    if (user.role === 'ADMIN' && role !== 'ADMIN') {
+      const adminCount = await prisma.user.count({
+        where: { role: 'ADMIN' },
+      });
+
+      if (adminCount <= 1) {
+        throw new BadRequestError('Cannot demote the last admin. At least one admin must remain.');
+      }
     }
 
     const updatedUser = await prisma.user.update({

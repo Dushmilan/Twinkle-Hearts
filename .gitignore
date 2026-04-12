@@ -123,6 +123,10 @@ firestore-debug.log
 *.crt
 *.p12
 
+# JWT key files (critical security)
+jwtRS256.key
+jwtRS256.key.pub
+
 # Backup files
 *.bak
 *.backup

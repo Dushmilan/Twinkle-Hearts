@@ -6,45 +6,63 @@
 import { testDbManager, testPrisma } from './helpers/testDbManager.js';
 import { resetAllMocks, resetTestCounter } from './helpers/mocks.js';
 
-// Initialize database before all tests
+let dbConnected = false;
+
+// Initialize database before all tests (only if DB is accessible)
 beforeAll(async () => {
   console.log('Setting up test environment...');
-  await testDbManager.connect();
+  try {
+    await testDbManager.connect();
 
-  // Health check
-  const isHealthy = await testDbManager.healthCheck();
-  if (!isHealthy) {
-    throw new Error('Database health check failed. Ensure your test database is running.');
+    // Health check
+    const isHealthy = await testDbManager.healthCheck();
+    if (!isHealthy) {
+      console.warn('Database health check failed. Tests requiring DB will fail.');
+      dbConnected = false;
+    } else {
+      dbConnected = true;
+      await testDbManager.cleanDatabase();
+      console.log('Test environment ready');
+    }
+  } catch (error) {
+    console.warn('Database unavailable. Tests requiring DB will fail:', (error as Error).message);
+    dbConnected = false;
   }
-
-  await testDbManager.cleanDatabase();
-  console.log('Test environment ready');
 }, 30000); // 30 second timeout for initial setup
 
 // Cleanup after all tests
 afterAll(async () => {
   console.log('Cleaning up test environment...');
-  await testDbManager.cleanDatabase();
-  await testDbManager.disconnect();
+  if (dbConnected) {
+    await testDbManager.cleanDatabase();
+    await testDbManager.disconnect();
+  }
   console.log('Test environment cleaned up');
 });
 
-// Clean database before each test and reset mocks
+// Clean database before each test and reset mocks (only if connected)
 beforeEach(async () => {
-  await testDbManager.cleanDatabase();
+  if (dbConnected) {
+    await testDbManager.cleanDatabase();
+  }
   resetAllMocks();
   resetTestCounter();
 });
 
-// Cleanup database after each test
+// Cleanup database after each test (only if connected)
 afterEach(async () => {
-  await testDbManager.cleanDatabase();
+  if (dbConnected) {
+    await testDbManager.cleanDatabase();
+  }
   resetAllMocks();
   resetTestCounter();
 });
 
 // Export testPrisma for use in tests
 export default testPrisma;
+
+// Export dbConnected flag for tests to check
+export { dbConnected };
 
 // Mock console.warn to reduce noise
 const originalWarn = console.warn;

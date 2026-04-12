@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { z } from 'zod';
 import { logger } from '../lib/logger.js';
 
 export class AppError extends Error {
@@ -63,12 +64,19 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  const requestId = (req as any).requestId;
+  const context = requestId ? { requestId, userId: req.user?.id } : {};
+
   if (err instanceof AppError) {
-    logger.warn(`${err.statusCode} - ${err.message} - ${req.path}`);
-    
+    logger.warn(`${err.statusCode} - ${err.message} - ${req.path}`, context);
+
     const response: any = {
       error: err.message,
     };
+
+    if (requestId) {
+      response.requestId = requestId;
+    }
 
     if (err instanceof StockUnavailableError) {
       response.details = {
@@ -81,19 +89,31 @@ export const errorHandler = (
     return res.status(err.statusCode).json(response);
   }
 
+  // Zod validation errors
+  if (err instanceof z.ZodError) {
+    const messages = err.errors.map((e) => e.message).join(', ');
+    logger.warn(`Validation error: ${messages}`, { requestId, userId: req.user?.id });
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      error: messages,
+      ...(requestId && { requestId }),
+    });
+  }
+
   // Prisma errors
   if (err.name === 'PrismaClientKnownRequestError') {
-    logger.error('Database error:', err);
+    logger.error('Database error:', { ...context, error: err.message });
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       error: 'Database operation failed',
+      ...(requestId && { requestId }),
     });
   }
 
   // Unhandled errors
-  logger.error('Unhandled error:', err);
+  logger.error('Unhandled error:', { ...context, error: err.message, stack: err.stack });
   return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    error: process.env.NODE_ENV === 'production' 
-      ? 'Internal server error' 
+    error: process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
       : err.message,
+    ...(requestId && { requestId }),
   });
 };

@@ -14,7 +14,7 @@ export class ApiClient {
 
   constructor(app?: Express) {
     this.app = app || createTestApp();
-    this.request = request(this.app);
+    this.request = request(this.app) as unknown as SuperTest<Test>;
   }
 
   /**

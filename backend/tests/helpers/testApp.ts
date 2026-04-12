@@ -13,6 +13,7 @@ import cartRoutes from '../../src/routes/cartRoutes.js';
 import orderRoutes from '../../src/routes/orderRoutes.js';
 import adminRoutes from '../../src/routes/adminRoutes.js';
 import { errorHandler } from '../../src/middleware/errorHandler.js';
+import { requestId } from '../../src/middleware/requestId.js';
 import { rateLimiter } from '../../src/middleware/rateLimiter.js';
 
 export function createTestApp() {
@@ -21,7 +22,7 @@ export function createTestApp() {
   // Security middleware
   app.use(helmet());
   app.use(cors({
-    origin: '*',
+    origin: process.env.TEST_ORIGIN || 'http://localhost:5173',
     credentials: true
   }));
 
@@ -31,6 +32,9 @@ export function createTestApp() {
 
   // Rate limiting (disabled for tests via env)
   app.use(rateLimiter);
+
+  // Request correlation ID
+  app.use(requestId);
 
   // Health check
   app.get('/health', (_req, res) => {

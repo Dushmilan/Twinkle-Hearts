@@ -178,7 +178,6 @@ Create a new order from cart.
   "tax": 1079.64,
   "total": 7077.64,
   "whatsappDeepLink": "https://wa.me/919876543210?text=...",
-  "expiresAt": "2026-03-21T12:15:00.000Z",
   "createdAt": "2026-03-21T12:00:00.000Z"
 }
 ```
@@ -206,36 +205,13 @@ Get order by ID.
       }
     ],
     "customerName": "John Doe",
-    "createdAt": "2026-03-21T12:00:00.000Z",
-    "confirmedAt": null
+    "createdAt": "2026-03-21T12:00:00.000Z"
   }
 }
 ```
 
 **Errors:**
 - `404` - Order not found
-
-### POST /api/orders/:id/confirm
-Confirm order after WhatsApp verification.
-
-**Request Body:**
-```json
-{
-  "whatsappMessageId": "wamid.HBgN..."
-}
-```
-
-**Response:**
-```json
-{
-  "order": {
-    "id": "uuid",
-    "status": "CONFIRMED",
-    "total": 7077.64,
-    "confirmedAt": "2026-03-21T12:05:00.000Z"
-  }
-}
-```
 
 ---
 

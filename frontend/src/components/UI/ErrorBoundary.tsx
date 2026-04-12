@@ -22,7 +22,10 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    // H12: Only log in development
+    if (import.meta.env.DEV) {
+      console.error('ErrorBoundary caught an error:', error, errorInfo);
+    }
     this.props.onError?.(error, errorInfo);
   }
 
@@ -49,7 +52,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-gray-600 mb-4">
               We're sorry for the inconvenience. Please try again.
             </p>
-            {error && (
+            {error && import.meta.env.DEV && (
               <details className="text-left mb-4">
                 <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
                   Error details

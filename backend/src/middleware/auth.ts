@@ -32,11 +32,11 @@ export const authenticate = async (
   try {
     // Get token from header
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.toLowerCase().startsWith('bearer ')) {
       throw new UnauthorizedError('No token provided');
     }
 
-    const token = authHeader.substring(7);
+    const token = authHeader.substring(7); // Skip "Bearer "
 
     // Verify token
     const payload = await verifyToken<any>(token);
@@ -115,7 +115,7 @@ export const optionalAuth = async (
 ) => {
   try {
     const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith('Bearer ')) {
+    if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
       const token = authHeader.substring(7);
       const payload = await verifyToken<any>(token);
 

@@ -4,9 +4,9 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { validateOrder, validateCartSync, orderCreationSchema } from '../../src/middleware/validation.js';
-import { BadRequestError, StockUnavailableError } from '../../src/middleware/errorHandler.js';
-import { createProduct } from '../helpers/factories.js';
+import { validateOrder, validateCartSync, orderCreationSchema } from '../../../src/middleware/validation.js';
+import { BadRequestError, StockUnavailableError } from '../../../src/middleware/errorHandler.js';
+import { createProduct } from '../../helpers/factories.js';
 
 // Helper to create mock request
 function createMockRequest(body: any, headers: any = {}) {
@@ -153,10 +153,11 @@ describe('Validation Middleware', () => {
       const res = createMockResponse();
       const next = createMockNext();
 
-      // Act & Assert
-      await expect(validateOrder(req, res, next))
-        .rejects
-        .toThrow(StockUnavailableError);
+      // Act
+      await validateOrder(req, res, next);
+
+      // Assert
+      expect(next).toHaveBeenCalledWith(expect.any(StockUnavailableError));
     });
 
     it('should handle multiple products in order', async () => {

@@ -147,6 +147,13 @@ model Product {
 }
 
 // ============================================
+// ORDER STATUS ENUM
+// ============================================
+enum OrderStatus {
+  PENDING_WHATSAPP_CONFIRMATION
+}
+
+// ============================================
 // ORDER MODEL
 // ============================================
 model Order {
@@ -161,6 +168,9 @@ model Order {
   tax             Decimal     @db.Decimal(10, 2)
   total           Decimal     @db.Decimal(10, 2)
 
+  // Order lifecycle status
+  status          OrderStatus @default(PENDING_WHATSAPP_CONFIRMATION)
+
   // Store prices at time of order (for audit)
   priceSnapshot   Json        @default("[]")
 
@@ -173,6 +183,7 @@ model Order {
   @@index([userId])
   @@index([customerPhone])
   @@index([createdAt])
+  @@index([status])
 }
 
 // ============================================

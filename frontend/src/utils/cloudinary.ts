@@ -33,7 +33,8 @@ export interface UploadOptions {
 export async function uploadImages(
   files: File[],
   token: string,
-  options?: UploadOptions
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _options?: UploadOptions
 ): Promise<string[]> {
   if (!files || files.length === 0) {
     return [];
@@ -105,7 +106,8 @@ export async function uploadImagesWithProgress(
 async function uploadSingleImage(
   file: File,
   token: string,
-  options?: UploadOptions
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _options?: UploadOptions
 ): Promise<string> {
   const formData = new FormData();
   formData.append('images', file);

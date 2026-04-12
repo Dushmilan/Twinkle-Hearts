@@ -7,7 +7,7 @@ const options: swaggerJsdoc.Options = {
       title: 'Twinkle-Hearts E-commerce API',
       version: '1.0.0',
       description:
-        'WhatsApp-based E-commerce API with authentication, user management, products, cart, and orders',
+        'WhatsApp-based E-commerce API with authentication, user management, products, cart, and order creation',
       contact: {
         name: 'Twinkle-Hearts Team',
       },
@@ -77,7 +77,7 @@ const options: swaggerJsdoc.Options = {
             userId: { type: 'string', format: 'uuid' },
             status: {
               type: 'string',
-              enum: ['PENDING_WHATSAPP_CONFIRMATION', 'CONFIRMED', 'CANCELLED', 'EXPIRED'],
+              enum: ['PENDING_WHATSAPP_CONFIRMATION'],
             },
             items: { type: 'array', items: { $ref: '#/components/schemas/CartItem' } },
             subtotal: { type: 'integer' },
@@ -85,7 +85,6 @@ const options: swaggerJsdoc.Options = {
             total: { type: 'integer' },
             customerName: { type: 'string' },
             customerPhone: { type: 'string' },
-            confirmedAt: { type: 'string', format: 'date-time', nullable: true },
             createdAt: { type: 'string', format: 'date-time' },
           },
         },

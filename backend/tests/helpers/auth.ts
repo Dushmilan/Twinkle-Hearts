@@ -3,16 +3,12 @@
  * Utilities for creating authenticated test users and tokens
  */
 
-import { SignJWT } from 'jose';
+import { signAccessToken, signRefreshToken } from '../../src/lib/jwt.js';
 import { testPrisma } from './db.js';
 import { createUser } from './factories.js';
 
-const TEST_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'test-jwt-secret-for-testing-only'
-);
-
 /**
- * Generate a test JWT token for a given user ID
+ * Generate a test JWT token for a given user ID using the real RS256 signing
  */
 export async function generateTestToken(
   userId: string,
@@ -27,24 +23,53 @@ export async function generateTestToken(
     email = 'test@example.com',
     role = 'CUSTOMER',
     sessionId = 'test-session-' + Date.now(),
-    expiresIn = '1h',
   } = options;
 
-  return new SignJWT({
+  // Set custom expiry via env for the test
+  const originalExpiry = process.env.JWT_EXPIRES_IN;
+  process.env.JWT_EXPIRES_IN = options.expiresIn || '1h';
+
+  const token = await signAccessToken({
     userId,
     email,
     role,
     sessionId,
-  })
-    .setProtectedHeader({ alg: 'HS256' })
-    .setSubject(userId)
-    .setIssuedAt()
-    .setExpirationTime(expiresIn)
-    .sign(TEST_SECRET);
+  });
+
+  process.env.JWT_EXPIRES_IN = originalExpiry;
+
+  return token;
+}
+
+/**
+ * Generate a test refresh token using the real RS256 signing
+ */
+export async function generateTestRefreshToken(
+  userId: string,
+  options: {
+    sessionId?: string;
+  } = {}
+): Promise<string> {
+  const {
+    sessionId = 'test-session-' + Date.now(),
+  } = options;
+
+  const originalExpiry = process.env.REFRESH_TOKEN_EXPIRES_IN;
+  process.env.REFRESH_TOKEN_EXPIRES_IN = '1h';
+
+  const token = await signRefreshToken({
+    userId,
+    sessionId,
+  });
+
+  process.env.REFRESH_TOKEN_EXPIRES_IN = originalExpiry;
+
+  return token;
 }
 
 /**
  * Create an authenticated test user with JWT token
+ * Uses real RS256 JWT signing for test compatibility
  */
 export async function createAuthenticatedUser(
   overrides: {
@@ -61,12 +86,25 @@ export async function createAuthenticatedUser(
     phone: overrides.phone || '+919876543210',
   });
 
+  const sessionId = `test-session-${user.id}`;
+
+  // Create a session in the database
+  await testPrisma.session.create({
+    data: {
+      userId: user.id,
+      tokenHash: `test-hash-${sessionId}`,
+      refreshToken: `test-refresh-${sessionId}`,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    },
+  });
+
   const token = await generateTestToken(user.id, {
     email: user.email,
     role: user.role,
+    sessionId,
   });
 
-  return { user, token };
+  return { user, token, sessionId };
 }
 
 /**
@@ -79,12 +117,24 @@ export async function createAdminUser(overrides: { email?: string; name?: string
     name: overrides.name || 'Test Admin',
   });
 
+  const sessionId = `test-session-admin-${user.id}`;
+
+  await testPrisma.session.create({
+    data: {
+      userId: user.id,
+      tokenHash: `test-hash-${sessionId}`,
+      refreshToken: `test-refresh-${sessionId}`,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    },
+  });
+
   const token = await generateTestToken(user.id, {
     email: user.email,
     role: 'ADMIN',
+    sessionId,
   });
 
-  return { user, token };
+  return { user, token, sessionId };
 }
 
 /**

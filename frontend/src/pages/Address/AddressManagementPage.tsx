@@ -29,13 +29,15 @@ export default function AddressManagementPage() {
     isDefault: false,
   });
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
   useEffect(() => {
     fetchAddresses();
   }, []);
 
   const fetchAddresses = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/users/addresses', {
+      const response = await fetch(`${API_URL}/api/users/addresses`, {
         headers: {
           'Authorization': `Bearer ${tokens?.accessToken}`,
           'Content-Type': 'application/json',
@@ -49,7 +51,6 @@ export default function AddressManagementPage() {
       const data = await response.json();
       setAddresses(data.data.addresses || []);
     } catch (error) {
-      console.error('Error fetching addresses:', error);
       toastService.error('Failed to load addresses');
     } finally {
       setIsLoading(false);
@@ -58,14 +59,14 @@ export default function AddressManagementPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const loadingToast = toastService.loading(editingId ? 'Updating address...' : 'Adding address...');
-    
+
+    const loadingToast = toastService.loading(editingId ? 'Updating address...' : 'Saving address...');
+
     try {
       const url = editingId
-        ? `http://localhost:3001/api/users/addresses/${editingId}`
-        : 'http://localhost:3001/api/users/addresses';
-      
+        ? `${API_URL}/api/users/addresses/${editingId}`
+        : `${API_URL}/api/users/addresses`;
+
       const method = editingId ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -82,7 +83,7 @@ export default function AddressManagementPage() {
       }
 
       toastService.dismiss(loadingToast);
-      toastService.success(editingId ? 'Address updated' : 'Address added');
+      toastService.success(editingId ? 'Address updated' : 'Address saved');
       fetchAddresses();
       setIsAdding(false);
       setEditingId(null);
@@ -98,7 +99,6 @@ export default function AddressManagementPage() {
     } catch (error) {
       toastService.dismiss(loadingToast);
       toastService.error('Failed to save address');
-      console.error('Error saving address:', error);
     }
   };
 
@@ -106,9 +106,9 @@ export default function AddressManagementPage() {
     if (!confirm('Are you sure you want to delete this address?')) return;
 
     const loadingToast = toastService.loading('Deleting address...');
-    
+
     try {
-      const response = await fetch(`http://localhost:3001/api/users/addresses/${id}`, {
+      const response = await fetch(`${API_URL}/api/users/addresses/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${tokens?.accessToken}`,
@@ -125,7 +125,6 @@ export default function AddressManagementPage() {
     } catch (error) {
       toastService.dismiss(loadingToast);
       toastService.error('Failed to delete address');
-      console.error('Error deleting address:', error);
     }
   };
 
@@ -145,7 +144,7 @@ export default function AddressManagementPage() {
 
   const handleSetDefault = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/users/addresses/${id}`, {
+      const response = await fetch(`${API_URL}/api/users/addresses/${id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${tokens?.accessToken}`,
@@ -162,14 +161,16 @@ export default function AddressManagementPage() {
       fetchAddresses();
     } catch (error) {
       toastService.error('Failed to set default address');
-      console.error('Error setting default address:', error);
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">My Addresses</h1>
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="font-display text-3xl font-bold text-gray-900">My Addresses</h1>
+          <p className="text-gray-500 mt-1">Manage your delivery addresses</p>
+        </div>
         <button
           onClick={() => {
             setIsAdding(!isAdding);
@@ -184,115 +185,100 @@ export default function AddressManagementPage() {
               isDefault: false,
             });
           }}
-          className="bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition"
+          className="btn-primary"
         >
           {isAdding ? 'Cancel' : '+ Add Address'}
         </button>
       </div>
 
       {isAdding && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">
+        <div className="card p-6 mb-8">
+          <h2 className="font-display text-xl font-semibold text-gray-900 mb-6">
             {editingId ? 'Edit Address' : 'Add New Address'}
           </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name
-                </label>
+                <label className="label-text">Full Name</label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="input-field"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number
-                </label>
+                <label className="label-text">Phone Number</label>
                 <input
                   type="tel"
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="input-field"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Street Address
-              </label>
+              <label className="label-text">Street Address</label>
               <input
                 type="text"
                 required
                 value={formData.street}
                 onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  City
-                </label>
+                <label className="label-text">City</label>
                 <input
                   type="text"
                   required
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="input-field"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  State
-                </label>
+                <label className="label-text">State</label>
                 <input
                   type="text"
                   required
                   value={formData.state}
                   onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="input-field"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  ZIP Code
-                </label>
+                <label className="label-text">ZIP Code</label>
                 <input
                   type="text"
                   required
                   value={formData.zipCode}
                   onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="input-field"
                 />
               </div>
             </div>
 
-            <div className="flex items-center">
+            <div className="flex items-center gap-2">
               <input
                 type="checkbox"
                 id="isDefault"
                 checked={formData.isDefault}
                 onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-                className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                className="w-4 h-4 text-coral-500 border-gray-300 rounded focus:ring-coral-400"
               />
-              <label htmlFor="isDefault" className="ml-2 text-sm text-gray-700">
+              <label htmlFor="isDefault" className="text-sm text-gray-700">
                 Set as default address
               </label>
             </div>
 
-            <div className="flex gap-4">
-              <button
-                type="submit"
-                className="bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition"
-              >
+            <div className="flex gap-3">
+              <button type="submit" className="btn-primary">
                 {editingId ? 'Update' : 'Save'} Address
               </button>
               <button
@@ -301,7 +287,7 @@ export default function AddressManagementPage() {
                   setIsAdding(false);
                   setEditingId(null);
                 }}
-                className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition"
+                className="btn-secondary"
               >
                 Cancel
               </button>
@@ -311,35 +297,40 @@ export default function AddressManagementPage() {
       )}
 
       {isLoading ? (
-        <div className="text-center py-12">Loading addresses...</div>
+        <div className="text-center py-12">
+          <div className="animate-spin w-8 h-8 border-2 border-coral-500 border-t-transparent rounded-full mx-auto" />
+          <p className="text-gray-500 mt-4">Loading addresses...</p>
+        </div>
       ) : addresses.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-lg shadow-md">
-          <p className="text-gray-600">No addresses saved yet</p>
+        <div className="card">
+          <div className="empty-state py-12">
+            <p className="text-gray-500">No addresses saved yet</p>
+          </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {addresses.map((address) => (
             <div
               key={address.id}
-              className={`bg-white rounded-lg shadow-md p-6 relative ${
-                address.isDefault ? 'ring-2 ring-pink-500' : ''
+              className={`card p-6 relative ${
+                address.isDefault ? 'ring-2 ring-coral-300 shadow-glow' : ''
               }`}
             >
               {address.isDefault && (
-                <span className="absolute top-4 right-4 px-3 py-1 bg-pink-100 text-pink-700 text-xs rounded-full font-medium">
+                <span className="absolute top-4 right-4 badge badge-coral text-xs">
                   Default
                 </span>
               )}
-              <h3 className="font-semibold text-gray-900 mb-2">{address.name}</h3>
-              <p className="text-gray-600 text-sm mb-1">{address.phone}</p>
-              <p className="text-gray-600 text-sm mb-1">{address.street}</p>
-              <p className="text-gray-600 text-sm">
+              <h3 className="font-display font-semibold text-gray-900 mb-2">{address.name}</h3>
+              <p className="text-sm text-gray-600 mb-1">{address.phone}</p>
+              <p className="text-sm text-gray-600 mb-1">{address.street}</p>
+              <p className="text-sm text-gray-600">
                 {address.city}, {address.state} {address.zipCode}
               </p>
-              <div className="flex gap-2 mt-4">
+              <div className="flex gap-3 mt-4">
                 <button
                   onClick={() => handleEdit(address)}
-                  className="text-pink-600 hover:text-pink-700 text-sm font-medium"
+                  className="text-sm text-coral-600 hover:text-coral-700 font-medium transition-colors"
                 >
                   Edit
                 </button>
@@ -347,13 +338,13 @@ export default function AddressManagementPage() {
                   <>
                     <button
                       onClick={() => handleSetDefault(address.id)}
-                      className="text-gray-600 hover:text-gray-700 text-sm font-medium"
+                      className="text-sm text-gray-600 hover:text-gray-700 font-medium transition-colors"
                     >
                       Set Default
                     </button>
                     <button
                       onClick={() => handleDelete(address.id)}
-                      className="text-red-600 hover:text-red-700 text-sm font-medium"
+                      className="text-sm text-red-500 hover:text-red-600 font-medium transition-colors"
                     >
                       Delete
                     </button>

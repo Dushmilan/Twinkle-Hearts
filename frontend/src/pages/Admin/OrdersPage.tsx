@@ -22,6 +22,8 @@ function AdminOrders() {
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 0 });
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
   useEffect(() => {
     fetchOrders();
   }, [page]);
@@ -30,7 +32,7 @@ function AdminOrders() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:3001/api/admin/orders?page=${page}&limit=20`,
+        `${API_URL}/api/admin/orders?page=${page}&limit=20`,
         {
           headers: {
             'Authorization': `Bearer ${tokens?.accessToken}`,
@@ -47,7 +49,6 @@ function AdminOrders() {
       setOrders(data.data.orders || []);
       setPagination(data.data.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 });
     } catch (error) {
-      console.error('Error fetching orders:', error);
       toastService.error('Failed to load orders');
     } finally {
       setIsLoading(false);
@@ -55,7 +56,7 @@ function AdminOrders() {
   };
 
   const formatCurrency = (amount: number) => {
-    return `₹${(amount / 100).toFixed(2)}`;
+    return `₹${amount.toFixed(2)}`;
   };
 
   return (

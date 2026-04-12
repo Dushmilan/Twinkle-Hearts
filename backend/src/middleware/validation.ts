@@ -7,7 +7,7 @@ import { BadRequestError, StockUnavailableError } from './errorHandler.js';
 // Accept both UUID and simple IDs for demo compatibility
 const cartItemSchema = z.object({
   productId: z.string().min(1, 'Product ID is required'),
-  quantity: z.number().int().positive('Quantity must be positive'),
+  quantity: z.number().int().positive('Quantity must be positive').max(999, 'Maximum quantity per item is 999'),
   price: z.number().optional(), // Frontend price (for reference only, not trusted)
 });
 
@@ -15,7 +15,7 @@ const cartItemSchema = z.object({
 export const orderCreationSchema = z.object({
   items: z.array(cartItemSchema).min(1, 'Cart cannot be empty'),
   customerName: z.string().min(2, 'Name must be at least 2 characters'),
-  customerPhone: z.string().min(10, 'Valid phone number required'),
+  customerPhone: z.string().regex(/^\+?[0-9]{10,15}$/, 'Phone must be 10-15 digits, optionally prefixed with +'),
 });
 
 export type OrderCreationInput = z.infer<typeof orderCreationSchema>;
@@ -71,6 +71,7 @@ export const validateOrder = async (
 
     // Validate each item and build validated cart
     const validatedItems: ValidatedCartItem[] = [];
+    const outOfStockErrors: string[] = [];
 
     for (const item of input.items) {
       const product = productMap.get(item.productId);
@@ -80,21 +81,28 @@ export const validateOrder = async (
       }
 
       if (product.stock < item.quantity) {
-        throw new StockUnavailableError(
-          item.productId,
-          product.stock,
-          item.quantity
+        outOfStockErrors.push(
+          `${product.name}: Only ${product.stock} available, but ${item.quantity} requested`
         );
+      } else {
+        validatedItems.push({
+          productId: item.productId,
+          quantity: item.quantity,
+          currentPrice: product.price,
+          frontendPrice: item.price,
+          productName: product.name,
+          stockAvailable: product.stock,
+        });
       }
+    }
 
-      validatedItems.push({
-        productId: item.productId,
-        quantity: item.quantity,
-        currentPrice: product.price,
-        frontendPrice: item.price,
-        productName: product.name,
-        stockAvailable: product.stock,
-      });
+    // H6: Report all stock issues at once instead of failing on first
+    if (outOfStockErrors.length > 0) {
+      throw new StockUnavailableError(
+        outOfStockErrors.join('; '),
+        0,
+        0
+      );
     }
 
     // Attach validated items to request

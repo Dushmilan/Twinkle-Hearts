@@ -46,14 +46,12 @@ Instead of integrating payment processors, customers finalize their orders by se
 ### WhatsApp Checkout
 - Pre-formatted order messages with order ID, items, and totals
 - Deep link to WhatsApp for seamless handoff
-- Order confirmation tracking
-- Status updates via WhatsApp Business API (future enhancement)
+- Direct customer-business communication
 
 ### Order Management
 - Unique order ID generation
-- Orders stored in pending state until WhatsApp confirmation
 - Price validation server-side (never trust frontend)
-- Order expiration for abandoned carts
+- Audit logging for price tampering attempts
 
 ## Technical Architecture
 
@@ -73,14 +71,12 @@ Instead of integrating payment processors, customers finalize their orders by se
 
 ### WhatsApp Integration
 - Client-side: Deep links (wa.me) with pre-encoded messages
-- Server-side: WhatsApp Business API for template messages and webhooks
-- Two-way communication for order confirmations
+- Server-side: WhatsApp Business API for template messages (future)
 
 ### Security
 - All price calculations performed server-side
 - Frontend prices are reference-only
 - Rate limiting on order creation endpoints
-- Order expiration to prevent indefinite stock holds
 - Audit logging for price tampering attempts
 
 ## Infrastructure
@@ -122,8 +118,7 @@ Instead of integrating payment processors, customers finalize their orders by se
 1. **No Payment Gateway**: Orders are confirmed via WhatsApp conversation, not automated payment
 2. **Offline-First Cart**: Cart works without internet, syncs when connection restored
 3. **Server-Side Price Authority**: Frontend never determines final prices
-4. **Pending Order State**: Orders wait for WhatsApp confirmation before processing
-5. **Progressive Enhancement**: Start with deep links, upgrade to Business API later
+4. **Progressive Enhancement**: Start with deep links, upgrade to Business API later
 
 ## Current Status
 

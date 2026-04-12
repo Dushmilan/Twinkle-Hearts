@@ -19,6 +19,7 @@ export default function CheckoutPage() {
   const { items, getTotal, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // C8: Prevent double submission
 
   const [formData, setFormData] = useState({
     customerName: '',
@@ -26,30 +27,44 @@ export default function CheckoutPage() {
     customerPhone: '',
   });
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
   const total = getTotal();
-  const tax = total * 0.18;
+  const taxRate = parseFloat(import.meta.env.VITE_TAX_RATE || '0.18');
+  const tax = total * taxRate;
   const finalTotal = total + tax;
 
   const formatPrice = (price: number) => {
-    return `₹${price.toLocaleString('en-IN')}`;
+    return `Rs. ${price.toLocaleString('en-IN')}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // C8: Prevent duplicate submissions
+    if (isSubmitting) {
+      return;
+    }
+
     setLoading(true);
     setError(null);
+    setIsSubmitting(true);
 
     try {
       const fullPhone = `${formData.countryCode}${formData.customerPhone.replace(/\s/g, '')}`;
 
-      const response = await fetch('/api/orders/create', {
+      // M11: Validate phone number format
+      const phoneRegex = /^\+?[0-9]{10,15}$/;
+      if (!phoneRegex.test(fullPhone)) {
+        throw new Error('Invalid phone number format');
+      }
+
+      const response = await fetch(`${API_URL}/api/orders/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           items: items.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
-            price: item.price,
           })),
           customerName: formData.customerName,
           customerPhone: fullPhone,
@@ -75,6 +90,7 @@ export default function CheckoutPage() {
       setError(err instanceof Error ? err.message : 'Failed to create order');
     } finally {
       setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -82,12 +98,15 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Cart is Empty</h1>
-          <p className="text-gray-500 mb-4">Add items to your cart before checkout</p>
-          <button onClick={() => navigate('/')} className="btn-primary">
-            Back to Shop
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="empty-state">
+          <div className="empty-state-icon">
+            <WhatsAppIcon className="w-full h-full" />
+          </div>
+          <h3 className="empty-state-title">Nothing to checkout</h3>
+          <p className="empty-state-text">Add some cards to your cart first!</p>
+          <button onClick={() => navigate('/')} className="btn-primary mt-6">
+            Browse Cards
           </button>
         </div>
       </div>
@@ -95,141 +114,178 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="font-display text-3xl font-bold text-gray-900 mb-1">
+          Checkout
+        </h1>
+        <p className="text-gray-500">
+          Just a few more steps to send your cards with love
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit}>
-        {/* Customer Information */}
-        <div className="card mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Contact Information
-          </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          {/* Contact Form */}
+          <div className="lg:col-span-3">
+            <div className="card p-6">
+              <h2 className="font-display text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                <HeartIcon className="w-5 h-5 text-coral-400" />
+                Your Details
+              </h2>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.customerName}
-                onChange={(e) =>
-                  setFormData({ ...formData, customerName: e.target.value })
-                }
-                className="input-field"
-                placeholder="Enter your full name"
-              />
+              <div className="space-y-5">
+                {/* Full Name */}
+                <div>
+                  <label className="label-text">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.customerName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, customerName: e.target.value })
+                    }
+                    className="input-field"
+                    placeholder="Enter your full name"
+                  />
+                </div>
+
+                {/* Country */}
+                <div>
+                  <label className="label-text">Country *</label>
+                  <select
+                    value={formData.countryCode}
+                    onChange={(e) =>
+                      setFormData({ ...formData, countryCode: e.target.value, customerPhone: '' })
+                    }
+                    className="input-field"
+                  >
+                    {COUNTRY_CODES.map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* WhatsApp Number */}
+                <div>
+                  <label className="label-text">WhatsApp Number *</label>
+                  <div className="flex">
+                    <span className="inline-flex items-center px-4 bg-cream-100 border border-r-0 border-gray-200 rounded-l-lg font-medium text-gray-700 text-sm">
+                      {formData.countryCode}
+                    </span>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.customerPhone}
+                      onChange={(e) =>
+                        setFormData({ ...formData, customerPhone: e.target.value })
+                      }
+                      className="input-field rounded-l-none flex-1"
+                      placeholder={selectedCountry?.placeholder || 'Phone number'}
+                      pattern="[0-9\s]+"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-400 mt-2">
+                    We'll send your order confirmation to this number via WhatsApp
+                  </p>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Country *
-              </label>
-              <select
-                value={formData.countryCode}
-                onChange={(e) =>
-                  setFormData({ ...formData, countryCode: e.target.value, customerPhone: '' })
-                }
-                className="input-field"
-              >
-                {COUNTRY_CODES.map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.label}
-                  </option>
+          {/* Order Summary — Gift Receipt */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-card border-2 border-dashed border-cream-200 p-6 sticky top-24 shadow-soft">
+              <div className="text-center mb-6 pb-4 border-b border-cream-100">
+                <HeartIcon className="w-8 h-8 text-coral-400 mx-auto mb-2" />
+                <h2 className="font-display text-xl font-semibold text-gray-900">
+                  Your Cards
+                </h2>
+              </div>
+
+              {/* Items */}
+              <div className="space-y-3 mb-4 max-h-48 overflow-y-auto">
+                {items.map((item) => (
+                  <div key={item.productId} className="flex justify-between text-sm">
+                    <span className="text-gray-600 truncate pr-2">
+                      {item.productName} <span className="text-gray-400">× {item.quantity}</span>
+                    </span>
+                    <span className="font-medium text-gray-900 whitespace-nowrap">
+                      {formatPrice(item.price * item.quantity)}
+                    </span>
+                  </div>
                 ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                WhatsApp Number *
-              </label>
-              <div className="flex gap-2">
-                <span className="inline-flex items-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-l-lg font-medium text-gray-700">
-                  {formData.countryCode}
-                </span>
-                <input
-                  type="tel"
-                  required
-                  value={formData.customerPhone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, customerPhone: e.target.value })
-                  }
-                  className="input-field rounded-l-lg flex-1"
-                  placeholder={selectedCountry?.placeholder || 'Phone number'}
-                  pattern="[0-9\s]+"
-                />
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                We'll send your order details to this number via WhatsApp
+
+              {/* Totals */}
+              <div className="border-t border-cream-200 pt-4 space-y-2 mb-6">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Subtotal</span>
+                  <span className="font-medium">{formatPrice(total)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Tax (18%)</span>
+                  <span className="font-medium">{formatPrice(tax)}</span>
+                </div>
+                <div className="flex justify-between text-lg font-bold pt-2 border-t border-cream-100">
+                  <span>Total</span>
+                  <span className="text-coral-600">{formatPrice(finalTotal)}</span>
+                </div>
+              </div>
+
+              {/* WhatsApp CTA */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-whatsapp w-full text-base py-3.5 disabled:opacity-60"
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <WhatsAppIcon className="w-5 h-5" />
+                    Confirm & Send via WhatsApp
+                  </>
+                )}
+              </button>
+
+              <p className="text-xs text-gray-400 text-center mt-3 leading-relaxed">
+                You'll be redirected to WhatsApp with a pre-filled order message
               </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Order Summary */}
-        <div className="card mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
-
-          <div className="space-y-3 mb-4">
-            {items.map((item) => (
-              <div key={item.productId} className="flex justify-between text-sm">
-                <span className="text-gray-600">
-                  {item.productName} x {item.quantity}
-                </span>
-                <span className="font-medium">
-                  {formatPrice(item.price * item.quantity)}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t border-gray-200 pt-4 space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-medium">{formatPrice(total)}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Tax (18%)</span>
-              <span className="font-medium">{formatPrice(tax)}</span>
-            </div>
-            <div className="flex justify-between text-lg font-bold">
-              <span>Total</span>
-              <span className="text-primary-600">{formatPrice(finalTotal)}</span>
             </div>
           </div>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
-            {error}
+          <div className="mt-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-card">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+              <span>{error}</span>
+            </div>
           </div>
         )}
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="btn-primary w-full py-3 text-lg flex items-center justify-center"
-        >
-          {loading ? (
-            'Processing...'
-          ) : (
-            <>
-              <WhatsAppIcon className="w-5 h-5 mr-2" />
-              Confirm & Send via WhatsApp
-            </>
-          )}
-        </button>
-
-        <p className="text-xs text-gray-500 text-center mt-4">
-          By confirming, you'll be redirected to WhatsApp to send your order details.
-          We'll respond with confirmation shortly.
-        </p>
       </form>
     </div>
+  );
+}
+
+function HeartIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+    </svg>
   );
 }
 

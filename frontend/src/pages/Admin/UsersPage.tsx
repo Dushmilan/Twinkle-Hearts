@@ -26,6 +26,8 @@ function AdminUsers() {
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 0 });
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
   useEffect(() => {
     const debounce = setTimeout(() => {
       fetchUsers();
@@ -39,7 +41,7 @@ function AdminUsers() {
     try {
       const searchParam = searchTerm ? `&search=${searchTerm}` : '';
       const response = await fetch(
-        `http://localhost:3001/api/admin/users?page=${page}&limit=20${searchParam}`,
+        `${API_URL}/api/admin/users?page=${page}&limit=20${searchParam}`,
         {
           headers: {
             'Authorization': `Bearer ${tokens?.accessToken}`,
@@ -56,7 +58,6 @@ function AdminUsers() {
       setUsers(data.data.users || []);
       setPagination(data.data.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 });
     } catch (error) {
-      console.error('Error fetching users:', error);
       toastService.error('Failed to load users');
     } finally {
       setIsLoading(false);
@@ -65,9 +66,9 @@ function AdminUsers() {
 
   const updateUserRole = async (userId: string, role: string) => {
     const loadingToast = toastService.loading('Updating user role...');
-    
+
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/users/${userId}/role`, {
+      const response = await fetch(`${API_URL}/api/admin/users/${userId}/role`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${tokens?.accessToken}`,
@@ -86,7 +87,6 @@ function AdminUsers() {
     } catch (error) {
       toastService.dismiss(loadingToast);
       toastService.error('Failed to update user role');
-      console.error('Error updating user role:', error);
     }
   };
 

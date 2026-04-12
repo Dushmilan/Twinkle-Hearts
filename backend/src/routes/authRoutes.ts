@@ -15,7 +15,7 @@ const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   name: z.string().min(2, 'Name must be at least 2 characters').optional(),
-  phone: z.string().min(10, 'Valid phone number required').optional(),
+  phone: z.string().regex(/^\+?[0-9]{10,15}$/, 'Phone must be 10-15 digits, optionally prefixed with +').optional(),
 });
 
 const loginSchema = z.object({
@@ -69,7 +69,7 @@ router.post('/login', rateLimiter, async (req, res, next) => {
  * POST /api/auth/refresh
  * Refresh access token
  */
-router.post('/refresh', async (req, res, next) => {
+router.post('/refresh', rateLimiter, async (req, res, next) => {
   try {
     const input = refreshSchema.parse(req.body);
     const result = await refreshToken(input.refreshToken);
@@ -106,9 +106,9 @@ router.post('/logout', authenticate, async (req, res, next) => {
  */
 router.get('/me', authenticate, async (req, res, next) => {
   try {
-    const { getUserProfile } = await import('../services/authService.js');
+    const { getUserProfile } = await import('../services/userService.js');
     const user = await getUserProfile(req.user!.id);
-    
+
     res.json({
       success: true,
       data: user,
@@ -120,18 +120,18 @@ router.get('/me', authenticate, async (req, res, next) => {
 
 /**
  * POST /api/auth/google
- * Google OAuth login/signup
+ * Google OAuth login/signup with ID token verification
  */
-router.post('/google', async (req, res, next) => {
+router.post('/google', rateLimiter, async (req, res, next) => {
   try {
-    const { email, name, avatar } = req.body;
-    
-    if (!email) {
-      throw new BadRequestError('Email is required');
+    const { idToken } = req.body;
+
+    if (!idToken) {
+      throw new BadRequestError('Google ID token is required');
     }
-    
-    const result = await googleOAuth(email, name, avatar);
-    
+
+    const result = await googleOAuth(idToken);
+
     res.json({
       success: true,
       message: 'Google login successful',

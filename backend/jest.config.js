@@ -19,13 +19,15 @@ export default {
       'ts-jest',
       {
         useESM: true,
-        isolatedModules: true, // Skip type checking for faster tests
+        isolatedModules: true,
+        tsconfig: 'tsconfig.test.json',
       },
     ],
   },
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testMatch: ['**/tests/**/*.test.ts'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],

@@ -1,14 +1,12 @@
-// Authentication service
-// Private Commercial Project - Confidential
-
 import prisma from '../lib/prisma.js';
 import { hashPassword, comparePassword, validatePasswordStrength } from '../utils/password.js';
 import { signAccessToken, signRefreshToken, verifyToken } from '../lib/jwt.js';
-import { cacheSet, cacheDelete, cacheGet, CACHE_TTL, CacheKeys } from '../lib/cache.js';
+import { cacheSet, cacheDelete, cacheGet, cacheWrap, CACHE_TTL, CacheKeys } from '../lib/cache.js';
 import { redis } from '../lib/redis.js';
 import { logger } from '../lib/logger.js';
 import { BadRequestError, ConflictError, UnauthorizedError, NotFoundError } from '../middleware/errorHandler.js';
 import crypto from 'crypto';
+import { OAuth2Client } from 'google-auth-library';
 
 interface RegisterInput {
   email: string;
@@ -129,9 +127,41 @@ export async function login(input: LoginInput): Promise<AuthResponse> {
 }
 
 /**
- * Login/Signup with Google OAuth
+ * Login/Signup with Google OAuth - Requires ID token verification
  */
-export async function googleOAuth(email: string, name: string, avatar?: string): Promise<AuthResponse> {
+export async function googleOAuth(idToken: string): Promise<AuthResponse> {
+  // Verify Google ID token
+  const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  
+  let ticket;
+  try {
+    ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+  } catch (error) {
+    throw new BadRequestError('Invalid Google ID token');
+  }
+
+  const payload = ticket.getPayload();
+  if (!payload) {
+    throw new BadRequestError('Invalid Google ID token payload');
+  }
+
+  // Validate required fields
+  if (!payload.email) {
+    throw new BadRequestError('Email not provided by Google');
+  }
+
+  const email = payload.email;
+  const name = payload.name || '';
+  const avatar = payload.picture || '';
+
+  // Verify the token is for this app (audience check)
+  if (payload.aud !== process.env.GOOGLE_CLIENT_ID) {
+    throw new BadRequestError('Invalid token audience');
+  }
+
   let user = await prisma.user.findUnique({
     where: { email: email.toLowerCase() },
     select: {
@@ -263,104 +293,6 @@ export async function logoutAllSessions(userId: string): Promise<void> {
 }
 
 /**
- * Get current user profile with caching
- */
-export async function getUserProfile(userId: string) {
-  return cacheWrap(CacheKeys.user(userId), async () => {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        phone: true,
-        avatar: true,
-        role: true,
-        emailVerified: true,
-        createdAt: true,
-        lastLoginAt: true,
-        _count: {
-          select: {
-            orders: true,
-            addresses: true,
-            wishlist: true,
-          },
-        },
-      },
-    });
-
-    return user;
-  }, CACHE_TTL.USER_PROFILE);
-}
-
-/**
- * Update user profile
- */
-export async function updateUserProfile(
-  userId: string,
-  data: { name?: string; phone?: string; avatar?: string }
-) {
-  const user = await prisma.user.update({
-    where: { id: userId },
-    data,
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      phone: true,
-      avatar: true,
-      role: true,
-    },
-  });
-
-  // Invalidate cache
-  await cacheDelete(CacheKeys.user(userId));
-
-  return user;
-}
-
-/**
- * Change password
- */
-export async function changePassword(
-  userId: string,
-  currentPassword: string,
-  newPassword: string
-): Promise<void> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-  });
-
-  if (!user || !user.passwordHash) {
-    throw new BadRequestError('Cannot change password for OAuth accounts');
-  }
-
-  // Verify current password
-  const isValid = await comparePassword(currentPassword, user.passwordHash);
-  if (!isValid) {
-    throw new UnauthorizedError('Current password is incorrect');
-  }
-
-  // Validate new password
-  const validation = validatePasswordStrength(newPassword);
-  if (!validation.valid) {
-    throw new BadRequestError(validation.errors.join(', '));
-  }
-
-  // Hash and update
-  const newHash = await hashPassword(newPassword);
-  await prisma.user.update({
-    where: { id: userId },
-    data: { passwordHash: newHash },
-  });
-
-  // Invalidate all sessions
-  await logoutAllSessions(userId);
-
-  logger.info(`Password changed for user: ${userId}`);
-}
-
-/**
  * Create session and generate tokens
  */
 async function createSession(user: any): Promise<AuthResponse> {
@@ -409,19 +341,4 @@ async function createSession(user: any): Promise<AuthResponse> {
       avatar: user.avatar,
     },
   };
-}
-
-/**
- * Cache wrapper helper
- */
-async function cacheWrap<T>(key: string, fn: () => Promise<T>, ttl: number): Promise<T> {
-  const cached = await cacheGet<T>(key);
-  if (cached !== null) {
-    return cached;
-  }
-
-  const result = await fn();
-  await cacheSet(key, result, ttl);
-
-  return result;
 }

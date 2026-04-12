@@ -1,6 +1,5 @@
 import toast from 'react-hot-toast';
 
-type ToastType = 'success' | 'error' | 'loading' | 'blank';
 
 interface ToastOptions {
   duration?: number;

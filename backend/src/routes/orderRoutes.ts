@@ -12,29 +12,19 @@ router.use(authenticate);
 /**
  * POST /api/orders/create
  * Create a new order from cart
+ * Server-side calculates totals from validated item prices
  */
 router.post('/create', orderRateLimit, validateOrder, async (req, res, next) => {
   try {
     const { validatedItems, customerName, customerPhone } = req.body;
     const userId = req.user!.id;
 
-    // Calculate totals server-side
-    const subtotal = validatedItems.reduce(
-      (sum: number, item: any) => sum + item.currentPrice * item.quantity,
-      0
-    );
-    const tax = subtotal * 0.18; // 18% GST
-    const total = subtotal + tax;
-
-    // Create order with authenticated user
+    // Create order (totals calculated server-side in service)
     const order = await createOrder({
       userId,
       customerName,
       customerPhone,
       items: validatedItems,
-      subtotal,
-      tax,
-      total,
     });
 
     // Generate WhatsApp message
@@ -47,11 +37,11 @@ router.post('/create', orderRateLimit, validateOrder, async (req, res, next) => 
         productId: item.productId,
         productName: item.productName,
         quantity: item.quantity,
-        price: item.price,
+        price: Number(item.price),
       })),
-      subtotal: order.subtotal,
-      tax: order.tax,
-      total: order.total,
+      subtotal: Number(order.subtotal),
+      tax: Number(order.tax),
+      total: Number(order.total),
       whatsappDeepLink,
       createdAt: order.createdAt,
     });
@@ -96,7 +86,7 @@ router.get('/:id', async (req, res, next) => {
     res.json({
       order: {
         id: order.id,
-        total: order.total,
+        total: Number(order.total),
         items: order.items,
         customerName: order.customerName,
         createdAt: order.createdAt,

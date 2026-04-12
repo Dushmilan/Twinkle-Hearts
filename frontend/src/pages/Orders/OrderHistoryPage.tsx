@@ -19,6 +19,7 @@ interface Order {
   total: number;
   customerName: string;
   createdAt: string;
+  status?: string;
 }
 
 export default function OrderHistoryPage() {
@@ -26,10 +27,12 @@ export default function OrderHistoryPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/users/orders', {
+        const response = await fetch(`${API_URL}/api/users/orders`, {
           headers: {
             'Authorization': `Bearer ${tokens?.accessToken}`,
             'Content-Type': 'application/json',
@@ -43,7 +46,6 @@ export default function OrderHistoryPage() {
         const data = await response.json();
         setOrders(data.data.orders || []);
       } catch (error) {
-        console.error('Error fetching orders:', error);
         toastService.error('Failed to load orders');
       } finally {
         setIsLoading(false);
@@ -56,13 +58,25 @@ export default function OrderHistoryPage() {
   }, [tokens?.accessToken]);
 
   const formatCurrency = (amount: number) => {
-    return `₹${(amount / 100).toFixed(2)}`;
+    return `Rs. ${amount.toFixed(2)}`;
+  };
+
+  const getStatusBadge = (status?: string) => {
+    if (!status) return null;
+    const statusMap: Record<string, { label: string; variant: string }> = {
+      PENDING_WHATSAPP_CONFIRMATION: { label: 'Pending', variant: 'badge-gold' },
+      CONFIRMED: { label: 'Confirmed', variant: 'badge-sage' },
+      CANCELLED: { label: 'Cancelled', variant: 'badge-rose' },
+      EXPIRED: { label: 'Expired', variant: 'badge-coral' },
+    };
+    const s = statusMap[status] || { label: status, variant: 'badge-coral' };
+    return <span className={`badge ${s.variant}`}>{s.label}</span>;
   };
 
   if (isLoading) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">My Orders</h1>
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <h1 className="font-display text-3xl font-bold text-gray-900 mb-6">My Orders</h1>
         <div className="space-y-4">
           <OrderSkeleton />
           <OrderSkeleton />
@@ -72,51 +86,43 @@ export default function OrderHistoryPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">My Orders</h1>
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <h1 className="font-display text-3xl font-bold text-gray-900 mb-1">My Orders</h1>
+      <p className="text-gray-500 mb-8">Track your card orders</p>
 
       {orders.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-lg shadow-md">
-          <svg
-            className="mx-auto h-12 w-12 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-            />
-          </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No orders yet</h3>
-          <p className="mt-1 text-sm text-gray-500">
-            Start shopping to see your orders here!
-          </p>
-          <Link
-            to="/"
-            className="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-pink-700 bg-pink-100 hover:bg-pink-200"
-          >
-            Browse Products
-          </Link>
+        <div className="card">
+          <div className="empty-state py-12">
+            <div className="empty-state-icon">
+              <svg className="w-full h-full" fill="none" viewBox="0 0 64 64" stroke="currentColor" strokeWidth="1.5">
+                <rect x="8" y="16" width="48" height="32" rx="4" />
+                <path d="M8 20l24 16 24-16" />
+              </svg>
+            </div>
+            <h3 className="empty-state-title">No orders yet</h3>
+            <p className="empty-state-text">Start shopping to see your orders here!</p>
+            <Link to="/" className="btn-primary mt-6">
+              Browse Cards
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-lg shadow-md p-6">
+            <div key={order.id} className="card p-6">
               <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="font-display text-lg font-semibold text-gray-900">
                     Order #{order.id.slice(0, 8).toUpperCase()}
                   </h3>
                   <p className="text-sm text-gray-500">
-                    Placed on {new Date(order.createdAt).toLocaleDateString()}
+                    {new Date(order.createdAt).toLocaleDateString('en-LK', { year: 'numeric', month: 'long', day: 'numeric' })}
                   </p>
                 </div>
+                {getStatusBadge(order.status)}
               </div>
 
-              <div className="border-t border-b py-4 my-4 space-y-3">
+              <div className="border-t border-b border-cream-100 py-4 my-4 space-y-3">
                 {order.items.map((item, index) => (
                   <div key={index} className="flex justify-between items-center">
                     <div>
@@ -131,21 +137,17 @@ export default function OrderHistoryPage() {
               </div>
 
               <div className="flex justify-between items-center">
-                <div className="space-y-1">
-                  <p className="text-sm text-gray-600">Subtotal: {formatCurrency(order.subtotal)}</p>
-                  <p className="text-sm text-gray-600">Tax: {formatCurrency(order.tax)}</p>
-                  <p className="text-lg font-bold text-gray-900">
-                    Total: {formatCurrency(order.total)}
+                <div>
+                  <p className="text-sm text-gray-500">
+                    Total: <span className="text-lg font-bold text-coral-600">{formatCurrency(order.total)}</span>
                   </p>
                 </div>
-                <div className="flex gap-3">
-                  <Link
-                    to={`/order-success/${order.id}`}
-                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
-                  >
-                    View Details
-                  </Link>
-                </div>
+                <Link
+                  to={`/order-success/${order.id}`}
+                  className="btn-secondary text-sm"
+                >
+                  View Details
+                </Link>
               </div>
             </div>
           ))}

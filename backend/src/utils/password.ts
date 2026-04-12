@@ -64,7 +64,7 @@ export function validatePasswordStrength(password: string): {
 }
 
 /**
- * Generate a random password
+ * Generate a random password using cryptographically secure randomness
  */
 export function generateRandomPassword(length: number = 12): string {
   const charset =
@@ -77,11 +77,24 @@ export function generateRandomPassword(length: number = 12): string {
   password += '1'; // number
   password += '!'; // special
 
+  // M4: Use crypto.getRandomValues instead of Math.random()
+  const randomValues = new Uint32Array(length - password.length);
+  crypto.getRandomValues(randomValues);
+
   // Fill the rest randomly
-  for (let i = password.length; i < length; i++) {
-    password += charset.charAt(Math.floor(Math.random() * charset.length));
+  for (let i = 0; i < randomValues.length; i++) {
+    password += charset.charAt(randomValues[i] % charset.length);
   }
 
-  // Shuffle the password
-  return password.split('').sort(() => Math.random() - 0.5).join('');
+  // Shuffle the password using crypto
+  const shuffleArray = password.split('');
+  const shuffleValues = new Uint32Array(shuffleArray.length);
+  crypto.getRandomValues(shuffleValues);
+  
+  for (let i = shuffleArray.length - 1; i > 0; i--) {
+    const j = shuffleValues[i] % (i + 1);
+    [shuffleArray[i], shuffleArray[j]] = [shuffleArray[j], shuffleArray[i]];
+  }
+  
+  return shuffleArray.join('');
 }

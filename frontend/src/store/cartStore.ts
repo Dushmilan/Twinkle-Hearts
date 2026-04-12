@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { db } from './db';
-import { CartItemDB } from './db';
 
 export interface CartItem {
   productId: string;
@@ -77,7 +76,7 @@ export const useCartStore = create<CartState>()(
             });
           }
         } catch (error) {
-          console.error('Failed to save to IndexedDB:', error);
+          // Silently fail - IndexedDB is optional for persistence
         }
 
         // Sync with backend when online

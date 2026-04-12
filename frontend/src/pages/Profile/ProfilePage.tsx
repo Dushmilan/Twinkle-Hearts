@@ -21,8 +21,10 @@ export default function ProfilePage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-600">Please log in to view your profile</p>
+      <div className="max-w-4xl mx-auto px-4 py-16">
+        <div className="empty-state">
+          <h3 className="empty-state-title">Please log in to view your profile</h3>
+        </div>
       </div>
     );
   }
@@ -32,118 +34,95 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-          {!isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="text-pink-600 hover:text-pink-700 font-medium"
-            >
-              Edit Profile
-            </button>
-          )}
+    <div className="max-w-3xl mx-auto px-4 py-8">
+      <h1 className="font-display text-3xl font-bold text-gray-900 mb-8">My Profile</h1>
+
+      <div className="card p-6">
+        {/* Avatar & Name */}
+        <div className="flex items-center gap-5 mb-8 pb-6 border-b border-cream-100">
+          <div className="w-20 h-20 bg-coral-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-2xl font-display font-bold text-coral-600">
+              {user?.name?.charAt(0).toUpperCase() || 'U'}
+            </span>
+          </div>
+          <div>
+            <h2 className="font-display text-2xl font-semibold text-gray-900">{user?.name}</h2>
+            <p className="text-gray-500">{user?.email}</p>
+            <span className="inline-block mt-2 badge badge-coral capitalize">
+              {user?.role?.toLowerCase() || 'customer'}
+            </span>
+          </div>
         </div>
 
         {isEditing ? (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Name
-              </label>
+              <label className="label-text">Name</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="input-field"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
+              <label className="label-text">Email</label>
               <input
                 type="email"
                 value={user?.email || ''}
                 disabled
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
+                className="input-field bg-cream-100 text-gray-500 cursor-not-allowed"
               />
-              <p className="mt-1 text-sm text-gray-500">Email cannot be changed</p>
+              <p className="mt-1 text-xs text-gray-400">Email cannot be changed</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone
-              </label>
+              <label className="label-text">Phone</label>
               <input
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="input-field"
+                placeholder="+94 7X XXX XXXX"
               />
             </div>
 
-            <div className="flex gap-4">
-              <button
-                type="submit"
-                className="bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition"
-              >
+            <div className="flex gap-3 pt-2">
+              <button type="submit" className="btn-primary">
                 Save Changes
               </button>
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition"
+                className="btn-secondary"
               >
                 Cancel
               </button>
             </div>
           </form>
         ) : (
-          <div className="space-y-6">
-            <div className="flex items-center gap-6">
-              <div className="w-24 h-24 bg-pink-100 rounded-full flex items-center justify-center">
-                <span className="text-3xl font-bold text-pink-600">
-                  {user?.name?.charAt(0).toUpperCase() || 'U'}
-                </span>
+          <div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Phone</p>
+                <p className="text-gray-900 font-medium">{user?.phone || 'Not provided'}</p>
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{user?.name}</h2>
-                <p className="text-gray-600">{user?.email}</p>
-                <span className="inline-block mt-2 px-3 py-1 bg-pink-100 text-pink-700 text-sm rounded-full capitalize">
-                  {user?.role || 'user'}
-                </span>
-              </div>
-            </div>
-
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">Phone Number</p>
-                  <p className="text-gray-900">{user?.phone || 'Not provided'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Member Since</p>
-                  <p className="text-gray-900">
-                    {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Actions</h3>
-              <div className="space-y-3">
-                <button className="text-pink-600 hover:text-pink-700 font-medium">
-                  Change Password
-                </button>
-                <p className="text-sm text-gray-500">
-                  Last updated: {user?.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : 'N/A'}
+                <p className="text-sm text-gray-500 mb-1">Member Since</p>
+                <p className="text-gray-900 font-medium">
+                  {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-LK', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
                 </p>
               </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setIsEditing(true)}
+                className="btn-primary"
+              >
+                Edit Profile
+              </button>
             </div>
           </div>
         )}

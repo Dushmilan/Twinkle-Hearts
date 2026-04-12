@@ -37,14 +37,6 @@ export const emailMock = {
     });
   },
 
-  async sendOrderConfirmationEmail(email: string, orderId: string): Promise<void> {
-    this.sentEmails.push({
-      to: email,
-      subject: 'Order Confirmation',
-      body: `Your order ${orderId} has been confirmed`,
-    });
-  },
-
   clear(): void {
     this.sentEmails = [];
   },
@@ -74,13 +66,6 @@ export const whatsappMock = {
 
   async sendMessage(phoneNumber: string, message: string): Promise<void> {
     this.sentMessages.push({ phoneNumber, message });
-  },
-
-  async sendOrderUpdate(phoneNumber: string, orderId: string, status: string): Promise<void> {
-    this.sentMessages.push({
-      phoneNumber,
-      message: `Your order ${orderId} status has been updated to: ${status}`,
-    });
   },
 
   async sendVerificationCode(phoneNumber: string, code: string): Promise<void> {
@@ -113,7 +98,6 @@ export const whatsappMock = {
 export interface PaymentDetails {
   amount: number;
   currency: string;
-  orderId: string;
   status: 'success' | 'failed' | 'pending';
   transactionId?: string;
 }
@@ -121,11 +105,10 @@ export interface PaymentDetails {
 export const paymentMock = {
   payments: [] as PaymentDetails[],
 
-  async processPayment(amount: number, currency: string, orderId: string): Promise<PaymentDetails> {
+  async processPayment(amount: number, currency: string): Promise<PaymentDetails> {
     const payment: PaymentDetails = {
       amount,
       currency,
-      orderId,
       status: 'success',
       transactionId: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     };
@@ -148,10 +131,6 @@ export const paymentMock = {
 
   clear(): void {
     this.payments = [];
-  },
-
-  getPaymentByOrderId(orderId: string): PaymentDetails | undefined {
-    return this.payments.find(p => p.orderId === orderId);
   },
 };
 

@@ -7,6 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { logger } from './lib/logger.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { requestId } from './middleware/requestId.js';
 import { rateLimiter } from './middleware/rateLimiter.js';
 import swaggerSpec from './lib/swagger.js';
 import authRoutes from './routes/authRoutes.js';
@@ -16,6 +17,8 @@ import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import { initCloudinary } from './lib/cloudinary.js';
+import prisma from './lib/prisma.js';
+import { redis } from './lib/redis.js';
 
 // Load environment variables from backend/.env.local
 const __filename = fileURLToPath(import.meta.url);
@@ -47,17 +50,70 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // Rate limiting
 app.use(rateLimiter);
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+// Request correlation ID
+app.use(requestId);
+
+// Health check with dependency pings
+app.get('/health', async (req, res) => {
+  const health: {
+    status: string;
+    database?: string;
+    redis?: string;
+    timestamp: string;
+  } = {
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+  };
+
+  // Check database
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    health.database = 'connected';
+  } catch {
+    health.database = 'disconnected';
+    health.status = 'error';
+  }
+
+  // Check Redis (if configured)
+  if (redis) {
+    try {
+      await redis.ping();
+      health.redis = 'connected';
+    } catch {
+      health.redis = 'disconnected';
+    }
+  } else {
+    health.redis = 'disabled';
+  }
+
+  const statusCode = health.status === 'error' ? 503 : 200;
+  res.status(statusCode).json(health);
 });
 
-// API Documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-  explorer: true,
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'Twinkle-Hearts API Docs',
-}));
+// M8: Add Cache-Control headers for sensitive authenticated endpoints
+app.use((req, res, next) => {
+  // Prevent caching for authenticated API routes
+  if (
+    req.path.startsWith('/api/users') ||
+    req.path.startsWith('/api/admin') ||
+    req.path.startsWith('/api/orders') ||
+    req.path.startsWith('/api/cart')
+  ) {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+  }
+  next();
+});
+
+// L2: API Documentation - Only serve Swagger in development
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Twinkle-Hearts API Docs',
+  }));
+}
 
 // Public API Routes
 app.use('/api/auth', authRoutes);
@@ -87,9 +143,19 @@ const server = app.listen(PORT, () => {
 });
 
 // Graceful shutdown
-process.on('SIGTERM', () => {
+process.on('SIGTERM', async () => {
   logger.info('SIGTERM received. Shutting down gracefully...');
-  server.close(() => {
+  server.close(async () => {
+    await prisma.$disconnect();
+    logger.info('Process terminated');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', async () => {
+  logger.info('SIGINT received. Shutting down gracefully...');
+  server.close(async () => {
+    await prisma.$disconnect();
     logger.info('Process terminated');
     process.exit(0);
   });

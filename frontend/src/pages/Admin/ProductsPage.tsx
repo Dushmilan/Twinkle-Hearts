@@ -27,6 +27,8 @@ function AdminProducts() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
   // Track new files to upload and existing images separately
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
@@ -54,7 +56,7 @@ function AdminProducts() {
     try {
       const searchParam = searchTerm ? `?search=${searchTerm}` : '';
       const response = await fetch(
-        `http://localhost:3001/api/admin/products${searchParam}`,
+        `${API_URL}/api/admin/products${searchParam}`,
         {
           headers: {
             'Authorization': `Bearer ${tokens?.accessToken}`,
@@ -70,7 +72,6 @@ function AdminProducts() {
       const data = await response.json();
       setProducts(data.data.products || []);
     } catch (error) {
-      console.error('Error fetching products:', error);
       toastService.error('Failed to load products');
     } finally {
       setIsLoading(false);
@@ -108,7 +109,7 @@ setIsUploadingImages(false);
       const payload = {
         name: formData.name,
         description: formData.description,
-        price: parseInt(formData.price) * 100, // Convert to cents
+        price: parseFloat(formData.price), // Send price as-is (database stores as Decimal)
         stock: parseInt(formData.stock),
         sku: formData.sku,
         category: formData.category,
@@ -117,8 +118,8 @@ setIsUploadingImages(false);
       };
 
       const url = editingProduct
-        ? `http://localhost:3001/api/admin/products/${editingProduct.id}`
-        : 'http://localhost:3001/api/admin/products';
+        ? `${API_URL}/api/admin/products/${editingProduct.id}`
+        : `${API_URL}/api/admin/products`;
 
       const method = editingProduct ? 'PUT' : 'POST';
 
@@ -146,7 +147,6 @@ setIsUploadingImages(false);
     } catch (error) {
       toastService.dismiss(loadingToast);
       toastService.error(error instanceof Error ? error.message : 'Failed to save product');
-      console.error('Error saving product:', error);
     } finally {
       setIsUploadingImages(false);
     }
@@ -158,7 +158,7 @@ setIsUploadingImages(false);
     const loadingToast = toastService.loading('Deleting product...');
 
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/products/${id}`, {
+      const response = await fetch(`${API_URL}/api/admin/products/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${tokens?.accessToken}`,
@@ -174,8 +174,12 @@ setIsUploadingImages(false);
       fetchProducts();
     } catch (error) {
       toastService.dismiss(loadingToast);
-      toastService.error('Failed to delete product');
-      console.error('Error deleting product:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Failed to delete product';
+      if (errorMsg.includes('restrict')) {
+        toastService.error('Cannot delete product that has orders');
+      } else {
+        toastService.error('Failed to delete product');
+      }
     }
   };
 
@@ -183,7 +187,7 @@ setIsUploadingImages(false);
     setFormData({
       name: product.name,
       description: product.description,
-      price: (product.price / 100).toString(),
+      price: product.price.toString(),
       stock: product.stock.toString(),
       sku: product.sku,
       category: product.category,
@@ -220,7 +224,7 @@ setIsUploadingImages(false);
   };
 
   const formatCurrency = (amount: number) => {
-    return `₹${(amount / 100).toFixed(2)}`;
+    return `₹${amount.toFixed(2)}`;
   };
 
   return (

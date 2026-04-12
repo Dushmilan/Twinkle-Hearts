@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import prisma from '../lib/prisma.js';
+import type { Prisma } from '@prisma/client';
 import { NotFoundError } from '../middleware/errorHandler.js';
 
 const router = Router();
@@ -17,7 +18,7 @@ router.get('/', async (req, res, next) => {
 
     const skip = (page - 1) * limit;
 
-    const where: any = { isActive: true };
+    const where: Prisma.ProductWhereInput = { isActive: true };
 
     if (search) {
       where.OR = [

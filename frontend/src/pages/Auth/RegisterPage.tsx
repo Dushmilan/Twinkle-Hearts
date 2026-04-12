@@ -71,7 +71,7 @@ export default function RegisterPage() {
       await register(formData.email, formData.password, formData.name, formData.phone);
       navigate('/', { replace: true });
     } catch (error) {
-      console.error('Registration error:', error);
+      // Error is handled by AuthContext which shows toast notifications
     } finally {
       setIsSubmitting(false);
     }
@@ -80,9 +80,13 @@ export default function RegisterPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    
+
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      });
     }
 
     if (name === 'password') {
@@ -91,192 +95,171 @@ export default function RegisterPage() {
   };
 
   const getPasswordStrengthColor = () => {
-    if (passwordStrength <= 2) return 'bg-red-500';
-    if (passwordStrength <= 3) return 'bg-yellow-500';
-    return 'bg-green-500';
+    if (passwordStrength <= 2) return 'bg-red-400';
+    if (passwordStrength <= 3) return 'bg-gold-400';
+    return 'bg-sage-500';
   };
 
   const getPasswordStrengthLabel = () => {
     if (passwordStrength <= 2) return 'Weak';
-    if (passwordStrength <= 3) return 'Medium';
+    if (passwordStrength <= 3) return 'Fair';
     return 'Strong';
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 px-4 py-8">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-warm-gradient px-4 py-12">
+      {/* Decorative sparkles */}
+      <div className="absolute top-24 right-20 w-2 h-2 bg-rose-300 rounded-full animate-float opacity-40 hidden lg:block" />
+      <div className="absolute bottom-32 left-16 w-1.5 h-1.5 bg-gold-300 rounded-full animate-float-slow opacity-30 hidden lg:block" />
+
+      <div className="max-w-md w-full">
+        {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-pink-100 rounded-full mb-4">
-            <svg
-              className="w-8 h-8 text-pink-600"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
-          <p className="text-gray-600 mt-2">Join Twinkle Hearts today</p>
+          <Link to="/" className="inline-flex items-center gap-2">
+            <HeartIcon className="w-10 h-10 text-coral-500" />
+            <span className="text-2xl font-display font-semibold text-gray-900">
+              Twinkle<span className="text-coral-500">Hearts</span>
+            </span>
+          </Link>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              autoComplete="name"
-              value={formData.name}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition ${
-                errors.name ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="John Doe"
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-            )}
+        <div className="bg-white rounded-2xl shadow-card p-8">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-coral-100 rounded-full mb-4">
+              <svg className="w-7 h-7 text-coral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+              </svg>
+            </div>
+            <h1 className="font-display text-2xl font-bold text-gray-900">Create Account</h1>
+            <p className="text-gray-500 mt-1">Join TwinkleHearts today</p>
           </div>
 
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="you@example.com"
-            />
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-            )}
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label htmlFor="name" className="label-text">Full Name</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                value={formData.name}
+                onChange={handleChange}
+                className={`input-field ${errors.name ? 'input-field-error' : ''}`}
+                placeholder="Your full name"
+              />
+              {errors.name && <p className="mt-1.5 text-sm text-red-600">{errors.name}</p>}
+            </div>
 
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number
-            </label>
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              autoComplete="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition ${
-                errors.phone ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="+1 (555) 123-4567"
-            />
-            {errors.phone && (
-              <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
-            )}
-          </div>
+            <div>
+              <label htmlFor="email" className="label-text">Email Address</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={`input-field ${errors.email ? 'input-field-error' : ''}`}
+                placeholder="you@example.com"
+              />
+              {errors.email && <p className="mt-1.5 text-sm text-red-600">{errors.email}</p>}
+            </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              value={formData.password}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="••••••••"
-            />
-            {formData.password && (
-              <div className="mt-2">
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full transition-all ${getPasswordStrengthColor()}`}
-                      style={{ width: `${(passwordStrength / 5) * 100}%` }}
-                    />
+            <div>
+              <label htmlFor="phone" className="label-text">Phone Number</label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                value={formData.phone}
+                onChange={handleChange}
+                className={`input-field ${errors.phone ? 'input-field-error' : ''}`}
+                placeholder="+94 7X XXX XXXX"
+              />
+              {errors.phone && <p className="mt-1.5 text-sm text-red-600">{errors.phone}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="password" className="label-text">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                value={formData.password}
+                onChange={handleChange}
+                className={`input-field ${errors.password ? 'input-field-error' : ''}`}
+                placeholder="••••••••"
+              />
+              {formData.password && (
+                <div className="mt-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 bg-cream-200 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-300 ${getPasswordStrengthColor()}`}
+                        style={{ width: `${(passwordStrength / 5) * 100}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-gray-500">{getPasswordStrengthLabel()}</span>
                   </div>
-                  <span className="text-xs text-gray-600">{getPasswordStrengthLabel()}</span>
                 </div>
-              </div>
-            )}
-            {errors.password && (
-              <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-            )}
-          </div>
+              )}
+              {errors.password && <p className="mt-1.5 text-sm text-red-600">{errors.password}</p>}
+            </div>
 
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-              Confirm Password
-            </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition ${
-                errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="••••••••"
-            />
-            {errors.confirmPassword && (
-              <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
-            )}
-          </div>
+            <div>
+              <label htmlFor="confirmPassword" className="label-text">Confirm Password</label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className={`input-field ${errors.confirmPassword ? 'input-field-error' : ''}`}
+                placeholder="••••••••"
+              />
+              {errors.confirmPassword && (
+                <p className="mt-1.5 text-sm text-red-600">{errors.confirmPassword}</p>
+              )}
+            </div>
 
-          <div className="flex items-start">
-            <input
-              id="terms"
-              name="terms"
-              type="checkbox"
-              className="w-4 h-4 mt-1 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
-            />
-            <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
-              I agree to the{' '}
-              <a href="#" className="text-pink-600 hover:text-pink-700 font-medium">
-                Terms of Service
-              </a>{' '}
-              and{' '}
-              <a href="#" className="text-pink-600 hover:text-pink-700 font-medium">
-                Privacy Policy
-              </a>
-            </label>
-          </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full btn-primary py-3 text-base disabled:opacity-60"
+            >
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Creating Account...
+                </>
+              ) : (
+                'Create Account'
+              )}
+            </button>
+          </form>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? 'Creating Account...' : 'Create Account'}
-          </button>
-        </form>
-
-        <p className="mt-8 text-center text-sm text-gray-600">
-          Already have an account?{' '}
-          <Link to="/login" className="font-medium text-pink-600 hover:text-pink-700">
-            Sign in
-          </Link>
-        </p>
+          <p className="mt-8 text-center text-sm text-gray-500">
+            Already have an account?{' '}
+            <Link to="/login" className="font-medium text-coral-600 hover:text-coral-700">
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
+  );
+}
+
+function HeartIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+    </svg>
   );
 }

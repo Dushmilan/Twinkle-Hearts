@@ -2,6 +2,7 @@
 // Private Commercial Project - Confidential
 
 import prisma from '../lib/prisma.js';
+import type { AddressType } from '@prisma/client';
 import { cacheDelete, cacheGet, cacheSet, CACHE_TTL, CacheKeys } from '../lib/cache.js';
 import { logger } from '../lib/logger.js';
 import { NotFoundError, ForbiddenError, BadRequestError } from '../middleware/errorHandler.js';
@@ -203,7 +204,15 @@ export async function createAddress(
   const address = await prisma.address.create({
     data: {
       userId,
-      ...data,
+      label: data.label,
+      type: data.type as AddressType | undefined,
+      street: data.street,
+      city: data.city,
+      state: data.state,
+      zip: data.zip,
+      country: data.country,
+      phone: data.phone,
+      isDefault: data.isDefault,
     },
   });
 
@@ -249,7 +258,10 @@ export async function updateAddress(
 
   const address = await prisma.address.update({
     where: { id: addressId },
-    data,
+    data: {
+      ...data,
+      type: data.type as AddressType | undefined,
+    },
   });
 
   await cacheDelete(CacheKeys.userAddresses(userId));
