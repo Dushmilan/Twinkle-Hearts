@@ -40,7 +40,7 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Center Nav */}
             <nav className="hidden md:flex items-center gap-1">
-              <NavLink to="/shop" active={location.pathname === '/shop' || location.pathname === '/'}>
+              <NavLink to="/shop" active={location.pathname === '/shop'}>
                 Shop
               </NavLink>
             </nav>
@@ -157,7 +157,7 @@ export default function Layout({ children }: LayoutProps) {
           {isMenuOpen && (
             <div className="md:hidden border-t border-cream-100 py-4 animate-fade-up">
               <nav className="flex flex-col gap-1">
-                <NavLink to="/shop" active={location.pathname === '/shop' || location.pathname === '/'} mobile onClick={() => setIsMenuOpen(false)}>
+                <NavLink to="/shop" active={location.pathname === '/shop'} mobile onClick={() => setIsMenuOpen(false)}>
                   Shop
                 </NavLink>
                 {isAuthenticated ? (

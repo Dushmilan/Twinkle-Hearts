@@ -47,8 +47,9 @@ function AdminDashboard() {
     }
   }, [tokens?.accessToken]);
 
-  const formatCurrency = (amount: number) => {
-    return `Rs. ${amount.toFixed(2)}`;
+  const formatCurrency = (amount: any) => {
+    const num = Number(amount);
+    return `Rs. ${isNaN(num) ? '0.00' : num.toFixed(2)}`;
   };
 
   if (isLoading) {

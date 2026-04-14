@@ -223,8 +223,9 @@ setIsUploadingImages(false);
     setExistingImages(images);
   };
 
-  const formatCurrency = (amount: number) => {
-    return `₹${amount.toFixed(2)}`;
+  const formatCurrency = (amount: any) => {
+    const num = Number(amount);
+    return `₹${isNaN(num) ? '0.00' : num.toFixed(2)}`;
   };
 
   return (

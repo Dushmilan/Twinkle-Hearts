@@ -28,7 +28,8 @@ router.get('/', async (req, res, next) => {
     }
 
     if (category) {
-      where.category = category;
+      // Case-insensitive category matching
+      where.category = { contains: category, mode: 'insensitive' };
     }
 
     const [products, total] = await Promise.all([

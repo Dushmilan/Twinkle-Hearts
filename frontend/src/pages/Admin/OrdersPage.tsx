@@ -56,7 +56,8 @@ function AdminOrders() {
   };
 
   const formatCurrency = (amount: number) => {
-    return `₹${amount.toFixed(2)}`;
+    const num = Number(amount);
+    return `₹${isNaN(num) ? '0.00' : num.toFixed(2)}`;
   };
 
   return (
