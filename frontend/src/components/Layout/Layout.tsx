@@ -8,12 +8,6 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const LANGUAGES = [
-  { code: 'en', label: 'EN' },
-  { code: 'si', label: 'සිං' },
-  { code: 'ta', label: 'தமி' },
-] as const;
-
 export default function Layout({ children }: LayoutProps) {
   const itemCount = useCartStore((state) => state.getItemCount());
   const location = useLocation();
@@ -46,35 +40,13 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Center Nav */}
             <nav className="hidden md:flex items-center gap-1">
-              <NavLink to="/" active={location.pathname === '/'}>
+              <NavLink to="/shop" active={location.pathname === '/shop' || location.pathname === '/'}>
                 Shop
               </NavLink>
-              {isAuthenticated && (
-                <>
-                  <NavLink to="/wishlist" active={location.pathname === '/wishlist'}>
-                    Wishlist
-                  </NavLink>
-                  <NavLink to="/orders" active={location.pathname === '/orders'}>
-                    Orders
-                  </NavLink>
-                </>
-              )}
             </nav>
 
             {/* Right Side */}
             <div className="flex items-center gap-3">
-              {/* Language Switcher */}
-              <div className="lang-toggle hidden sm:inline-flex">
-                {LANGUAGES.map((lang) => (
-                  <button
-                    key={lang.code}
-                    className={`lang-btn ${lang.code === 'en' ? 'lang-btn-active' : ''}`}
-                  >
-                    {lang.label}
-                  </button>
-                ))}
-              </div>
-
               {/* Cart */}
               <Link to="/cart" className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors">
                 <CartIcon className="w-5 h-5" />
@@ -184,33 +156,12 @@ export default function Layout({ children }: LayoutProps) {
           {/* Mobile menu */}
           {isMenuOpen && (
             <div className="md:hidden border-t border-cream-100 py-4 animate-fade-up">
-              {/* Mobile language switcher */}
-              <div className="flex items-center justify-center gap-1 mb-4">
-                <span className="text-xs text-gray-500 mr-2">Language:</span>
-                <div className="lang-toggle">
-                  {LANGUAGES.map((lang) => (
-                    <button
-                      key={lang.code}
-                      className={`lang-btn ${lang.code === 'en' ? 'lang-btn-active' : ''}`}
-                    >
-                      {lang.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               <nav className="flex flex-col gap-1">
-                <NavLink to="/" active={location.pathname === '/'} mobile onClick={() => setIsMenuOpen(false)}>
+                <NavLink to="/shop" active={location.pathname === '/shop' || location.pathname === '/'} mobile onClick={() => setIsMenuOpen(false)}>
                   Shop
                 </NavLink>
                 {isAuthenticated ? (
                   <>
-                    <NavLink to="/wishlist" active={location.pathname === '/wishlist'} mobile onClick={() => setIsMenuOpen(false)}>
-                      Wishlist
-                    </NavLink>
-                    <NavLink to="/orders" active={location.pathname === '/orders'} mobile onClick={() => setIsMenuOpen(false)}>
-                      Orders
-                    </NavLink>
                     <NavLink to="/profile" active={location.pathname === '/profile'} mobile onClick={() => setIsMenuOpen(false)}>
                       Profile
                     </NavLink>

@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
 import Layout from './components/Layout/Layout';
 import HomePage from './pages/Home/HomePage';
+import ShopPage from './pages/Shop/ShopPage';
 import ProductDetailPage from './pages/ProductDetail/ProductDetailPage';
 import CartPage from './pages/Cart/CartPage';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
@@ -35,6 +36,7 @@ function AppRoutes() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/shop" element={<ShopPage />} />
         <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/login" element={<LoginPage />} />

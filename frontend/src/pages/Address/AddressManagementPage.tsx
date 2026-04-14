@@ -4,12 +4,12 @@ import toastService from '../../utils/toast';
 
 interface Address {
   id: string;
-  name: string;
+  label: string;
   phone: string;
   street: string;
   city: string;
   state: string;
-  zipCode: string;
+  zip: string;
   isDefault: boolean;
 }
 
@@ -29,6 +29,9 @@ export default function AddressManagementPage() {
     country: 'LK',
     isDefault: false,
   });
+
+  const COUNTRY_CODE = '+94';
+  const PHONE_PLACEHOLDER = '7X XXX XXXX';
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
@@ -50,7 +53,7 @@ export default function AddressManagementPage() {
       }
 
       const data = await response.json();
-      setAddresses(data.data.addresses || []);
+      setAddresses(data.data || []);
     } catch (error) {
       toastService.error('Failed to load addresses');
     } finally {
@@ -70,13 +73,17 @@ export default function AddressManagementPage() {
 
       const method = editingId ? 'PUT' : 'POST';
 
+      // Prepend country code to phone number
+      const fullPhone = `${COUNTRY_CODE}${formData.phone.replace(/\s/g, '')}`;
+      const dataToSend = { ...formData, phone: fullPhone };
+
       const response = await fetch(url, {
         method,
         headers: {
           'Authorization': `Bearer ${tokens?.accessToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSend),
       });
 
       if (!response.ok) {
@@ -131,13 +138,18 @@ export default function AddressManagementPage() {
   };
 
   const handleEdit = (address: Address) => {
+    // Strip the +94 country code for display
+    const localPhone = address.phone.startsWith(COUNTRY_CODE) 
+      ? address.phone.slice(COUNTRY_CODE.length) 
+      : address.phone;
+
     setFormData({
-      label: address.name,
-      phone: address.phone,
+      label: address.label,
+      phone: localPhone,
       street: address.street,
       city: address.city,
       state: address.state,
-      zip: address.zipCode,
+      zip: address.zip,
       country: 'LK',
       isDefault: address.isDefault,
     });
@@ -215,14 +227,19 @@ export default function AddressManagementPage() {
               </div>
               <div>
                 <label className="label-text">Phone Number</label>
-                <input
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="input-field"
-                  placeholder="+94 7X XXX XXXX"
-                />
+                <div className="flex gap-2">
+                  <div className="input-field bg-gray-50 text-gray-600 w-20 text-center font-medium" aria-label="Country code">
+                    {COUNTRY_CODE}
+                  </div>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="input-field flex-1"
+                    placeholder={PHONE_PLACEHOLDER}
+                  />
+                </div>
               </div>
             </div>
 
@@ -338,11 +355,11 @@ export default function AddressManagementPage() {
                   Default
                 </span>
               )}
-              <h3 className="font-display font-semibold text-gray-900 mb-2">{address.name}</h3>
+              <h3 className="font-display font-semibold text-gray-900 mb-2">{address.label}</h3>
               <p className="text-sm text-gray-600 mb-1">{address.phone}</p>
               <p className="text-sm text-gray-600 mb-1">{address.street}</p>
               <p className="text-sm text-gray-600">
-                {address.city}, {address.state} {address.zipCode}
+                {address.city}, {address.state} {address.zip}
               </p>
               <div className="flex gap-3 mt-4">
                 <button
