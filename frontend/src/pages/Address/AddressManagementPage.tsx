@@ -20,12 +20,13 @@ export default function AddressManagementPage() {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    name: '',
+    label: '',
     phone: '',
     street: '',
     city: '',
     state: '',
-    zipCode: '',
+    zip: '',
+    country: 'LK',
     isDefault: false,
   });
 
@@ -88,12 +89,13 @@ export default function AddressManagementPage() {
       setIsAdding(false);
       setEditingId(null);
       setFormData({
-        name: '',
+        label: '',
         phone: '',
         street: '',
         city: '',
         state: '',
-        zipCode: '',
+        zip: '',
+        country: 'LK',
         isDefault: false,
       });
     } catch (error) {
@@ -130,12 +132,13 @@ export default function AddressManagementPage() {
 
   const handleEdit = (address: Address) => {
     setFormData({
-      name: address.name,
+      label: address.name,
       phone: address.phone,
       street: address.street,
       city: address.city,
       state: address.state,
-      zipCode: address.zipCode,
+      zip: address.zipCode,
+      country: 'LK',
       isDefault: address.isDefault,
     });
     setEditingId(address.id);
@@ -176,12 +179,13 @@ export default function AddressManagementPage() {
             setIsAdding(!isAdding);
             setEditingId(null);
             setFormData({
-              name: '',
+              label: '',
               phone: '',
               street: '',
               city: '',
               state: '',
-              zipCode: '',
+              zip: '',
+              country: 'LK',
               isDefault: false,
             });
           }}
@@ -199,13 +203,14 @@ export default function AddressManagementPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="label-text">Full Name</label>
+                <label className="label-text">Address Label (e.g., Home, Office)</label>
                 <input
                   type="text"
                   required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={formData.label}
+                  onChange={(e) => setFormData({ ...formData, label: e.target.value })}
                   className="input-field"
+                  placeholder="Home"
                 />
               </div>
               <div>
@@ -216,6 +221,7 @@ export default function AddressManagementPage() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="input-field"
+                  placeholder="+94 7X XXX XXXX"
                 />
               </div>
             </div>
@@ -257,11 +263,22 @@ export default function AddressManagementPage() {
                 <input
                   type="text"
                   required
-                  value={formData.zipCode}
-                  onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
+                  value={formData.zip}
+                  onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
                   className="input-field"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="label-text">Country</label>
+              <select
+                value={formData.country}
+                onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                className="input-field"
+              >
+                <option value="LK">Sri Lanka</option>
+              </select>
             </div>
 
             <div className="flex items-center gap-2">
