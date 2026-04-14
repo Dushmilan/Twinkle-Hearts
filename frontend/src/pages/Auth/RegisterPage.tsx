@@ -16,6 +16,9 @@ export default function RegisterPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
 
+  const COUNTRY_CODE = '+94';
+  const PHONE_PLACEHOLDER = '7X XXX XXXX';
+
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
@@ -31,8 +34,8 @@ export default function RegisterPage() {
 
     if (!formData.phone) {
       newErrors.phone = 'Phone number is required';
-    } else if (!/^\+?[\d\s-()]+$/.test(formData.phone)) {
-      newErrors.phone = 'Invalid phone number format';
+    } else if (!/^[0-9]{9,10}$/.test(formData.phone.replace(/\s/g, ''))) {
+      newErrors.phone = 'Invalid phone number format (e.g., 71 234 5678)';
     }
 
     if (!formData.password) {
@@ -68,7 +71,8 @@ export default function RegisterPage() {
 
     setIsSubmitting(true);
     try {
-      await register(formData.email, formData.password, formData.name, formData.phone);
+      const fullPhone = `${COUNTRY_CODE}${formData.phone.replace(/\s/g, '')}`;
+      await register(formData.email, formData.password, formData.name, fullPhone);
       navigate('/', { replace: true });
     } catch (error) {
       // Error is handled by AuthContext which shows toast notifications
@@ -167,16 +171,21 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="phone" className="label-text">Phone Number</label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                autoComplete="tel"
-                value={formData.phone}
-                onChange={handleChange}
-                className={`input-field ${errors.phone ? 'input-field-error' : ''}`}
-                placeholder="+94 7X XXX XXXX"
-              />
+              <div className="flex gap-2">
+                <div className="input-field bg-gray-50 text-gray-600 w-20 text-center font-medium" aria-label="Country code">
+                  {COUNTRY_CODE}
+                </div>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className={`input-field flex-1 ${errors.phone ? 'input-field-error' : ''}`}
+                  placeholder={PHONE_PLACEHOLDER}
+                />
+              </div>
               {errors.phone && <p className="mt-1.5 text-sm text-red-600">{errors.phone}</p>}
             </div>
 
