@@ -143,23 +143,21 @@ const server = app.listen(PORT, () => {
 });
 
 // Graceful shutdown
-process.on('SIGTERM', async () => {
-  logger.info('SIGTERM received. Shutting down gracefully...');
+async function shutdownGracefully(signal: string) {
+  logger.info(`${signal} received. Shutting down gracefully...`);
   server.close(async () => {
     await prisma.$disconnect();
+    if (redis) {
+      await redis.quit();
+      logger.info('Redis connection closed');
+    }
     logger.info('Process terminated');
     process.exit(0);
   });
-});
+}
 
-process.on('SIGINT', async () => {
-  logger.info('SIGINT received. Shutting down gracefully...');
-  server.close(async () => {
-    await prisma.$disconnect();
-    logger.info('Process terminated');
-    process.exit(0);
-  });
-});
+process.on('SIGTERM', () => shutdownGracefully('SIGTERM'));
+process.on('SIGINT', () => shutdownGracefully('SIGINT'));
 
 process.on('unhandledRejection', (reason, promise) => {
   logger.error('Unhandled Rejection at:', promise, 'reason:', reason);

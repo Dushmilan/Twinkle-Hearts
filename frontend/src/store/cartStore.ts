@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { db } from './db';
+import { useAuthStore } from './authStore';
 
 export interface CartItem {
   productId: string;
@@ -122,10 +123,16 @@ export const useCartStore = create<CartState>()(
 
         set({ isSyncing: true });
 
+        const token = useAuthStore.getState().tokens?.accessToken;
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         try {
           const response = await fetch('/api/cart/sync', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             body: JSON.stringify({
               items: items.map((item) => ({
                 productId: item.productId,

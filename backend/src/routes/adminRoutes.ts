@@ -1,7 +1,7 @@
 // Admin routes
 // Private Commercial Project - Confidential
 
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import prisma from '../lib/prisma.js';
 import type { Prisma } from '@prisma/client';
@@ -41,7 +41,7 @@ authenticate,
 requireAdmin,
 uploadProductImages('images', 10),
 handleUploadError,
-async (req: any, res: any, next: any) => {
+async (req: Request, res: Response, next: NextFunction) => {
 try {
 if (!req.files || req.files.length === 0) {
 throw new BadRequestError('No files uploaded');
@@ -225,8 +225,8 @@ router.post('/products', authenticate, requireAdmin, async (req, res, next) => {
     });
 
     // Invalidate cache
-    await cacheDelete('products:catalog');
-    await cacheDelete('products:featured');
+    await cacheDelete(CacheKeys.productsCatalog(1, 100));
+    await cacheDelete(CacheKeys.productsFeatured());
 
     res.status(201).json({
       success: true,
@@ -260,9 +260,9 @@ router.put('/products/:id', authenticate, requireAdmin, async (req, res, next) =
     });
 
     // Invalidate cache
-    await cacheDelete('products:catalog');
-    await cacheDelete('products:featured');
-    await cacheDelete(`product:${id}`);
+    await cacheDelete(CacheKeys.productsCatalog(1, 100));
+    await cacheDelete(CacheKeys.productsFeatured());
+    await cacheDelete(CacheKeys.product(id));
 
     res.json({
       success: true,
@@ -317,9 +317,9 @@ router.delete('/products/:id', authenticate, requireAdmin, async (req, res, next
     });
 
     // Invalidate cache
-    await cacheDelete('products:catalog');
-    await cacheDelete('products:featured');
-    await cacheDelete(`product:${id}`);
+    await cacheDelete(CacheKeys.productsCatalog(1, 100));
+    await cacheDelete(CacheKeys.productsFeatured());
+    await cacheDelete(CacheKeys.product(id));
 
     res.json({
       success: true,

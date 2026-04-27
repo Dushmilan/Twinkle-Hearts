@@ -3,7 +3,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../lib/jwt.js';
-import { cacheGet, CacheKeys } from '../lib/cache.js';
+import { cacheGet, cacheSet, CACHE_TTL, CacheKeys } from '../lib/cache.js';
 import prisma from '../lib/prisma.js';
 import { UnauthorizedError, ForbiddenError } from '../middleware/errorHandler.js';
 
@@ -60,7 +60,6 @@ export const authenticate = async (
       }
 
       // Cache the session
-      const { cacheSet, CACHE_TTL } = await import('../lib/cache.js');
       await cacheSet(sessionKey, { userId: dbSession.userId }, CACHE_TTL.SESSION);
     }
 

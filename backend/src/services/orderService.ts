@@ -15,11 +15,32 @@ interface CreateOrderInput {
   }>;
 }
 
+interface OrderItem {
+  id: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  price: number;
+}
+
+interface OrderResult {
+  id: string;
+  userId: string;
+  customerName: string;
+  customerPhone: string;
+  subtotal: number;
+  tax: number;
+  total: number;
+  status: string;
+  items: OrderItem[];
+  createdAt: Date;
+}
+
 /**
  * Create a new order with atomic stock deduction
  * Uses a Prisma transaction to ensure stock is deducted and order is created atomically
  */
-export const createOrder = async (input: CreateOrderInput): Promise<any> => {
+export const createOrder = async (input: CreateOrderInput): Promise<OrderResult> => {
   const { userId, customerName, customerPhone, items } = input;
 
   // Calculate totals server-side from validated item prices
@@ -89,7 +110,7 @@ export const createOrder = async (input: CreateOrderInput): Promise<any> => {
 /**
  * Get order by ID (with ownership check)
  */
-export const getOrderById = async (orderId: string, userId: string): Promise<any> => {
+export const getOrderById = async (orderId: string, userId: string): Promise<OrderResult | null> => {
   const order = await prisma.order.findUnique({
     where: { id: orderId, userId },
     include: {
@@ -103,7 +124,28 @@ export const getOrderById = async (orderId: string, userId: string): Promise<any
 /**
  * Get user's orders with caching
  */
-export const getUserOrders = async (userId: string, page: number = 1, limit: number = 20) => {
+export const getUserOrders = async (userId: string, page: number = 1, limit: number = 20): Promise<{
+  orders: Array<{
+    id: string;
+    subtotal: number;
+    tax: number;
+    total: number;
+    status: string;
+    items: Array<{
+      productId: string;
+      productName: string;
+      quantity: number;
+      price: number;
+    }>;
+    createdAt: Date;
+  }>;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}> => {
   const cacheKey = CacheKeys.userOrders(userId);
 
   const cached = await cacheGet(cacheKey);

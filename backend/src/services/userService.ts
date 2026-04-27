@@ -107,57 +107,6 @@ export async function changePassword(
 }
 
 /**
- * Get user's orders with caching
- */
-export async function getUserOrders(userId: string, page: number = 1, limit: number = 20) {
-  const cacheKey = CacheKeys.userOrders(userId);
-  
-  const cached = await cacheGet(cacheKey);
-  if (cached) return cached;
-
-  const skip = (page - 1) * limit;
-
-  const [orders, total] = await Promise.all([
-    prisma.order.findMany({
-      where: { userId },
-      skip,
-      take: limit,
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        subtotal: true,
-        tax: true,
-        total: true,
-        items: {
-          select: {
-            productId: true,
-            productName: true,
-            quantity: true,
-            price: true,
-          },
-        },
-        createdAt: true,
-      },
-    }),
-    prisma.order.count({ where: { userId } }),
-  ]);
-
-  const result = {
-    orders,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
-
-  await cacheSet(cacheKey, result, CACHE_TTL.USER_ORDERS);
-
-  return result;
-}
-
-/**
  * Get user's addresses with caching
  */
 export async function getUserAddresses(userId: string) {

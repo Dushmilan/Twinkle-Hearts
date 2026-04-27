@@ -34,6 +34,15 @@ interface AuthResponse {
   sessionId: string;
 }
 
+interface SessionUser {
+  id: string;
+  email: string;
+  name: string | null;
+  phone: string | null;
+  role: string;
+  avatar: string | null;
+}
+
 /**
  * Register a new user
  */
@@ -295,7 +304,7 @@ export async function logoutAllSessions(userId: string): Promise<void> {
 /**
  * Create session and generate tokens
  */
-async function createSession(user: any): Promise<AuthResponse> {
+async function createSession(user: SessionUser): Promise<AuthResponse> {
   const sessionId = crypto.randomUUID();
 
   // Create session record

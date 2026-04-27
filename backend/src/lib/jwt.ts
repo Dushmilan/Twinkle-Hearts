@@ -5,9 +5,6 @@ import { SignJWT, jwtVerify, exportJWK, importJWK, JWK } from 'jose';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { logger } from './logger.js';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type CryptoKeyLike = any;
-
 interface JWTPayload {
   userId: string;
   email: string;
@@ -20,10 +17,8 @@ interface RefreshTokenPayload {
   sessionId: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let privateKey: any | null = null;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let publicKey: any | null = null;
+let privateKey: CryptoKey | null = null;
+let publicKey: CryptoKey | null = null;
 
 /**
  * Load JWT keys from files or generate and persist them if missing
@@ -117,7 +112,7 @@ async function generateAndPersistKeys(privateKeyPath: string, publicKeyPath: str
  */
 async function josePKCS8FromJWK(jwk: JWK): Promise<string> {
   const key = await importJWK(jwk, 'RS256');
-  const pkcs8 = await crypto.subtle.exportKey('pkcs8', key as CryptoKeyLike);
+  const pkcs8 = await crypto.subtle.exportKey('pkcs8', key as CryptoKey);
   const base64 = Buffer.from(pkcs8).toString('base64');
   return `-----BEGIN PRIVATE KEY-----\n${base64.match(/.{1,64}/g)?.join('\n')}\n-----END PRIVATE KEY-----\n`;
 }
@@ -127,7 +122,7 @@ async function josePKCS8FromJWK(jwk: JWK): Promise<string> {
  */
 async function joseSPKIFromJWK(jwk: JWK): Promise<string> {
   const key = await importJWK(jwk, 'RS256');
-  const spki = await crypto.subtle.exportKey('spki', key as CryptoKeyLike);
+  const spki = await crypto.subtle.exportKey('spki', key as CryptoKey);
   const base64 = Buffer.from(spki).toString('base64');
   return `-----BEGIN PUBLIC KEY-----\n${base64.match(/.{1,64}/g)?.join('\n')}\n-----END PUBLIC KEY-----\n`;
 }

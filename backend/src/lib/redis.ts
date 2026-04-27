@@ -36,13 +36,5 @@ if (REDIS_ENABLED) {
   logger.info('ℹ️  Redis disabled, using in-memory fallback');
 }
 
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-  if (redis) {
-    await redis.quit();
-    logger.info('Redis connection closed');
-  }
-});
-
 export { redis };
 export default redis;

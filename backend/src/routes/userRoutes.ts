@@ -6,7 +6,6 @@ import {
   getUserProfile, 
   updateUserProfile, 
   changePassword,
-  getUserOrders,
   getUserAddresses,
   createAddress,
   updateAddress,
@@ -15,6 +14,7 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from '../services/userService.js';
+import { getUserOrders } from '../services/orderService.js';
 import { authenticate } from '../middleware/auth.js';
 import { rateLimiter } from '../middleware/rateLimiter.js';
 import { z } from 'zod';

@@ -13,9 +13,9 @@ const mockSessionFindUnique = jest.fn();
 
 jest.mock('../../../src/lib/cache.js', () => ({
   __esModule: true,
-  cacheGet: () => mockCacheGet(),
-  cacheSet: () => mockCacheSet(),
-  cacheDelete: () => mockCacheDelete(),
+  cacheGet: (...args: any[]) => mockCacheGet(...args),
+  cacheSet: (...args: any[]) => mockCacheSet(...args),
+  cacheDelete: (...args: any[]) => mockCacheDelete(...args),
   CACHE_TTL: { SESSION: 604800 },
   CacheKeys: {
     session: (sessionId: string) => `session:${sessionId}`,
@@ -105,7 +105,26 @@ describe('Auth Middleware', () => {
       await authenticate(req, res, next);
 
       expect(next).toHaveBeenCalledWith();
-      expect(mockCacheSet).toHaveBeenCalled();
+      expect(mockCacheSet).toHaveBeenCalledWith(
+        'session:test-session-id',
+        { userId: 'test-user-id' },
+        604800
+      );
+      expect(req.user).toBeDefined();
+    });
+
+    it('should NOT call cacheSet when session is in cache (cache hit)', async () => {
+      const req = createMockRequest('Bearer mocked-jwt-token');
+      const res = createMockResponse();
+      const next = createMockNext();
+
+      mockCacheGet.mockResolvedValueOnce({ userId: 'test-user-id' });
+
+      await authenticate(req, res, next);
+
+      expect(next).toHaveBeenCalledWith();
+      expect(mockCacheSet).not.toHaveBeenCalled();
+      expect(mockSessionFindUnique).not.toHaveBeenCalled();
       expect(req.user).toBeDefined();
     });
 

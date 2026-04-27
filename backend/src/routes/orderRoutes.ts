@@ -100,7 +100,24 @@ router.get('/:id', async (req, res, next) => {
 /**
  * Format order message for WhatsApp
  */
-function formatOrderMessage(order: any): string {
+interface FormattedOrderItem {
+  productId: string;
+  productName: string;
+  quantity: number;
+  price: number;
+}
+
+interface FormattedOrder {
+  id: string;
+  customerName: string;
+  customerPhone: string;
+  subtotal: number;
+  tax: number;
+  total: number;
+  items: FormattedOrderItem[];
+}
+
+function formatOrderMessage(order: FormattedOrder): string {
   const itemsList = order.items
     .map((item: any, idx: number) => `${idx + 1}. ${item.productName} x${item.quantity} - ₹${item.price}`)
     .join('\n');
