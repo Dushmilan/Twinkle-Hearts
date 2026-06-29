@@ -1,0 +1,7 @@
+name = "twinkle-hearts"
+compatibility_date = "2025-12-01"
+
+pages_build_output_dir = "dist"
+
+[env.production]
+vars = { VITE_API_URL = "https://api.twinklehearts.com" }

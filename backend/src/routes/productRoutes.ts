@@ -1,68 +1,36 @@
-import { Router } from 'express';
+import { Hono } from 'hono';
 import { productService } from '../services/productService.js';
-import { NotFoundError } from '../middleware/errorHandler.js';
+import type { Env, Variables } from '../types.js';
 
-const router = Router();
+type ProdEnv = { Bindings: Env; Variables: Variables };
+const router = new Hono<ProdEnv>();
 
-/**
- * GET /api/products
- * List all active products with pagination
- */
-router.get('/', async (req, res, next) => {
-  try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 20;
-    const search = req.query.search as string;
-    const category = req.query.category as string;
+router.get('/', async (c) => {
+  const page = parseInt(c.req.query('page') || '1');
+  const limit = parseInt(c.req.query('limit') || '20');
+  const search = c.req.query('search');
+  const category = c.req.query('category');
 
-    const result = await productService.listProducts({
-      page,
-      limit,
-      search,
-      category,
-      activeOnly: true,
-    });
+  const result = await productService.listProducts(c.env, {
+    page, limit, search, category, activeOnly: true,
+  });
 
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
+  return c.json(result);
 });
 
-/**
- * GET /api/products/search
- * Search products
- * Note: This route must be defined BEFORE /:id to avoid conflicts
- */
-router.get('/search', async (req, res, next) => {
-  try {
-    const q = req.query.q as string;
-
-    if (!q || q.length < 2) {
-      res.json({ products: [] });
-      return;
-    }
-
-    const products = await productService.searchProducts(q, 20);
-
-    res.json({ products });
-  } catch (error) {
-    next(error);
+router.get('/search', async (c) => {
+  const q = c.req.query('q');
+  if (!q || q.length < 2) {
+    return c.json({ products: [] });
   }
+
+  const products = await productService.searchProducts(c.env, q, 20);
+  return c.json({ products });
 });
 
-/**
- * GET /api/products/:id
- * Get single product by ID
- */
-router.get('/:id', async (req, res, next) => {
-  try {
-    const product = await productService.getProductById(req.params.id, true);
-
-    res.json({ product });
-  } catch (error) {
-    next(error);
-  }
+router.get('/:id', async (c) => {
+  const product = await productService.getProductById(c.env, c.req.param('id'), true);
+  return c.json({ product });
 });
 
 export default router;

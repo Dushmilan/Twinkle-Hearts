@@ -1,9 +1,13 @@
-// Use real Prisma client for tests with actual database
 import { PrismaClient } from '@prisma/client';
+import { PrismaD1 } from '@prisma/adapter-d1';
 
-// Create singleton Prisma client for tests
-const prisma = new PrismaClient({
-  log: process.env.NODE_ENV === 'test' ? ['error'] : ['query', 'info', 'warn', 'error'],
-});
+let prisma: PrismaClient | null = null;
 
-export default prisma;
+export function getPrisma(db: D1Database): PrismaClient {
+  if (prisma) return prisma;
+  const adapter = new PrismaD1(db);
+  prisma = new PrismaClient({ adapter });
+  return prisma;
+}
+
+export default getPrisma;

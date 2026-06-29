@@ -1,85 +1,45 @@
-// User service
-// Private Commercial Project - Confidential
-
-import prisma from '../lib/prisma.js';
-import type { AddressType } from '@prisma/client';
-import { cacheDelete, cacheGet, cacheSet, CACHE_TTL, CacheKeys } from '../lib/cache.js';
-import { logger } from '../lib/logger.js';
-import { NotFoundError, ForbiddenError, BadRequestError } from '../middleware/errorHandler.js';
+import { getPrisma } from '../lib/prisma.js';
+import { cacheGet, cacheSet, cacheDelete, CACHE_TTL, CacheKeys } from '../lib/cache.js';
 import { hashPassword, comparePassword } from '../utils/password.js';
+import { NotFoundError, BadRequestError } from '../middleware/errorHandler.js';
+import type { Env } from '../types.js';
 
-/**
- * Get user profile (exported from authService)
- */
-export async function getUserProfile(userId: string) {
-  const cached = await cacheGet(CacheKeys.user(userId));
+export async function getUserProfile(env: Env, userId: string) {
+  const cached = await cacheGet(env.KV, CacheKeys.user(userId));
   if (cached) return cached;
 
+  const prisma = getPrisma(env.DB);
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
-      id: true,
-      email: true,
-      name: true,
-      phone: true,
-      avatar: true,
-      role: true,
-      emailVerified: true,
-      createdAt: true,
-      lastLoginAt: true,
-      _count: {
-        select: {
-          orders: true,
-          addresses: true,
-          wishlist: true,
-        },
-      },
+      id: true, email: true, name: true, phone: true, avatar: true, role: true,
+      emailVerified: true, createdAt: true, lastLoginAt: true,
+      _count: { select: { orders: true, addresses: true, wishlist: true } },
     },
   });
 
   if (user) {
-    await cacheSet(CacheKeys.user(userId), user, CACHE_TTL.USER_PROFILE);
+    await cacheSet(env.KV, CacheKeys.user(userId), user, CACHE_TTL.USER_PROFILE);
   }
 
   return user;
 }
 
-/**
- * Update user profile
- */
-export async function updateUserProfile(
-  userId: string,
-  data: { name?: string; phone?: string; avatar?: string }
-) {
+export async function updateUserProfile(env: Env, userId: string, data: { name?: string; phone?: string; avatar?: string }) {
+  const prisma = getPrisma(env.DB);
   const user = await prisma.user.update({
     where: { id: userId },
     data,
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      phone: true,
-      avatar: true,
-      role: true,
-    },
+    select: { id: true, email: true, name: true, phone: true, avatar: true, role: true },
   });
 
-  await cacheDelete(CacheKeys.user(userId));
-
+  await cacheDelete(env.KV, CacheKeys.user(userId));
   return user;
 }
 
-/**
- * Change password
- */
-export async function changePassword(
-  userId: string,
-  currentPassword: string,
-  newPassword: string
-): Promise<void> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-  });
+export async function changePassword(env: Env, userId: string, currentPassword: string, newPassword: string): Promise<void> {
+  const prisma = getPrisma(env.DB);
+  const user = await prisma.user.findUnique({ where: { id: userId } });
 
   if (!user || !user.passwordHash) {
     throw new BadRequestError('Cannot change password for OAuth accounts');
@@ -91,113 +51,56 @@ export async function changePassword(
   }
 
   const newHash = await hashPassword(newPassword);
-  await prisma.user.update({
-    where: { id: userId },
-    data: { passwordHash: newHash },
-  });
+  await prisma.user.update({ where: { id: userId }, data: { passwordHash: newHash } });
 
-  // Invalidate all sessions
-  await prisma.session.deleteMany({
-    where: { userId },
-  });
+  await prisma.session.deleteMany({ where: { userId } });
+  await cacheDelete(env.KV, CacheKeys.user(userId));
 
-  await cacheDelete(CacheKeys.user(userId));
-
-  logger.info(`Password changed for user: ${userId}`);
+  console.info(`Password changed for user: ${userId}`);
 }
 
-/**
- * Get user's addresses with caching
- */
-export async function getUserAddresses(userId: string) {
+export async function getUserAddresses(env: Env, userId: string) {
   const cacheKey = CacheKeys.userAddresses(userId);
-  
-  const cached = await cacheGet(cacheKey);
+  const cached = await cacheGet(env.KV, cacheKey);
   if (cached) return cached;
 
+  const prisma = getPrisma(env.DB);
   const addresses = await prisma.address.findMany({
     where: { userId },
     orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
   });
 
-  await cacheSet(cacheKey, addresses, CACHE_TTL.USER_PROFILE);
-
+  await cacheSet(env.KV, cacheKey, addresses, CACHE_TTL.USER_PROFILE);
   return addresses;
 }
 
-/**
- * Create new address
- */
-export async function createAddress(
-  userId: string,
-  data: {
-    label: string;
-    type?: string;
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
-    country: string;
-    phone: string;
-    isDefault?: boolean;
-  }
-) {
-  // If this is default, unset other defaults
+export async function createAddress(env: Env, userId: string, data: {
+  label: string; type?: string; street: string; city: string; state: string;
+  zip: string; country: string; phone: string; isDefault?: boolean;
+}) {
+  const prisma = getPrisma(env.DB);
+
   if (data.isDefault) {
-    await prisma.address.updateMany({
-      where: { userId, isDefault: true },
-      data: { isDefault: false },
-    });
+    await prisma.address.updateMany({ where: { userId, isDefault: true }, data: { isDefault: false } });
   }
 
   const address = await prisma.address.create({
     data: {
-      userId,
-      label: data.label,
-      type: data.type as AddressType | undefined,
-      street: data.street,
-      city: data.city,
-      state: data.state,
-      zip: data.zip,
-      country: data.country,
-      phone: data.phone,
-      isDefault: data.isDefault,
+      userId, label: data.label, type: data.type as any, street: data.street, city: data.city,
+      state: data.state, zip: data.zip, country: data.country, phone: data.phone, isDefault: data.isDefault,
     },
   });
 
-  await cacheDelete(CacheKeys.userAddresses(userId));
-
+  await cacheDelete(env.KV, CacheKeys.userAddresses(userId));
   return address;
 }
 
-/**
- * Update address
- */
-export async function updateAddress(
-  userId: string,
-  addressId: string,
-  data: {
-    label?: string;
-    type?: string;
-    street?: string;
-    city?: string;
-    state?: string;
-    zip?: string;
-    country?: string;
-    phone?: string;
-    isDefault?: boolean;
-  }
-) {
-  // Verify ownership
-  const existing = await prisma.address.findFirst({
-    where: { id: addressId, userId },
-  });
+export async function updateAddress(env: Env, userId: string, addressId: string, data: any) {
+  const prisma = getPrisma(env.DB);
+  const existing = await prisma.address.findFirst({ where: { id: addressId, userId } });
 
-  if (!existing) {
-    throw new NotFoundError('Address not found');
-  }
+  if (!existing) throw new NotFoundError('Address not found');
 
-  // If setting as default, unset other defaults
   if (data.isDefault) {
     await prisma.address.updateMany({
       where: { userId, isDefault: true, id: { not: addressId } },
@@ -205,149 +108,67 @@ export async function updateAddress(
     });
   }
 
-  const address = await prisma.address.update({
-    where: { id: addressId },
-    data: {
-      ...data,
-      type: data.type as AddressType | undefined,
-    },
-  });
-
-  await cacheDelete(CacheKeys.userAddresses(userId));
-
+  const address = await prisma.address.update({ where: { id: addressId }, data });
+  await cacheDelete(env.KV, CacheKeys.userAddresses(userId));
   return address;
 }
 
-/**
- * Delete address
- */
-export async function deleteAddress(userId: string, addressId: string) {
-  // Verify ownership
-  const existing = await prisma.address.findFirst({
-    where: { id: addressId, userId },
-  });
+export async function deleteAddress(env: Env, userId: string, addressId: string) {
+  const prisma = getPrisma(env.DB);
+  const existing = await prisma.address.findFirst({ where: { id: addressId, userId } });
 
-  if (!existing) {
-    throw new NotFoundError('Address not found');
-  }
+  if (!existing) throw new NotFoundError('Address not found');
 
-  await prisma.address.delete({
-    where: { id: addressId },
-  });
-
-  await cacheDelete(CacheKeys.userAddresses(userId));
+  await prisma.address.delete({ where: { id: addressId } });
+  await cacheDelete(env.KV, CacheKeys.userAddresses(userId));
 }
 
-/**
- * Get user's wishlist with caching
- */
-export async function getUserWishlist(userId: string) {
+export async function getUserWishlist(env: Env, userId: string) {
   const cacheKey = CacheKeys.userWishlist(userId);
-  
-  const cached = await cacheGet(cacheKey);
+  const cached = await cacheGet(env.KV, cacheKey);
   if (cached) return cached;
 
+  const prisma = getPrisma(env.DB);
   const wishlist = await prisma.wishlist.findMany({
     where: { userId },
-    include: {
-      product: {
-        select: {
-          id: true,
-          name: true,
-          price: true,
-          images: true,
-          stock: true,
-          isActive: true,
-        },
-      },
-    },
+    include: { product: { select: { id: true, name: true, price: true, images: true, stock: true, isActive: true } } },
     orderBy: { createdAt: 'desc' },
   });
 
-  const result = wishlist.map((item) => ({
-    ...item,
-    product: {
-      ...item.product,
-      price: Number(item.product.price),
-    },
-  }));
-
-  await cacheSet(cacheKey, result, CACHE_TTL.USER_WISHLIST);
-
-  return result;
+  await cacheSet(env.KV, cacheKey, wishlist, CACHE_TTL.USER_WISHLIST);
+  return wishlist;
 }
 
-/**
- * Add product to wishlist
- */
-export async function addToWishlist(userId: string, productId: string) {
-  // Check if product exists and is active
+export async function addToWishlist(env: Env, userId: string, productId: string) {
+  const prisma = getPrisma(env.DB);
+
   const product = await prisma.product.findUnique({
     where: { id: productId },
     select: { id: true, isActive: true },
   });
 
-  if (!product || !product.isActive) {
-    throw new NotFoundError('Product not found or inactive');
-  }
+  if (!product || !product.isActive) throw new NotFoundError('Product not found or inactive');
 
-  // Check if already in wishlist
   const existing = await prisma.wishlist.findUnique({
-    where: {
-      userId_productId: {
-        userId,
-        productId,
-      },
-    },
+    where: { userId_productId: { userId, productId } },
   });
 
-  if (existing) {
-    throw new BadRequestError('Product already in wishlist');
-  }
+  if (existing) throw new BadRequestError('Product already in wishlist');
 
   const wishlist = await prisma.wishlist.create({
-    data: {
-      userId,
-      productId,
-    },
-    include: {
-      product: {
-        select: {
-          id: true,
-          name: true,
-          price: true,
-          images: true,
-          stock: true,
-        },
-      },
-    },
+    data: { userId, productId },
+    include: { product: { select: { id: true, name: true, price: true, images: true, stock: true } } },
   });
 
-  await cacheDelete(CacheKeys.userWishlist(userId));
-
-  return {
-    ...wishlist,
-    product: {
-      ...wishlist.product,
-      price: Number(wishlist.product.price),
-    },
-  };
+  await cacheDelete(env.KV, CacheKeys.userWishlist(userId));
+  return wishlist;
 }
 
-/**
- * Remove product from wishlist
- */
-export async function removeFromWishlist(userId: string, productId: string) {
+export async function removeFromWishlist(env: Env, userId: string, productId: string) {
+  const prisma = getPrisma(env.DB);
   await prisma.wishlist.delete({
-    where: {
-      userId_productId: {
-        userId,
-        productId,
-      },
-    },
-  }).catch(() => {
-    throw new NotFoundError('Product not in wishlist');
-  });
+    where: { userId_productId: { userId, productId } },
+  }).catch(() => { throw new NotFoundError('Product not in wishlist'); });
 
-  await cacheDelete(CacheKeys.userWishlist(userId));
+  await cacheDelete(env.KV, CacheKeys.userWishlist(userId));
 }

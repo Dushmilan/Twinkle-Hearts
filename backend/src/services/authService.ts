@@ -1,12 +1,9 @@
-import prisma from '../lib/prisma.js';
+import { getPrisma } from '../lib/prisma.js';
 import { hashPassword, comparePassword, validatePasswordStrength } from '../utils/password.js';
 import { signAccessToken, signRefreshToken, verifyToken } from '../lib/jwt.js';
-import { cacheSet, cacheDelete, cacheGet, cacheWrap, CACHE_TTL, CacheKeys } from '../lib/cache.js';
-import { redis } from '../lib/redis.js';
-import { logger } from '../lib/logger.js';
-import { BadRequestError, ConflictError, UnauthorizedError, NotFoundError } from '../middleware/errorHandler.js';
-import crypto from 'crypto';
-import { OAuth2Client } from 'google-auth-library';
+import { cacheSet, cacheDelete, CACHE_TTL, CacheKeys } from '../lib/cache.js';
+import { BadRequestError, ConflictError, UnauthorizedError } from '../middleware/errorHandler.js';
+import type { Env } from '../types.js';
 
 interface RegisterInput {
   email: string;
@@ -34,26 +31,46 @@ interface AuthResponse {
   sessionId: string;
 }
 
-interface SessionUser {
-  id: string;
-  email: string;
-  name: string | null;
-  phone: string | null;
-  role: string;
-  avatar: string | null;
+async function createSession(env: Env, user: { id: string; email: string; name: string | null; phone: string | null; role: string; avatar: string | null }): Promise<AuthResponse> {
+  const prisma = getPrisma(env.DB);
+  const sessionId = crypto.randomUUID();
+
+  await prisma.session.create({
+    data: {
+      id: sessionId,
+      userId: user.id,
+      tokenHash: await crypto.subtle.digest('SHA-256', new TextEncoder().encode(sessionId)).then(h => {
+        return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join('');
+      }),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    },
+  });
+
+  const accessToken = await signAccessToken(
+    { userId: user.id, email: user.email, role: user.role, sessionId },
+    env.JWT_PRIVATE_KEY,
+    env.JWT_EXPIRES_IN || '7d'
+  );
+
+  const refreshToken = await signRefreshToken(
+    { userId: user.id, sessionId },
+    env.JWT_PRIVATE_KEY,
+    env.REFRESH_TOKEN_EXPIRES_IN || '30d'
+  );
+
+  await cacheSet(env.KV, CacheKeys.session(sessionId), { userId: user.id }, CACHE_TTL.SESSION);
+
+  return { accessToken, refreshToken, sessionId, user };
 }
 
-/**
- * Register a new user
- */
-export async function register(input: RegisterInput): Promise<AuthResponse> {
-  // Validate password strength
+export async function register(env: Env, input: RegisterInput): Promise<AuthResponse> {
   const passwordValidation = validatePasswordStrength(input.password);
   if (!passwordValidation.valid) {
     throw new BadRequestError(passwordValidation.errors.join(', '));
   }
 
-  // Check if email already exists
+  const prisma = getPrisma(env.DB);
+
   const existingUser = await prisma.user.findUnique({
     where: { email: input.email.toLowerCase() },
   });
@@ -62,10 +79,8 @@ export async function register(input: RegisterInput): Promise<AuthResponse> {
     throw new ConflictError('Email already registered');
   }
 
-  // Hash password
   const passwordHash = await hashPassword(input.password);
 
-  // Create user
   const user = await prisma.user.create({
     data: {
       email: input.email.toLowerCase(),
@@ -84,25 +99,15 @@ export async function register(input: RegisterInput): Promise<AuthResponse> {
     },
   });
 
-  logger.info(`User registered: ${user.email}`);
-
-  // Create session and tokens
-  return createSession(user);
+  console.info(`User registered: ${user.email}`);
+  return createSession(env, user);
 }
 
-/**
- * Login with email and password
- */
-export async function login(input: LoginInput): Promise<AuthResponse> {
-  // Find user
+export async function login(env: Env, input: LoginInput): Promise<AuthResponse> {
+  const prisma = getPrisma(env.DB);
+
   const user = await prisma.user.findUnique({
     where: { email: input.email.toLowerCase() },
-    include: {
-      addresses: {
-        where: { isDefault: true },
-        take: 1,
-      },
-    },
   });
 
   if (!user) {
@@ -113,7 +118,6 @@ export async function login(input: LoginInput): Promise<AuthResponse> {
     throw new UnauthorizedError('Account is deactivated');
   }
 
-  // Verify password
   if (!user.passwordHash) {
     throw new UnauthorizedError('Invalid email or password');
   }
@@ -123,41 +127,31 @@ export async function login(input: LoginInput): Promise<AuthResponse> {
     throw new UnauthorizedError('Invalid email or password');
   }
 
-  // Update last login
   await prisma.user.update({
     where: { id: user.id },
     data: { lastLoginAt: new Date() },
   });
 
-  logger.info(`User logged in: ${user.email}`);
+  console.info(`User logged in: ${user.email}`);
 
-  // Create session and tokens
-  return createSession(user);
+  return createSession(env, {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    phone: user.phone,
+    role: user.role,
+    avatar: user.avatar,
+  });
 }
 
-/**
- * Login/Signup with Google OAuth - Requires ID token verification
- */
-export async function googleOAuth(idToken: string): Promise<AuthResponse> {
-  // Verify Google ID token
-  const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-  
-  let ticket;
-  try {
-    ticket = await googleClient.verifyIdToken({
-      idToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-  } catch (error) {
+export async function googleOAuth(env: Env, idToken: string): Promise<AuthResponse> {
+  const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
+  if (!response.ok) {
     throw new BadRequestError('Invalid Google ID token');
   }
 
-  const payload = ticket.getPayload();
-  if (!payload) {
-    throw new BadRequestError('Invalid Google ID token payload');
-  }
+  const payload: any = await response.json();
 
-  // Validate required fields
   if (!payload.email) {
     throw new BadRequestError('Email not provided by Google');
   }
@@ -166,85 +160,51 @@ export async function googleOAuth(idToken: string): Promise<AuthResponse> {
   const name = payload.name || '';
   const avatar = payload.picture || '';
 
-  // Verify the token is for this app (audience check)
-  if (payload.aud !== process.env.GOOGLE_CLIENT_ID) {
-    throw new BadRequestError('Invalid token audience');
-  }
-
+  const prisma = getPrisma(env.DB);
   let user = await prisma.user.findUnique({
     where: { email: email.toLowerCase() },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      phone: true,
-      role: true,
-      avatar: true,
-    },
+    select: { id: true, email: true, name: true, phone: true, role: true, avatar: true },
   });
 
   if (!user) {
-    // Create new user
     user = await prisma.user.create({
       data: {
         email: email.toLowerCase(),
         name,
         avatar,
         role: 'CUSTOMER',
-        emailVerified: true, // Google verified
+        emailVerified: true,
       },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        phone: true,
-        role: true,
-        avatar: true,
-      },
+      select: { id: true, email: true, name: true, phone: true, role: true, avatar: true },
     });
-
-    logger.info(`Google OAuth user created: ${user.email}`);
+    console.info(`Google OAuth user created: ${user.email}`);
   } else {
-    // Update existing user
     await prisma.user.update({
       where: { id: user.id },
-      data: {
-        name: name || user.name,
-        avatar: avatar || user.avatar,
-        lastLoginAt: new Date(),
-      },
+      data: { name: name || user.name, avatar: avatar || user.avatar, lastLoginAt: new Date() },
     });
-
-    logger.info(`Google OAuth user logged in: ${user.email}`);
+    console.info(`Google OAuth user logged in: ${user.email}`);
   }
 
-  return createSession(user);
+  return createSession(env, user);
 }
 
-/**
- * Refresh access token
- */
-export async function refreshToken(refreshToken: string): Promise<{
-  accessToken: string;
-  refreshToken: string;
-}> {
-  // Verify refresh token
-  const payload = await verifyToken<any>(refreshToken);
-  if (!payload || payload.userId === undefined) {
+export async function refreshToken(env: Env, token: string): Promise<{ accessToken: string; refreshToken: string }> {
+  const payload = await verifyToken<any>(token, env.JWT_PRIVATE_KEY, env.JWT_PUBLIC_KEY);
+  if (!payload || !payload.userId) {
     throw new UnauthorizedError('Invalid refresh token');
   }
 
-  // Check session exists
+  const prisma = getPrisma(env.DB);
   const session = await prisma.session.findUnique({
     where: { id: payload.sessionId },
     select: { userId: true, expiresAt: true },
   });
 
-  if (!session || session.expiresAt < new Date()) {
+  if (!session || new Date(session.expiresAt) < new Date()) {
     throw new UnauthorizedError('Session expired');
   }
 
-  // Get user
   const user = await prisma.user.findUnique({
     where: { id: payload.userId },
     select: { email: true, role: true },
@@ -254,100 +214,30 @@ export async function refreshToken(refreshToken: string): Promise<{
     throw new UnauthorizedError('User not found');
   }
 
-  // Generate new tokens
-  const newAccessToken = await signAccessToken({
-    userId: payload.userId,
-    email: user.email,
-    role: user.role,
-    sessionId: payload.sessionId,
-  });
-
-  const newRefreshToken = await signRefreshToken({
-    userId: payload.userId,
-    sessionId: payload.sessionId,
-  });
-
-  return {
-    accessToken: newAccessToken,
-    refreshToken: newRefreshToken,
-  };
-}
-
-/**
- * Logout (invalidate session)
- */
-export async function logout(sessionId: string): Promise<void> {
-  // Delete from database
-  await prisma.session.delete({
-    where: { id: sessionId },
-  }).catch(() => {
-    // Session might not exist
-  });
-
-  // Delete from cache
-  await cacheDelete(CacheKeys.session(sessionId));
-
-  logger.info(`Session invalidated: ${sessionId}`);
-}
-
-/**
- * Logout all sessions for a user
- */
-export async function logoutAllSessions(userId: string): Promise<void> {
-  await prisma.session.deleteMany({
-    where: { userId },
-  });
-
-  logger.info(`All sessions invalidated for user: ${userId}`);
-}
-
-/**
- * Create session and generate tokens
- */
-async function createSession(user: SessionUser): Promise<AuthResponse> {
-  const sessionId = crypto.randomUUID();
-
-  // Create session record
-  await prisma.session.create({
-    data: {
-      id: sessionId,
-      userId: user.id,
-      tokenHash: crypto.createHash('sha256').update(sessionId).digest('hex'),
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-    },
-  });
-
-  // Generate tokens
-  const accessToken = await signAccessToken({
-    userId: user.id,
-    email: user.email,
-    role: user.role,
-    sessionId,
-  });
-
-  const refreshToken = await signRefreshToken({
-    userId: user.id,
-    sessionId,
-  });
-
-  // Cache session
-  await cacheSet(
-    CacheKeys.session(sessionId),
-    { userId: user.id },
-    CACHE_TTL.SESSION
+  const newAccessToken = await signAccessToken(
+    { userId: payload.userId, email: user.email, role: user.role, sessionId: payload.sessionId },
+    env.JWT_PRIVATE_KEY,
+    env.JWT_EXPIRES_IN || '7d'
   );
 
-  return {
-    accessToken,
-    refreshToken,
-    sessionId,
-    user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      phone: user.phone,
-      role: user.role,
-      avatar: user.avatar,
-    },
-  };
+  const newRefreshToken = await signRefreshToken(
+    { userId: payload.userId, sessionId: payload.sessionId },
+    env.JWT_PRIVATE_KEY,
+    env.REFRESH_TOKEN_EXPIRES_IN || '30d'
+  );
+
+  return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+}
+
+export async function logout(env: Env, sessionId: string): Promise<void> {
+  const prisma = getPrisma(env.DB);
+  await prisma.session.delete({ where: { id: sessionId } }).catch(() => {});
+  await cacheDelete(env.KV, CacheKeys.session(sessionId));
+  console.info(`Session invalidated: ${sessionId}`);
+}
+
+export async function logoutAllSessions(env: Env, userId: string): Promise<void> {
+  const prisma = getPrisma(env.DB);
+  await prisma.session.deleteMany({ where: { userId } });
+  console.info(`All sessions invalidated for user: ${userId}`);
 }

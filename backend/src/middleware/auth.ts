@@ -1,135 +1,68 @@
-// Authentication middleware
-// Private Commercial Project - Confidential
-
-import { Request, Response, NextFunction } from 'express';
+import type { Context, Next } from 'hono';
 import { verifyToken } from '../lib/jwt.js';
-import { cacheGet, cacheSet, CACHE_TTL, CacheKeys } from '../lib/cache.js';
-import prisma from '../lib/prisma.js';
-import { UnauthorizedError, ForbiddenError } from '../middleware/errorHandler.js';
+import { cacheGet, CacheKeys } from '../lib/cache.js';
+import { UnauthorizedError, ForbiddenError } from './errorHandler.js';
+import { getPrisma } from '../lib/prisma.js';
+import type { Env, Variables, UserInfo } from '../types.js';
 
-// Extend Express Request type
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        email: string;
-        role: string;
-        sessionId: string;
-      };
-    }
-  }
-}
+type AuthContext = { Bindings: Env; Variables: Variables };
 
-/**
- * Authenticate user via JWT token
- */
-export const authenticate = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export async function authenticate(c: Context<AuthContext>, next: Next) {
   try {
-    // Get token from header
-    const authHeader = req.headers.authorization;
+    const authHeader = c.req.header('authorization');
     if (!authHeader || !authHeader.toLowerCase().startsWith('bearer ')) {
       throw new UnauthorizedError('No token provided');
     }
 
-    const token = authHeader.substring(7); // Skip "Bearer "
+    const token = authHeader.substring(7);
+    const payload = await verifyToken<any>(
+      token,
+      c.env.JWT_PRIVATE_KEY,
+      c.env.JWT_PUBLIC_KEY
+    );
 
-    // Verify token
-    const payload = await verifyToken<any>(token);
     if (!payload) {
       throw new UnauthorizedError('Invalid token');
     }
 
-    // Check if session exists in cache
     const sessionKey = CacheKeys.session(payload.sessionId);
-    const session = await cacheGet(sessionKey);
+    const session = await cacheGet<{ userId: string }>(c.env.KV, sessionKey);
 
     if (!session) {
-      // Session not in cache - check database
+      const prisma = getPrisma(c.env.DB);
       const dbSession = await prisma.session.findUnique({
         where: { id: payload.sessionId },
         select: { userId: true, expiresAt: true },
       });
 
-      if (!dbSession || dbSession.expiresAt < new Date()) {
+      if (!dbSession || new Date(dbSession.expiresAt) < new Date()) {
         throw new UnauthorizedError('Session expired');
       }
-
-      // Cache the session
-      await cacheSet(sessionKey, { userId: dbSession.userId }, CACHE_TTL.SESSION);
     }
 
-    // Attach user to request
-    req.user = {
-      id: payload.sub || payload.userId,
+    c.set('user', {
+      userId: payload.sub || payload.userId,
       email: payload.email,
       role: payload.role,
       sessionId: payload.sessionId,
-    };
+    });
 
-    next();
+    await next();
   } catch (error) {
-    if (error instanceof UnauthorizedError) {
-      return next(error);
-    }
-    next(new UnauthorizedError('Authentication failed'));
+    if (error instanceof UnauthorizedError) throw error;
+    throw new UnauthorizedError('Authentication failed');
   }
-};
+}
 
-/**
- * Require specific role
- */
-export const requireRole = (...roles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (!req.user) {
-      return next(new UnauthorizedError('Authentication required'));
+export function requireRole(...roles: string[]) {
+  return async (c: Context<AuthContext>, next: Next) => {
+    const user = c.get('user');
+    if (!user) throw new UnauthorizedError('Authentication required');
+    if (!roles.includes(user.role)) {
+      throw new ForbiddenError(`Access denied. Required roles: ${roles.join(', ')}`);
     }
-
-    if (!roles.includes(req.user.role)) {
-      return next(
-        new ForbiddenError(`Access denied. Required roles: ${roles.join(', ')}`)
-      );
-    }
-
-    next();
+    await next();
   };
-};
+}
 
-/**
- * Require admin role
- */
 export const requireAdmin = requireRole('ADMIN');
-
-/**
- * Optional authentication (doesn't fail if no token)
- */
-export const optionalAuth = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
-      const token = authHeader.substring(7);
-      const payload = await verifyToken<any>(token);
-
-      if (payload) {
-        req.user = {
-          id: payload.sub || payload.userId,
-          email: payload.email,
-          role: payload.role,
-          sessionId: payload.sessionId,
-        };
-      }
-    }
-  } catch (error) {
-    // Ignore errors for optional auth
-  }
-
-  next();
-};

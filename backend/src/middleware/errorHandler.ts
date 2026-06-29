@@ -1,119 +1,73 @@
-import { Request, Response, NextFunction } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { z } from 'zod';
-import { logger } from '../lib/logger.js';
+import type { Context, ErrorHandler } from 'hono';
+import { HTTPException } from 'hono/http-exception';
 
 export class AppError extends Error {
   statusCode: number;
-  isOperational: boolean;
-
   constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
-    this.isOperational = true;
-    Error.captureStackTrace(this, this.constructor);
+    this.name = 'AppError';
   }
 }
 
 export class NotFoundError extends AppError {
   constructor(message = 'Resource not found') {
-    super(message, StatusCodes.NOT_FOUND);
+    super(message, 404);
+    this.name = 'NotFoundError';
   }
 }
 
 export class BadRequestError extends AppError {
   constructor(message = 'Bad request') {
-    super(message, StatusCodes.BAD_REQUEST);
+    super(message, 400);
+    this.name = 'BadRequestError';
   }
 }
 
 export class UnauthorizedError extends AppError {
   constructor(message = 'Unauthorized') {
-    super(message, StatusCodes.UNAUTHORIZED);
+    super(message, 401);
+    this.name = 'UnauthorizedError';
   }
 }
 
 export class ForbiddenError extends AppError {
   constructor(message = 'Forbidden') {
-    super(message, StatusCodes.FORBIDDEN);
+    super(message, 403);
+    this.name = 'ForbiddenError';
   }
 }
 
 export class ConflictError extends AppError {
   constructor(message = 'Resource conflict') {
-    super(message, StatusCodes.CONFLICT);
+    super(message, 409);
+    this.name = 'ConflictError';
   }
 }
 
 export class StockUnavailableError extends AppError {
-  productId: string;
-  available: number;
-  requested: number;
-
-  constructor(productId: string, available: number, requested: number) {
-    super('Stock unavailable', StatusCodes.BAD_REQUEST);
-    this.productId = productId;
-    this.available = available;
-    this.requested = requested;
+  constructor(message: string) {
+    super(message, 400);
+    this.name = 'StockUnavailableError';
   }
 }
 
-export const errorHandler = (
-  err: Error | AppError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const requestId = (req as any).requestId;
-  const context = requestId ? { requestId, userId: req.user?.id } : {};
+export const errorHandler: ErrorHandler = (err, c: Context) => {
+  const requestId = c.get('requestId') as string | undefined;
 
-  if (err instanceof AppError) {
-    logger.warn(`${err.statusCode} - ${err.message} - ${req.path}`, context);
+  if (err instanceof AppError || err instanceof HTTPException) {
+    const statusCode = err instanceof HTTPException ? err.status : err.statusCode;
+    console.warn(`${statusCode} - ${err.message} - ${c.req.path}`);
 
-    const response: any = {
-      error: err.message,
-    };
-
-    if (requestId) {
-      response.requestId = requestId;
-    }
-
-    if (err instanceof StockUnavailableError) {
-      response.details = {
-        productId: err.productId,
-        available: err.available,
-        requested: err.requested,
-      };
-    }
-
-    return res.status(err.statusCode).json(response);
+    const response: Record<string, any> = { error: err.message };
+    if (requestId) response.requestId = requestId;
+    return c.json(response, statusCode as any);
   }
 
-  // Zod validation errors
-  if (err instanceof z.ZodError) {
-    const messages = err.errors.map((e) => e.message).join(', ');
-    logger.warn(`Validation error: ${messages}`, { requestId, userId: req.user?.id });
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      error: messages,
-      ...(requestId && { requestId }),
-    });
-  }
-
-  // Prisma errors
-  if (err.name === 'PrismaClientKnownRequestError') {
-    logger.error('Database error:', { ...context, error: err.message });
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      error: 'Database operation failed',
-      ...(requestId && { requestId }),
-    });
-  }
-
-  // Unhandled errors
-  logger.error('Unhandled error:', { ...context, error: err.message, stack: err.stack });
-  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    error: process.env.NODE_ENV === 'production'
-      ? 'Internal server error'
-      : err.message,
-    ...(requestId && { requestId }),
-  });
+  console.error('Unhandled error:', err.message, err.stack);
+  const env = (c.env as any)?.NODE_ENV;
+  return c.json(
+    { error: env === 'production' ? 'Internal server error' : err.message },
+    500
+  );
 };

@@ -1,16 +1,15 @@
-// Authentication routes
-// Private Commercial Project - Confidential
-
-import { Router } from 'express';
+import { Hono } from 'hono';
 import { register, login, logout, refreshToken, googleOAuth } from '../services/authService.js';
 import { authenticate } from '../middleware/auth.js';
-import { rateLimiter } from '../middleware/rateLimiter.js';
+import { apiLimiter } from '../middleware/rateLimiter.js';
 import { BadRequestError } from '../middleware/errorHandler.js';
 import { z } from 'zod';
+import { getUserProfile } from '../services/userService.js';
+import type { Env, Variables } from '../types.js';
 
-const router = Router();
+type AuthEnv = { Bindings: Env; Variables: Variables };
+const router = new Hono<AuthEnv>();
 
-// Validation schemas
 const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
@@ -27,119 +26,41 @@ const refreshSchema = z.object({
   refreshToken: z.string().min(1, 'Refresh token is required'),
 });
 
-/**
- * POST /api/auth/register
- * Register a new user
- */
-router.post('/register', rateLimiter, async (req, res, next) => {
-  try {
-    const input = registerSchema.parse(req.body);
-    const result = await register(input);
-    
-    res.status(201).json({
-      success: true,
-      message: 'Registration successful',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.post('/register', apiLimiter, async (c) => {
+  const input = registerSchema.parse(await c.req.json());
+  const result = await register(c.env, input);
+  return c.json({ success: true, message: 'Registration successful', data: result }, 201);
 });
 
-/**
- * POST /api/auth/login
- * Login with email and password
- */
-router.post('/login', rateLimiter, async (req, res, next) => {
-  try {
-    const input = loginSchema.parse(req.body);
-    const result = await login(input);
-    
-    res.json({
-      success: true,
-      message: 'Login successful',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.post('/login', apiLimiter, async (c) => {
+  const input = loginSchema.parse(await c.req.json());
+  const result = await login(c.env, input);
+  return c.json({ success: true, message: 'Login successful', data: result });
 });
 
-/**
- * POST /api/auth/refresh
- * Refresh access token
- */
-router.post('/refresh', rateLimiter, async (req, res, next) => {
-  try {
-    const input = refreshSchema.parse(req.body);
-    const result = await refreshToken(input.refreshToken);
-    
-    res.json({
-      success: true,
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.post('/refresh', apiLimiter, async (c) => {
+  const input = refreshSchema.parse(await c.req.json());
+  const result = await refreshToken(c.env, input.refreshToken);
+  return c.json({ success: true, data: result });
 });
 
-/**
- * POST /api/auth/logout
- * Logout (invalidate session)
- */
-router.post('/logout', authenticate, async (req, res, next) => {
-  try {
-    await logout(req.user!.sessionId);
-    
-    res.json({
-      success: true,
-      message: 'Logout successful',
-    });
-  } catch (error) {
-    next(error);
-  }
+router.post('/logout', authenticate, async (c) => {
+  const user = c.get('user');
+  await logout(c.env, user.sessionId);
+  return c.json({ success: true, message: 'Logout successful' });
 });
 
-/**
- * GET /api/auth/me
- * Get current user info
- */
-router.get('/me', authenticate, async (req, res, next) => {
-  try {
-    const { getUserProfile } = await import('../services/userService.js');
-    const user = await getUserProfile(req.user!.id);
-
-    res.json({
-      success: true,
-      data: user,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.get('/me', authenticate, async (c) => {
+  const user = c.get('user');
+  const profile = await getUserProfile(c.env, user.userId);
+  return c.json({ success: true, data: profile });
 });
 
-/**
- * POST /api/auth/google
- * Google OAuth login/signup with ID token verification
- */
-router.post('/google', rateLimiter, async (req, res, next) => {
-  try {
-    const { idToken } = req.body;
-
-    if (!idToken) {
-      throw new BadRequestError('Google ID token is required');
-    }
-
-    const result = await googleOAuth(idToken);
-
-    res.json({
-      success: true,
-      message: 'Google login successful',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.post('/google', apiLimiter, async (c) => {
+  const { idToken } = await c.req.json();
+  if (!idToken) throw new BadRequestError('Google ID token is required');
+  const result = await googleOAuth(c.env, idToken);
+  return c.json({ success: true, message: 'Google login successful', data: result });
 });
 
 export default router;

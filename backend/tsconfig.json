@@ -3,7 +3,7 @@
     "target": "ES2022",
     "module": "ESNext",
     "lib": ["ES2022"],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "outDir": "./dist",
     "baseUrl": "./src",
     "paths": {
@@ -22,10 +22,10 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "declarationMap": true,
     "sourceMap": true,
-    "types": ["node", "jest"]
+    "isolatedModules": true,
+    "types": ["@cloudflare/workers-types"]
   },
-  "include": ["src/**/*", "tests/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

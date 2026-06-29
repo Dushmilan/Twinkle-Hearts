@@ -1,45 +1,30 @@
-import winston from 'winston';
-import path from 'path';
+const LOG_LEVELS = { debug: 0, info: 1, warn: 2, error: 3 } as const;
+type LogLevel = keyof typeof LOG_LEVELS;
 
-const logFormat = winston.format.combine(
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-  winston.format.errors({ stack: true }),
-  winston.format.splat(),
-  winston.format.json()
-);
+let currentLevel: LogLevel = 'info';
 
-const consoleFormat = winston.format.combine(
-  winston.format.colorize(),
-  winston.format.timestamp({ format: 'HH:mm:ss' }),
-  winston.format.printf(({ timestamp, level, message, ...meta }) => {
-    let msg = `${timestamp} [${level}]: ${message}`;
-    if (Object.keys(meta).length > 0) {
-      msg += ` ${JSON.stringify(meta)}`;
-    }
-    return msg;
-  })
-);
+export function setLogLevel(level: LogLevel) {
+  currentLevel = level;
+}
 
-export const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
-  format: logFormat,
-  transports: [
-    // Console output
-    new winston.transports.Console({
-      format: consoleFormat
-    }),
-    // File output for errors
-    new winston.transports.File({
-      filename: path.join(process.cwd(), 'logs/error.log'),
-      level: 'error',
-      maxsize: 5242880, // 5MB
-      maxFiles: 5
-    }),
-    // File output for all logs
-    new winston.transports.File({
-      filename: path.join(process.cwd(), 'logs/combined.log'),
-      maxsize: 5242880, // 5MB
-      maxFiles: 5
-    })
-  ]
-});
+function shouldLog(level: LogLevel): boolean {
+  return LOG_LEVELS[level] >= LOG_LEVELS[currentLevel];
+}
+
+function log(level: LogLevel, message: string, ...meta: any[]) {
+  if (!shouldLog(level)) return;
+  const timestamp = new Date().toISOString();
+  const prefix = `[${timestamp}] [${level.toUpperCase()}]`;
+  if (meta.length > 0) {
+    console.log(`${prefix}: ${message}`, ...meta);
+  } else {
+    console.log(`${prefix}: ${message}`);
+  }
+}
+
+export const logger = {
+  debug: (message: string, ...meta: any[]) => log('debug', message, ...meta),
+  info: (message: string, ...meta: any[]) => log('info', message, ...meta),
+  warn: (message: string, ...meta: any[]) => log('warn', message, ...meta),
+  error: (message: string, ...meta: any[]) => log('error', message, ...meta),
+};

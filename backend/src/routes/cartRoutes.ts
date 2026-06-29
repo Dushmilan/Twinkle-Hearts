@@ -1,19 +1,14 @@
-import { Router } from 'express';
+import { Hono } from 'hono';
 import { authenticate } from '../middleware/auth.js';
 import { validateCartSync } from '../middleware/validation.js';
+import type { Env, Variables } from '../types.js';
 
-const router = Router();
+type CartEnv = { Bindings: Env; Variables: Variables };
+const router = new Hono<CartEnv>();
 
-/**
- * POST /api/cart/sync
- * Sync cart with backend - validates products and returns current prices
- * Requires authentication to prevent product catalog scraping
- */
-router.post('/sync', authenticate, validateCartSync, async (req, res) => {
-  const validatedItems = req.body.validatedItems;
-
-  // Return validated cart with current prices
-  res.json({
+router.post('/sync', authenticate, validateCartSync, async (c) => {
+  const validatedItems = c.get('validatedItems');
+  return c.json({
     items: validatedItems,
     syncedAt: new Date().toISOString(),
   });

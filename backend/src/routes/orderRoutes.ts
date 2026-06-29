@@ -1,123 +1,76 @@
-import { Router } from 'express';
+import { Hono } from 'hono';
 import { validateOrder } from '../middleware/validation.js';
 import { orderRateLimit } from '../middleware/rateLimiter.js';
 import { authenticate } from '../middleware/auth.js';
 import { createOrder, getOrderById, getUserOrders } from '../services/orderService.js';
+import type { Env, Variables } from '../types.js';
 
-const router = Router();
+type OrderEnv = { Bindings: Env; Variables: Variables };
+const router = new Hono<OrderEnv>();
 
-// All order routes require authentication
-router.use(authenticate);
+router.use('*', authenticate);
 
-/**
- * POST /api/orders/create
- * Create a new order from cart
- * Server-side calculates totals from validated item prices
- */
-router.post('/create', orderRateLimit, validateOrder, async (req, res, next) => {
-  try {
-    const { validatedItems, customerName, customerPhone } = req.body;
-    const userId = req.user!.id;
+router.post('/create', orderRateLimit, validateOrder, async (c) => {
+  const user = c.get('user');
+  const validatedItems = c.get('validatedItems');
+  const customerName = c.get('customerName');
+  const customerPhone = c.get('customerPhone');
 
-    // Create order (totals calculated server-side in service)
-    const order = await createOrder({
-      userId,
-      customerName,
-      customerPhone,
-      items: validatedItems,
-    });
+  const order: any = await createOrder(c.env, {
+    userId: user.userId,
+    customerName,
+    customerPhone,
+    items: validatedItems,
+  });
 
-    // Generate WhatsApp message
-    const whatsappMessage = formatOrderMessage(order);
-    const whatsappDeepLink = `https://wa.me/${process.env.WHATSAPP_BUSINESS_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
+  const whatsappMessage = formatOrderMessage(order);
+  const whatsappDeepLink = `https://wa.me/${c.env.WHATSAPP_BUSINESS_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
 
-    res.json({
-      orderId: order.id,
-      items: order.items.map((item: any) => ({
-        productId: item.productId,
-        productName: item.productName,
-        quantity: item.quantity,
-        price: Number(item.price),
-      })),
-      subtotal: Number(order.subtotal),
-      tax: Number(order.tax),
+  return c.json({
+    orderId: order.id,
+    items: order.items.map((item: any) => ({
+      productId: item.productId,
+      productName: item.productName,
+      quantity: item.quantity,
+      price: Number(item.price),
+    })),
+    subtotal: Number(order.subtotal),
+    tax: Number(order.tax),
+    total: Number(order.total),
+    whatsappDeepLink,
+    createdAt: order.createdAt,
+  });
+});
+
+router.get('/', async (c) => {
+  const user = c.get('user');
+  const page = parseInt(c.req.query('page') || '1');
+  const limit = parseInt(c.req.query('limit') || '20');
+
+  const result = await getUserOrders(c.env, user.userId, page, limit);
+  return c.json({ success: true, data: result });
+});
+
+router.get('/:id', async (c) => {
+  const user = c.get('user');
+  const order = await getOrderById(c.env, c.req.param('id'), user.userId);
+
+  if (!order) {
+    return c.json({ error: 'Order not found' }, 404);
+  }
+
+  return c.json({
+    order: {
+      id: order.id,
       total: Number(order.total),
-      whatsappDeepLink,
+      items: order.items,
+      customerName: order.customerName,
       createdAt: order.createdAt,
-    });
-  } catch (error) {
-    next(error);
-  }
+    },
+  });
 });
 
-/**
- * GET /api/orders
- * Get user's order history
- */
-router.get('/', async (req, res, next) => {
-  try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 20;
-
-    const result = await getUserOrders(req.user!.id, page, limit);
-
-    res.json({
-      success: true,
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-/**
- * GET /api/orders/:id
- * Get order by ID (only if user owns it)
- */
-router.get('/:id', async (req, res, next) => {
-  try {
-    const order = await getOrderById(req.params.id, req.user!.id);
-
-    if (!order) {
-      res.status(404).json({ error: 'Order not found' });
-      return;
-    }
-
-    res.json({
-      order: {
-        id: order.id,
-        total: Number(order.total),
-        items: order.items,
-        customerName: order.customerName,
-        createdAt: order.createdAt,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-/**
- * Format order message for WhatsApp
- */
-interface FormattedOrderItem {
-  productId: string;
-  productName: string;
-  quantity: number;
-  price: number;
-}
-
-interface FormattedOrder {
-  id: string;
-  customerName: string;
-  customerPhone: string;
-  subtotal: number;
-  tax: number;
-  total: number;
-  items: FormattedOrderItem[];
-}
-
-function formatOrderMessage(order: FormattedOrder): string {
+function formatOrderMessage(order: any): string {
   const itemsList = order.items
     .map((item: any, idx: number) => `${idx + 1}. ${item.productName} x${item.quantity} - ₹${item.price}`)
     .join('\n');

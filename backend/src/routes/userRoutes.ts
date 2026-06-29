@@ -1,30 +1,20 @@
-// User routes
-// Private Commercial Project - Confidential
-
-import { Router } from 'express';
-import { 
-  getUserProfile, 
-  updateUserProfile, 
-  changePassword,
-  getUserAddresses,
-  createAddress,
-  updateAddress,
-  deleteAddress,
-  getUserWishlist,
-  addToWishlist,
-  removeFromWishlist,
+import { Hono } from 'hono';
+import {
+  getUserProfile, updateUserProfile, changePassword,
+  getUserAddresses, createAddress, updateAddress, deleteAddress,
+  getUserWishlist, addToWishlist, removeFromWishlist,
 } from '../services/userService.js';
 import { getUserOrders } from '../services/orderService.js';
 import { authenticate } from '../middleware/auth.js';
-import { rateLimiter } from '../middleware/rateLimiter.js';
+import { apiLimiter } from '../middleware/rateLimiter.js';
 import { z } from 'zod';
+import type { Env, Variables } from '../types.js';
 
-const router = Router();
+type UserEnv = { Bindings: Env; Variables: Variables };
+const router = new Hono<UserEnv>();
 
-// All routes require authentication
-router.use(authenticate);
+router.use('*', authenticate);
 
-// Validation schemas
 const profileSchema = z.object({
   name: z.string().min(2).optional(),
   phone: z.string().min(10).optional(),
@@ -48,202 +38,76 @@ const passwordSchema = z.object({
   newPassword: z.string().min(8, 'New password must be at least 8 characters'),
 });
 
-/**
- * GET /api/users/profile
- * Get current user profile
- */
-router.get('/profile', async (req, res, next) => {
-  try {
-    const user = await getUserProfile(req.user!.id);
-    
-    res.json({
-      success: true,
-      data: user,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.get('/profile', async (c) => {
+  const user = c.get('user');
+  const profile = await getUserProfile(c.env, user.userId);
+  return c.json({ success: true, data: profile });
 });
 
-/**
- * PUT /api/users/profile
- * Update user profile
- */
-router.put('/profile', async (req, res, next) => {
-  try {
-    const input = profileSchema.parse(req.body);
-    const user = await updateUserProfile(req.user!.id, input);
-    
-    res.json({
-      success: true,
-      message: 'Profile updated successfully',
-      data: user,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.put('/profile', async (c) => {
+  const user = c.get('user');
+  const input = profileSchema.parse(await c.req.json());
+  const profile = await updateUserProfile(c.env, user.userId, input);
+  return c.json({ success: true, message: 'Profile updated successfully', data: profile });
 });
 
-/**
- * POST /api/users/change-password
- * Change password
- */
-router.post('/change-password', rateLimiter, async (req, res, next) => {
-  try {
-    const input = passwordSchema.parse(req.body);
-    await changePassword(req.user!.id, input.currentPassword, input.newPassword);
-    
-    res.json({
-      success: true,
-      message: 'Password changed successfully. Please login again.',
-    });
-  } catch (error) {
-    next(error);
-  }
+router.post('/change-password', apiLimiter, async (c) => {
+  const user = c.get('user');
+  const input = passwordSchema.parse(await c.req.json());
+  await changePassword(c.env, user.userId, input.currentPassword, input.newPassword);
+  return c.json({ success: true, message: 'Password changed successfully. Please login again.' });
 });
 
-/**
- * GET /api/users/orders
- * Get user's order history
- */
-router.get('/orders', async (req, res, next) => {
-  try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 20;
-    
-    const result = await getUserOrders(req.user!.id, page, limit);
-    
-    res.json({
-      success: true,
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.get('/orders', async (c) => {
+  const user = c.get('user');
+  const page = parseInt(c.req.query('page') || '1');
+  const limit = parseInt(c.req.query('limit') || '20');
+  const result = await getUserOrders(c.env, user.userId, page, limit);
+  return c.json({ success: true, data: result });
 });
 
-/**
- * GET /api/users/addresses
- * Get user's saved addresses
- */
-router.get('/addresses', async (req, res, next) => {
-  try {
-    const addresses = await getUserAddresses(req.user!.id);
-    
-    res.json({
-      success: true,
-      data: addresses,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.get('/addresses', async (c) => {
+  const user = c.get('user');
+  const addresses = await getUserAddresses(c.env, user.userId);
+  return c.json({ success: true, data: addresses });
 });
 
-/**
- * POST /api/users/addresses
- * Add new address
- */
-router.post('/addresses', async (req, res, next) => {
-  try {
-    const input = addressSchema.parse(req.body);
-    const address = await createAddress(req.user!.id, input);
-    
-    res.status(201).json({
-      success: true,
-      message: 'Address added successfully',
-      data: address,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.post('/addresses', async (c) => {
+  const user = c.get('user');
+  const input = addressSchema.parse(await c.req.json());
+  const address = await createAddress(c.env, user.userId, input);
+  return c.json({ success: true, message: 'Address added successfully', data: address }, 201);
 });
 
-/**
- * PUT /api/users/addresses/:id
- * Update address
- */
-router.put('/addresses/:id', async (req, res, next) => {
-  try {
-    const input = addressSchema.partial().parse(req.body);
-    const address = await updateAddress(req.user!.id, req.params.id, input);
-    
-    res.json({
-      success: true,
-      message: 'Address updated successfully',
-      data: address,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.put('/addresses/:id', async (c) => {
+  const user = c.get('user');
+  const input = addressSchema.partial().parse(await c.req.json());
+  const address = await updateAddress(c.env, user.userId, c.req.param('id'), input);
+  return c.json({ success: true, message: 'Address updated successfully', data: address });
 });
 
-/**
- * DELETE /api/users/addresses/:id
- * Delete address
- */
-router.delete('/addresses/:id', async (req, res, next) => {
-  try {
-    await deleteAddress(req.user!.id, req.params.id);
-    
-    res.json({
-      success: true,
-      message: 'Address deleted successfully',
-    });
-  } catch (error) {
-    next(error);
-  }
+router.delete('/addresses/:id', async (c) => {
+  const user = c.get('user');
+  await deleteAddress(c.env, user.userId, c.req.param('id'));
+  return c.json({ success: true, message: 'Address deleted successfully' });
 });
 
-/**
- * GET /api/users/wishlist
- * Get user's wishlist
- */
-router.get('/wishlist', async (req, res, next) => {
-  try {
-    const wishlist = await getUserWishlist(req.user!.id);
-    
-    res.json({
-      success: true,
-      data: wishlist,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.get('/wishlist', async (c) => {
+  const user = c.get('user');
+  const wishlist = await getUserWishlist(c.env, user.userId);
+  return c.json({ success: true, data: wishlist });
 });
 
-/**
- * POST /api/users/wishlist/:productId
- * Add product to wishlist
- */
-router.post('/wishlist/:productId', async (req, res, next) => {
-  try {
-    const wishlist = await addToWishlist(req.user!.id, req.params.productId);
-    
-    res.json({
-      success: true,
-      message: 'Added to wishlist',
-      data: wishlist,
-    });
-  } catch (error) {
-    next(error);
-  }
+router.post('/wishlist/:productId', async (c) => {
+  const user = c.get('user');
+  const wishlist = await addToWishlist(c.env, user.userId, c.req.param('productId'));
+  return c.json({ success: true, message: 'Added to wishlist', data: wishlist });
 });
 
-/**
- * DELETE /api/users/wishlist/:productId
- * Remove product from wishlist
- */
-router.delete('/wishlist/:productId', async (req, res, next) => {
-  try {
-    await removeFromWishlist(req.user!.id, req.params.productId);
-    
-    res.json({
-      success: true,
-      message: 'Removed from wishlist',
-    });
-  } catch (error) {
-    next(error);
-  }
+router.delete('/wishlist/:productId', async (c) => {
+  const user = c.get('user');
+  await removeFromWishlist(c.env, user.userId, c.req.param('productId'));
+  return c.json({ success: true, message: 'Removed from wishlist' });
 });
 
 export default router;

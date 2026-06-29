@@ -1,0 +1,28 @@
+name = "twinkle-hearts-api"
+main = "src/worker.ts"
+compatibility_date = "2025-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "twinkle-hearts-db"
+database_id = "df198300-b4ba-4fe4-94d1-09b2cadbce09"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "9b392aa60c904b9291f1ad658d72cffe"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "twinkle-hearts-images"
+# Enable R2 in Cloudflare Dashboard: https://dash.cloudflare.com/?to=r2/overview
+
+[vars]
+NODE_ENV = "production"
+JWT_EXPIRES_IN = "7d"
+REFRESH_TOKEN_EXPIRES_IN = "30d"
+TAX_RATE = "0.18"
+CORS_ORIGIN = "https://app.twinklehearts.com"
+
+[observability]
+enabled = true

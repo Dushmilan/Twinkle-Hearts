@@ -1,56 +1,34 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Context, Next } from 'hono';
 import { z } from 'zod';
-import prisma from '../lib/prisma.js';
+import { getPrisma } from '../lib/prisma.js';
 import { BadRequestError, StockUnavailableError } from './errorHandler.js';
+import type { Env, Variables, ValidatedCartItem } from '../types.js';
 
-// Cart item schema (what frontend sends)
-// Accept both UUID and simple IDs for demo compatibility
+type ValContext = { Bindings: Env; Variables: Variables };
+
 const cartItemSchema = z.object({
   productId: z.string().min(1, 'Product ID is required'),
   quantity: z.number().int().positive('Quantity must be positive').max(999, 'Maximum quantity per item is 999'),
-  price: z.number().optional(), // Frontend price (for reference only, not trusted)
+  price: z.number().optional(),
 });
 
-// Order creation schema
 export const orderCreationSchema = z.object({
   items: z.array(cartItemSchema).min(1, 'Cart cannot be empty'),
   customerName: z.string().min(2, 'Name must be at least 2 characters'),
   customerPhone: z.string().regex(/^\+?[0-9]{10,15}$/, 'Phone must be 10-15 digits, optionally prefixed with +'),
 });
 
-export type OrderCreationInput = z.infer<typeof orderCreationSchema>;
-
-// Validated cart item (after database validation)
-export interface ValidatedCartItem {
-  productId: string;
-  quantity: number;
-  currentPrice: number; // From database (authoritative)
-  frontendPrice?: number; // From frontend (for audit only)
-  productName: string;
-  stockAvailable: number;
-}
-
-/**
- * Validate order input and fetch current prices/stock from database
- * CRITICAL: Never trust frontend prices - always fetch from database
- */
-export const validateOrder = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export async function validateOrder(c: Context<ValContext>, next: Next) {
   try {
-    // Validate input structure
-    const input = orderCreationSchema.parse(req.body);
+    const body = await c.req.json();
+    const input = orderCreationSchema.parse(body);
+    const prisma = getPrisma(c.env.DB);
 
-    // Extract product IDs
     const productIds = input.items.map(item => item.productId);
-
-    // Fetch current products from database
     const products = await prisma.product.findMany({
-      where: { 
+      where: {
         id: { in: productIds },
-        isActive: true 
+        isActive: true,
       },
       select: {
         id: true,
@@ -60,22 +38,19 @@ export const validateOrder = async (
       },
     });
 
-    // Build lookup maps
     const productMap = new Map(
       products.map(p => [p.id, {
         price: Number(p.price),
         name: p.name,
-        stock: p.stock
+        stock: p.stock,
       }])
     );
 
-    // Validate each item and build validated cart
     const validatedItems: ValidatedCartItem[] = [];
     const outOfStockErrors: string[] = [];
 
     for (const item of input.items) {
       const product = productMap.get(item.productId);
-
       if (!product) {
         throw new BadRequestError(`Product ${item.productId} not found or inactive`);
       }
@@ -96,49 +71,36 @@ export const validateOrder = async (
       }
     }
 
-    // H6: Report all stock issues at once instead of failing on first
     if (outOfStockErrors.length > 0) {
-      throw new StockUnavailableError(
-        outOfStockErrors.join('; '),
-        0,
-        0
-      );
+      throw new StockUnavailableError(outOfStockErrors.join('; '));
     }
 
-    // Attach validated items to request
-    req.body.validatedItems = validatedItems;
-    req.body.customerName = input.customerName;
-    req.body.customerPhone = input.customerPhone;
+    c.set('validatedItems', validatedItems);
+    c.set('customerName', input.customerName);
+    c.set('customerPhone', input.customerPhone);
 
-    next();
+    await next();
   } catch (error) {
     if (error instanceof z.ZodError) {
       const messages = error.errors.map(e => e.message).join(', ');
-      return next(new BadRequestError(messages));
+      throw new BadRequestError(messages);
     }
-    next(error);
+    throw error;
   }
-};
+}
 
-/**
- * Validate cart sync request
- */
-export const validateCartSync = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export async function validateCartSync(c: Context<ValContext>, next: Next) {
   try {
-    const { items } = req.body;
+    const body = await c.req.json();
+    const { items } = body;
 
     if (!Array.isArray(items) || items.length === 0) {
       throw new BadRequestError('Cart cannot be empty');
     }
 
-    // Validate structure
     const parsed = z.array(cartItemSchema).parse(items);
-    
-    // Fetch current prices
+    const prisma = getPrisma(c.env.DB);
+
     const productIds = parsed.map(item => item.productId);
     const products = await prisma.product.findMany({
       where: { id: { in: productIds }, isActive: true },
@@ -146,13 +108,9 @@ export const validateCartSync = async (
     });
 
     const productMap = new Map(
-      products.map(p => [p.id, {
-        price: Number(p.price),
-        stock: p.stock
-      }])
+      products.map(p => [p.id, { price: Number(p.price), stock: p.stock }])
     );
 
-    // Build validated cart
     const validatedItems = parsed.map(item => {
       const product = productMap.get(item.productId);
       return {
@@ -163,13 +121,13 @@ export const validateCartSync = async (
       };
     });
 
-    req.body.validatedItems = validatedItems;
-    next();
+    c.set('validatedItems', validatedItems as any);
+    await next();
   } catch (error) {
     if (error instanceof z.ZodError) {
       const messages = error.errors.map(e => e.message).join(', ');
-      return next(new BadRequestError(messages));
+      throw new BadRequestError(messages);
     }
-    next(error);
+    throw error;
   }
-};
+}

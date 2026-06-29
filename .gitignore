@@ -127,6 +127,9 @@ firestore-debug.log
 jwtRS256.key
 jwtRS256.key.pub
 
+# Cloudflare env reference (contains schema, not secrets)
+.env.cloudflare
+
 # Backup files
 *.bak
 *.backup
