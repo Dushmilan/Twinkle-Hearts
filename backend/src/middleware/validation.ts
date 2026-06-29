@@ -38,7 +38,7 @@ export async function validateOrder(c: Context<ValContext>, next: Next) {
       },
     });
 
-    const productMap = new Map(
+    const productMap = new Map<string, { price: number; name: string; stock: number }>(
       products.map(p => [p.id, {
         price: Number(p.price),
         name: p.name,
@@ -107,7 +107,7 @@ export async function validateCartSync(c: Context<ValContext>, next: Next) {
       select: { id: true, price: true, stock: true },
     });
 
-    const productMap = new Map(
+    const productMap = new Map<string, { price: number; stock: number }>(
       products.map(p => [p.id, { price: Number(p.price), stock: p.stock }])
     );
 
