@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { api } from '../../api.js';
+import { useAuthStore } from '../../store/authStore';
 import { ProductSkeleton } from '../../components/UI/LoadingSkeleton';
 import toastService from '../../utils/toast';
 
@@ -22,33 +23,22 @@ interface WishlistItem {
 }
 
 export default function WishlistPage() {
-  const { tokens, isAuthenticated } = useAuth();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
   useEffect(() => {
-    if (isAuthenticated && tokens?.accessToken) {
+    if (isAuthenticated) {
       fetchWishlist();
+    } else {
+      setIsLoading(false);
     }
-  }, [isAuthenticated, tokens?.accessToken]);
+  }, [isAuthenticated]);
 
   const fetchWishlist = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/users/wishlist`, {
-        headers: {
-          'Authorization': `Bearer ${tokens?.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch wishlist');
-      }
-
-      const data = await response.json();
-      setWishlist(data.data.wishlist || []);
+      const data = await api.wishlist.list();
+      setWishlist(data);
     } catch (error) {
       toastService.error('Failed to load wishlist');
     } finally {
@@ -60,17 +50,7 @@ export default function WishlistPage() {
     const loadingToast = toastService.loading('Removing...');
 
     try {
-      const response = await fetch(`${API_URL}/api/users/wishlist/${productId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${tokens?.accessToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to remove from wishlist');
-      }
-
+      await api.wishlist.remove(productId);
       toastService.dismiss(loadingToast);
       toastService.success('Removed from wishlist');
       fetchWishlist();

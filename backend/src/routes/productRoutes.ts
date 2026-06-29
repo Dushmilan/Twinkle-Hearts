@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import prisma from '../lib/prisma.js';
-import type { Prisma } from '@prisma/client';
+import { productService } from '../services/productService.js';
 import { NotFoundError } from '../middleware/errorHandler.js';
 
 const router = Router();
@@ -16,58 +15,15 @@ router.get('/', async (req, res, next) => {
     const search = req.query.search as string;
     const category = req.query.category as string;
 
-    const skip = (page - 1) * limit;
-
-    const where: Prisma.ProductWhereInput = { isActive: true };
-
-    if (search) {
-      where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
-      ];
-    }
-
-    if (category) {
-      // Case-insensitive category matching
-      where.category = { contains: category, mode: 'insensitive' };
-    }
-
-    const [products, total] = await Promise.all([
-      prisma.product.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          price: true,
-          stock: true,
-          sku: true,
-          images: true,
-          category: true,
-          createdAt: true,
-        },
-      }),
-      prisma.product.count({ where }),
-    ]);
-
-    // Convert BigInt to number for JSON serialization
-    const productsJson = products.map((p: any) => ({
-      ...p,
-      price: Number(p.price),
-    }));
-
-    res.json({
-      products: productsJson,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
+    const result = await productService.listProducts({
+      page,
+      limit,
+      search,
+      category,
+      activeOnly: true,
     });
+
+    res.json(result);
   } catch (error) {
     next(error);
   }
@@ -83,33 +39,13 @@ router.get('/search', async (req, res, next) => {
     const q = req.query.q as string;
 
     if (!q || q.length < 2) {
-      res.json({ products: [], pagination: { total: 0 } });
+      res.json({ products: [] });
       return;
     }
 
-    const products = await prisma.product.findMany({
-      where: {
-        isActive: true,
-        OR: [
-          { name: { contains: q, mode: 'insensitive' } },
-          { description: { contains: q, mode: 'insensitive' } },
-        ],
-      },
-      take: 20,
-      select: {
-        id: true,
-        name: true,
-        price: true,
-        images: true,
-      },
-    });
+    const products = await productService.searchProducts(q, 20);
 
-    res.json({
-      products: products.map((p: any) => ({
-        ...p,
-        price: Number(p.price),
-      }))
-    });
+    res.json({ products });
   } catch (error) {
     next(error);
   }
@@ -121,32 +57,9 @@ router.get('/search', async (req, res, next) => {
  */
 router.get('/:id', async (req, res, next) => {
   try {
-    const product = await prisma.product.findUnique({
-      where: { id: req.params.id },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        price: true,
-        stock: true,
-        sku: true,
-        images: true,
-        category: true,
-        isActive: true,
-        createdAt: true,
-      },
-    });
+    const product = await productService.getProductById(req.params.id, true);
 
-    if (!product || !product.isActive) {
-      throw new NotFoundError('Product not found');
-    }
-
-    res.json({
-      product: {
-        ...product,
-        price: Number(product.price),
-      }
-    });
+    res.json({ product });
   } catch (error) {
     next(error);
   }

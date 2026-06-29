@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { AdminRoute } from '../../components/ProtectedRoute';
+import { api } from '../../api.js';
 import toastService from '../../utils/toast';
 import ImageUpload from '../../components/ImageUpload';
-import { uploadImages } from '../../utils/cloudinary';
 
 interface Product {
   id: string;
@@ -20,14 +19,11 @@ interface Product {
 }
 
 function AdminProducts() {
-  const { tokens } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
   // Track new files to upload and existing images separately
   const [newFiles, setNewFiles] = useState<File[]>([]);
@@ -54,23 +50,8 @@ function AdminProducts() {
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
-      const searchParam = searchTerm ? `?search=${searchTerm}` : '';
-      const response = await fetch(
-        `${API_URL}/api/admin/products${searchParam}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${tokens?.accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch products');
-      }
-
-      const data = await response.json();
-      setProducts(data.data.products || []);
+      const result = await api.admin.products.list({ search: searchTerm || undefined });
+      setProducts((result as any).data?.products || []);
     } catch (error) {
       toastService.error('Failed to load products');
     } finally {
@@ -88,28 +69,29 @@ function AdminProducts() {
     );
 
     try {
-      // Step 1: Upload new files via backend API
-let uploadedUrls: string[] = [];
-if (newFiles.length > 0) {
-setIsUploadingImages(true);
-toastService.dismiss(loadingToast);
-toastService.loading('Uploading images...');
+      let uploadedUrls: string[] = [];
+      if (newFiles.length > 0) {
+        setIsUploadingImages(true);
+        toastService.dismiss(loadingToast);
+        toastService.loading('Uploading images...');
 
-uploadedUrls = await uploadImages(newFiles, tokens?.accessToken || '');
-setIsUploadingImages(false);
-}
+        const formData = new FormData();
+        newFiles.forEach((file) => formData.append('images', file));
+        const uploadResult = await api.admin.products.upload(formData);
+        uploadedUrls = uploadResult.data.urls;
+        setIsUploadingImages(false);
+      }
 
-      // Step 2: Combine existing images with newly uploaded URLs
       const allImages = [...existingImages, ...uploadedUrls];
 
-      // Step 3: Submit product data
       toastService.dismiss(loadingToast);
-      toastService.loading(editingProduct ? 'Updating product...' : 'Creating product...');
-      
+      const action = editingProduct ? 'Updating' : 'Creating';
+      toastService.loading(`${action} product...`);
+
       const payload = {
         name: formData.name,
         description: formData.description,
-        price: parseFloat(formData.price), // Send price as-is (database stores as Decimal)
+        price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
         sku: formData.sku,
         category: formData.category,
@@ -117,24 +99,10 @@ setIsUploadingImages(false);
         isActive: formData.isActive,
       };
 
-      const url = editingProduct
-        ? `${API_URL}/api/admin/products/${editingProduct.id}`
-        : `${API_URL}/api/admin/products`;
-
-      const method = editingProduct ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Authorization': `Bearer ${tokens?.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'Failed to save product' }));
-        throw new Error(error.message || 'Failed to save product');
+      if (editingProduct) {
+        await api.admin.products.update(editingProduct.id, payload);
+      } else {
+        await api.admin.products.create(payload);
       }
 
       toastService.dismiss(loadingToast);
@@ -158,24 +126,14 @@ setIsUploadingImages(false);
     const loadingToast = toastService.loading('Deleting product...');
 
     try {
-      const response = await fetch(`${API_URL}/api/admin/products/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${tokens?.accessToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete product');
-      }
-
+      await api.admin.products.delete(id);
       toastService.dismiss(loadingToast);
       toastService.success('Product deleted');
       fetchProducts();
     } catch (error) {
       toastService.dismiss(loadingToast);
       const errorMsg = error instanceof Error ? error.message : 'Failed to delete product';
-      if (errorMsg.includes('restrict')) {
+      if (errorMsg.includes('restrict') || errorMsg.includes('orders')) {
         toastService.error('Cannot delete product that has orders');
       } else {
         toastService.error('Failed to delete product');

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { api } from '../../api.js';
 import toastService from '../../utils/toast';
 
 interface Address {
@@ -14,7 +14,6 @@ interface Address {
 }
 
 export default function AddressManagementPage() {
-  const { tokens } = useAuth();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
@@ -33,27 +32,14 @@ export default function AddressManagementPage() {
   const COUNTRY_CODE = '+94';
   const PHONE_PLACEHOLDER = '7X XXX XXXX';
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
   useEffect(() => {
     fetchAddresses();
   }, []);
 
   const fetchAddresses = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/users/addresses`, {
-        headers: {
-          'Authorization': `Bearer ${tokens?.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch addresses');
-      }
-
-      const data = await response.json();
-      setAddresses(data.data || []);
+      const data = await api.addresses.list();
+      setAddresses(data);
     } catch (error) {
       toastService.error('Failed to load addresses');
     } finally {
@@ -67,27 +53,13 @@ export default function AddressManagementPage() {
     const loadingToast = toastService.loading(editingId ? 'Updating address...' : 'Saving address...');
 
     try {
-      const url = editingId
-        ? `${API_URL}/api/users/addresses/${editingId}`
-        : `${API_URL}/api/users/addresses`;
-
-      const method = editingId ? 'PUT' : 'POST';
-
-      // Prepend country code to phone number
       const fullPhone = `${COUNTRY_CODE}${formData.phone.replace(/\s/g, '')}`;
       const dataToSend = { ...formData, phone: fullPhone };
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Authorization': `Bearer ${tokens?.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save address');
+      if (editingId) {
+        await api.addresses.update(editingId, dataToSend);
+      } else {
+        await api.addresses.create(dataToSend);
       }
 
       toastService.dismiss(loadingToast);
@@ -117,17 +89,7 @@ export default function AddressManagementPage() {
     const loadingToast = toastService.loading('Deleting address...');
 
     try {
-      const response = await fetch(`${API_URL}/api/users/addresses/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${tokens?.accessToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete address');
-      }
-
+      await api.addresses.delete(id);
       toastService.dismiss(loadingToast);
       toastService.success('Address deleted');
       fetchAddresses();
@@ -138,7 +100,6 @@ export default function AddressManagementPage() {
   };
 
   const handleEdit = (address: Address) => {
-    // Strip the +94 country code for display
     const localPhone = address.phone.startsWith(COUNTRY_CODE) 
       ? address.phone.slice(COUNTRY_CODE.length) 
       : address.phone;
@@ -159,19 +120,7 @@ export default function AddressManagementPage() {
 
   const handleSetDefault = async (id: string) => {
     try {
-      const response = await fetch(`${API_URL}/api/users/addresses/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${tokens?.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ isDefault: true }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to set default address');
-      }
-
+      await api.addresses.update(id, { isDefault: true });
       toastService.success('Default address updated');
       fetchAddresses();
     } catch (error) {

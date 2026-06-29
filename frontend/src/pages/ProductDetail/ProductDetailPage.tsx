@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCartStore } from '../../store/cartStore';
+import { api } from '../../api.js';
 
 interface Product {
   id: string;
@@ -30,9 +31,7 @@ export default function ProductDetailPage() {
 
   async function fetchProduct(productId: string) {
     try {
-      const response = await fetch(`/api/products/${productId}`);
-      if (!response.ok) throw new Error('Product not found');
-      const data = await response.json();
+      const data = await api.products.get(productId);
       setProduct(data.product);
     } catch (error) {
       console.error('Failed to fetch product:', error);

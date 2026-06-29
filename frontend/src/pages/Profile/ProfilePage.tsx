@@ -1,10 +1,14 @@
 import { useState, FormEvent } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { api } from '../../api.js';
+import { useAuthStore } from '../../store/authStore';
 import { ProfileSkeleton } from '../../components/UI/LoadingSkeleton';
 import toastService from '../../utils/toast';
 
 export default function ProfilePage() {
-  const { user, updateUser, isAuthenticated, isLoading } = useAuth();
+  const user = useAuthStore((state) => state.user);
+  const updateUser = useAuthStore((state) => state.updateUser);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isLoading = useAuthStore((state) => state.isLoading);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -14,9 +18,14 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    updateUser(formData);
-    setIsEditing(false);
-    toastService.success('Profile updated successfully');
+    try {
+      const result = await api.auth.updateProfile(formData);
+      updateUser(result.data as any);
+      setIsEditing(false);
+      toastService.success('Profile updated successfully');
+    } catch {
+      toastService.error('Failed to update profile');
+    }
   };
 
   if (!isAuthenticated) {

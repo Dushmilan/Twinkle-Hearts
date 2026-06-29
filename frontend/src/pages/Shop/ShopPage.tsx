@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
+import { api } from '../../api.js';
 
 interface Product {
   id: string;
@@ -9,17 +10,7 @@ interface Product {
   price: number;
   stock: number;
   images: string[];
-  category: string;
-}
-
-interface ProductsResponse {
-  products: Product[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
+  category?: string;
 }
 
 const CATEGORIES = [
@@ -56,10 +47,8 @@ export default function ShopPage() {
     setLoading(true);
     setError(null);
     try {
-      const categoryParam = activeCategory === 'all' ? '' : `&category=${activeCategory}`;
-      const response = await fetch(`/api/products?limit=20${categoryParam}`);
-      if (!response.ok) throw new Error('Failed to fetch products');
-      const data: ProductsResponse = await response.json();
+      const category = activeCategory === 'all' ? undefined : activeCategory;
+      const data = await api.products.list({ limit: 20, category });
       setProducts(data.products);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -213,7 +202,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
     return `Rs. ${price.toLocaleString('en-IN')}`;
   };
 
-  const getCategoryBadge = (category: string) => {
+  const getCategoryBadge = (category?: string) => {
     const catMap: Record<string, { label: string; variant: string }> = {
       birthday: { label: '🎂 Birthday', variant: 'badge-gold' },
       love: { label: '💕 Love', variant: 'badge-rose' },
@@ -222,7 +211,8 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
       festival: { label: '🎊 Festival', variant: 'badge-gold' },
       sympathy: { label: '🕊️ Sympathy', variant: 'badge-sage' },
     };
-    const cat = catMap[category?.toLowerCase()] || { label: category, variant: 'badge-coral' };
+    const key = category?.toLowerCase() || '';
+    const cat = catMap[key] || { label: category || 'General', variant: 'badge-coral' };
     return <span className={`badge ${cat.variant}`}>{cat.label}</span>;
   };
 

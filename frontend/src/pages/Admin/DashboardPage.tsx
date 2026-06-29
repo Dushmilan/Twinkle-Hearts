@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { AdminRoute } from '../../components/ProtectedRoute';
+import { api } from '../../api.js';
 
 interface DashboardStats {
   totalOrders: number;
@@ -13,28 +13,14 @@ interface DashboardStats {
 }
 
 function AdminDashboard() {
-  const { tokens } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/admin/stats`, {
-          headers: {
-            'Authorization': `Bearer ${tokens?.accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch stats');
-        }
-
-        const data = await response.json();
-        setStats(data.data);
+        const result = await api.admin.stats();
+        setStats(result as DashboardStats);
       } catch (error) {
         console.error('Error fetching stats:', error);
       } finally {
@@ -42,10 +28,8 @@ function AdminDashboard() {
       }
     };
 
-    if (tokens?.accessToken) {
-      fetchStats();
-    }
-  }, [tokens?.accessToken]);
+    fetchStats();
+  }, []);
 
   const formatCurrency = (amount: any) => {
     const num = Number(amount);

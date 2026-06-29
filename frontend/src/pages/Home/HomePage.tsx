@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from '../../api.js';
 import { HeartSparkle, WhatsAppIcon } from '../../components/UI/Icons';
 
 interface Product {
@@ -8,8 +9,10 @@ interface Product {
   description: string;
   price: number;
   stock: number;
+  sku: string;
+  category?: string;
   images: string[];
-  category: string;
+  createdAt: string;
 }
 
 const CATEGORIES = [
@@ -32,9 +35,7 @@ export default function HomePage() {
   async function fetchFeaturedProducts() {
     setLoading(true);
     try {
-      const response = await fetch('/api/products?limit=8');
-      if (!response.ok) throw new Error('Failed to fetch products');
-      const data = await response.json();
+      const data = await api.products.list({ limit: 8 });
       setFeaturedProducts(data.products || []);
     } catch (err) {
       console.error('Error fetching featured products:', err);
@@ -267,7 +268,7 @@ function ProductCard({ product }: ProductCardProps) {
     return `Rs. ${price.toLocaleString('en-IN')}`;
   };
 
-  const getCategoryBadge = (category: string) => {
+  const getCategoryBadge = (category?: string) => {
     const catMap: Record<string, { label: string; variant: string }> = {
       birthday: { label: '🎂 Birthday', variant: 'badge-gold' },
       love: { label: '💕 Love', variant: 'badge-rose' },
@@ -276,7 +277,8 @@ function ProductCard({ product }: ProductCardProps) {
       festival: { label: '🎊 Festival', variant: 'badge-gold' },
       sympathy: { label: '🕊️ Sympathy', variant: 'badge-sage' },
     };
-    const cat = catMap[category?.toLowerCase()] || { label: category, variant: 'badge-coral' };
+    const key = category?.toLowerCase() || '';
+    const cat = catMap[key] || { label: category || 'General', variant: 'badge-coral' };
     return <span className={`badge ${cat.variant}`}>{cat.label}</span>;
   };
 

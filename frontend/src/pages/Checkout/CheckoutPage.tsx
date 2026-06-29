@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
+import { api } from '../../api.js';
 import { HeartIcon, WhatsAppIcon } from '../../components/UI/Icons';
 
 // Country codes for phone input
@@ -24,11 +25,9 @@ export default function CheckoutPage() {
 
   const [formData, setFormData] = useState({
     customerName: '',
-    countryCode: '+94', // Default to Sri Lanka
+    countryCode: '+94',
     customerPhone: '',
   });
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
   const total = getTotal();
   const taxRate = parseFloat(import.meta.env.VITE_TAX_RATE || '0.18');
   const tax = total * taxRate;
@@ -59,25 +58,14 @@ export default function CheckoutPage() {
         throw new Error('Invalid phone number format');
       }
 
-      const response = await fetch(`${API_URL}/api/orders/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: items.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-          })),
-          customerName: formData.customerName,
-          customerPhone: fullPhone,
-        }),
+      const order = await api.orders.create({
+        items: items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        })),
+        customerName: formData.customerName,
+        customerPhone: fullPhone,
       });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to create order');
-      }
-
-      const order = await response.json();
 
       // Clear cart and redirect to WhatsApp
       clearCart();

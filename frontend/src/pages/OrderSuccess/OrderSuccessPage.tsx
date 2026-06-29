@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { api } from '../../api.js';
 
 export default function OrderSuccessPage() {
   const { orderId } = useParams<{ orderId: string }>();
@@ -14,11 +15,8 @@ export default function OrderSuccessPage() {
 
   async function fetchOrder(id: string) {
     try {
-      const response = await fetch(`/api/orders/${id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setOrder(data.order);
-      }
+      const data = await api.orders.get(id);
+      setOrder(data.order);
     } catch (error) {
       console.error('Failed to fetch order:', error);
     } finally {

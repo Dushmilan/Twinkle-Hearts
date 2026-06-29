@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { AdminRoute } from '../../components/ProtectedRoute';
+import { api } from '../../api.js';
 import toastService from '../../utils/toast';
 
 interface User {
@@ -19,14 +19,11 @@ interface User {
 }
 
 function AdminUsers() {
-  const { tokens } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 0 });
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -39,24 +36,9 @@ function AdminUsers() {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const searchParam = searchTerm ? `&search=${searchTerm}` : '';
-      const response = await fetch(
-        `${API_URL}/api/admin/users?page=${page}&limit=20${searchParam}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${tokens?.accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-
-      const data = await response.json();
-      setUsers(data.data.users || []);
-      setPagination(data.data.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 });
+      const result = await api.admin.users.list({ page, limit: 20, search: searchTerm || undefined });
+      setUsers((result as any).data.users || []);
+      setPagination((result as any).data.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 });
     } catch (error) {
       toastService.error('Failed to load users');
     } finally {
@@ -68,19 +50,7 @@ function AdminUsers() {
     const loadingToast = toastService.loading('Updating user role...');
 
     try {
-      const response = await fetch(`${API_URL}/api/admin/users/${userId}/role`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${tokens?.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ role }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update user role');
-      }
-
+      await api.admin.users.updateRole(userId, role);
       toastService.dismiss(loadingToast);
       toastService.success('User role updated');
       fetchUsers();

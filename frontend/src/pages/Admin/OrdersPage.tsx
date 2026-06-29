@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { AdminRoute } from '../../components/ProtectedRoute';
+import { api } from '../../api.js';
 import toastService from '../../utils/toast';
 
 interface Order {
@@ -16,13 +16,10 @@ interface Order {
 }
 
 function AdminOrders() {
-  const { tokens } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 0 });
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
     fetchOrders();
@@ -31,23 +28,9 @@ function AdminOrders() {
   const fetchOrders = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `${API_URL}/api/admin/orders?page=${page}&limit=20`,
-        {
-          headers: {
-            'Authorization': `Bearer ${tokens?.accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch orders');
-      }
-
-      const data = await response.json();
-      setOrders(data.data.orders || []);
-      setPagination(data.data.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 });
+      const result = await api.admin.orders(page, 20);
+      setOrders(result.data.orders || []);
+      setPagination(result.data.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 });
     } catch (error) {
       toastService.error('Failed to load orders');
     } finally {

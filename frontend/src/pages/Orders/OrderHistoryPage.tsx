@@ -1,21 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { api } from '../../api.js';
+import { useAuthStore } from '../../store/authStore';
 import { OrderSkeleton } from '../../components/UI/LoadingSkeleton';
 import toastService from '../../utils/toast';
 
-interface OrderItem {
-  productId: string;
-  productName: string;
-  quantity: number;
-  price: number;
-}
-
 interface Order {
   id: string;
-  items: OrderItem[];
-  subtotal: number;
-  tax: number;
+  items: Array<unknown>;
   total: number;
   customerName: string;
   createdAt: string;
@@ -23,39 +15,28 @@ interface Order {
 }
 
 export default function OrderHistoryPage() {
-  const { tokens } = useAuth();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/users/orders`, {
-          headers: {
-            'Authorization': `Bearer ${tokens?.accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch orders');
-        }
-
-        const data = await response.json();
-        setOrders(data.data.orders || []);
-      } catch (error) {
-        toastService.error('Failed to load orders');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (tokens?.accessToken) {
+    if (isAuthenticated) {
       fetchOrders();
+    } else {
+      setIsLoading(false);
     }
-  }, [tokens?.accessToken]);
+  }, [isAuthenticated]);
+
+  const fetchOrders = async () => {
+    try {
+      const data = await api.orders.list();
+      setOrders(data.data?.orders || []);
+    } catch (error) {
+      toastService.error('Failed to load orders');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const formatCurrency = (amount: any) => {
     const num = Number(amount);
@@ -124,7 +105,7 @@ export default function OrderHistoryPage() {
               </div>
 
               <div className="border-t border-b border-cream-100 py-4 my-4 space-y-3">
-                {order.items.map((item, index) => (
+                {order.items.map((item: any, index) => (
                   <div key={index} className="flex justify-between items-center">
                     <div>
                       <p className="font-medium text-gray-900">{item.productName}</p>

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { db } from './db';
-import { useAuthStore } from './authStore';
+import { api } from '../api.js';
 
 export interface CartItem {
   productId: string;
@@ -123,33 +123,18 @@ export const useCartStore = create<CartState>()(
 
         set({ isSyncing: true });
 
-        const token = useAuthStore.getState().tokens?.accessToken;
-        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-
         try {
-          const response = await fetch('/api/cart/sync', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({
-              items: items.map((item) => ({
-                productId: item.productId,
-                quantity: item.quantity,
-                price: item.price,
-              })),
-            }),
+          const data = await api.cart.sync({
+            items: items.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.price,
+            })),
           });
 
-          if (!response.ok) throw new Error('Sync failed');
-
-          const data = await response.json();
-          
-          // Update items with validated prices from backend
           const updatedItems = items.map((item) => {
             const validatedItem = data.items.find(
-              (v: any) => v.productId === item.productId
+              (v) => v.productId === item.productId
             );
             return validatedItem
               ? {
