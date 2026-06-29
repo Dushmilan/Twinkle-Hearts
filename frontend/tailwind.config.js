@@ -59,8 +59,8 @@ export default {
         },
       },
       fontFamily: {
-        display: ['Cormorant', 'Georgia', 'serif'],
-        body: ['DM Sans', 'Noto Sans', 'system-ui', 'sans-serif'],
+        display: ['Outfit', 'system-ui', 'sans-serif'],
+        body: ['Outfit', 'system-ui', 'sans-serif'],
         sinhala: ['Noto Sans', 'sans-serif'],
         tamil: ['Noto Sans', 'sans-serif'],
       },
@@ -70,9 +70,10 @@ export default {
         'card-lift': '0 12px 32px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)',
         'soft': '0 1px 4px rgba(0, 0, 0, 0.04)',
         'glow': '0 0 20px rgba(232, 115, 74, 0.15)',
+        'diffuse': '0 20px 40px -15px rgba(0, 0, 0, 0.05)',
       },
       borderRadius: {
-        'card': '12px',
+        'card': '16px',
         'pill': '999px',
       },
       animation: {

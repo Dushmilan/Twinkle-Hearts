@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================================
-   TWINKLE-HEARTS — Global Styles
-   Greeting Card E-Commerce Platform
-   ============================================ */
-
 @layer base {
   *,
   *::before,
@@ -22,8 +17,8 @@
 
   body {
     font-family: theme('fontFamily.body');
-    background-color: theme('colors.cream.50');
-    color: theme('colors.gray.800');
+    background-color: #fafaf9;
+    color: theme('colors.zinc.800');
     line-height: 1.6;
     margin: 0;
     padding: 0;
@@ -33,15 +28,13 @@
     font-family: theme('fontFamily.display');
     font-weight: 600;
     line-height: 1.2;
-    color: theme('colors.gray.900');
+    color: theme('colors.zinc.900');
   }
 
-  /* Sinhala & Tamil script support */
   [lang="si"], [lang="ta"] {
     font-family: theme('fontFamily.sinhala');
   }
 
-  /* Selection color */
   ::selection {
     background-color: theme('colors.coral.200');
     color: theme('colors.coral.800');
@@ -56,34 +49,35 @@
   .btn-primary {
     @apply bg-coral-500 hover:bg-coral-600 active:bg-coral-700
            text-white font-body font-medium
-           py-2.5 px-6 rounded-pill
+           py-2.5 px-6 rounded-lg
            transition-all duration-200 ease-out
-           shadow-soft hover:shadow-glow
+           active:scale-[0.98]
            focus:outline-none focus:ring-2 focus:ring-coral-300 focus:ring-offset-2
-           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-soft
+           disabled:opacity-50 disabled:cursor-not-allowed
            inline-flex items-center justify-center gap-2;
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-cream-100 active:bg-cream-200
-           text-gray-700 hover:text-gray-900
+    @apply bg-white hover:bg-zinc-50 active:bg-zinc-100
+           text-zinc-700 hover:text-zinc-900
            font-body font-medium
-           py-2.5 px-6 rounded-pill
-           border border-gray-200 hover:border-gray-300
+           py-2.5 px-6 rounded-lg
+           border border-zinc-200 hover:border-zinc-300
            transition-all duration-200 ease-out
-           shadow-soft hover:shadow-card
+           active:scale-[0.98]
            focus:outline-none focus:ring-2 focus:ring-coral-300 focus:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed
            inline-flex items-center justify-center gap-2;
   }
 
   .btn-whatsapp {
-    @apply bg-whatsapp hover:bg-whatsapp-dark active:bg-green-700
+    @apply bg-[#25D366] hover:bg-[#128C7E] active:bg-green-700
            text-white font-body font-semibold
-           py-3 px-8 rounded-pill
+           py-3 px-8 rounded-lg
            transition-all duration-200 ease-out
+           active:scale-[0.98]
            shadow-card hover:shadow-lg
-           focus:outline-none focus:ring-2 focus:ring-whatsapp focus:ring-offset-2
+           focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2
            inline-flex items-center justify-center gap-2.5;
   }
 
@@ -91,8 +85,9 @@
     @apply bg-transparent hover:bg-coral-50 active:bg-coral-100
            text-coral-600 hover:text-coral-700
            font-body font-medium
-           py-2 px-4 rounded-pill
+           py-2 px-4 rounded-lg
            transition-all duration-200 ease-out
+           active:scale-[0.98]
            focus:outline-none focus:ring-2 focus:ring-coral-300
            inline-flex items-center justify-center gap-2;
   }
@@ -102,14 +97,14 @@
      ============================================ */
 
   .card {
-    @apply bg-white rounded-card shadow-card
-           border border-cream-200/50
+    @apply bg-white rounded-card
+           border border-zinc-200/50
            overflow-hidden
            transition-all duration-300 ease-out;
   }
 
   .card-hoverable {
-    @apply card hover:shadow-card-hover hover:-translate-y-1;
+    @apply card hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:-translate-y-0.5;
   }
 
   /* ============================================
@@ -118,11 +113,11 @@
 
   .input-field {
     @apply w-full px-4 py-2.5
-           bg-white border border-gray-200 rounded-lg
-           font-body text-gray-800
-           placeholder:text-gray-400
+           bg-white border border-zinc-200 rounded-lg
+           font-body text-zinc-800
+           placeholder:text-zinc-400
            focus:ring-2 focus:ring-coral-300 focus:border-coral-400
-           hover:border-gray-300
+           hover:border-zinc-300
            outline-none
            transition-all duration-200;
   }
@@ -132,7 +127,7 @@
   }
 
   .label-text {
-    @apply block text-sm font-body font-medium text-gray-700 mb-1.5;
+    @apply block text-sm font-body font-medium text-zinc-700 mb-1.5;
   }
 
   /* ============================================
@@ -151,11 +146,11 @@
   }
 
   .badge-sage {
-    @apply bg-sage-100 text-sage-700;
+    @apply bg-emerald-100 text-emerald-700;
   }
 
   .badge-gold {
-    @apply bg-gold-100 text-gold-600;
+    @apply bg-amber-100 text-amber-600;
   }
 
   .badge-rose {
@@ -168,10 +163,10 @@
 
   .category-pill {
     @apply inline-flex items-center gap-2
-           px-4 py-2.5 rounded-pill
+           px-4 py-2.5 rounded-lg
            font-body text-sm font-medium
-           bg-white border border-cream-200
-           text-gray-700
+           bg-white border border-zinc-200
+           text-zinc-700
            hover:border-coral-300 hover:text-coral-600 hover:bg-coral-50
            active:bg-coral-100
            transition-all duration-200 ease-out
@@ -181,25 +176,24 @@
 
   .category-pill-active {
     @apply bg-coral-500 text-white border-coral-500
-           hover:bg-coral-600 hover:text-white
-           shadow-glow;
+           hover:bg-coral-600 hover:text-white;
   }
 
   /* ============================================
-     PRODUCT CARD (Greeting Card Style)
+     PRODUCT CARD
      ============================================ */
 
   .product-card {
-    @apply bg-white rounded-card shadow-card
-           border border-cream-200/50
+    @apply bg-white rounded-card
+           border border-zinc-200/50
            overflow-hidden
            transition-all duration-300 ease-out
-           hover:shadow-card-hover hover:-translate-y-1.5
+           hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:-translate-y-0.5
            cursor-pointer;
   }
 
   .product-card-image {
-    @apply aspect-[3/4] bg-cream-100 overflow-hidden;
+    @apply aspect-[3/4] bg-zinc-100 overflow-hidden;
   }
 
   .product-card-body {
@@ -215,20 +209,16 @@
            py-16 px-4 text-center;
   }
 
-  .empty-state-icon {
-    @apply w-16 h-16 text-gray-300 mb-4;
-  }
-
   .empty-state-title {
-    @apply font-display text-xl text-gray-600 mb-2;
+    @apply font-display text-xl text-zinc-600 mb-2;
   }
 
   .empty-state-text {
-    @apply font-body text-sm text-gray-400;
+    @apply font-body text-sm text-zinc-400;
   }
 
   /* ============================================
-     LOADING SKELETON (Card-shaped)
+     LOADING SKELETON
      ============================================ */
 
   .skeleton-card {
@@ -236,56 +226,19 @@
   }
 
   .skeleton-card-image {
-    @apply aspect-[3/4] bg-cream-200 rounded-t-card;
+    @apply aspect-[3/4] bg-zinc-200 rounded-t-card;
   }
 
   .skeleton-card-line {
-    @apply h-4 bg-cream-200 rounded animate-pulse;
+    @apply h-4 bg-zinc-200 rounded animate-pulse;
   }
 
   .skeleton-card-line-short {
-    @apply h-4 bg-cream-200 rounded animate-pulse w-2/3;
-  }
-
-  /* ============================================
-     OFFLINE INDICATOR
-     ============================================ */
-
-  .offline-banner {
-    @apply fixed top-0 left-0 right-0
-           bg-gold-300 text-gold-800
-           text-center py-2 z-50
-           font-body text-sm
-           shadow-soft;
-  }
-
-  /* ============================================
-     LANGUAGE SWITCHER
-     ============================================ */
-
-  .lang-toggle {
-    @apply inline-flex items-center rounded-pill
-           bg-cream-100 p-0.5
-           border border-cream-200;
-  }
-
-  .lang-btn {
-    @apply px-3 py-1 rounded-pill
-           font-body text-xs font-medium
-           text-gray-600
-           hover:text-gray-800
-           transition-all duration-150
-           cursor-pointer select-none;
-  }
-
-  .lang-btn-active {
-    @apply bg-coral-500 text-white
-           shadow-soft;
+    @apply h-4 bg-zinc-200 rounded animate-pulse w-2/3;
   }
 }
 
 @layer utilities {
-  /* Staggered animation delays for grid items */
   .stagger-1 { animation-delay: 0ms; }
   .stagger-2 { animation-delay: 60ms; }
   .stagger-3 { animation-delay: 120ms; }
@@ -295,7 +248,6 @@
   .stagger-7 { animation-delay: 360ms; }
   .stagger-8 { animation-delay: 420ms; }
 
-  /* Line clamp utility */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -308,5 +260,9 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .text-balance {
+    text-wrap: balance;
   }
 }

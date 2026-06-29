@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../../api.js';
-import { HeartSparkle, WhatsAppIcon } from '../../components/UI/Icons';
+import { motion } from 'framer-motion';
+import {
+  Heart,
+  Gift,
+  Handshake,
+  Star,
+  Sparkle,
+  WhatsappLogo,
+  ShoppingCart,
+} from '@phosphor-icons/react';
+import { api } from '../../api';
 
 interface Product {
   id: string;
@@ -16,13 +25,30 @@ interface Product {
 }
 
 const CATEGORIES = [
-  { key: 'birthday', label: 'Birthday', emoji: '🎂' },
-  { key: 'love', label: 'Love', emoji: '💕' },
-  { key: 'anniversary', label: 'Anniversary', emoji: '🥂' },
-  { key: 'friendship', label: 'Friendship', emoji: '🤝' },
-  { key: 'festival', label: 'Festival', emoji: '🎊' },
-  { key: 'sympathy', label: 'Sympathy', emoji: '🕊️' },
+  { key: 'birthday', label: 'Birthday', icon: Gift, gradient: 'from-amber-100 to-amber-200', color: 'text-amber-600' },
+  { key: 'love', label: 'Love', icon: Heart, gradient: 'from-rose-100 to-rose-200', color: 'text-rose-600' },
+  { key: 'anniversary', label: 'Anniversary', icon: Heart, gradient: 'from-violet-100 to-violet-200', color: 'text-violet-600' },
+  { key: 'friendship', label: 'Friendship', icon: Handshake, gradient: 'from-sky-100 to-sky-200', color: 'text-sky-600' },
+  { key: 'festival', label: 'Festival', icon: Star, gradient: 'from-yellow-100 to-yellow-200', color: 'text-yellow-600' },
+  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, gradient: 'from-green-100 to-green-200', color: 'text-green-600' },
 ] as const;
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring' as const, stiffness: 100, damping: 20 },
+  },
+};
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -46,21 +72,29 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-warm-gradient">
+      {/* Asymmetric Hero */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-stone-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
-          <div className="text-center max-w-3xl mx-auto">
-            {/* Floating sparkle decorations */}
-            <div className="absolute top-8 left-12 w-2 h-2 bg-gold-300 rounded-full animate-float opacity-60 hidden lg:block" />
-            <div className="absolute top-16 right-20 w-1.5 h-1.5 bg-coral-300 rounded-full animate-float-slow opacity-40 hidden lg:block" />
-            <div className="absolute bottom-12 left-1/4 w-2 h-2 bg-rose-300 rounded-full animate-float opacity-50 hidden lg:block" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80dvh]">
+            {/* Left: Text */}
+            <div className="max-w-xl">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-coral-100 text-coral-700 text-sm font-medium mb-8">
+                  <Sparkle size={14} />
+                  Handcrafted with love
+                </span>
+              </motion.div>
 
-            <div className="animate-fade-up">
-              <span className="inline-flex items-center gap-2 badge badge-coral mb-6">
-                <HeartSparkle className="w-3.5 h-3.5" />
-                Handcrafted with love
-              </span>
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4">
+              <motion.h1
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tighter leading-none text-zinc-900"
+              >
                 Say it with a{' '}
                 <span className="text-coral-500 relative">
                   beautiful card
@@ -68,11 +102,23 @@ export default function HomePage() {
                     <path d="M1 5.5C40 2 80 2 199 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-coral-300" />
                   </svg>
                 </span>
-              </h1>
-              <p className="font-body text-lg sm:text-xl text-gray-600 mb-8 leading-relaxed">
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="mt-6 text-lg text-zinc-500 leading-relaxed max-w-[48ch]"
+              >
                 Greeting cards that speak from the heart. Order via WhatsApp — personal, warm, and delivered with care.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="mt-8 flex flex-col sm:flex-row items-start gap-4"
+              >
                 <Link to="/shop" className="btn-primary text-base py-3 px-8">
                   Browse All Cards
                 </Link>
@@ -82,39 +128,119 @@ export default function HomePage() {
                   rel="noopener noreferrer"
                   className="btn-ghost text-base"
                 >
-                  <WhatsAppIcon className="w-5 h-5" />
+                  <WhatsappLogo size={20} />
                   Chat with us
                 </a>
-              </div>
+              </motion.div>
+            </div>
+
+            {/* Right: Decorative card stack */}
+            <div className="relative h-[500px] hidden lg:block">
+              <motion.div
+                animate={{
+                  rotate: 8,
+                  y: [0, -12, 0],
+                }}
+                transition={{
+                  rotate: { duration: 1 },
+                  y: { repeat: Infinity, duration: 6, ease: 'easeInOut' },
+                }}
+                className="absolute top-0 right-0 w-72 h-96 bg-gradient-to-br from-coral-100 to-rose-200 rounded-[2.5rem] shadow-xl shadow-coral-200/20 border border-white/50"
+              >
+                <div className="p-8 flex flex-col items-start justify-end h-full">
+                  <div className="w-14 h-14 rounded-2xl bg-white/60 flex items-center justify-center mb-4">
+                    <Heart size={28} weight="fill" className="text-coral-400" />
+                  </div>
+                  <p className="text-coral-700 font-semibold text-lg">Love</p>
+                  <p className="text-coral-500 text-sm">Express your heart</p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                animate={{
+                  rotate: -4,
+                  y: [0, 16, 0],
+                }}
+                transition={{
+                  rotate: { duration: 1 },
+                  y: { repeat: Infinity, duration: 8, ease: 'easeInOut' },
+                }}
+                className="absolute bottom-0 right-16 w-64 h-80 bg-gradient-to-br from-amber-100 to-coral-200 rounded-[2.5rem] shadow-xl shadow-amber-200/20 border border-white/50"
+              >
+                <div className="p-8 flex flex-col items-start justify-end h-full">
+                  <div className="w-14 h-14 rounded-2xl bg-white/60 flex items-center justify-center mb-4">
+                    <Gift size={28} className="text-coral-400" />
+                  </div>
+                  <p className="text-coral-700 font-semibold text-lg">Birthday</p>
+                  <p className="text-coral-500 text-sm">Celebrate in style</p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                animate={{
+                  rotate: 14,
+                  y: [0, -8, 0],
+                }}
+                transition={{
+                  rotate: { duration: 1 },
+                  y: { repeat: Infinity, duration: 5, ease: 'easeInOut' },
+                }}
+                className="absolute top-16 right-32 w-56 h-72 bg-gradient-to-br from-rose-100 to-rose-200 rounded-[2.5rem] shadow-xl shadow-rose-200/20 border border-white/50"
+              >
+                <div className="p-8 flex flex-col items-start justify-end h-full">
+                  <div className="w-14 h-14 rounded-2xl bg-white/60 flex items-center justify-center mb-4">
+                    <Star size={28} className="text-rose-400" />
+                  </div>
+                  <p className="text-rose-700 font-semibold text-lg">Festival</p>
+                  <p className="text-rose-500 text-sm">Spread the joy</p>
+                </div>
+              </motion.div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Bottom wave divider */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 60" fill="none" className="w-full h-12 text-cream-50">
-            <path
-              d="M0 60V30C240 0 480 10 720 25C960 40 1200 50 1440 30V60H0Z"
-              fill="currentColor"
-            />
-          </svg>
+      {/* Categories Bento Grid */}
+      <section className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900">
+              Shop by Category
+            </h2>
+            <p className="mt-2 text-zinc-500 text-balance">
+              Find the perfect card for every occasion
+            </p>
+          </div>
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-50px' }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+          >
+            {CATEGORIES.map((cat) => (
+              <CategoryCard key={cat.key} category={cat} />
+            ))}
+          </motion.div>
         </div>
       </section>
 
       {/* Featured Products */}
-      <section className="bg-cream-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex items-end justify-between mb-8">
+      <section className="bg-stone-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+          <div className="flex items-end justify-between mb-10">
             <div>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900">
                 Featured Cards
               </h2>
-              <p className="text-gray-500 mt-1">
+              <p className="mt-2 text-zinc-500 text-balance">
                 Our most popular greeting cards
               </p>
             </div>
-            <Link to="/shop" className="text-sm font-medium text-coral-600 hover:text-coral-700 transition-colors">
-              View All →
+            <Link to="/shop" className="text-sm font-medium text-coral-600 hover:text-coral-700 transition-colors flex items-center gap-1">
+              View All
+              <span className="inline-block ml-1">&rarr;</span>
             </Link>
           </div>
 
@@ -136,92 +262,60 @@ export default function HomePage() {
             </div>
           ) : featuredProducts.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-gray-500">No featured cards available</p>
+              <p className="text-zinc-500">No featured cards available</p>
               <Link to="/shop" className="btn-primary mt-4 inline-block">
                 Browse All Cards
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-              {featuredProducts.slice(0, 4).map((product, index) => (
-                <div
-                  key={product.id}
-                  className="animate-fade-up opacity-0"
-                  style={{ animationDelay: `${Math.min(index * 60, 240)}ms`, animationFillMode: 'forwards' }}
-                >
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-50px' }}
+              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+            >
+              {featuredProducts.slice(0, 4).map((product) => (
+                <motion.div key={product.id} variants={itemVariants}>
                   <ProductCard product={product} />
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center mb-8">
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900">
-              Shop by Category
-            </h2>
-            <p className="text-gray-500 mt-1">
-              Find the perfect card for every occasion
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {CATEGORIES.map((cat) => (
-              <Link
-                key={cat.key}
-                to={`/shop?category=${cat.key}`}
-                className="group card p-6 text-center hover:shadow-glow transition-all duration-300 border-2 border-transparent hover:border-coral-200"
-              >
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
-                  {cat.emoji}
-                </div>
-                <h3 className="font-display font-semibold text-gray-900 group-hover:text-coral-600 transition-colors">
-                  {cat.label}
-                </h3>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* About Section */}
-      <section className="bg-warm-gradient">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <section className="bg-gradient-to-b from-white to-stone-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
             <div>
-              <span className="inline-flex items-center gap-2 badge badge-coral mb-6">
-                <HeartSparkle className="w-3.5 h-3.5" />
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-coral-100 text-coral-700 text-sm font-medium mb-6">
+                <Sparkle size={14} />
                 About TwinkleHearts
               </span>
-              <h2 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-6">
                 Bringing joy, one card at a time
               </h2>
-              <p className="font-body text-lg text-gray-600 mb-4 leading-relaxed">
+              <p className="text-lg text-zinc-500 mb-4 leading-relaxed">
                 At TwinkleHearts, we believe every occasion deserves to be celebrated with something special. Our beautifully crafted greeting cards are designed to make your loved ones smile.
               </p>
-              <p className="font-body text-lg text-gray-600 mb-6 leading-relaxed">
-                Based in Sri Lanka 🇱🇰, we offer a personal touch with easy ordering via WhatsApp. Simply browse our collection, choose your favorite cards, and we'll handle the rest!
+              <p className="text-lg text-zinc-500 mb-8 leading-relaxed">
+                Based in Sri Lanka, we offer a personal touch with easy ordering via WhatsApp. Simply browse our collection, choose your favorite cards, and we will handle the rest.
               </p>
 
-              {/* Features */}
               <div className="space-y-4">
-                <FeatureItem icon="✨" title="Beautiful Designs" description="Handpicked designs that speak from the heart" />
-                <FeatureItem icon="💌" title="Easy Ordering" description="Order conveniently via WhatsApp" />
-                <FeatureItem icon="🚚" title="Fast Delivery" description="Quick and reliable delivery across Sri Lanka" />
-                <FeatureItem icon="💝" title="Personal Touch" description="Add custom messages to make it special" />
+                <FeatureItem icon={Sparkle} title="Beautiful Designs" description="Handpicked designs that speak from the heart" />
+                <FeatureItem icon={WhatsappLogo} title="Easy Ordering" description="Order conveniently via WhatsApp" />
+                <FeatureItem icon={ShoppingCart} title="Fast Delivery" description="Quick and reliable delivery across Sri Lanka" />
+                <FeatureItem icon={Heart} title="Personal Touch" description="Add custom messages to make it special" />
               </div>
             </div>
 
-            {/* Right Content - Stats */}
-            <div className="grid grid-cols-2 gap-6">
-              <StatCard number="1000+" label="Happy Customers" />
-              <StatCard number="500+" label="Cards Delivered" />
-              <StatCard number="50+" label="Unique Designs" />
+            <div className="grid grid-cols-2 gap-4">
+              <StatCard number="1,200+" label="Happy Customers" />
+              <StatCard number="580+" label="Cards Delivered" />
+              <StatCard number="65+" label="Unique Designs" />
               <StatCard number="4.9" label="Average Rating" />
             </div>
           </div>
@@ -229,25 +323,28 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-coral-500 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold mb-4">
+      <section className="bg-gradient-to-br from-coral-500 to-coral-600 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
             Ready to spread some joy?
           </h2>
-          <p className="text-lg text-coral-100 mb-8">
+          <p className="text-lg text-coral-100 mb-8 text-balance max-w-xl mx-auto">
             Browse our collection and find the perfect card for your loved ones
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/shop" className="bg-white text-coral-600 hover:bg-cream-50 px-8 py-3 rounded-lg font-semibold transition-colors">
+            <Link
+              to="/shop"
+              className="bg-white text-coral-600 hover:bg-stone-50 px-8 py-3 rounded-lg font-semibold transition-all active:scale-[0.98]"
+            >
               Shop Now
             </Link>
             <a
               href="https://wa.me/947XXXXXXXX"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-coral-600 hover:bg-coral-700 px-8 py-3 rounded-lg font-semibold transition-colors inline-flex items-center gap-2"
+              className="bg-coral-600 hover:bg-coral-700 px-8 py-3 rounded-lg font-semibold transition-all active:scale-[0.98] inline-flex items-center gap-2"
             >
-              <WhatsAppIcon className="w-5 h-5" />
+              <WhatsappLogo size={20} />
               Chat on WhatsApp
             </a>
           </div>
@@ -257,78 +354,70 @@ export default function HomePage() {
   );
 }
 
-// ---- Product Card sub-component ----
+/* ---- Product Card ---- */
 
-interface ProductCardProps {
-  product: Product;
-}
+function ProductCard({ product }: { product: Product }) {
+  const [imgError, setImgError] = useState(false);
 
-function ProductCard({ product }: ProductCardProps) {
   const formatPrice = (price: number) => {
     return `Rs. ${price.toLocaleString('en-IN')}`;
   };
 
   const getCategoryBadge = (category?: string) => {
-    const catMap: Record<string, { label: string; variant: string }> = {
-      birthday: { label: '🎂 Birthday', variant: 'badge-gold' },
-      love: { label: '💕 Love', variant: 'badge-rose' },
-      anniversary: { label: '🥂 Anniversary', variant: 'badge-sage' },
-      friendship: { label: '🤝 Friendship', variant: 'badge-coral' },
-      festival: { label: '🎊 Festival', variant: 'badge-gold' },
-      sympathy: { label: '🕊️ Sympathy', variant: 'badge-sage' },
+    const catMap: Record<string, { label: string }> = {
+      birthday: { label: 'Birthday' },
+      love: { label: 'Love' },
+      anniversary: { label: 'Anniversary' },
+      friendship: { label: 'Friendship' },
+      festival: { label: 'Festival' },
+      sympathy: { label: 'Sympathy' },
     };
     const key = category?.toLowerCase() || '';
-    const cat = catMap[key] || { label: category || 'General', variant: 'badge-coral' };
-    return <span className={`badge ${cat.variant}`}>{cat.label}</span>;
+    const cat = catMap[key] || { label: category || 'General' };
+    return <span className="badge badge-coral">{cat.label}</span>;
   };
 
   return (
     <div className="product-card group">
-      {/* Product Image */}
       <Link to={`/product/${product.id}`} className="block">
         <div className="product-card-image">
-          {product.images[0] ? (
+          {!imgError && product.images[0] ? (
             <img
               src={product.images[0]}
               alt={product.name}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22 viewBox=%220 0 300 400%22%3E%3Crect fill=%22%23F5E0D3%22 width=%22300%22 height=%22400%22/%3E%3Ctext fill=%22%239BB89B%22 font-family=%22serif%22 font-size=%2218%22 x=%2250%25%22 y=%2245%25%22 text-anchor=%22middle%22%3E💌%3C/text%3E%3Ctext fill=%22%23B04628%22 font-family=%22serif%22 font-size=%2214%22 x=%2250%25%22 y=%2255%25%22 text-anchor=%22middle%22%3ECard Preview%3C/text%3E%3C/svg%3E';
-              }}
+              onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-cream-200 text-cream-300">
-              <span className="text-3xl mb-2">💌</span>
-              <span className="text-sm font-display">Card Preview</span>
+            <div className="w-full h-full flex flex-col items-center justify-center bg-zinc-100">
+              <div className="w-12 h-12 rounded-2xl bg-zinc-200 flex items-center justify-center mb-2">
+                <Heart size={24} className="text-zinc-400" />
+              </div>
+              <span className="text-sm font-medium text-zinc-400">Card Preview</span>
             </div>
           )}
         </div>
       </Link>
 
-      {/* Product Info */}
       <div className="product-card-body">
-        {/* Category Badge */}
         <div className="mb-2">
           {getCategoryBadge(product.category)}
         </div>
 
-        {/* Title */}
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-base font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-coral-600 transition-colors">
+          <h3 className="font-display text-base font-semibold text-zinc-900 mb-2 line-clamp-2 hover:text-coral-600 transition-colors">
             {product.name}
           </h3>
         </Link>
 
-        {/* Price */}
         <div className="flex items-center justify-between mt-3">
           <span className="font-body text-lg font-bold text-coral-600">
             {formatPrice(product.price)}
           </span>
         </div>
 
-        {/* Stock indicator */}
         {product.stock > 0 && product.stock <= 5 && (
-          <p className="text-xs text-gold-600 mt-2 font-medium">
+          <p className="text-xs text-amber-600 mt-2 font-medium">
             Only {product.stock} left
           </p>
         )}
@@ -342,15 +431,57 @@ function ProductCard({ product }: ProductCardProps) {
   );
 }
 
-// ---- Sub-components ----
+/* ---- Category Card ---- */
 
-function FeatureItem({ icon, title, description }: { icon: string; title: string; description: string }) {
+function CategoryCard({
+  category,
+}: {
+  category: (typeof CATEGORIES)[number];
+}) {
+  const Icon = category.icon;
+
+  return (
+    <motion.div
+      variants={itemVariants}
+      className="group"
+    >
+      <Link
+        to={`/shop?category=${category.key}`}
+        className={`flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-br ${category.gradient} border border-white/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]`}
+      >
+        <div className="w-12 h-12 rounded-xl bg-white/60 flex items-center justify-center flex-shrink-0">
+          <Icon size={24} className={category.color} />
+        </div>
+        <div>
+          <h3 className={`font-semibold text-base ${category.color}`}>
+            {category.label}
+          </h3>
+          <p className="text-sm text-zinc-500">Browse collection</p>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
+/* ---- Sub-components ---- */
+
+function FeatureItem({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+}) {
   return (
     <div className="flex items-start gap-3">
-      <div className="text-2xl flex-shrink-0">{icon}</div>
+      <div className="w-10 h-10 rounded-xl bg-coral-100 flex items-center justify-center flex-shrink-0">
+        <Icon size={20} className="text-coral-600" />
+      </div>
       <div>
-        <h4 className="font-semibold text-gray-900">{title}</h4>
-        <p className="text-sm text-gray-600">{description}</p>
+        <h4 className="font-semibold text-zinc-900">{title}</h4>
+        <p className="text-sm text-zinc-500">{description}</p>
       </div>
     </div>
   );
@@ -358,13 +489,11 @@ function FeatureItem({ icon, title, description }: { icon: string; title: string
 
 function StatCard({ number, label }: { number: string; label: string }) {
   return (
-    <div className="bg-white rounded-card p-6 text-center shadow-soft">
-      <div className="text-3xl font-display font-bold text-coral-600 mb-2">
+    <div className="bg-white rounded-2xl p-6 text-center border border-zinc-200/50">
+      <div className="text-3xl font-display font-bold text-coral-600 mb-1">
         {number}
       </div>
-      <div className="text-sm text-gray-600">{label}</div>
+      <div className="text-sm text-zinc-500">{label}</div>
     </div>
   );
 }
-
-
