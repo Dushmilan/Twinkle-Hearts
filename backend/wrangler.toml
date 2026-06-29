@@ -22,7 +22,7 @@ NODE_ENV = "production"
 JWT_EXPIRES_IN = "7d"
 REFRESH_TOKEN_EXPIRES_IN = "30d"
 TAX_RATE = "0.18"
-CORS_ORIGIN = "https://app.twinklehearts.com"
+CORS_ORIGIN = "https://twinkle-hearts.pages.dev"
 
 [observability]
 enabled = true
