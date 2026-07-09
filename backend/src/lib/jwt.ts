@@ -3,21 +3,15 @@ import { SignJWT, jwtVerify } from 'jose';
 let privateKey: CryptoKey | null = null;
 let publicKey: CryptoKey | null = null;
 
-async function loadKeys(privateKeyPEM: string, publicKeyPEM: string) {
-  if (privateKey && publicKey) return;
+async function loadPrivateKey(privateKeyPEM: string) {
+  if (privateKey) return;
 
   const privateKeyBase64 = privateKeyPEM
     .replace(/-----BEGIN PRIVATE KEY-----/g, '')
     .replace(/-----END PRIVATE KEY-----/g, '')
     .replace(/\s/g, '');
 
-  const publicKeyBase64 = publicKeyPEM
-    .replace(/-----BEGIN PUBLIC KEY-----/g, '')
-    .replace(/-----END PUBLIC KEY-----/g, '')
-    .replace(/\s/g, '');
-
   const privateKeyBytes = Uint8Array.from(atob(privateKeyBase64), c => c.charCodeAt(0));
-  const publicKeyBytes = Uint8Array.from(atob(publicKeyBase64), c => c.charCodeAt(0));
 
   privateKey = await crypto.subtle.importKey(
     'pkcs8',
@@ -26,6 +20,17 @@ async function loadKeys(privateKeyPEM: string, publicKeyPEM: string) {
     false,
     ['sign']
   );
+}
+
+async function loadPublicKey(publicKeyPEM: string) {
+  if (publicKey) return;
+
+  const publicKeyBase64 = publicKeyPEM
+    .replace(/-----BEGIN PUBLIC KEY-----/g, '')
+    .replace(/-----END PUBLIC KEY-----/g, '')
+    .replace(/\s/g, '');
+
+  const publicKeyBytes = Uint8Array.from(atob(publicKeyBase64), c => c.charCodeAt(0));
 
   publicKey = await crypto.subtle.importKey(
     'spki',
@@ -41,7 +46,7 @@ export async function signAccessToken(
   privateKeyPEM: string,
   expiresIn: string = '7d'
 ): Promise<string> {
-  await loadKeys(privateKeyPEM, '');
+  await loadPrivateKey(privateKeyPEM);
 
   return new SignJWT({
     userId: payload.userId,
@@ -61,7 +66,7 @@ export async function signRefreshToken(
   privateKeyPEM: string,
   expiresIn: string = '30d'
 ): Promise<string> {
-  await loadKeys(privateKeyPEM, '');
+  await loadPrivateKey(privateKeyPEM);
 
   return new SignJWT({
     userId: payload.userId,
@@ -79,7 +84,8 @@ export async function verifyToken<T>(
   privateKeyPEM: string,
   publicKeyPEM: string
 ): Promise<T | null> {
-  await loadKeys(privateKeyPEM, publicKeyPEM);
+  await loadPrivateKey(privateKeyPEM);
+  await loadPublicKey(publicKeyPEM);
 
   try {
     const { payload } = await jwtVerify(token, publicKey!);
