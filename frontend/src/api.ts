@@ -151,7 +151,7 @@ interface ProductDetail {
   description: string;
   price: number;
   stock: number;
-  sku: string;
+  sku?: string;
   images: string[];
   category: string;
   isActive: boolean;

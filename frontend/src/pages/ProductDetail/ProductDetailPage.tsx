@@ -271,10 +271,6 @@ export default function ProductDetailPage() {
           <div className="mt-8 pt-8 border-t border-neutral-200">
             <dl className="space-y-4 text-sm">
               <div className="flex justify-between">
-                <dt className="text-gray-500">SKU</dt>
-                <dd className="font-medium text-gray-700">{product.sku || '—'}</dd>
-              </div>
-              <div className="flex justify-between">
                 <dt className="text-gray-500">Category</dt>
                 <dd className="font-medium text-gray-700 capitalize">{product.category || '—'}</dd>
               </div>
