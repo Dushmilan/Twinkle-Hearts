@@ -76,6 +76,12 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   return response.json() as Promise<T>;
 }
 
+interface ApiEnvelope<T> {
+  success: boolean;
+  message?: string;
+  data: T;
+}
+
 interface LoginInput {
   email: string;
   password: string;
@@ -346,12 +352,12 @@ interface UserOrdersResponse {
 
 type Api = {
   auth: {
-    login: (input: LoginInput) => Promise<AuthResponse>;
-    register: (input: RegisterInput) => Promise<AuthResponse>;
+    login: (input: LoginInput) => Promise<ApiEnvelope<AuthResponse>>;
+    register: (input: RegisterInput) => Promise<ApiEnvelope<AuthResponse>>;
     logout: () => Promise<void>;
-    me: () => Promise<{ data: AuthResponse['user'] }>;
-    refresh: (refreshToken: string) => Promise<RefreshResponse>;
-    updateProfile: (data: { name: string; phone: string; avatar: string }) => Promise<{ data: AuthResponse['user'] }>;
+    me: () => Promise<ApiEnvelope<AuthResponse['user']>>;
+    refresh: (refreshToken: string) => Promise<ApiEnvelope<RefreshResponse>>;
+    updateProfile: (data: { name: string; phone: string; avatar: string }) => Promise<ApiEnvelope<AuthResponse['user']>>;
   };
   products: {
     list: (params?: { page?: number; limit?: number; search?: string; category?: string }) => Promise<ProductsResponse>;

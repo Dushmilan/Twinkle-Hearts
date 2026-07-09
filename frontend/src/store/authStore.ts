@@ -88,12 +88,12 @@ setTokenGetter(() => {
 export const authAPI = {
   async login(email: string, password: string) {
     const result = await api.auth.login({ email, password });
-    return result;
+    return result.data;
   },
 
   async register(email: string, password: string, name: string, phone?: string) {
     const result = await api.auth.register({ email, password, name, phone });
-    return result;
+    return result.data;
   },
 
   async logout(_accessToken: string) {
@@ -111,6 +111,6 @@ export const authAPI = {
 
   async refreshToken(refreshToken: string) {
     const result = await api.auth.refresh(refreshToken);
-    return result;
+    return result.data;
   },
 };
