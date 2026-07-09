@@ -45,7 +45,7 @@ export async function uploadImages(
     formData.append('images', file);
   });
 
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+  const apiUrl = import.meta.env.VITE_API_URL || '';
 
   const response = await fetch(`${apiUrl}/api/admin/products/upload`, {
     method: 'POST',
@@ -112,7 +112,7 @@ async function uploadSingleImage(
   const formData = new FormData();
   formData.append('images', file);
 
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+  const apiUrl = import.meta.env.VITE_API_URL || '';
 
   const response = await fetch(`${apiUrl}/api/admin/products/upload`, {
     method: 'POST',
