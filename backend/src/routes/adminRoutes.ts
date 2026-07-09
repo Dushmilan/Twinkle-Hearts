@@ -97,9 +97,6 @@ router.get('/products', async (c) => {
 
 router.post('/products', async (c) => {
   const body: any = await c.req.json();
-  if (body.images && Array.isArray(body.images)) {
-    body.images = JSON.stringify(body.images);
-  }
   const input = productSchema.parse(body);
   const product = await createProduct(c.env, { ...input, images: JSON.stringify(input.images) });
   return c.json({ success: true, data: product }, 201);
@@ -107,9 +104,6 @@ router.post('/products', async (c) => {
 
 router.put('/products/:id', async (c) => {
   const body: any = await c.req.json();
-  if (body.images && Array.isArray(body.images)) {
-    body.images = JSON.stringify(body.images);
-  }
   const input = updateProductSchema.parse(body);
   const product = await updateProduct(c.env, c.req.param('id'), input);
   return c.json({ success: true, data: product });
