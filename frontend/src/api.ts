@@ -15,7 +15,7 @@ interface ApiError {
 
 let tokenGetter: (() => string | null | undefined) | null = null;
 
-export function setTokenGetter(getter: () => string | null | undefined) {
+export function setTokenGetter(getter: (() => string | null | undefined) | null) {
   tokenGetter = getter;
 }
 
