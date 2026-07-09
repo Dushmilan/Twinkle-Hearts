@@ -26,12 +26,12 @@ interface Product {
 }
 
 const CATEGORIES = [
-  { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-coral-600', bg: 'bg-coral-50' },
-  { key: 'love', label: 'Love', icon: Heart, color: 'text-rose-600', bg: 'bg-rose-50' },
-  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-amber-600', bg: 'bg-amber-50' },
-  { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-sky-600', bg: 'bg-sky-50' },
-  { key: 'festival', label: 'Festival', icon: Star, color: 'text-violet-600', bg: 'bg-violet-50' },
-  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+  { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-ruby-600', bg: 'bg-ruby-50' },
+  { key: 'love', label: 'Love', icon: Heart, color: 'text-ruby-500', bg: 'bg-ruby-50' },
+  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-peacock-600', bg: 'bg-peacock-50' },
+  { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-ink-500', bg: 'bg-ink-50' },
+  { key: 'festival', label: 'Festival', icon: Star, color: 'text-ruby-400', bg: 'bg-ruby-50' },
+  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-peacock-500', bg: 'bg-peacock-50' },
 ] as const;
 
 const containerVariants: Variants = {
@@ -46,7 +46,7 @@ const itemVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: 'spring', stiffness: 100, damping: 20 },
+    transition: { type: 'spring' as const, stiffness: 100, damping: 20 },
   },
 };
 
@@ -71,39 +71,71 @@ export default function HomePage() {
   }
 
   return (
-    <div>
-      {/* Asymmetric Split Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-neutral-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28">
+    <div className="relative">
+      {/* Trilingual Asymmetric Hero */}
+      <section className="relative overflow-hidden bg-paper-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center min-h-[70dvh]">
-            {/* Left: Content (7 cols) */}
-            <div className="lg:col-span-7 lg:pr-8">
+            {/* Left: Trilingual hero stack (7 cols) */}
+            <div className="lg:col-span-7 lg:pr-8 relative z-10">
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-coral-50 text-coral-600 text-sm font-medium mb-8">
-                  <Sparkle size={14} />
+                <span className="section-eyebrow mb-8 inline-flex">
+                  <Sparkle size={12} />
                   Handcrafted greeting cards
                 </span>
               </motion.div>
 
+              {/* EN line */}
               <motion.h1
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-none text-neutral-900 max-w-[14ch]"
+                className="trilingual-line-en text-5xl sm:text-6xl lg:text-7xl font-display font-semibold tracking-tight-display leading-[1.05]"
               >
-                Say it with a{' '}
-                <span className="text-coral-500">beautiful card</span>
+                Say it with a
               </motion.h1>
+
+              {/* TA line */}
+              <motion.p
+                lang="ta"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="trilingual-line-ta text-2xl sm:text-3xl lg:text-4xl mt-2 leading-snug"
+              >
+                <span className="text-ruby-700">ஒரு அழகான</span> அட்டையுடன்
+              </motion.p>
+
+              {/* SI line */}
+              <motion.p
+                lang="si"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="trilingual-line-si text-2xl sm:text-3xl lg:text-4xl mt-1 leading-snug"
+              >
+                <span className="text-ruby-700">ලස්සන කාඩ්</span> එකකින් කියන්න
+              </motion.p>
+
+              {/* EN finish */}
+              <motion.p
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="trilingual-line-en text-5xl sm:text-6xl lg:text-7xl font-display font-semibold tracking-tight-display leading-[1.05] mt-1"
+              >
+                <span className="text-ruby-700">beautiful card</span>
+              </motion.p>
 
               <motion.p
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.15 }}
-                className="mt-5 text-base sm:text-lg text-neutral-500 leading-relaxed max-w-[48ch]"
+                transition={{ duration: 0.5, delay: 0.35 }}
+                className="mt-6 text-base sm:text-lg text-ink-500 leading-relaxed max-w-[48ch] font-body"
               >
                 Greeting cards that speak from the heart. Order via WhatsApp — personal, warm, and delivered across Sri Lanka with care.
               </motion.p>
@@ -111,7 +143,7 @@ export default function HomePage() {
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                transition={{ duration: 0.5, delay: 0.45 }}
                 className="mt-8 flex flex-col sm:flex-row items-start gap-3"
               >
                 <MagneticButton to="/shop" label="Browse All Cards" />
@@ -129,54 +161,54 @@ export default function HomePage() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="mt-10 flex items-center gap-6 text-xs text-neutral-400"
+                transition={{ delay: 0.7 }}
+                className="mt-12 flex items-center gap-6 text-xs text-ink-400"
               >
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-peacock-400" />
                   1,200+ orders delivered
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-coral-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-ruby-400" />
                   65+ unique designs
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-ink-300" />
                   4.9 rating
                 </span>
               </motion.div>
             </div>
 
-            {/* Right: Floating card bento (5 cols) */}
-            <div className="lg:col-span-5 relative h-[420px] lg:h-[520px] hidden lg:block">
-              <FloatingCard
-                rotate={10}
-                yOffset={[0, -14, 0]}
+            {/* Right: Floating letterpress card mockups (5 cols) */}
+            <div className="lg:col-span-5 relative h-[460px] lg:h-[560px] hidden lg:block">
+              <FloatingLetterpressCard
+                rotate={6}
+                yOffset={[0, -12, 0]}
                 duration={6}
-                className="absolute top-4 right-4 w-[240px] h-[320px] bg-gradient-to-br from-coral-50 to-rose-50 rounded-[2rem] border border-white/30 shadow-diffuse"
-                icon={<Heart size={24} weight="fill" className="text-coral-400" />}
-                title="Love"
-                subtitle="Express your heart"
+                className="absolute top-2 right-2 w-[260px] h-[340px] z-20"
+                title="With Love"
+                subtitle="For someone special"
+                accent="ruby"
                 delay={0}
               />
-              <FloatingCard
-                rotate={-6}
-                yOffset={[0, 18, 0]}
+              <FloatingLetterpressCard
+                rotate={-4}
+                yOffset={[0, 16, 0]}
                 duration={7}
-                className="absolute bottom-8 right-28 w-[220px] h-[280px] bg-gradient-to-br from-amber-50 to-coral-50 rounded-[2rem] border border-white/30 shadow-diffuse"
-                icon={<Gift size={24} className="text-coral-400" />}
-                title="Birthday"
+                className="absolute bottom-4 right-36 w-[240px] h-[310px] z-10"
+                title="Happy Birthday"
                 subtitle="Celebrate in style"
+                accent="peacock"
                 delay={1}
               />
-              <FloatingCard
-                rotate={16}
-                yOffset={[0, -10, 0]}
+              <FloatingLetterpressCard
+                rotate={12}
+                yOffset={[0, -8, 0]}
                 duration={5}
-                className="absolute top-20 right-52 w-[200px] h-[260px] bg-gradient-to-br from-rose-50 to-rose-100 rounded-[2rem] border border-white/30 shadow-diffuse"
-                icon={<Star size={24} className="text-rose-400" />}
-                title="Festival"
-                subtitle="Spread the joy"
+                className="absolute top-24 right-56 w-[220px] h-[280px] z-0"
+                title="Joy & Peace"
+                subtitle="Warm wishes"
+                accent="ruby"
                 delay={2}
               />
             </div>
@@ -194,7 +226,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-medium text-coral-600 hover:text-coral-700 transition-colors"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-ruby-700 hover:text-ruby-800 transition-colors font-body"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -207,20 +239,36 @@ export default function HomePage() {
             viewport={{ once: true, margin: '-80px' }}
             className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4"
           >
-            {CATEGORIES.slice(0, 3).map((cat) => (
-              <motion.div key={cat.key} variants={itemVariants} className="sm:col-span-1">
-                <CategoryCard category={cat} featured />
-              </motion.div>
-            ))}
-            {CATEGORIES.slice(3).map((cat) => (
+            {CATEGORIES.map((cat) => (
               <motion.div key={cat.key} variants={itemVariants} className="col-span-1">
-                <CategoryCard category={cat} />
+                <Link
+                  to={`/shop?category=${cat.key}`}
+                  className={`flex flex-col items-start gap-4 p-5 rounded-2xl border transition-all duration-300 active:scale-[0.97] ${
+                    cat.key === 'birthday'
+                      ? `${cat.bg} ${cat.color} border-sand-200 hover:shadow-paper-md`
+                      : 'bg-paper-50 border-sand-200 hover:bg-paper-100 hover:shadow-paper-md'
+                  }`}
+                >
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${
+                    cat.key === 'birthday' ? 'bg-white/70' : 'bg-white'
+                  }`}>
+                    <cat.icon size={22} className={cat.key === 'birthday' ? cat.color : 'text-ink-400'} />
+                  </div>
+                  <div>
+                    <h3 className={`font-semibold text-sm ${
+                      cat.key === 'birthday' ? cat.color : 'text-ink-800'
+                    }`}>
+                      {cat.label}
+                    </h3>
+                    <p className="text-xs text-ink-400 mt-0.5">Browse cards</p>
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </motion.div>
 
           <div className="mt-6 sm:hidden text-center">
-            <Link to="/shop" className="text-sm font-medium text-coral-600 hover:text-coral-700 transition-colors inline-flex items-center gap-1">
+            <Link to="/shop" className="text-sm font-semibold text-ruby-700 hover:text-ruby-800 transition-colors inline-flex items-center gap-1 font-body">
               View all categories <ArrowRight size={14} />
             </Link>
           </div>
@@ -228,7 +276,7 @@ export default function HomePage() {
       </section>
 
       {/* Featured Products */}
-      <section className="bg-neutral-50">
+      <section className="bg-paper-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="flex items-end justify-between mb-10">
             <div>
@@ -240,7 +288,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-medium text-coral-600 hover:text-coral-700 transition-colors"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-ruby-700 hover:text-ruby-800 transition-colors font-body"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -249,7 +297,7 @@ export default function HomePage() {
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="rounded-card overflow-hidden">
+                <div key={i} className="paper-card overflow-hidden">
                   <div className="skeleton-card-image" />
                   <div className="p-4 space-y-3">
                     <div className="h-3 skeleton-shimmer w-16" />
@@ -264,14 +312,14 @@ export default function HomePage() {
             </div>
           ) : featuredProducts.length === 0 ? (
             <div className="empty-state">
-              <div className="w-14 h-14 rounded-2xl bg-neutral-100 flex items-center justify-center mb-4">
-                <Heart size={24} className="text-neutral-400" />
+              <div className="empty-state-icon">
+                <Heart size={24} />
               </div>
-              <p className="text-lg font-semibold text-neutral-600 mb-1">No cards yet</p>
-              <p className="text-sm text-neutral-400 mb-6 max-w-[40ch]">
+              <p className="empty-state-title">No cards yet</p>
+              <p className="empty-state-text">
                 We are adding new designs. Check back soon or browse our collection.
               </p>
-              <Link to="/shop" className="btn-primary text-sm">
+              <Link to="/shop" className="btn-primary text-sm mt-6">
                 Browse All Cards
               </Link>
             </div>
@@ -308,10 +356,10 @@ export default function HomePage() {
               <h2 className="section-heading mt-2">
                 Bringing joy, one card at a time
               </h2>
-              <p className="mt-5 text-base text-neutral-500 leading-relaxed">
+              <p className="mt-5 text-base text-ink-500 leading-relaxed font-body">
                 At TwinkleHearts, we believe every occasion deserves to be celebrated with something special. Our beautifully crafted greeting cards are designed to make your loved ones smile.
               </p>
-              <p className="mt-4 text-base text-neutral-500 leading-relaxed">
+              <p className="mt-4 text-base text-ink-500 leading-relaxed font-body">
                 Based in Colombo, Sri Lanka, we offer a personal touch with easy ordering via WhatsApp. Browse our collection, choose your favorite cards, and we will handle the rest.
               </p>
 
@@ -332,22 +380,32 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Minimal CTA */}
-      <section className="bg-neutral-900 text-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
+      {/* CTA — Dark ink section */}
+      <section className="bg-ink-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '128px 128px',
+        }} />
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center relative z-10">
+          <h2 className="text-3xl sm:text-4xl font-display font-semibold tracking-tight mb-4">
             Ready to make someone smile?
           </h2>
-          <p className="text-base text-neutral-400 mb-10 max-w-lg mx-auto leading-relaxed">
+          <p className="text-base text-ink-300 mb-10 max-w-lg mx-auto leading-relaxed font-body">
             Browse our collection of greeting cards and find the perfect message for your loved ones.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <MagneticButton to="/shop" label="Shop All Cards" dark />
+            <Link
+              to="/shop"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-[10px] bg-white text-ink-900 hover:bg-paper-100 font-semibold text-sm transition-all active:scale-[0.98] shadow-paper"
+            >
+              Shop All Cards
+            </Link>
             <a
               href="https://wa.me/947XXXXXXXX"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-medium text-sm transition-all active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-[10px] bg-ink-800 hover:bg-ink-700 text-white font-medium text-sm transition-all active:scale-[0.98]"
             >
               <WhatsappLogo size={18} />
               Chat on WhatsApp
@@ -362,7 +420,73 @@ export default function HomePage() {
   );
 }
 
-/* ---- Magnetic Button (isolated client component) ---- */
+/* ---- Floating Letterpress Card (3D paper card mockup) ---- */
+
+function FloatingLetterpressCard({
+  rotate,
+  yOffset,
+  duration,
+  className,
+  title,
+  subtitle,
+  accent,
+  delay,
+}: {
+  rotate: number;
+  yOffset: number[];
+  duration: number;
+  className: string;
+  title: string;
+  subtitle: string;
+  accent: 'ruby' | 'peacock';
+  delay: number;
+}) {
+  const accentBorder = accent === 'ruby' ? 'border-ruby-200' : 'border-peacock-200';
+  const accentBg = accent === 'ruby' ? 'bg-ruby-50' : 'bg-peacock-50';
+  const accentText = accent === 'ruby' ? 'text-ruby-700' : 'text-peacock-700';
+  const accentLight = accent === 'ruby' ? 'bg-ruby-100' : 'bg-peacock-100';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30, rotate: 0 }}
+      animate={{
+        opacity: 1,
+        rotate,
+        y: yOffset,
+      }}
+      transition={{
+        opacity: { duration: 0.6, delay: 0.4 + delay * 0.15 },
+        rotate: { duration: 0.6, delay: 0.4 + delay * 0.15 },
+        y: {
+          repeat: Infinity,
+          duration,
+          ease: 'easeInOut',
+          delay: delay * 0.5,
+        },
+      }}
+      className={className}
+    >
+      <div className={`w-full h-full rounded-[2rem] ${accentBg} border ${accentBorder} shadow-paper-md flex flex-col overflow-hidden`}>
+        {/* Card face — decorative top */}
+        <div className="flex-1 flex flex-col items-center justify-center px-8">
+          <div className={`w-14 h-14 rounded-full ${accentLight} flex items-center justify-center mb-5`}>
+            <Heart size={22} weight="fill" className={accentText} />
+          </div>
+          <p className={`text-center font-display font-semibold text-lg ${accentText} leading-tight`}>
+            {title}
+          </p>
+          <p className="text-center text-sm text-ink-400 mt-1.5 font-body">
+            {subtitle}
+          </p>
+        </div>
+        {/* Card footer — decorative stripe */}
+        <div className={`h-1.5 ${accent === 'ruby' ? 'bg-ruby-700/20' : 'bg-peacock-700/20'}`} />
+      </div>
+    </motion.div>
+  );
+}
+
+/* ---- Magnetic Button ---- */
 
 function MagneticButton({ to, label, dark }: { to: string; label: string; dark?: boolean }) {
   const ref = useRef<HTMLAnchorElement>(null);
@@ -398,10 +522,10 @@ function MagneticButton({ to, label, dark }: { to: string; label: string; dark?:
       onMouseMove={handleMouse}
       onMouseLeave={handleLeave}
       style={{ x, y }}
-      className={`inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-xl font-semibold text-sm transition-all active:scale-[0.98] ${
+      className={`inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-[10px] font-semibold text-sm transition-all active:scale-[0.98] ${
         dark
-          ? 'bg-white text-neutral-900 hover:bg-neutral-100'
-          : 'bg-coral-500 hover:bg-coral-600 text-white shadow-soft'
+          ? 'bg-white text-ink-900 hover:bg-paper-100'
+          : 'bg-ruby-700 hover:bg-ruby-800 text-white shadow-paper'
       }`}
     >
       {label}
@@ -409,59 +533,7 @@ function MagneticButton({ to, label, dark }: { to: string; label: string; dark?:
   );
 }
 
-/* ---- Floating Card (isolated perpetual micro-interaction) ---- */
-
-function FloatingCard({
-  rotate,
-  yOffset,
-  duration,
-  className,
-  icon,
-  title,
-  subtitle,
-  delay,
-}: {
-  rotate: number;
-  yOffset: number[];
-  duration: number;
-  className: string;
-  icon: React.ReactNode;
-  title: string;
-  subtitle: string;
-  delay: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30, rotate: 0 }}
-      animate={{
-        opacity: 1,
-        rotate,
-        y: yOffset,
-      }}
-      transition={{
-        opacity: { duration: 0.6, delay: 0.4 + delay * 0.15 },
-        rotate: { duration: 0.6, delay: 0.4 + delay * 0.15 },
-        y: {
-          repeat: Infinity,
-          duration,
-          ease: 'easeInOut',
-          delay: delay * 0.5,
-        },
-      }}
-      className={className}
-    >
-      <div className="p-6 sm:p-8 flex flex-col items-start justify-end h-full">
-        <div className="w-12 h-12 rounded-xl bg-white/60 flex items-center justify-center mb-4">
-          {icon}
-        </div>
-        <p className="text-neutral-800 font-semibold text-base sm:text-lg">{title}</p>
-        <p className="text-neutral-500 text-sm">{subtitle}</p>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ---- Product Card with micro-interactions ---- */
+/* ---- Product Card ---- */
 
 function ProductCard({ product }: { product: Product }) {
   const [imgError, setImgError] = useState(false);
@@ -500,28 +572,28 @@ function ProductCard({ product }: { product: Product }) {
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-100">
-              <div className="w-12 h-12 rounded-2xl bg-neutral-200 flex items-center justify-center mb-2">
-                <Heart size={22} weight="fill" className="text-neutral-400" />
+            <div className="w-full h-full flex flex-col items-center justify-center bg-paper-200">
+              <div className="w-12 h-12 rounded-2xl bg-paper-100 flex items-center justify-center mb-2">
+                <Heart size={22} weight="fill" className="text-ink-400" />
               </div>
-              <span className="text-xs font-medium text-neutral-400">No preview</span>
+              <span className="text-xs font-medium text-ink-400">No preview</span>
             </div>
           )}
           <div className="absolute top-3 left-3">
-            <span className="badge badge-coral">{getCategoryBadge(product.category)}</span>
+            <span className="badge badge-ruby">{getCategoryBadge(product.category)}</span>
           </div>
         </div>
       </Link>
 
       <div className="product-card-body">
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-sm font-semibold text-neutral-900 line-clamp-2 hover:text-coral-600 transition-colors leading-snug">
+          <h3 className="font-display text-sm font-semibold text-ink-900 line-clamp-2 hover:text-ruby-700 transition-colors leading-snug">
             {product.name}
           </h3>
         </Link>
 
         <div className="flex items-center justify-between mt-3">
-          <span className="font-mono text-base font-semibold text-coral-600 tracking-tight">
+          <span className="font-mono text-base font-semibold text-ruby-700 tracking-tight">
             {formatPrice(product.price)}
           </span>
 
@@ -529,50 +601,23 @@ function ProductCard({ product }: { product: Product }) {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.92 }}
-              className="p-2 rounded-xl bg-neutral-100 text-neutral-500 hover:bg-coral-500 hover:text-white transition-colors duration-200"
+              className="p-2 rounded-xl bg-paper-100 text-ink-500 hover:bg-ruby-700 hover:text-white transition-colors duration-200"
               aria-label="Add to cart"
             >
               <ShoppingCart size={15} weight="bold" />
             </motion.button>
           ) : (
-            <span className="text-xs text-neutral-400 font-medium">Sold out</span>
+            <span className="text-xs text-ink-400 font-medium">Sold out</span>
           )}
         </div>
 
         {product.stock > 0 && product.stock <= 3 && (
-          <p className="text-xs text-amber-600 mt-2.5 font-medium">
+          <p className="text-xs text-ruby-600 mt-2.5 font-medium">
             Only {product.stock} remaining
           </p>
         )}
       </div>
     </motion.div>
-  );
-}
-
-/* ---- Category Card ---- */
-
-function CategoryCard({ category, featured }: { category: (typeof CATEGORIES)[number]; featured?: boolean }) {
-  const Icon = category.icon;
-
-  return (
-    <Link
-      to={`/shop?category=${category.key}`}
-      className={`flex flex-col items-start gap-3 p-5 rounded-2xl border border-neutral-100/80 transition-all duration-300 hover:shadow-diffuse active:scale-[0.98] ${
-        featured ? `${category.bg} ${category.color}` : 'bg-white hover:bg-neutral-50'
-      }`}
-    >
-      <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${
-        featured ? 'bg-white/60' : 'bg-neutral-100'
-      }`}>
-        <Icon size={22} className={featured ? category.color : 'text-neutral-500'} />
-      </div>
-      <div>
-        <h3 className={`font-semibold text-sm ${featured ? category.color : 'text-neutral-800'}`}>
-          {category.label}
-        </h3>
-        <p className="text-xs text-neutral-400 mt-0.5">Browse cards</p>
-      </div>
-    </Link>
   );
 }
 
@@ -585,12 +630,12 @@ function FeatureItem({ icon: Icon, title, description }: {
 }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-10 h-10 rounded-xl bg-coral-50 flex items-center justify-center flex-shrink-0">
-        <Icon size={18} className="text-coral-500" />
+      <div className="w-10 h-10 rounded-xl bg-ruby-50 flex items-center justify-center flex-shrink-0">
+        <Icon size={18} className="text-ruby-600" />
       </div>
       <div>
-        <h4 className="font-semibold text-sm text-neutral-900">{title}</h4>
-        <p className="text-sm text-neutral-500">{description}</p>
+        <h4 className="font-semibold text-sm text-ink-900">{title}</h4>
+        <p className="text-sm text-ink-500">{description}</p>
       </div>
     </div>
   );
@@ -600,11 +645,11 @@ function FeatureItem({ icon: Icon, title, description }: {
 
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
-    <div className="bg-neutral-50 rounded-2xl p-6 border border-neutral-100">
-      <div className="font-mono text-2xl sm:text-3xl font-bold text-coral-600 mb-0.5 tracking-tight">
+    <div className="stat-card">
+      <div className="font-mono text-2xl sm:text-3xl font-bold text-ruby-700 mb-0.5 tracking-tight">
         {value}
       </div>
-      <div className="text-sm text-neutral-500">{label}</div>
+      <div className="text-sm text-ink-500">{label}</div>
     </div>
   );
 }

@@ -17,8 +17,8 @@
 
   body {
     font-family: theme('fontFamily.body');
-    background-color: #fafaf9;
-    color: theme('colors.neutral.700');
+    background-color: theme('colors.paper.50');
+    color: theme('colors.ink.700');
     line-height: 1.6;
     margin: 0;
     padding: 0;
@@ -26,23 +26,26 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: theme('fontFamily.display');
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.1;
-    color: theme('colors.neutral.900');
-    letter-spacing: -0.03em;
+    color: theme('colors.ink.900');
+    letter-spacing: -0.02em;
+    font-variation-settings: 'opsz' 72, 'SOFT' 50;
   }
 
   [lang="si"], [lang="ta"] {
     font-family: theme('fontFamily.sinhala');
+    font-weight: 500;
+    font-variation-settings: normal;
   }
 
   ::selection {
-    background-color: theme('colors.coral.200');
-    color: theme('colors.coral.800');
+    background-color: theme('colors.ruby.100');
+    color: theme('colors.ruby.800');
   }
 
   :focus-visible {
-    outline: 2px solid theme('colors.coral.400');
+    outline: 2px solid theme('colors.ruby.500');
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -50,55 +53,102 @@
   :focus:not(:focus-visible) {
     outline: none;
   }
+
+  ::-moz-focus-inner {
+    border: 0;
+  }
 }
 
 @layer components {
   /* ============================================
-     LIQUID GLASS — premium frosted surfaces
+     PAPER CARD — warm, tactile surfaces
      ============================================ */
-  .liquid-glass {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.15),
-      0 1px 3px rgba(0, 0, 0, 0.06);
-  }
-
-  .liquid-glass-card {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.15),
-      0 20px 40px -15px rgba(0, 0, 0, 0.05);
+  .paper-card {
+    background: theme('colors.paper.200');
+    border: 1px solid theme('colors.sand.200');
+    border-radius: theme('borderRadius.card');
+    box-shadow: theme('boxShadow.paper');
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .liquid-glass-card:hover {
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.15),
-      0 24px 48px -12px rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
+  .paper-card:hover {
+    box-shadow: theme('boxShadow.paper-md');
+    border-color: theme('colors.sand.300');
+  }
+
+  .paper-card-white {
+    background: #ffffff;
+    border: 1px solid theme('colors.sand.100');
+    border-radius: theme('borderRadius.card');
+    box-shadow: theme('boxShadow.paper');
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .paper-card-white:hover {
+    box-shadow: theme('boxShadow.paper-md');
   }
 
   /* ============================================
-     SURFACE CARDS
+     PAPER SHEET — section background surfaces
      ============================================ */
-  .surface-card {
-    background: #ffffff;
-    border: 1px solid rgba(229, 231, 235, 0.5);
-    border-radius: 16px;
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  .paper-sheet {
+    background: theme('colors.paper.100');
+    border: 1px solid theme('colors.sand.100');
+    border-radius: theme('borderRadius.container');
   }
 
-  .surface-card:hover {
-    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
+  /* ============================================
+     LETTERPRESS — pressed type effect
+     ============================================ */
+  .letterpress-text {
+    text-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.15),
+      inset 0 1px 2px rgba(26, 23, 20, 0.08);
+  }
+
+  .letterpress-surface {
+    background: theme('colors.paper.200');
+    box-shadow:
+      inset 0 1px 2px rgba(26, 23, 20, 0.06),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.12);
+    border-radius: theme('borderRadius.card');
+  }
+
+  /* ============================================
+     DECKLE EDGE — torn-paper border treatment
+     ============================================ */
+  .deckle-edge {
+    border: none;
+    position: relative;
+  }
+
+  .deckle-edge::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid theme('colors.sand.200');
+    border-radius: theme('borderRadius.card');
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 400 600'%3E%3Crect width='400' height='600' fill='black' rx='12' /%3E%3C/svg%3E");
+    mask-size: 100% 100%;
+    -webkit-mask-size: 100% 100%;
+    pointer-events: none;
+  }
+
+  /* ============================================
+     RUBY SEAL — circular accent mark
+     ============================================ */
+  .ruby-seal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: theme('borderRadius.seal');
+    background: theme('colors.ruby.700');
+    color: white;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      0 1px 3px rgba(26, 23, 20, 0.1);
   }
 
   /* ============================================
@@ -106,37 +156,71 @@
      ============================================ */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2.5
-           bg-coral-500 hover:bg-coral-600 active:bg-coral-700
+           bg-ruby-700 hover:bg-ruby-800 active:bg-ruby-900
            text-white font-body font-semibold
-           py-3 px-8 rounded-xl
+           py-3 px-7 rounded-[10px]
            transition-all duration-300 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-coral-300 focus-visible:ring-offset-2
+           focus-visible:ring-2 focus-visible:ring-ruby-300 focus-visible:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:scale-100
-           shadow-soft;
+           shadow-paper;
   }
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2
-           bg-transparent hover:bg-coral-50 active:bg-coral-100
-           text-coral-600 hover:text-coral-700
+           bg-transparent hover:bg-ruby-50 active:bg-ruby-100
+           text-ruby-700 hover:text-ruby-800
            font-body font-medium
-           py-2.5 px-5 rounded-xl
+           py-2.5 px-5 rounded-[10px]
            transition-all duration-300 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-coral-300;
+           focus-visible:ring-2 focus-visible:ring-ruby-300;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-white hover:bg-sand-50 active:bg-sand-100
+           text-ink-700 hover:text-ink-900
+           font-body font-semibold
+           py-2.5 px-6 rounded-[10px]
+           border border-sand-200 hover:border-sand-300
+           transition-all duration-300 ease-spring
+           active:translate-y-[1px] active:scale-[0.98]
+           focus-visible:ring-2 focus-visible:ring-ruby-300 focus-visible:ring-offset-2;
   }
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2
-           bg-white hover:bg-neutral-50 active:bg-neutral-100
-           text-neutral-700 hover:text-neutral-900
+           bg-white hover:bg-sand-50 active:bg-sand-100
+           text-ink-700 hover:text-ink-900
            font-body font-semibold
-           py-2.5 px-6 rounded-xl
-           border border-neutral-200/80 hover:border-neutral-300
+           py-2.5 px-6 rounded-[10px]
+           border border-sand-200 hover:border-sand-300
            transition-all duration-300 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-coral-300 focus-visible:ring-offset-2;
+           focus-visible:ring-2 focus-visible:ring-ruby-300 focus-visible:ring-offset-2;
+  }
+
+  .btn-whatsapp {
+    @apply inline-flex items-center justify-center gap-2.5
+           bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800
+           text-white font-body font-semibold
+           py-3 px-7 rounded-[10px]
+           transition-all duration-300 ease-spring
+           active:translate-y-[1px] active:scale-[0.98]
+           focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:scale-100
+           shadow-paper;
+  }
+
+  .btn-dark {
+    @apply inline-flex items-center justify-center gap-2
+           bg-ink-900 hover:bg-ink-800 active:bg-ink-950
+           text-white font-body font-semibold
+           py-3 px-7 rounded-[10px]
+           transition-all duration-300 ease-spring
+           active:translate-y-[1px] active:scale-[0.98]
+           focus-visible:ring-2 focus-visible:ring-ink-300 focus-visible:ring-offset-2;
   }
 
   /* ============================================
@@ -144,29 +228,29 @@
      ============================================ */
   .input-field {
     @apply w-full px-4 py-3
-           bg-white border border-neutral-200/80 rounded-xl
-           font-body text-neutral-800 text-sm
-           placeholder:text-neutral-400
-           focus:border-coral-400 focus:ring-2 focus:ring-coral-200
-           hover:border-neutral-300
+           bg-white border border-sand-200 rounded-[10px]
+           font-body text-ink-800 text-sm
+           placeholder:text-ink-300
+           focus:border-ruby-400 focus:ring-2 focus:ring-ruby-100
+           hover:border-sand-300
            outline-none
            transition-all duration-200 ease-spring;
   }
 
   .input-field-error {
-    @apply border-red-300 focus:border-red-400 focus:ring-red-200;
+    @apply border-ruby-300 focus:border-ruby-400 focus:ring-ruby-100;
   }
 
   .label-text {
-    @apply block text-sm font-body font-semibold text-neutral-700 mb-1.5;
+    @apply block text-sm font-body font-semibold text-ink-700 mb-1.5;
   }
 
   .helper-text {
-    @apply block text-xs font-body text-neutral-400 mt-1;
+    @apply block text-xs font-body text-ink-400 mt-1;
   }
 
   .error-text {
-    @apply block text-xs font-body text-red-500 mt-1;
+    @apply block text-xs font-body text-ruby-600 mt-1;
   }
 
   /* ============================================
@@ -174,18 +258,26 @@
      ============================================ */
   .badge {
     @apply inline-flex items-center justify-center
-           px-2.5 py-1 rounded-lg
-           text-[11px] font-body font-semibold
+           px-2.5 py-1 rounded-md
+           text-[10px] font-body font-semibold
            whitespace-nowrap
            tracking-wider uppercase;
   }
 
-  .badge-coral {
-    @apply bg-coral-100 text-coral-700;
+  .badge-ruby {
+    @apply bg-ruby-100 text-ruby-700;
   }
 
-  .badge-neutral {
-    @apply bg-neutral-100 text-neutral-600;
+  .badge-ink {
+    @apply bg-ink-100 text-ink-700;
+  }
+
+  .badge-peacock {
+    @apply bg-peacock-100 text-peacock-700;
+  }
+
+  .badge-sand {
+    @apply bg-sand-200 text-ink-600;
   }
 
   /* ============================================
@@ -193,39 +285,39 @@
      ============================================ */
   .category-pill {
     @apply inline-flex items-center gap-2
-           px-4 py-2.5 rounded-xl
+           px-4 py-2.5 rounded-[10px]
            font-body text-sm font-medium
-           bg-white border border-neutral-200/80
-           text-neutral-600
-           hover:border-coral-300 hover:text-coral-600 hover:bg-coral-50
-           active:bg-coral-100 active:translate-y-[1px]
+           bg-white border border-sand-200
+           text-ink-600
+           hover:border-ruby-300 hover:text-ruby-700 hover:bg-ruby-50
+           active:bg-ruby-100 active:translate-y-[1px]
            transition-all duration-200 ease-spring
            cursor-pointer select-none
            whitespace-nowrap;
   }
 
   .category-pill-active {
-    @apply bg-coral-500 text-white border-coral-500 shadow-soft
-           hover:bg-coral-600 hover:text-white hover:border-coral-600;
+    @apply bg-ruby-700 text-white border-ruby-700 shadow-paper
+           hover:bg-ruby-800 hover:text-white hover:border-ruby-800;
   }
 
   /* ============================================
      PRODUCT CARD
      ============================================ */
   .product-card {
-    @apply bg-white rounded-card
-           border border-neutral-200/40
-           overflow-hidden
-           transition-all duration-300 ease-spring
-           hover:shadow-warm-diffuse;
+    @apply paper-card overflow-hidden;
   }
 
   .product-card-image {
-    @apply aspect-[3/4] bg-neutral-100 overflow-hidden;
+    @apply aspect-[3/4] bg-paper-200 overflow-hidden;
   }
 
   .product-card-body {
     @apply p-4 pb-5;
+  }
+
+  .product-card-outline {
+    @apply paper-card-white overflow-hidden;
   }
 
   /* ============================================
@@ -234,13 +326,18 @@
   .skeleton-shimmer {
     background: linear-gradient(
       90deg,
-      #f4f4f5 25%,
-      #e9e9eb 37%,
-      #f4f4f5 63%
+      theme('colors.paper.200') 25%,
+      theme('colors.paper.100') 37%,
+      theme('colors.paper.200') 63%
     );
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
-    border-radius: 8px;
+    border-radius: 6px;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
   }
 
   .skeleton-card-image {
@@ -255,22 +352,49 @@
            py-20 px-6 text-center;
   }
 
+  .empty-state-icon {
+    @apply w-14 h-14 rounded-full bg-sand-100 flex items-center justify-center mb-4
+           text-ink-400;
+  }
+
+  .empty-state-title {
+    @apply text-lg font-semibold text-ink-800 mb-1;
+  }
+
+  .empty-state-text {
+    @apply text-sm text-ink-500 max-w-[40ch] leading-relaxed;
+  }
+
   /* ============================================
      SECTION HEADERS
      ============================================ */
   .section-eyebrow {
     @apply inline-flex items-center gap-2
            px-3 py-1.5 rounded-full
-           bg-coral-100 text-coral-700
+           bg-ruby-50 text-ruby-700
+           text-xs font-body font-semibold uppercase tracking-wider;
+  }
+
+  .section-eyebrow-ink {
+    @apply inline-flex items-center gap-2
+           px-3 py-1.5 rounded-full
+           bg-ink-100 text-ink-700
+           text-xs font-body font-semibold uppercase tracking-wider;
+  }
+
+  .section-eyebrow-peacock {
+    @apply inline-flex items-center gap-2
+           px-3 py-1.5 rounded-full
+           bg-peacock-100 text-peacock-700
            text-xs font-body font-semibold uppercase tracking-wider;
   }
 
   .section-heading {
-    @apply text-3xl sm:text-4xl font-display font-bold tracking-tight-display text-neutral-900;
+    @apply text-3xl sm:text-4xl lg:text-5xl font-display font-semibold tracking-tight-display text-ink-900;
   }
 
   .section-subheading {
-    @apply font-body text-base text-neutral-500 leading-relaxed max-w-[52ch];
+    @apply font-body text-base text-ink-500 leading-relaxed max-w-[52ch];
   }
 
   /* ============================================
@@ -281,16 +405,86 @@
   }
 
   .admin-table th {
-    @apply px-4 py-3 text-xs font-body font-semibold text-neutral-500 uppercase tracking-wider
-           border-b border-neutral-200/60;
+    @apply px-4 py-3 text-xs font-body font-semibold text-ink-500 uppercase tracking-wider
+           border-b border-sand-200;
   }
 
   .admin-table td {
-    @apply px-4 py-3.5 text-sm text-neutral-700 border-b border-neutral-100;
+    @apply px-4 py-3.5 text-sm text-ink-700 border-b border-sand-100;
   }
 
   .admin-table tr {
-    @apply transition-colors duration-150 hover:bg-neutral-50;
+    @apply transition-colors duration-150 hover:bg-paper-100;
+  }
+
+  /* ============================================
+     TRILINGUAL STACK — Hero script showcase
+     ============================================ */
+  .trilingual-line {
+    @apply block;
+  }
+
+  .trilingual-line-en {
+    @apply font-display text-ink-900;
+  }
+
+  .trilingual-line-ta {
+    font-family: 'Noto Serif Tamil', serif;
+    @apply text-ink-800;
+  }
+
+  .trilingual-line-si {
+    font-family: 'Noto Serif Sinhala', serif;
+    @apply text-ink-800;
+  }
+
+  /* ============================================
+     STAT CARD
+     ============================================ */
+  .stat-card {
+    @apply bg-paper-100 rounded-2xl p-6 border border-sand-200;
+  }
+
+  .stat-value {
+    @apply font-mono text-2xl sm:text-3xl font-bold text-ruby-700 mb-0.5 tracking-tight;
+  }
+
+  .stat-label {
+    @apply text-sm text-ink-500;
+  }
+
+  /* ============================================
+     FEATURE ITEM
+     ============================================ */
+  .feature-icon {
+    @apply w-10 h-10 rounded-xl bg-ruby-50 flex items-center justify-center flex-shrink-0;
+  }
+
+  .feature-icon-inner {
+    @apply text-ruby-600;
+  }
+
+  .feature-title {
+    @apply font-semibold text-sm text-ink-900;
+  }
+
+  .feature-description {
+    @apply text-sm text-ink-500;
+  }
+
+  /* ============================================
+     CTA SECTION
+     ============================================ */
+  .cta-section {
+    @apply bg-ink-900 text-white;
+  }
+
+  .cta-heading {
+    @apply text-3xl sm:text-4xl font-display font-semibold tracking-tight mb-4;
+  }
+
+  .cta-text {
+    @apply text-base text-ink-300 mb-10 max-w-lg mx-auto leading-relaxed;
   }
 }
 
@@ -319,10 +513,26 @@
     content: '';
     position: absolute;
     inset: 0;
-    opacity: 0.02;
+    opacity: 0.03;
     pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     background-repeat: repeat;
     background-size: 128px 128px;
+  }
+
+  .ink-divider {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      theme('colors.sand.300'),
+      theme('colors.sand.300'),
+      transparent
+    );
+    border: none;
+  }
+
+  .font-feature-case {
+    font-feature-settings: 'case' on;
   }
 }

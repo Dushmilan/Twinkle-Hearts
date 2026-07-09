@@ -61,12 +61,12 @@ export default function ProductDetailPage() {
 
   const getCategoryBadge = (category: string) => {
     const catMap: Record<string, { label: string; variant: string }> = {
-      birthday: { label: '🎂 Birthday', variant: 'badge-gold' },
-      love: { label: '💕 Love', variant: 'badge-rose' },
-      anniversary: { label: '🥂 Anniversary', variant: 'badge-sage' },
+      birthday: { label: '🎂 Birthday', variant: 'badge-sand' },
+      love: { label: '💕 Love', variant: 'badge-ruby' },
+      anniversary: { label: '🥂 Anniversary', variant: 'badge-peacock' },
       friendship: { label: '🤝 Friendship', variant: 'badge-coral' },
-      festival: { label: '🎊 Festival', variant: 'badge-gold' },
-      sympathy: { label: '🕊️ Sympathy', variant: 'badge-sage' },
+      festival: { label: '🎊 Festival', variant: 'badge-sand' },
+      sympathy: { label: '🕊️ Sympathy', variant: 'badge-peacock' },
     };
     const cat = catMap[category?.toLowerCase()] || { label: category, variant: 'badge-coral' };
     return <span className={`badge ${cat.variant}`}>{cat.label}</span>;
@@ -116,19 +116,19 @@ export default function ProductDetailPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-gray-500 mb-8">
-        <Link to="/" className="hover:text-coral-600 transition-colors">Shop</Link>
-        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <nav className="flex items-center gap-2 text-sm text-ink-500 mb-8">
+        <Link to="/" className="hover:text-ruby-600 transition-colors">Shop</Link>
+        <svg className="w-4 h-4 text-ink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
-        <span className="text-gray-700 font-medium truncate">{product.name}</span>
+        <span className="text-ink-700 font-medium truncate">{product.name}</span>
       </nav>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
         {/* Product Images */}
         <div>
           {/* Main Image */}
-          <div className="aspect-[4/5] bg-neutral-100 rounded-card overflow-hidden shadow-card mb-4">
+          <div className="aspect-[4/5] bg-sand-100 rounded-card overflow-hidden shadow-paper-md mb-4">
             {product.images[activeImage] ? (
               <img
                 src={product.images[activeImage]}
@@ -139,7 +139,7 @@ export default function ProductDetailPage() {
                 }}
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-200 text-neutral-300">
+              <div className="w-full h-full flex flex-col items-center justify-center bg-sand-200 text-ink-300">
                 <span className="text-5xl mb-3">💌</span>
                 <span className="font-display text-lg">Card Preview</span>
               </div>
@@ -155,8 +155,8 @@ export default function ProductDetailPage() {
                   onClick={() => setActiveImage(idx)}
                   className={`w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all duration-200 ${
                     activeImage === idx
-                      ? 'border-coral-400 shadow-glow'
-                      : 'border-transparent hover:border-gray-200'
+                      ? 'border-ruby-400 shadow-ruby-glow'
+                      : 'border-transparent hover:border-sand-200'
                   }`}
                 >
                   <img
@@ -178,21 +178,21 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Title */}
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink-900 mb-3">
             {product.name}
           </h1>
 
           {/* Price */}
           <div className="flex items-baseline gap-2 mb-6">
-            <span className="font-body text-3xl font-bold text-coral-600">
+            <span className="font-body text-3xl font-bold text-ruby-600">
               {formatPrice(product.price)}
             </span>
-            <span className="text-sm text-gray-500">incl. tax</span>
+            <span className="text-sm text-ink-500">incl. tax</span>
           </div>
 
           {/* Description */}
           <div className="prose prose-sm max-w-none mb-6">
-            <p className="text-gray-700 leading-relaxed">{product.description}</p>
+            <p className="text-ink-700 leading-relaxed">{product.description}</p>
           </div>
 
           {/* Stock Status */}
@@ -214,14 +214,14 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-neutral-100 hover:border-gray-300 transition-all text-gray-600 font-medium"
+                  className="w-10 h-10 rounded-lg border border-sand-200 flex items-center justify-center hover:bg-sand-100 hover:border-sand-300 transition-all text-ink-600 font-medium"
                 >
                   −
                 </button>
                 <span className="w-12 text-center font-body text-lg font-semibold">{quantity}</span>
                 <button
                   onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-neutral-100 hover:border-gray-300 transition-all text-gray-600 font-medium"
+                  className="w-10 h-10 rounded-lg border border-sand-200 flex items-center justify-center hover:bg-sand-100 hover:border-sand-300 transition-all text-ink-600 font-medium"
                 >
                   +
                 </button>
@@ -261,21 +261,21 @@ export default function ProductDetailPage() {
             href="https://wa.me/947XXXXXXXX?text=Hi!%20I%20have%20a%20question%20about%20this%20card."
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-ghost w-full justify-center mt-3 text-gray-600"
+            className="btn-ghost w-full justify-center mt-3 text-ink-600"
           >
             <WhatsAppIcon className="w-4 h-4" />
             Have a question? Chat with us
           </a>
 
           {/* Details */}
-          <div className="mt-8 pt-8 border-t border-neutral-200">
+          <div className="mt-8 pt-8 border-t border-sand-200">
             <dl className="space-y-4 text-sm">
               <div className="flex justify-between">
-                <dt className="text-gray-500">Category</dt>
-                <dd className="font-medium text-gray-700 capitalize">{product.category || '—'}</dd>
+                <dt className="text-ink-500">Category</dt>
+                <dd className="font-medium text-ink-700 capitalize">{product.category || '—'}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-gray-500">Delivery</dt>
+                <dt className="text-ink-500">Delivery</dt>
                 <dd className="font-medium text-emerald-600">Free via WhatsApp delivery 🇱🇰</dd>
               </div>
             </dl>

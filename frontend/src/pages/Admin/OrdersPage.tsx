@@ -56,7 +56,7 @@ function AdminOrders() {
             <div className="flex gap-4">
               <Link
                 to="/admin"
-                className="text-pink-600 hover:text-pink-700 font-medium"
+                className="text-ruby-600 hover:text-ruby-700 font-medium"
               >
                 Back to Dashboard
               </Link>
@@ -95,7 +95,7 @@ function AdminOrders() {
                   <tr>
                     <td colSpan={5} className="px-6 py-12 text-center">
                       <div className="flex justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ruby-600"></div>
                       </div>
                     </td>
                   </tr>

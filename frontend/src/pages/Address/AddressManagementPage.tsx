@@ -132,8 +132,8 @@ export default function AddressManagementPage() {
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="font-display text-3xl font-bold text-gray-900">My Addresses</h1>
-          <p className="text-gray-500 mt-1">Manage your delivery addresses</p>
+          <h1 className="font-display text-3xl font-bold text-ink-900">My Addresses</h1>
+          <p className="text-ink-500 mt-1">Manage your delivery addresses</p>
         </div>
         <button
           onClick={() => {
@@ -158,7 +158,7 @@ export default function AddressManagementPage() {
 
       {isAdding && (
         <div className="card p-6 mb-8">
-          <h2 className="font-display text-xl font-semibold text-gray-900 mb-6">
+          <h2 className="font-display text-xl font-semibold text-ink-900 mb-6">
             {editingId ? 'Edit Address' : 'Add New Address'}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -177,7 +177,7 @@ export default function AddressManagementPage() {
               <div>
                 <label className="label-text">Phone Number</label>
                 <div className="flex gap-2">
-                  <div className="input-field bg-gray-50 text-gray-600 w-20 text-center font-medium" aria-label="Country code">
+                  <div className="input-field bg-paper-100 text-ink-600 w-20 text-center font-medium" aria-label="Country code">
                     {COUNTRY_CODE}
                   </div>
                   <input
@@ -253,9 +253,9 @@ export default function AddressManagementPage() {
                 id="isDefault"
                 checked={formData.isDefault}
                 onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-                className="w-4 h-4 text-coral-500 border-gray-300 rounded focus:ring-coral-400"
+                className="w-4 h-4 text-ruby-500 border-sand-300 rounded focus:ring-ruby-400"
               />
-              <label htmlFor="isDefault" className="text-sm text-gray-700">
+              <label htmlFor="isDefault" className="text-sm text-ink-700">
                 Set as default address
               </label>
             </div>
@@ -281,13 +281,13 @@ export default function AddressManagementPage() {
 
       {isLoading ? (
         <div className="text-center py-12">
-          <div className="animate-spin w-8 h-8 border-2 border-coral-500 border-t-transparent rounded-full mx-auto" />
-          <p className="text-gray-500 mt-4">Loading addresses...</p>
+          <div className="animate-spin w-8 h-8 border-2 border-ruby-500 border-t-transparent rounded-full mx-auto" />
+          <p className="text-ink-500 mt-4">Loading addresses...</p>
         </div>
       ) : addresses.length === 0 ? (
-        <div className="card">
+        <div className="paper-card">
           <div className="empty-state py-12">
-            <p className="text-gray-500">No addresses saved yet</p>
+            <p className="text-ink-500">No addresses saved yet</p>
           </div>
         </div>
       ) : (
@@ -296,24 +296,24 @@ export default function AddressManagementPage() {
             <div
               key={address.id}
               className={`card p-6 relative ${
-                address.isDefault ? 'ring-2 ring-coral-300 shadow-glow' : ''
+                address.isDefault ? 'ring-2 ring-ruby-300 shadow-ruby-glow' : ''
               }`}
             >
               {address.isDefault && (
-                <span className="absolute top-4 right-4 badge badge-coral text-xs">
+                <span className="absolute top-4 right-4 badge badge-ruby text-xs">
                   Default
                 </span>
               )}
-              <h3 className="font-display font-semibold text-gray-900 mb-2">{address.label}</h3>
-              <p className="text-sm text-gray-600 mb-1">{address.phone}</p>
-              <p className="text-sm text-gray-600 mb-1">{address.street}</p>
-              <p className="text-sm text-gray-600">
+              <h3 className="font-display font-semibold text-ink-900 mb-2">{address.label}</h3>
+              <p className="text-sm text-ink-600 mb-1">{address.phone}</p>
+              <p className="text-sm text-ink-600 mb-1">{address.street}</p>
+              <p className="text-sm text-ink-600">
                 {address.city}, {address.state} {address.zip}
               </p>
               <div className="flex gap-3 mt-4">
                 <button
                   onClick={() => handleEdit(address)}
-                  className="text-sm text-coral-600 hover:text-coral-700 font-medium transition-colors"
+                  className="text-sm text-ruby-600 hover:text-ruby-700 font-medium transition-colors"
                 >
                   Edit
                 </button>
@@ -321,7 +321,7 @@ export default function AddressManagementPage() {
                   <>
                     <button
                       onClick={() => handleSetDefault(address.id)}
-                      className="text-sm text-gray-600 hover:text-gray-700 font-medium transition-colors"
+                      className="text-sm text-ink-600 hover:text-ink-700 font-medium transition-colors"
                     >
                       Set Default
                     </button>

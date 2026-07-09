@@ -72,7 +72,7 @@ function AdminUsers() {
             </div>
             <Link
               to="/admin"
-              className="text-pink-600 hover:text-pink-700 font-medium"
+              className="text-ruby-600 hover:text-ruby-700 font-medium"
             >
               Back to Dashboard
             </Link>
@@ -89,7 +89,7 @@ function AdminUsers() {
             placeholder="Search by name or email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ruby-500 focus:border-transparent"
           />
         </div>
 
@@ -124,7 +124,7 @@ function AdminUsers() {
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center">
                       <div className="flex justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ruby-600"></div>
                       </div>
                     </td>
                   </tr>
@@ -150,7 +150,7 @@ function AdminUsers() {
                         <select
                           value={user.role}
                           onChange={(e) => updateUserRole(user.id, e.target.value)}
-                          className={`px-2 py-1 text-xs font-medium rounded-full border-0 focus:ring-2 focus:ring-pink-500 ${
+                          className={`px-2 py-1 text-xs font-medium rounded-full border-0 focus:ring-2 focus:ring-ruby-500 ${
                             user.role === 'ADMIN'
                               ? 'bg-purple-100 text-purple-700'
                               : 'bg-gray-100 text-gray-700'

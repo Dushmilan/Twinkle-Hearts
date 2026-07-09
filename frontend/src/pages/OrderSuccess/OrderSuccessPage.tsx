@@ -33,9 +33,9 @@ export default function OrderSuccessPage() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center">
           <div className="animate-pulse">
-            <div className="w-16 h-16 bg-neutral-200 rounded-full mx-auto mb-4" />
-            <div className="h-6 bg-neutral-200 rounded w-48 mx-auto mb-2" />
-            <div className="h-4 bg-neutral-200 rounded w-64 mx-auto" />
+            <div className="w-16 h-16 bg-sand-200 rounded-full mx-auto mb-4" />
+            <div className="h-6 bg-sand-200 rounded w-48 mx-auto mb-2" />
+            <div className="h-4 bg-sand-200 rounded w-64 mx-auto" />
           </div>
         </div>
       </div>
@@ -51,39 +51,39 @@ export default function OrderSuccessPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="font-display text-3xl font-bold text-ink-900 mb-2">
           Order Placed! 🎉
         </h1>
-        <p className="text-gray-500 text-lg">
+        <p className="text-ink-500 text-lg">
           Your cards are on their way — check WhatsApp to confirm
         </p>
       </div>
 
       {order && (
-        <div className="card p-6 mb-8">
+        <div className="paper-card p-6 mb-8">
           {/* Receipt Header */}
-          <div className="text-center mb-6 pb-4 border-b border-neutral-100">
-            <HeartIcon className="w-8 h-8 text-coral-400 mx-auto mb-2" />
-            <h2 className="font-display text-xl font-semibold text-gray-900">
+          <div className="text-center mb-6 pb-4 border-b border-sand-100">
+            <HeartIcon className="w-8 h-8 text-ruby-400 mx-auto mb-2" />
+            <h2 className="font-display text-xl font-semibold text-ink-900">
               Order Summary
             </h2>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-ink-400 mt-1">
               #{order.id.slice(0, 8).toUpperCase()}
             </p>
           </div>
 
           <div className="space-y-3 mb-6">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Customer</span>
-              <span className="font-medium text-gray-900">{order.customerName}</span>
+              <span className="text-ink-500">Customer</span>
+              <span className="font-medium text-ink-900">{order.customerName}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Phone</span>
-              <span className="font-medium text-gray-900">{order.customerPhone}</span>
+              <span className="text-ink-500">Phone</span>
+              <span className="font-medium text-ink-900">{order.customerPhone}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Total</span>
-              <span className="font-bold text-lg text-coral-600">{formatPrice(order.total)}</span>
+              <span className="text-ink-500">Total</span>
+              <span className="font-bold text-lg text-ruby-600">{formatPrice(order.total)}</span>
             </div>
           </div>
 

@@ -40,8 +40,8 @@ function AdminDashboard() {
     return (
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-10 h-10 border-2 border-coral-500 border-t-transparent rounded-full mx-auto" />
-          <p className="text-gray-500 mt-4">Loading dashboard...</p>
+          <div className="animate-spin w-10 h-10 border-2 border-ruby-500 border-t-transparent rounded-full mx-auto" />
+          <p className="text-ink-500 mt-4">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -50,12 +50,12 @@ function AdminDashboard() {
   return (
     <div className="min-h-screen bg-neutral-50">
       {/* Admin Header */}
-      <header className="bg-white shadow-soft border-b border-neutral-200">
+      <header className="bg-white shadow-paper border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-              <h1 className="font-display text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-gray-500 mt-1">Manage your TwinkleHearts store</p>
+              <h1 className="font-display text-3xl font-bold text-ink-900">Admin Dashboard</h1>
+              <p className="text-ink-500 mt-1">Manage your TwinkleHearts store</p>
             </div>
             <Link
               to="/"
@@ -99,7 +99,7 @@ function AdminDashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             }
-            color="bg-coral-500"
+            color="bg-ruby-500"
           />
           <StatCard
             title="Total Cards"
@@ -133,27 +133,27 @@ function AdminDashboard() {
         )}
 
         {/* Quick Actions */}
-        <h2 className="font-display text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <h2 className="font-display text-xl font-semibold text-ink-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Link
             to="/admin/products"
-            className="card p-5 hover:shadow-card-hover transition-all duration-200 group"
+            className="card p-5 hover:shadow-paper-lg transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-coral-100 rounded-xl flex items-center justify-center group-hover:bg-coral-200 transition-colors">
-                <svg className="w-6 h-6 text-coral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 bg-ruby-100 rounded-xl flex items-center justify-center group-hover:bg-ruby-200 transition-colors">
+                <svg className="w-6 h-6 text-ruby-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">Add New Card</h3>
-                <p className="text-sm text-gray-500">Create a new greeting card</p>
+                <h3 className="font-semibold text-ink-900">Add New Card</h3>
+                <p className="text-sm text-ink-500">Create a new greeting card</p>
               </div>
             </div>
           </Link>
           <Link
             to="/admin/orders"
-            className="card p-5 hover:shadow-card-hover transition-all duration-200 group"
+            className="card p-5 hover:shadow-paper-lg transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-200 transition-colors">
@@ -162,14 +162,14 @@ function AdminDashboard() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">Manage Orders</h3>
-                <p className="text-sm text-gray-500">View and update orders</p>
+                <h3 className="font-semibold text-ink-900">Manage Orders</h3>
+                <p className="text-sm text-ink-500">View and update orders</p>
               </div>
             </div>
           </Link>
           <Link
             to="/admin/users"
-            className="card p-5 hover:shadow-card-hover transition-all duration-200 group"
+            className="card p-5 hover:shadow-paper-lg transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center group-hover:bg-purple-200 transition-colors">
@@ -178,18 +178,18 @@ function AdminDashboard() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">Manage Users</h3>
-                <p className="text-sm text-gray-500">View and edit users</p>
+                <h3 className="font-semibold text-ink-900">Manage Users</h3>
+                <p className="text-sm text-ink-500">View and edit users</p>
               </div>
             </div>
           </Link>
         </div>
 
         {/* Recent Orders */}
-        <div className="card p-6">
+        <div className="paper-card p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="font-display text-xl font-semibold text-gray-900">Recent Orders</h2>
-            <Link to="/admin/orders" className="text-sm text-coral-600 hover:text-coral-700 font-medium">
+            <h2 className="font-display text-xl font-semibold text-ink-900">Recent Orders</h2>
+            <Link to="/admin/orders" className="text-sm text-ruby-600 hover:text-ruby-700 font-medium">
               View All →
             </Link>
           </div>
@@ -197,19 +197,19 @@ function AdminDashboard() {
             <table className="min-w-full divide-y divide-neutral-200">
               <thead className="bg-neutral-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-ink-500 uppercase tracking-wider">
                     Order ID
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-ink-500 uppercase tracking-wider">
                     Customer
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-ink-500 uppercase tracking-wider">
                     Total
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-ink-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-ink-500 uppercase tracking-wider">
                     Date
                   </th>
                 </tr>
@@ -217,32 +217,32 @@ function AdminDashboard() {
               <tbody className="bg-white divide-y divide-neutral-100">
                 {stats?.recentOrders?.map((order: any) => (
                   <tr key={order.id} className="hover:bg-neutral-50 transition-colors">
-                    <td className="px-4 py-3 whitespace-nowrap text-sm font-mono text-gray-900">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-mono text-ink-900">
                       #{order.id.slice(0, 8).toUpperCase()}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-ink-600">
                       {order.user?.name || order.customerName}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-gray-900">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-ink-900">
                       {formatCurrency(order.total)}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <span className={`badge ${
-                        order.status === 'CONFIRMED' ? 'badge-sage' :
-                        order.status === 'PENDING_WHATSAPP_CONFIRMATION' ? 'badge-gold' :
-                        'badge-coral'
+                        order.status === 'CONFIRMED' ? 'badge-peacock' :
+                        order.status === 'PENDING_WHATSAPP_CONFIRMATION' ? 'badge-sand' :
+                        'badge-ruby'
                       }`}>
                         {order.status?.replace(/_/g, ' ')}
                       </span>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-ink-500">
                       {new Date(order.createdAt).toLocaleDateString('en-LK')}
                     </td>
                   </tr>
                 ))}
                 {(!stats?.recentOrders || stats.recentOrders.length === 0) && (
                   <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan={5} className="px-4 py-8 text-center text-ink-500">
                       No orders yet
                     </td>
                   </tr>
@@ -258,14 +258,14 @@ function AdminDashboard() {
 
 function StatCard({ title, value, icon, color }: { title: string; value: string | number; icon: React.ReactNode; color: string }) {
   return (
-    <div className="card p-5">
+    <div className="paper-card p-5">
       <div className="flex items-center gap-4">
         <div className={`${color} text-white rounded-xl p-3`}>
           {icon}
         </div>
         <div>
-          <p className="text-sm text-gray-500">{title}</p>
-          <p className="text-xl font-bold text-gray-900">{value}</p>
+          <p className="text-sm text-ink-500">{title}</p>
+          <p className="text-xl font-bold text-ink-900">{value}</p>
         </div>
       </div>
     </div>

@@ -46,19 +46,19 @@ export default function OrderHistoryPage() {
   const getStatusBadge = (status?: string) => {
     if (!status) return null;
     const statusMap: Record<string, { label: string; variant: string }> = {
-      PENDING_WHATSAPP_CONFIRMATION: { label: 'Pending', variant: 'badge-gold' },
-      CONFIRMED: { label: 'Confirmed', variant: 'badge-sage' },
-      CANCELLED: { label: 'Cancelled', variant: 'badge-rose' },
-      EXPIRED: { label: 'Expired', variant: 'badge-coral' },
+      PENDING_WHATSAPP_CONFIRMATION: { label: 'Pending', variant: 'badge-sand' },
+      CONFIRMED: { label: 'Confirmed', variant: 'badge-peacock' },
+      CANCELLED: { label: 'Cancelled', variant: 'badge-ruby' },
+      EXPIRED: { label: 'Expired', variant: 'badge-ruby' },
     };
-    const s = statusMap[status] || { label: status, variant: 'badge-coral' };
+    const s = statusMap[status] || { label: status, variant: 'badge-ruby' };
     return <span className={`badge ${s.variant}`}>{s.label}</span>;
   };
 
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="font-display text-3xl font-bold text-gray-900 mb-6">My Orders</h1>
+        <h1 className="font-display text-3xl font-bold text-ink-900 mb-6">My Orders</h1>
         <div className="space-y-4">
           <OrderSkeleton />
           <OrderSkeleton />
@@ -69,11 +69,11 @@ export default function OrderHistoryPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="font-display text-3xl font-bold text-gray-900 mb-1">My Orders</h1>
-      <p className="text-gray-500 mb-8">Track your card orders</p>
+      <h1 className="font-display text-3xl font-bold text-ink-900 mb-1">My Orders</h1>
+      <p className="text-ink-500 mb-8">Track your card orders</p>
 
       {orders.length === 0 ? (
-        <div className="card">
+        <div className="paper-card">
           <div className="empty-state py-12">
             <div className="empty-state-icon">
               <svg className="w-full h-full" fill="none" viewBox="0 0 64 64" stroke="currentColor" strokeWidth="1.5">
@@ -91,27 +91,27 @@ export default function OrderHistoryPage() {
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (
-            <div key={order.id} className="card p-6">
+            <div key={order.id} className="paper-card p-6">
               <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
                 <div>
-                  <h3 className="font-display text-lg font-semibold text-gray-900">
+                  <h3 className="font-display text-lg font-semibold text-ink-900">
                     Order #{order.id.slice(0, 8).toUpperCase()}
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-ink-500">
                     {new Date(order.createdAt).toLocaleDateString('en-LK', { year: 'numeric', month: 'long', day: 'numeric' })}
                   </p>
                 </div>
                 {getStatusBadge(order.status)}
               </div>
 
-              <div className="border-t border-b border-neutral-100 py-4 my-4 space-y-3">
+              <div className="border-t border-b border-sand-100 py-4 my-4 space-y-3">
                 {order.items.map((item: any, index) => (
                   <div key={index} className="flex justify-between items-center">
                     <div>
-                      <p className="font-medium text-gray-900">{item.productName}</p>
-                      <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                      <p className="font-medium text-ink-900">{item.productName}</p>
+                      <p className="text-sm text-ink-500">Qty: {item.quantity}</p>
                     </div>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-ink-900">
                       {formatCurrency(item.price * item.quantity)}
                     </p>
                   </div>
@@ -120,8 +120,8 @@ export default function OrderHistoryPage() {
 
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-gray-500">
-                    Total: <span className="text-lg font-bold text-coral-600">{formatCurrency(order.total)}</span>
+                  <p className="text-sm text-ink-500">
+                    Total: <span className="text-lg font-bold text-ruby-600">{formatCurrency(order.total)}</span>
                   </p>
                 </div>
                 <Link

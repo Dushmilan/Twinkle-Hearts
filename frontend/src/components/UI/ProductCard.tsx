@@ -29,7 +29,7 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
   const addItem = useCartStore((s) => s.addItem);
 
   const categoryKey = product.category?.toLowerCase() || '';
-  const badgeClass = CATEGORY_BADGE[categoryKey] || 'badge-coral';
+  const badgeClass = CATEGORY_BADGE[categoryKey] || 'badge-ruby';
   const categoryLabel = CATEGORY_MAP[categoryKey] || product.category || 'General';
 
   const handleAddToCart = async (e: React.MouseEvent) => {
@@ -67,11 +67,11 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-100">
-              <div className="w-12 h-12 rounded-2xl bg-neutral-200 flex items-center justify-center mb-2">
-                <Heart size={22} weight="fill" className="text-neutral-400" />
+            <div className="w-full h-full flex flex-col items-center justify-center bg-paper-100">
+              <div className="w-12 h-12 rounded-2xl bg-paper-200 flex items-center justify-center mb-2">
+                <Heart size={22} weight="fill" className="text-ink-400" />
               </div>
-              <span className="text-xs font-medium text-neutral-400">No preview</span>
+              <span className="text-xs font-medium text-ink-400">No preview</span>
             </div>
           )}
           <div className="absolute top-3 left-3">
@@ -82,13 +82,13 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
 
       <div className="product-card-body">
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-sm font-semibold text-neutral-900 line-clamp-2 hover:text-coral-600 transition-colors duration-200 leading-snug">
+          <h3 className="font-display text-sm font-semibold text-ink-900 line-clamp-2 hover:text-ruby-600 transition-colors duration-200 leading-snug">
             {product.name}
           </h3>
         </Link>
 
         <div className="flex items-center justify-between mt-3">
-          <span className="font-mono text-base font-semibold text-coral-600 tracking-tight">
+          <span className="font-mono text-base font-semibold text-ruby-600 tracking-tight">
             {formatPrice(product.price)}
           </span>
 
@@ -97,7 +97,7 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
               onClick={handleAddToCart}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.92 }}
-              className="p-2 rounded-xl bg-neutral-100 text-neutral-500 hover:bg-coral-500 hover:text-white transition-colors duration-200 ease-spring"
+              className="p-2 rounded-xl bg-paper-100 text-ink-500 hover:bg-ruby-500 hover:text-white transition-colors duration-200 ease-spring"
               aria-label="Add to cart"
             >
               <ShoppingCart size={15} weight="bold" />
@@ -111,7 +111,7 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
               exit={{ scale: 0, opacity: 0 }}
               className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600"
             >
-              <Heart size={13} weight="fill" className="text-coral-400" />
+              <Heart size={13} weight="fill" className="text-ruby-400" />
               Added
             </motion.span>
           )}

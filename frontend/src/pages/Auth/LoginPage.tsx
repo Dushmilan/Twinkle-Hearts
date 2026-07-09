@@ -68,31 +68,31 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-neutral-50 to-white px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-paper-50 to-white px-4 py-12">
       {/* Decorative sparkles */}
       <div className="absolute top-20 left-16 w-2 h-2 bg-amber-300 rounded-full animate-float opacity-40 hidden lg:block" />
-      <div className="absolute bottom-20 right-20 w-1.5 h-1.5 bg-coral-300 rounded-full animate-float-slow opacity-30 hidden lg:block" />
+      <div className="absolute bottom-20 right-20 w-1.5 h-1.5 bg-ruby-300 rounded-full animate-float-slow opacity-30 hidden lg:block" />
 
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
-            <HeartIcon className="w-10 h-10 text-coral-500" />
-            <span className="text-2xl font-display font-semibold text-gray-900">
-              Twinkle<span className="text-coral-500">Hearts</span>
+            <HeartIcon className="w-10 h-10 text-ruby-500" />
+            <span className="text-2xl font-display font-semibold text-ink-900">
+              Twinkle<span className="text-ruby-500">Hearts</span>
             </span>
           </Link>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-card p-8">
+        <div className="bg-white rounded-2xl shadow-paper-md p-8">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 bg-coral-100 rounded-full mb-4">
-              <svg className="w-7 h-7 text-coral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-ruby-100 rounded-full mb-4">
+              <svg className="w-7 h-7 text-ruby-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <h1 className="font-display text-2xl font-bold text-gray-900">Welcome Back</h1>
-            <p className="text-gray-500 mt-1">Sign in to your account</p>
+            <h1 className="font-display text-2xl font-bold text-ink-900">Welcome Back</h1>
+            <p className="text-ink-500 mt-1">Sign in to your account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -148,11 +148,11 @@ export default function LoginPage() {
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-coral-500 border-gray-300 rounded focus:ring-coral-400"
+                  className="w-4 h-4 text-ruby-500 border-sand-300 rounded focus:ring-ruby-400"
                 />
-                <span className="text-sm text-gray-600">Remember me</span>
+                <span className="text-sm text-ink-600">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-coral-600 hover:text-coral-700 font-medium">
+              <a href="#" className="text-sm text-ruby-600 hover:text-ruby-700 font-medium">
                 Forgot password?
               </a>
             </div>
@@ -180,16 +180,16 @@ export default function LoginPage() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-neutral-200"></div>
+                <div className="w-full border-t border-sand-200"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-3 bg-white text-gray-400">Or continue with</span>
+                <span className="px-3 bg-white text-ink-400">Or continue with</span>
               </div>
             </div>
 
             <button
               type="button"
-              className="mt-4 w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-neutral-50 hover:border-gray-300 transition-all shadow-soft"
+              className="mt-4 w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-ink-700 py-3 rounded-lg font-medium hover:bg-neutral-50 hover:border-gray-300 transition-all shadow-paper"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -201,9 +201,9 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <p className="mt-8 text-center text-sm text-gray-500">
+          <p className="mt-8 text-center text-sm text-ink-500">
             Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-coral-600 hover:text-coral-700">
+            <Link to="/register" className="font-medium text-ruby-600 hover:text-ruby-700">
               Sign up now
             </Link>
           </p>

@@ -77,15 +77,15 @@ export default function ShopPage() {
   };
 
   return (
-    <div className="bg-neutral-50 min-h-screen">
+    <div className="bg-paper-50 min-h-screen">
       {/* Page Header */}
       <section className="bg-gradient-to-b from-neutral-50 to-white border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
-            <h1 className="font-display text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+            <h1 className="font-display text-4xl sm:text-5xl font-bold text-ink-900 mb-4">
               Browse Our Collection
             </h1>
-            <p className="font-body text-lg text-gray-600">
+            <p className="font-body text-lg text-ink-500">
               Beautiful greeting cards for every occasion
             </p>
           </div>
@@ -118,10 +118,10 @@ export default function ShopPage() {
           {/* Section header */}
           <div className="flex items-end justify-between mb-8">
             <div>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink-900">
                 {activeCategory === 'all' ? 'All Greeting Cards' : `${CATEGORIES.find(c => c.key === activeCategory)?.label} Cards`}
               </h2>
-              <p className="text-gray-500 mt-1">
+              <p className="text-ink-500 mt-1">
                 {products.length} card{products.length !== 1 ? 's' : ''} available
               </p>
             </div>
@@ -145,7 +145,7 @@ export default function ShopPage() {
             </div>
           ) : error ? (
             <div className="text-center py-16">
-              <p className="text-gray-500 mb-4">{error}</p>
+              <p className="text-ink-500 mb-4">{error}</p>
               <button onClick={fetchProducts} className="btn-primary">
                 Try Again
               </button>
@@ -204,15 +204,15 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
   const getCategoryBadge = (category?: string) => {
     const catMap: Record<string, { label: string; variant: string }> = {
-      birthday: { label: '🎂 Birthday', variant: 'badge-gold' },
-      love: { label: '💕 Love', variant: 'badge-rose' },
-      anniversary: { label: '🥂 Anniversary', variant: 'badge-sage' },
-      friendship: { label: '🤝 Friendship', variant: 'badge-coral' },
-      festival: { label: '🎊 Festival', variant: 'badge-gold' },
-      sympathy: { label: '🕊️ Sympathy', variant: 'badge-sage' },
+      birthday: { label: '🎂 Birthday', variant: 'badge-sand' },
+      love: { label: '💕 Love', variant: 'badge-ruby' },
+      anniversary: { label: '🥂 Anniversary', variant: 'badge-peacock' },
+      friendship: { label: '🤝 Friendship', variant: 'badge-ruby' },
+      festival: { label: '🎊 Festival', variant: 'badge-sand' },
+      sympathy: { label: '🕊️ Sympathy', variant: 'badge-peacock' },
     };
     const key = category?.toLowerCase() || '';
-    const cat = catMap[key] || { label: category || 'General', variant: 'badge-coral' };
+    const cat = catMap[key] || { label: category || 'General', variant: 'badge-ruby' };
     return <span className={`badge ${cat.variant}`}>{cat.label}</span>;
   };
 
@@ -231,7 +231,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
               }}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-200 text-neutral-300">
+            <div className="w-full h-full flex flex-col items-center justify-center bg-paper-200 text-ink-300">
               <span className="text-3xl mb-2">💌</span>
               <span className="text-sm font-display">Card Preview</span>
             </div>
@@ -248,14 +248,14 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
         {/* Title */}
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-base font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-coral-600 transition-colors">
+          <h3 className="font-display text-base font-semibold text-ink-900 mb-2 line-clamp-2 hover:text-ruby-600 transition-colors">
             {product.name}
           </h3>
         </Link>
 
         {/* Price & Add to Cart */}
         <div className="flex items-center justify-between mt-3">
-          <span className="font-body text-lg font-bold text-coral-600">
+          <span className="font-body text-lg font-bold text-ruby-600">
             {formatPrice(product.price)}
           </span>
           <button
@@ -263,8 +263,8 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
             disabled={product.stock === 0}
             className={`inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 ${
               product.stock === 0
-                ? 'opacity-40 cursor-not-allowed bg-gray-100'
-                : 'bg-coral-500 hover:bg-coral-600 active:scale-90 text-white shadow-soft hover:shadow-glow'
+                ? 'opacity-40 cursor-not-allowed bg-sand-100'
+                : 'bg-ruby-500 hover:bg-ruby-600 active:scale-90 text-white shadow-paper hover:shadow-ruby-glow'
             }`}
             title={product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
           >
