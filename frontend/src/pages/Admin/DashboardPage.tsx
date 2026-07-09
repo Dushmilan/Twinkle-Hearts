@@ -20,7 +20,7 @@ function AdminDashboard() {
     const fetchStats = async () => {
       try {
         const result = await api.admin.stats();
-        setStats(result as DashboardStats);
+        setStats(result.data as DashboardStats);
       } catch (error) {
         console.error('Error fetching stats:', error);
       } finally {

@@ -384,7 +384,7 @@ type Api = {
     remove: (productId: string) => Promise<void>;
   };
   admin: {
-    stats: () => Promise<AdminStats>;
+    stats: () => Promise<ApiEnvelope<AdminStats>>;
     orders: (page?: number, limit?: number) => Promise<AdminOrdersResponse>;
     products: {
       list: (params?: { page?: number; limit?: number; search?: string; category?: string }) => Promise<AdminProductsResponse>;
