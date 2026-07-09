@@ -11,7 +11,7 @@ interface Product {
   description: string;
   price: number;
   stock: number;
-  sku: string;
+  sku?: string;
   category: string;
   images: string[];
   isActive: boolean;
@@ -35,7 +35,6 @@ function AdminProducts() {
     description: '',
     price: '',
     stock: '',
-    sku: '',
     category: '',
     isActive: true,
   });
@@ -93,7 +92,6 @@ function AdminProducts() {
         description: formData.description,
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
-        sku: formData.sku,
         category: formData.category,
         images: allImages,
         isActive: formData.isActive,
@@ -147,7 +145,6 @@ function AdminProducts() {
       description: product.description,
       price: product.price.toString(),
       stock: product.stock.toString(),
-      sku: product.sku,
       category: product.category,
       isActive: product.isActive,
     });
@@ -164,7 +161,6 @@ function AdminProducts() {
       description: '',
       price: '',
       stock: '',
-      sku: '',
       category: '',
       isActive: true,
     });
@@ -243,19 +239,7 @@ function AdminProducts() {
                     disabled={isUploadingImages}
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    SKU
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.sku}
-                    onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                    disabled={isUploadingImages}
-                  />
-                </div>
+
               </div>
 
               <div>

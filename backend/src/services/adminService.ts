@@ -30,10 +30,10 @@ export async function getDashboardStats(env: Env) {
 
 export async function createProduct(env: Env, input: any) {
   const prisma = getPrisma(env.DB);
-  const { name, description, price, stock, sku, category, images, isActive = true } = input;
+  const { name, description, price, stock, category, images, isActive = true } = input;
 
   const product = await prisma.product.create({
-    data: { name, description, price, stock, sku, category, images, isActive },
+    data: { name, description, price, stock, category, images, isActive },
   });
 
   await cacheDelete(env.KV, CacheKeys.productsCatalog(1, 100));

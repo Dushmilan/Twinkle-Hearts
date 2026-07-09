@@ -12,7 +12,7 @@ interface Product {
   price: number;
   images: string[];
   stock: number;
-  sku: string;
+  sku?: string;
   category: string;
 }
 

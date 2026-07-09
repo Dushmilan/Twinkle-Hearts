@@ -89,7 +89,7 @@ model Product {
   description String
   price       Float
   stock       Int      @default(0)
-  sku         String   @unique
+  sku         String?
   category    String?
   images      String   @default("[]")
   isFeatured  Boolean  @default(false)

@@ -9,7 +9,7 @@ export interface Product {
   description: string;
   price: number;
   stock: number;
-  sku: string;
+  sku?: string;
   category?: string;
   images: string[];
   isActive: boolean;
@@ -23,7 +23,7 @@ export interface ProductListItem {
   description: string;
   price: number;
   stock: number;
-  sku: string;
+  sku?: string;
   category?: string;
   images: string[];
 }
