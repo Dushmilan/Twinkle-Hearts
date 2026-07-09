@@ -21,3 +21,39 @@ export function HeartSparkle({ className }: { className?: string }) {
     </svg>
   );
 }
+
+export const CATEGORY_MAP: Record<string, string> = {
+  birthday: 'Birthday',
+  wedding: 'Wedding',
+  anniversary: 'Anniversary',
+  sympathy: 'Sympathy',
+  congratulations: 'Congratulations',
+  thank_you: 'Thank You',
+  get_well: 'Get Well',
+  new_baby: 'New Baby',
+  valentine: 'Valentine',
+  christmas: 'Christmas',
+  general: 'General',
+};
+
+export const CATEGORY_BADGE: Record<string, string> = {
+  birthday: 'badge-coral',
+  wedding: 'badge-sage',
+  anniversary: 'badge-gold',
+  sympathy: 'badge-ink',
+  congratulations: 'badge-sage',
+  thank_you: 'badge-coral',
+  get_well: 'badge-sky',
+  new_baby: 'badge-sky',
+  valentine: 'badge-rose',
+  christmas: 'badge-sage',
+  general: 'badge-ink',
+};
+
+export function formatPrice(price: number): string {
+  return new Intl.NumberFormat('en-LK', {
+    style: 'currency',
+    currency: 'LKR',
+    minimumFractionDigits: 2,
+  }).format(price);
+}
