@@ -300,3 +300,6 @@ mock-data/
 # Build Artifacts with Embedded Secrets
 *.bundle.js.map
 *.chunk.js.map
+
+# Local sqlite dev db
+*.db-journal
