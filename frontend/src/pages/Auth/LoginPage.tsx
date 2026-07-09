@@ -1,11 +1,12 @@
 import { useState, FormEvent } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useAuthStore } from '../../store/authStore';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading, user } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -14,6 +15,11 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const from = (location.state as any)?.from?.pathname || '/';
+
+  if (isLoading) return null;
+  if (isAuthenticated) {
+    return <Navigate to={user?.role === 'ADMIN' ? '/admin' : '/'} replace />;
+  }
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -40,7 +46,12 @@ export default function LoginPage() {
     setIsSubmitting(true);
     try {
       await login(formData.email, formData.password);
-      navigate(from, { replace: true });
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser?.role === 'ADMIN') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (error) {
       // Error is handled by AuthContext which shows toast notifications
     } finally {
