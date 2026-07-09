@@ -121,7 +121,7 @@ export default function WishlistPage() {
             <div key={item.id} className="product-card group">
               <div className="relative">
                 <Link to={`/product/${item.product.id}`} className="block">
-                  <div className="aspect-[3/4] bg-cream-100 overflow-hidden">
+                  <div className="aspect-[3/4] bg-neutral-100 overflow-hidden">
                     <img
                       src={item.product.images?.[0] || '/placeholder.jpg'}
                       alt={item.product.name}
@@ -152,7 +152,7 @@ export default function WishlistPage() {
                 <div className="flex gap-2">
                   <Link
                     to={`/product/${item.product.id}`}
-                    className="flex-1 text-center px-3 py-2 border border-gray-200 text-gray-700 rounded-pill text-sm font-medium hover:bg-cream-50 hover:border-gray-300 transition-all"
+                    className="flex-1 text-center px-3 py-2 border border-gray-200 text-gray-700 rounded-pill text-sm font-medium hover:bg-neutral-50 hover:border-gray-300 transition-all"
                   >
                     View
                   </Link>

@@ -78,9 +78,9 @@ export default function CartPage() {
 
         {/* Order Summary — Gift Receipt Style */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-card border-2 border-dashed border-cream-200 p-6 sticky top-24 shadow-soft">
+          <div className="bg-white rounded-card border-2 border-dashed border-neutral-200 p-6 sticky top-24 shadow-soft">
             {/* Gift Receipt Header */}
-            <div className="text-center mb-6 pb-4 border-b border-cream-100">
+            <div className="text-center mb-6 pb-4 border-b border-neutral-100">
               <HeartIcon className="w-8 h-8 text-coral-400 mx-auto mb-2" />
               <h2 className="font-display text-xl font-semibold text-gray-900">
                 Order Summary
@@ -105,20 +105,20 @@ export default function CartPage() {
             </div>
 
             {/* Totals */}
-            <div className="border-t border-cream-200 pt-4 space-y-2 mb-6">
+            <div className="border-t border-neutral-200 pt-4 space-y-2 mb-6">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Subtotal</span>
                 <span className="font-medium">{formatPrice(total)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Shipping</span>
-                <span className="font-medium text-sage-600">Free</span>
+                <span className="font-medium text-emerald-600">Free</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Tax (18%)</span>
                 <span className="font-medium">{formatPrice(tax)}</span>
               </div>
-              <div className="flex justify-between text-lg font-bold pt-2 border-t border-cream-100">
+              <div className="flex justify-between text-lg font-bold pt-2 border-t border-neutral-100">
                 <span className="text-gray-900">Total</span>
                 <span className="text-coral-600">{formatPrice(finalTotal)}</span>
               </div>
@@ -167,7 +167,7 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
       {/* Product Image */}
       <Link
         to={`/product/${item.productId}`}
-        className="w-20 h-24 sm:w-24 sm:h-28 rounded-lg flex-shrink-0 overflow-hidden bg-cream-100"
+        className="w-20 h-24 sm:w-24 sm:h-28 rounded-lg flex-shrink-0 overflow-hidden bg-neutral-100"
       >
         {item.image ? (
           <img
@@ -176,7 +176,7 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-cream-300 text-2xl">
+          <div className="w-full h-full flex items-center justify-center text-neutral-300 text-2xl">
             💌
           </div>
         )}
@@ -196,17 +196,17 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
 
         {/* Quantity Controls */}
         <div className="flex items-center gap-3 mt-3">
-          <div className="flex items-center gap-1 bg-cream-100 rounded-lg">
+          <div className="flex items-center gap-1 bg-neutral-100 rounded-lg">
             <button
               onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)}
-              className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-cream-200 rounded-l-lg transition-colors font-medium"
+              className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-neutral-200 rounded-l-lg transition-colors font-medium"
             >
               −
             </button>
             <span className="w-8 text-center text-sm font-semibold">{item.quantity}</span>
             <button
               onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
-              className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-cream-200 rounded-r-lg transition-colors font-medium"
+              className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-neutral-200 rounded-r-lg transition-colors font-medium"
             >
               +
             </button>

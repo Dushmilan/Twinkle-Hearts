@@ -33,9 +33,9 @@ export default function OrderSuccessPage() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center">
           <div className="animate-pulse">
-            <div className="w-16 h-16 bg-cream-200 rounded-full mx-auto mb-4" />
-            <div className="h-6 bg-cream-200 rounded w-48 mx-auto mb-2" />
-            <div className="h-4 bg-cream-200 rounded w-64 mx-auto" />
+            <div className="w-16 h-16 bg-neutral-200 rounded-full mx-auto mb-4" />
+            <div className="h-6 bg-neutral-200 rounded w-48 mx-auto mb-2" />
+            <div className="h-4 bg-neutral-200 rounded w-64 mx-auto" />
           </div>
         </div>
       </div>
@@ -46,8 +46,8 @@ export default function OrderSuccessPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Success Header */}
       <div className="text-center mb-8">
-        <div className="w-20 h-20 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-heart-pop">
-          <svg className="w-10 h-10 text-sage-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-heart-pop">
+          <svg className="w-10 h-10 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
@@ -62,7 +62,7 @@ export default function OrderSuccessPage() {
       {order && (
         <div className="card p-6 mb-8">
           {/* Receipt Header */}
-          <div className="text-center mb-6 pb-4 border-b border-cream-100">
+          <div className="text-center mb-6 pb-4 border-b border-neutral-100">
             <HeartIcon className="w-8 h-8 text-coral-400 mx-auto mb-2" />
             <h2 className="font-display text-xl font-semibold text-gray-900">
               Order Summary
@@ -88,14 +88,14 @@ export default function OrderSuccessPage() {
           </div>
 
           {/* Next Steps */}
-          <div className="bg-gold-50 border border-gold-200 rounded-card p-5">
+          <div className="bg-amber-50 border border-amber-200 rounded-card p-5">
             <div className="flex items-start gap-3">
-              <svg className="w-6 h-6 text-gold-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6 text-amber-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
-                <p className="text-sm font-medium text-gold-800 mb-1">Next Step</p>
-                <p className="text-sm text-gold-700 leading-relaxed">
+                <p className="text-sm font-medium text-amber-800 mb-1">Next Step</p>
+                <p className="text-sm text-amber-700 leading-relaxed">
                   Open WhatsApp and send the pre-filled order message. We'll confirm your order and arrange delivery!
                 </p>
               </div>

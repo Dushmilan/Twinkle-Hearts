@@ -128,7 +128,7 @@ export default function ProductDetailPage() {
         {/* Product Images */}
         <div>
           {/* Main Image */}
-          <div className="aspect-[4/5] bg-cream-100 rounded-card overflow-hidden shadow-card mb-4">
+          <div className="aspect-[4/5] bg-neutral-100 rounded-card overflow-hidden shadow-card mb-4">
             {product.images[activeImage] ? (
               <img
                 src={product.images[activeImage]}
@@ -139,7 +139,7 @@ export default function ProductDetailPage() {
                 }}
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center bg-cream-200 text-cream-300">
+              <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-200 text-neutral-300">
                 <span className="text-5xl mb-3">💌</span>
                 <span className="font-display text-lg">Card Preview</span>
               </div>
@@ -197,9 +197,9 @@ export default function ProductDetailPage() {
 
           {/* Stock Status */}
           <div className={`flex items-center gap-2 mb-6 ${
-            product.stock > 0 ? 'text-sage-600' : 'text-red-500'
+            product.stock > 0 ? 'text-emerald-600' : 'text-red-500'
           }`}>
-            <span className={`w-2 h-2 rounded-full ${product.stock > 0 ? 'bg-sage-500' : 'bg-red-500'}`} />
+            <span className={`w-2 h-2 rounded-full ${product.stock > 0 ? 'bg-emerald-500' : 'bg-red-500'}`} />
             <span className="text-sm font-medium">
               {product.stock > 0
                 ? `In Stock — ${product.stock} available`
@@ -214,14 +214,14 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-cream-100 hover:border-gray-300 transition-all text-gray-600 font-medium"
+                  className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-neutral-100 hover:border-gray-300 transition-all text-gray-600 font-medium"
                 >
                   −
                 </button>
                 <span className="w-12 text-center font-body text-lg font-semibold">{quantity}</span>
                 <button
                   onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-cream-100 hover:border-gray-300 transition-all text-gray-600 font-medium"
+                  className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-neutral-100 hover:border-gray-300 transition-all text-gray-600 font-medium"
                 >
                   +
                 </button>
@@ -234,7 +234,7 @@ export default function ProductDetailPage() {
             onClick={handleAddToCart}
             disabled={product.stock === 0}
             className={`btn-primary w-full py-3.5 text-base ${
-              justAdded ? 'animate-heart-pop bg-sage-500' : ''
+              justAdded ? 'animate-heart-pop bg-emerald-500' : ''
             } ${
               product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''
             }`}
@@ -268,7 +268,7 @@ export default function ProductDetailPage() {
           </a>
 
           {/* Details */}
-          <div className="mt-8 pt-8 border-t border-cream-200">
+          <div className="mt-8 pt-8 border-t border-neutral-200">
             <dl className="space-y-4 text-sm">
               <div className="flex justify-between">
                 <dt className="text-gray-500">SKU</dt>
@@ -280,7 +280,7 @@ export default function ProductDetailPage() {
               </div>
               <div className="flex justify-between">
                 <dt className="text-gray-500">Delivery</dt>
-                <dd className="font-medium text-sage-600">Free via WhatsApp delivery 🇱🇰</dd>
+                <dd className="font-medium text-emerald-600">Free via WhatsApp delivery 🇱🇰</dd>
               </div>
             </dl>
           </div>

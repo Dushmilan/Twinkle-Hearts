@@ -38,16 +38,16 @@ export const CATEGORY_MAP: Record<string, string> = {
 
 export const CATEGORY_BADGE: Record<string, string> = {
   birthday: 'badge-coral',
-  wedding: 'badge-sage',
-  anniversary: 'badge-gold',
-  sympathy: 'badge-ink',
-  congratulations: 'badge-sage',
+  wedding: 'badge-neutral',
+  anniversary: 'badge-neutral',
+  sympathy: 'badge-neutral',
+  congratulations: 'badge-neutral',
   thank_you: 'badge-coral',
-  get_well: 'badge-sky',
-  new_baby: 'badge-sky',
-  valentine: 'badge-rose',
-  christmas: 'badge-sage',
-  general: 'badge-ink',
+  get_well: 'badge-neutral',
+  new_baby: 'badge-neutral',
+  valentine: 'badge-coral',
+  christmas: 'badge-neutral',
+  general: 'badge-neutral',
 };
 
 export function formatPrice(price: number): string {

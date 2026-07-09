@@ -38,7 +38,7 @@ function AdminDashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-10 h-10 border-2 border-coral-500 border-t-transparent rounded-full mx-auto" />
           <p className="text-gray-500 mt-4">Loading dashboard...</p>
@@ -48,9 +48,9 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-cream-50">
+    <div className="min-h-screen bg-neutral-50">
       {/* Admin Header */}
-      <header className="bg-white shadow-soft border-b border-cream-200">
+      <header className="bg-white shadow-soft border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
@@ -89,7 +89,7 @@ function AdminDashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             }
-            color="bg-sage-500"
+            color="bg-emerald-500"
           />
           <StatCard
             title="Total Users"
@@ -109,22 +109,22 @@ function AdminDashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             }
-            color="bg-gold-500"
+            color="bg-amber-500"
           />
         </div>
 
         {/* Pending Orders Alert */}
         {stats && stats.pendingOrders > 0 && (
-          <div className="bg-gold-50 border border-gold-200 rounded-card p-5 mb-8">
+          <div className="bg-amber-50 border border-amber-200 rounded-card p-5 mb-8">
             <div className="flex items-center gap-3">
-              <svg className="w-6 h-6 text-gold-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6 text-amber-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <div>
-                <p className="text-gold-800 font-medium">
+                <p className="text-amber-800 font-medium">
                   {stats.pendingOrders} order{stats.pendingOrders > 1 ? 's' : ''} pending WhatsApp confirmation
                 </p>
-                <Link to="/admin/orders" className="text-gold-700 hover:text-gold-900 underline text-sm">
+                <Link to="/admin/orders" className="text-amber-700 hover:text-amber-900 underline text-sm">
                   View all pending orders →
                 </Link>
               </div>
@@ -194,8 +194,8 @@ function AdminDashboard() {
             </Link>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-cream-200">
-              <thead className="bg-cream-50">
+            <table className="min-w-full divide-y divide-neutral-200">
+              <thead className="bg-neutral-50">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Order ID
@@ -214,9 +214,9 @@ function AdminDashboard() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-cream-100">
+              <tbody className="bg-white divide-y divide-neutral-100">
                 {stats?.recentOrders?.map((order: any) => (
-                  <tr key={order.id} className="hover:bg-cream-50 transition-colors">
+                  <tr key={order.id} className="hover:bg-neutral-50 transition-colors">
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-mono text-gray-900">
                       #{order.id.slice(0, 8).toUpperCase()}
                     </td>

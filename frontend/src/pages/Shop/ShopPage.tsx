@@ -77,9 +77,9 @@ export default function ShopPage() {
   };
 
   return (
-    <div className="bg-cream-50 min-h-screen">
+    <div className="bg-neutral-50 min-h-screen">
       {/* Page Header */}
-      <section className="bg-warm-gradient border-b border-cream-200">
+      <section className="bg-gradient-to-b from-neutral-50 to-white border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <h1 className="font-display text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
@@ -93,7 +93,7 @@ export default function ShopPage() {
       </section>
 
       {/* Category Pills */}
-      <section className="bg-white border-b border-cream-200 sticky top-16 z-30">
+      <section className="bg-white border-b border-neutral-200 sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
             {CATEGORIES.map((cat) => (
@@ -231,7 +231,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
               }}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-cream-200 text-cream-300">
+            <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-200 text-neutral-300">
               <span className="text-3xl mb-2">💌</span>
               <span className="text-sm font-display">Card Preview</span>
             </div>
@@ -274,7 +274,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
         {/* Stock indicator */}
         {product.stock > 0 && product.stock <= 5 && (
-          <p className="text-xs text-gold-600 mt-2 font-medium">
+          <p className="text-xs text-amber-600 mt-2 font-medium">
             Only {product.stock} left
           </p>
         )}

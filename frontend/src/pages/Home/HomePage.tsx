@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, type Variants } from 'framer-motion';
 import {
   Heart,
   Gift,
@@ -9,6 +9,7 @@ import {
   Sparkle,
   WhatsappLogo,
   ShoppingCart,
+  ArrowRight,
 } from '@phosphor-icons/react';
 import { api } from '../../api';
 
@@ -25,28 +26,27 @@ interface Product {
 }
 
 const CATEGORIES = [
-  { key: 'birthday', label: 'Birthday', icon: Gift, gradient: 'from-amber-100 to-amber-200', color: 'text-amber-600' },
-  { key: 'love', label: 'Love', icon: Heart, gradient: 'from-rose-100 to-rose-200', color: 'text-rose-600' },
-  { key: 'anniversary', label: 'Anniversary', icon: Heart, gradient: 'from-violet-100 to-violet-200', color: 'text-violet-600' },
-  { key: 'friendship', label: 'Friendship', icon: Handshake, gradient: 'from-sky-100 to-sky-200', color: 'text-sky-600' },
-  { key: 'festival', label: 'Festival', icon: Star, gradient: 'from-yellow-100 to-yellow-200', color: 'text-yellow-600' },
-  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, gradient: 'from-green-100 to-green-200', color: 'text-green-600' },
+  { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-coral-600', bg: 'bg-coral-50' },
+  { key: 'love', label: 'Love', icon: Heart, color: 'text-rose-600', bg: 'bg-rose-50' },
+  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-amber-600', bg: 'bg-amber-50' },
+  { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-sky-600', bg: 'bg-sky-50' },
+  { key: 'festival', label: 'Festival', icon: Star, color: 'text-violet-600', bg: 'bg-violet-50' },
+  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
 ] as const;
 
-const containerVariants = {
-  hidden: { opacity: 0 },
+const containerVariants: Variants = {
+  hidden: {},
   visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
+    transition: { staggerChildren: 0.08 },
   },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: 'spring' as const, stiffness: 100, damping: 20 },
+    transition: { type: 'spring', stiffness: 100, damping: 20 },
   },
 };
 
@@ -72,129 +72,113 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Asymmetric Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-stone-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80dvh]">
-            {/* Left: Text */}
-            <div className="max-w-xl">
+      {/* Asymmetric Split Hero */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-neutral-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center min-h-[70dvh]">
+            {/* Left: Content (7 cols) */}
+            <div className="lg:col-span-7 lg:pr-8">
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
               >
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-coral-100 text-coral-700 text-sm font-medium mb-8">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-coral-50 text-coral-600 text-sm font-medium mb-8">
                   <Sparkle size={14} />
-                  Handcrafted with love
+                  Handcrafted greeting cards
                 </span>
               </motion.div>
 
               <motion.h1
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tighter leading-none text-zinc-900"
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-none text-neutral-900 max-w-[14ch]"
               >
                 Say it with a{' '}
-                <span className="text-coral-500 relative">
-                  beautiful card
-                  <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none">
-                    <path d="M1 5.5C40 2 80 2 199 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-coral-300" />
-                  </svg>
-                </span>
+                <span className="text-coral-500">beautiful card</span>
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="mt-6 text-lg text-zinc-500 leading-relaxed max-w-[48ch]"
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="mt-5 text-base sm:text-lg text-neutral-500 leading-relaxed max-w-[48ch]"
               >
-                Greeting cards that speak from the heart. Order via WhatsApp — personal, warm, and delivered with care.
+                Greeting cards that speak from the heart. Order via WhatsApp — personal, warm, and delivered across Sri Lanka with care.
               </motion.p>
 
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="mt-8 flex flex-col sm:flex-row items-start gap-4"
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="mt-8 flex flex-col sm:flex-row items-start gap-3"
               >
-                <Link to="/shop" className="btn-primary text-base py-3 px-8">
-                  Browse All Cards
-                </Link>
+                <MagneticButton to="/shop" label="Browse All Cards" />
                 <a
                   href="https://wa.me/947XXXXXXXX"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-ghost text-base"
                 >
-                  <WhatsappLogo size={20} />
+                  <WhatsappLogo size={18} />
                   Chat with us
                 </a>
               </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="mt-10 flex items-center gap-6 text-xs text-neutral-400"
+              >
+                <span className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  1,200+ orders delivered
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-coral-400" />
+                  65+ unique designs
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  4.9 rating
+                </span>
+              </motion.div>
             </div>
 
-            {/* Right: Decorative card stack */}
-            <div className="relative h-[500px] hidden lg:block">
-              <motion.div
-                animate={{
-                  rotate: 8,
-                  y: [0, -12, 0],
-                }}
-                transition={{
-                  rotate: { duration: 1 },
-                  y: { repeat: Infinity, duration: 6, ease: 'easeInOut' },
-                }}
-                className="absolute top-0 right-0 w-72 h-96 bg-gradient-to-br from-coral-100 to-rose-200 rounded-[2.5rem] shadow-xl shadow-coral-200/20 border border-white/50"
-              >
-                <div className="p-8 flex flex-col items-start justify-end h-full">
-                  <div className="w-14 h-14 rounded-2xl bg-white/60 flex items-center justify-center mb-4">
-                    <Heart size={28} weight="fill" className="text-coral-400" />
-                  </div>
-                  <p className="text-coral-700 font-semibold text-lg">Love</p>
-                  <p className="text-coral-500 text-sm">Express your heart</p>
-                </div>
-              </motion.div>
-
-              <motion.div
-                animate={{
-                  rotate: -4,
-                  y: [0, 16, 0],
-                }}
-                transition={{
-                  rotate: { duration: 1 },
-                  y: { repeat: Infinity, duration: 8, ease: 'easeInOut' },
-                }}
-                className="absolute bottom-0 right-16 w-64 h-80 bg-gradient-to-br from-amber-100 to-coral-200 rounded-[2.5rem] shadow-xl shadow-amber-200/20 border border-white/50"
-              >
-                <div className="p-8 flex flex-col items-start justify-end h-full">
-                  <div className="w-14 h-14 rounded-2xl bg-white/60 flex items-center justify-center mb-4">
-                    <Gift size={28} className="text-coral-400" />
-                  </div>
-                  <p className="text-coral-700 font-semibold text-lg">Birthday</p>
-                  <p className="text-coral-500 text-sm">Celebrate in style</p>
-                </div>
-              </motion.div>
-
-              <motion.div
-                animate={{
-                  rotate: 14,
-                  y: [0, -8, 0],
-                }}
-                transition={{
-                  rotate: { duration: 1 },
-                  y: { repeat: Infinity, duration: 5, ease: 'easeInOut' },
-                }}
-                className="absolute top-16 right-32 w-56 h-72 bg-gradient-to-br from-rose-100 to-rose-200 rounded-[2.5rem] shadow-xl shadow-rose-200/20 border border-white/50"
-              >
-                <div className="p-8 flex flex-col items-start justify-end h-full">
-                  <div className="w-14 h-14 rounded-2xl bg-white/60 flex items-center justify-center mb-4">
-                    <Star size={28} className="text-rose-400" />
-                  </div>
-                  <p className="text-rose-700 font-semibold text-lg">Festival</p>
-                  <p className="text-rose-500 text-sm">Spread the joy</p>
-                </div>
-              </motion.div>
+            {/* Right: Floating card bento (5 cols) */}
+            <div className="lg:col-span-5 relative h-[420px] lg:h-[520px] hidden lg:block">
+              <FloatingCard
+                rotate={10}
+                yOffset={[0, -14, 0]}
+                duration={6}
+                className="absolute top-4 right-4 w-[240px] h-[320px] bg-gradient-to-br from-coral-50 to-rose-50 rounded-[2rem] border border-white/30 shadow-diffuse"
+                icon={<Heart size={24} weight="fill" className="text-coral-400" />}
+                title="Love"
+                subtitle="Express your heart"
+                delay={0}
+              />
+              <FloatingCard
+                rotate={-6}
+                yOffset={[0, 18, 0]}
+                duration={7}
+                className="absolute bottom-8 right-28 w-[220px] h-[280px] bg-gradient-to-br from-amber-50 to-coral-50 rounded-[2rem] border border-white/30 shadow-diffuse"
+                icon={<Gift size={24} className="text-coral-400" />}
+                title="Birthday"
+                subtitle="Celebrate in style"
+                delay={1}
+              />
+              <FloatingCard
+                rotate={16}
+                yOffset={[0, -10, 0]}
+                duration={5}
+                className="absolute top-20 right-52 w-[200px] h-[260px] bg-gradient-to-br from-rose-50 to-rose-100 rounded-[2rem] border border-white/30 shadow-diffuse"
+                icon={<Star size={24} className="text-rose-400" />}
+                title="Festival"
+                subtitle="Spread the joy"
+                delay={2}
+              />
             </div>
           </div>
         </div>
@@ -202,68 +186,92 @@ export default function HomePage() {
 
       {/* Categories Bento Grid */}
       <section className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900">
-              Shop by Category
-            </h2>
-            <p className="mt-2 text-zinc-500 text-balance">
-              Find the perfect card for every occasion
-            </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <span className="section-eyebrow mb-3">Categories</span>
+              <h2 className="section-heading mt-2">Shop by occasion</h2>
+            </div>
+            <Link
+              to="/shop"
+              className="hidden sm:flex items-center gap-1 text-sm font-medium text-coral-600 hover:text-coral-700 transition-colors"
+            >
+              View all <ArrowRight size={14} />
+            </Link>
           </div>
 
           <motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+            viewport={{ once: true, margin: '-80px' }}
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4"
           >
-            {CATEGORIES.map((cat) => (
-              <CategoryCard key={cat.key} category={cat} />
+            {CATEGORIES.slice(0, 3).map((cat) => (
+              <motion.div key={cat.key} variants={itemVariants} className="sm:col-span-1">
+                <CategoryCard category={cat} featured />
+              </motion.div>
+            ))}
+            {CATEGORIES.slice(3).map((cat) => (
+              <motion.div key={cat.key} variants={itemVariants} className="col-span-1">
+                <CategoryCard category={cat} />
+              </motion.div>
             ))}
           </motion.div>
+
+          <div className="mt-6 sm:hidden text-center">
+            <Link to="/shop" className="text-sm font-medium text-coral-600 hover:text-coral-700 transition-colors inline-flex items-center gap-1">
+              View all categories <ArrowRight size={14} />
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Featured Products */}
-      <section className="bg-stone-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+      <section className="bg-neutral-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900">
-                Featured Cards
-              </h2>
-              <p className="mt-2 text-zinc-500 text-balance">
-                Our most popular greeting cards
+              <span className="section-eyebrow mb-3">Featured</span>
+              <h2 className="section-heading mt-2">Popular cards</h2>
+              <p className="section-subheading mt-1">
+                Our most-loved greeting cards, handpicked for every occasion
               </p>
             </div>
-            <Link to="/shop" className="text-sm font-medium text-coral-600 hover:text-coral-700 transition-colors flex items-center gap-1">
-              View All
-              <span className="inline-block ml-1">&rarr;</span>
+            <Link
+              to="/shop"
+              className="hidden sm:flex items-center gap-1 text-sm font-medium text-coral-600 hover:text-coral-700 transition-colors"
+            >
+              View all <ArrowRight size={14} />
             </Link>
           </div>
 
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="skeleton-card rounded-card overflow-hidden" style={{ animationDelay: `${i * 60}ms` }}>
+                <div key={i} className="rounded-card overflow-hidden">
                   <div className="skeleton-card-image" />
                   <div className="p-4 space-y-3">
-                    <div className="skeleton-card-line" />
-                    <div className="skeleton-card-line-short" />
-                    <div className="flex justify-between items-center">
-                      <div className="skeleton-card-line w-16 h-6" />
-                      <div className="skeleton-card-line w-20 h-8 rounded-pill" />
+                    <div className="h-3 skeleton-shimmer w-16" />
+                    <div className="h-4 skeleton-shimmer" />
+                    <div className="flex justify-between items-center pt-1">
+                      <div className="h-5 skeleton-shimmer w-20" />
+                      <div className="h-8 skeleton-shimmer w-8 rounded-xl" />
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : featuredProducts.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="text-zinc-500">No featured cards available</p>
-              <Link to="/shop" className="btn-primary mt-4 inline-block">
+            <div className="empty-state">
+              <div className="w-14 h-14 rounded-2xl bg-neutral-100 flex items-center justify-center mb-4">
+                <Heart size={24} className="text-neutral-400" />
+              </div>
+              <p className="text-lg font-semibold text-neutral-600 mb-1">No cards yet</p>
+              <p className="text-sm text-neutral-400 mb-6 max-w-[40ch]">
+                We are adding new designs. Check back soon or browse our collection.
+              </p>
+              <Link to="/shop" className="btn-primary text-sm">
                 Browse All Cards
               </Link>
             </div>
@@ -272,7 +280,7 @@ export default function HomePage() {
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, margin: '-50px' }}
+              viewport={{ once: true, margin: '-80px' }}
               className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
             >
               {featuredProducts.slice(0, 4).map((product) => (
@@ -282,79 +290,178 @@ export default function HomePage() {
               ))}
             </motion.div>
           )}
+
+          <div className="mt-8 sm:hidden text-center">
+            <Link to="/shop" className="btn-ghost text-sm">
+              View All Cards
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="bg-gradient-to-b from-white to-stone-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      {/* About + Stats Split */}
+      <section className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-coral-100 text-coral-700 text-sm font-medium mb-6">
-                <Sparkle size={14} />
-                About TwinkleHearts
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-6">
+              <span className="section-eyebrow mb-3">About</span>
+              <h2 className="section-heading mt-2">
                 Bringing joy, one card at a time
               </h2>
-              <p className="text-lg text-zinc-500 mb-4 leading-relaxed">
+              <p className="mt-5 text-base text-neutral-500 leading-relaxed">
                 At TwinkleHearts, we believe every occasion deserves to be celebrated with something special. Our beautifully crafted greeting cards are designed to make your loved ones smile.
               </p>
-              <p className="text-lg text-zinc-500 mb-8 leading-relaxed">
-                Based in Sri Lanka, we offer a personal touch with easy ordering via WhatsApp. Simply browse our collection, choose your favorite cards, and we will handle the rest.
+              <p className="mt-4 text-base text-neutral-500 leading-relaxed">
+                Based in Colombo, Sri Lanka, we offer a personal touch with easy ordering via WhatsApp. Browse our collection, choose your favorite cards, and we will handle the rest.
               </p>
 
-              <div className="space-y-4">
-                <FeatureItem icon={Sparkle} title="Beautiful Designs" description="Handpicked designs that speak from the heart" />
-                <FeatureItem icon={WhatsappLogo} title="Easy Ordering" description="Order conveniently via WhatsApp" />
-                <FeatureItem icon={ShoppingCart} title="Fast Delivery" description="Quick and reliable delivery across Sri Lanka" />
-                <FeatureItem icon={Heart} title="Personal Touch" description="Add custom messages to make it special" />
+              <div className="mt-8 space-y-4">
+                <FeatureItem icon={Sparkle} title="Original designs" description="Handcrafted artwork for every occasion" />
+                <FeatureItem icon={WhatsappLogo} title="Order via WhatsApp" description="Convenient, personal, and human" />
+                <FeatureItem icon={ShoppingCart} title="Delivered with care" description="Fast and reliable delivery across Sri Lanka" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <StatCard number="1,200+" label="Happy Customers" />
-              <StatCard number="580+" label="Cards Delivered" />
-              <StatCard number="65+" label="Unique Designs" />
-              <StatCard number="4.9" label="Average Rating" />
+              <StatCard value="1,240" label="Orders delivered" />
+              <StatCard value="4.9" label="Average rating" />
+              <StatCard value="580+" label="Happy customers" />
+              <StatCard value="65" label="Unique designs" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-gradient-to-br from-coral-500 to-coral-600 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+      {/* Minimal CTA */}
+      <section className="bg-neutral-900 text-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
-            Ready to spread some joy?
+            Ready to make someone smile?
           </h2>
-          <p className="text-lg text-coral-100 mb-8 text-balance max-w-xl mx-auto">
-            Browse our collection and find the perfect card for your loved ones
+          <p className="text-base text-neutral-400 mb-10 max-w-lg mx-auto leading-relaxed">
+            Browse our collection of greeting cards and find the perfect message for your loved ones.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/shop"
-              className="bg-white text-coral-600 hover:bg-stone-50 px-8 py-3 rounded-lg font-semibold transition-all active:scale-[0.98]"
-            >
-              Shop Now
-            </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <MagneticButton to="/shop" label="Shop All Cards" dark />
             <a
               href="https://wa.me/947XXXXXXXX"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-coral-600 hover:bg-coral-700 px-8 py-3 rounded-lg font-semibold transition-all active:scale-[0.98] inline-flex items-center gap-2"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-medium text-sm transition-all active:scale-[0.98]"
             >
-              <WhatsappLogo size={20} />
+              <WhatsappLogo size={18} />
               Chat on WhatsApp
             </a>
           </div>
         </div>
       </section>
+
+      {/* Grain overlay */}
+      <div className="fixed inset-0 z-50 pointer-events-none grain" />
     </div>
   );
 }
 
-/* ---- Product Card ---- */
+/* ---- Magnetic Button (isolated client component) ---- */
+
+function MagneticButton({ to, label, dark }: { to: string; label: string; dark?: boolean }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const handleMouse = (e: React.MouseEvent) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const dist = Math.sqrt((e.clientX - centerX) ** 2 + (e.clientY - centerY) ** 2);
+    const maxDist = 150;
+    if (dist > maxDist) {
+      x.set(0);
+      y.set(0);
+      return;
+    }
+    const strength = 0.3;
+    x.set((e.clientX - centerX) * strength);
+    y.set((e.clientY - centerY) * strength);
+  };
+
+  const handleLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.a
+      ref={ref}
+      href={to}
+      onMouseMove={handleMouse}
+      onMouseLeave={handleLeave}
+      style={{ x, y }}
+      className={`inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-xl font-semibold text-sm transition-all active:scale-[0.98] ${
+        dark
+          ? 'bg-white text-neutral-900 hover:bg-neutral-100'
+          : 'bg-coral-500 hover:bg-coral-600 text-white shadow-soft'
+      }`}
+    >
+      {label}
+    </motion.a>
+  );
+}
+
+/* ---- Floating Card (isolated perpetual micro-interaction) ---- */
+
+function FloatingCard({
+  rotate,
+  yOffset,
+  duration,
+  className,
+  icon,
+  title,
+  subtitle,
+  delay,
+}: {
+  rotate: number;
+  yOffset: number[];
+  duration: number;
+  className: string;
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30, rotate: 0 }}
+      animate={{
+        opacity: 1,
+        rotate,
+        y: yOffset,
+      }}
+      transition={{
+        opacity: { duration: 0.6, delay: 0.4 + delay * 0.15 },
+        rotate: { duration: 0.6, delay: 0.4 + delay * 0.15 },
+        y: {
+          repeat: Infinity,
+          duration,
+          ease: 'easeInOut',
+          delay: delay * 0.5,
+        },
+      }}
+      className={className}
+    >
+      <div className="p-6 sm:p-8 flex flex-col items-start justify-end h-full">
+        <div className="w-12 h-12 rounded-xl bg-white/60 flex items-center justify-center mb-4">
+          {icon}
+        </div>
+        <p className="text-neutral-800 font-semibold text-base sm:text-lg">{title}</p>
+        <p className="text-neutral-500 text-sm">{subtitle}</p>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ---- Product Card with micro-interactions ---- */
 
 function ProductCard({ product }: { product: Product }) {
   const [imgError, setImgError] = useState(false);
@@ -364,136 +471,140 @@ function ProductCard({ product }: { product: Product }) {
   };
 
   const getCategoryBadge = (category?: string) => {
-    const catMap: Record<string, { label: string }> = {
-      birthday: { label: 'Birthday' },
-      love: { label: 'Love' },
-      anniversary: { label: 'Anniversary' },
-      friendship: { label: 'Friendship' },
-      festival: { label: 'Festival' },
-      sympathy: { label: 'Sympathy' },
+    const catMap: Record<string, string> = {
+      birthday: 'Birthday',
+      love: 'Love',
+      anniversary: 'Anniversary',
+      friendship: 'Friendship',
+      festival: 'Festival',
+      sympathy: 'Sympathy',
     };
     const key = category?.toLowerCase() || '';
-    const cat = catMap[key] || { label: category || 'General' };
-    return <span className="badge badge-coral">{cat.label}</span>;
+    return catMap[key] || category || 'General';
   };
 
   return (
-    <div className="product-card group">
+    <motion.div
+      className="product-card group"
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+    >
       <Link to={`/product/${product.id}`} className="block">
-        <div className="product-card-image">
+        <div className="product-card-image relative">
           {!imgError && product.images[0] ? (
             <img
               src={product.images[0]}
               alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              loading="lazy"
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-zinc-100">
-              <div className="w-12 h-12 rounded-2xl bg-zinc-200 flex items-center justify-center mb-2">
-                <Heart size={24} className="text-zinc-400" />
+            <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-100">
+              <div className="w-12 h-12 rounded-2xl bg-neutral-200 flex items-center justify-center mb-2">
+                <Heart size={22} weight="fill" className="text-neutral-400" />
               </div>
-              <span className="text-sm font-medium text-zinc-400">Card Preview</span>
+              <span className="text-xs font-medium text-neutral-400">No preview</span>
             </div>
           )}
+          <div className="absolute top-3 left-3">
+            <span className="badge badge-coral">{getCategoryBadge(product.category)}</span>
+          </div>
         </div>
       </Link>
 
       <div className="product-card-body">
-        <div className="mb-2">
-          {getCategoryBadge(product.category)}
-        </div>
-
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-base font-semibold text-zinc-900 mb-2 line-clamp-2 hover:text-coral-600 transition-colors">
+          <h3 className="font-display text-sm font-semibold text-neutral-900 line-clamp-2 hover:text-coral-600 transition-colors leading-snug">
             {product.name}
           </h3>
         </Link>
 
         <div className="flex items-center justify-between mt-3">
-          <span className="font-body text-lg font-bold text-coral-600">
+          <span className="font-mono text-base font-semibold text-coral-600 tracking-tight">
             {formatPrice(product.price)}
           </span>
+
+          {product.stock > 0 ? (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.92 }}
+              className="p-2 rounded-xl bg-neutral-100 text-neutral-500 hover:bg-coral-500 hover:text-white transition-colors duration-200"
+              aria-label="Add to cart"
+            >
+              <ShoppingCart size={15} weight="bold" />
+            </motion.button>
+          ) : (
+            <span className="text-xs text-neutral-400 font-medium">Sold out</span>
+          )}
         </div>
 
-        {product.stock > 0 && product.stock <= 5 && (
-          <p className="text-xs text-amber-600 mt-2 font-medium">
-            Only {product.stock} left
-          </p>
-        )}
-        {product.stock === 0 && (
-          <p className="text-xs text-red-500 mt-2 font-medium">
-            Out of stock
+        {product.stock > 0 && product.stock <= 3 && (
+          <p className="text-xs text-amber-600 mt-2.5 font-medium">
+            Only {product.stock} remaining
           </p>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 /* ---- Category Card ---- */
 
-function CategoryCard({
-  category,
-}: {
-  category: (typeof CATEGORIES)[number];
-}) {
+function CategoryCard({ category, featured }: { category: (typeof CATEGORIES)[number]; featured?: boolean }) {
   const Icon = category.icon;
 
   return (
-    <motion.div
-      variants={itemVariants}
-      className="group"
+    <Link
+      to={`/shop?category=${category.key}`}
+      className={`flex flex-col items-start gap-3 p-5 rounded-2xl border border-neutral-100/80 transition-all duration-300 hover:shadow-diffuse active:scale-[0.98] ${
+        featured ? `${category.bg} ${category.color}` : 'bg-white hover:bg-neutral-50'
+      }`}
     >
-      <Link
-        to={`/shop?category=${category.key}`}
-        className={`flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-br ${category.gradient} border border-white/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]`}
-      >
-        <div className="w-12 h-12 rounded-xl bg-white/60 flex items-center justify-center flex-shrink-0">
-          <Icon size={24} className={category.color} />
-        </div>
-        <div>
-          <h3 className={`font-semibold text-base ${category.color}`}>
-            {category.label}
-          </h3>
-          <p className="text-sm text-zinc-500">Browse collection</p>
-        </div>
-      </Link>
-    </motion.div>
+      <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${
+        featured ? 'bg-white/60' : 'bg-neutral-100'
+      }`}>
+        <Icon size={22} className={featured ? category.color : 'text-neutral-500'} />
+      </div>
+      <div>
+        <h3 className={`font-semibold text-sm ${featured ? category.color : 'text-neutral-800'}`}>
+          {category.label}
+        </h3>
+        <p className="text-xs text-neutral-400 mt-0.5">Browse cards</p>
+      </div>
+    </Link>
   );
 }
 
-/* ---- Sub-components ---- */
+/* ---- Feature Item ---- */
 
-function FeatureItem({
-  icon: Icon,
-  title,
-  description,
-}: {
+function FeatureItem({ icon: Icon, title, description }: {
   icon: React.ElementType;
   title: string;
   description: string;
 }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-10 h-10 rounded-xl bg-coral-100 flex items-center justify-center flex-shrink-0">
-        <Icon size={20} className="text-coral-600" />
+      <div className="w-10 h-10 rounded-xl bg-coral-50 flex items-center justify-center flex-shrink-0">
+        <Icon size={18} className="text-coral-500" />
       </div>
       <div>
-        <h4 className="font-semibold text-zinc-900">{title}</h4>
-        <p className="text-sm text-zinc-500">{description}</p>
+        <h4 className="font-semibold text-sm text-neutral-900">{title}</h4>
+        <p className="text-sm text-neutral-500">{description}</p>
       </div>
     </div>
   );
 }
 
-function StatCard({ number, label }: { number: string; label: string }) {
+/* ---- Stat Card ---- */
+
+function StatCard({ value, label }: { value: string; label: string }) {
   return (
-    <div className="bg-white rounded-2xl p-6 text-center border border-zinc-200/50">
-      <div className="text-3xl font-display font-bold text-coral-600 mb-1">
-        {number}
+    <div className="bg-neutral-50 rounded-2xl p-6 border border-neutral-100">
+      <div className="font-mono text-2xl sm:text-3xl font-bold text-coral-600 mb-0.5 tracking-tight">
+        {value}
       </div>
-      <div className="text-sm text-zinc-500">{label}</div>
+      <div className="text-sm text-neutral-500">{label}</div>
     </div>
   );
 }

@@ -100,8 +100,8 @@ export default function RegisterPage() {
 
   const getPasswordStrengthColor = () => {
     if (passwordStrength <= 2) return 'bg-red-400';
-    if (passwordStrength <= 3) return 'bg-gold-400';
-    return 'bg-sage-500';
+    if (passwordStrength <= 3) return 'bg-amber-400';
+    return 'bg-emerald-500';
   };
 
   const getPasswordStrengthLabel = () => {
@@ -111,10 +111,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-warm-gradient px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-neutral-50 to-white px-4 py-12">
       {/* Decorative sparkles */}
       <div className="absolute top-24 right-20 w-2 h-2 bg-rose-300 rounded-full animate-float opacity-40 hidden lg:block" />
-      <div className="absolute bottom-32 left-16 w-1.5 h-1.5 bg-gold-300 rounded-full animate-float-slow opacity-30 hidden lg:block" />
+      <div className="absolute bottom-32 left-16 w-1.5 h-1.5 bg-amber-300 rounded-full animate-float-slow opacity-30 hidden lg:block" />
 
       <div className="max-w-md w-full">
         {/* Logo */}
@@ -204,7 +204,7 @@ export default function RegisterPage() {
               {formData.password && (
                 <div className="mt-2">
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1.5 bg-cream-200 rounded-full overflow-hidden">
+                    <div className="flex-1 h-1.5 bg-neutral-200 rounded-full overflow-hidden">
                       <div
                         className={`h-full transition-all duration-300 ${getPasswordStrengthColor()}`}
                         style={{ width: `${(passwordStrength / 5) * 100}%` }}

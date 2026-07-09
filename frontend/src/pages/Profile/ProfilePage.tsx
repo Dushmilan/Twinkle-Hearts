@@ -48,7 +48,7 @@ export default function ProfilePage() {
 
       <div className="card p-6">
         {/* Avatar & Name */}
-        <div className="flex items-center gap-5 mb-8 pb-6 border-b border-cream-100">
+        <div className="flex items-center gap-5 mb-8 pb-6 border-b border-neutral-100">
           <div className="w-20 h-20 bg-coral-100 rounded-full flex items-center justify-center flex-shrink-0">
             <span className="text-2xl font-display font-bold text-coral-600">
               {user?.name?.charAt(0).toUpperCase() || 'U'}
@@ -81,7 +81,7 @@ export default function ProfilePage() {
                 type="email"
                 value={user?.email || ''}
                 disabled
-                className="input-field bg-cream-100 text-gray-500 cursor-not-allowed"
+                className="input-field bg-neutral-100 text-gray-500 cursor-not-allowed"
               />
               <p className="mt-1 text-xs text-gray-400">Email cannot be changed</p>
             </div>

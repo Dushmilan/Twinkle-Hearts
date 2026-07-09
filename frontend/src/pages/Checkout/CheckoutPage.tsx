@@ -162,7 +162,7 @@ export default function CheckoutPage() {
                 <div>
                   <label className="label-text">WhatsApp Number *</label>
                   <div className="flex">
-                    <span className="inline-flex items-center px-4 bg-cream-100 border border-r-0 border-gray-200 rounded-l-lg font-medium text-gray-700 text-sm">
+                    <span className="inline-flex items-center px-4 bg-neutral-100 border border-r-0 border-gray-200 rounded-l-lg font-medium text-gray-700 text-sm">
                       {formData.countryCode}
                     </span>
                     <input
@@ -187,8 +187,8 @@ export default function CheckoutPage() {
 
           {/* Order Summary — Gift Receipt */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-card border-2 border-dashed border-cream-200 p-6 sticky top-24 shadow-soft">
-              <div className="text-center mb-6 pb-4 border-b border-cream-100">
+            <div className="bg-white rounded-card border-2 border-dashed border-neutral-200 p-6 sticky top-24 shadow-soft">
+              <div className="text-center mb-6 pb-4 border-b border-neutral-100">
                 <HeartIcon className="w-8 h-8 text-coral-400 mx-auto mb-2" />
                 <h2 className="font-display text-xl font-semibold text-gray-900">
                   Your Cards
@@ -210,7 +210,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Totals */}
-              <div className="border-t border-cream-200 pt-4 space-y-2 mb-6">
+              <div className="border-t border-neutral-200 pt-4 space-y-2 mb-6">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Subtotal</span>
                   <span className="font-medium">{formatPrice(total)}</span>
@@ -219,7 +219,7 @@ export default function CheckoutPage() {
                   <span className="text-gray-500">Tax (18%)</span>
                   <span className="font-medium">{formatPrice(tax)}</span>
                 </div>
-                <div className="flex justify-between text-lg font-bold pt-2 border-t border-cream-100">
+                <div className="flex justify-between text-lg font-bold pt-2 border-t border-neutral-100">
                   <span>Total</span>
                   <span className="text-coral-600">{formatPrice(finalTotal)}</span>
                 </div>

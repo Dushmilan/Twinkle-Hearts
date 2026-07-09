@@ -104,7 +104,7 @@ export default function OrderHistoryPage() {
                 {getStatusBadge(order.status)}
               </div>
 
-              <div className="border-t border-b border-cream-100 py-4 my-4 space-y-3">
+              <div className="border-t border-b border-neutral-100 py-4 my-4 space-y-3">
                 {order.items.map((item: any, index) => (
                   <div key={index} className="flex justify-between items-center">
                     <div>

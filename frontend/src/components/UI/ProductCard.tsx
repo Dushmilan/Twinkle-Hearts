@@ -2,6 +2,7 @@
 
 import { useState, memo } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Heart, ShoppingCart } from '@phosphor-icons/react';
 import { useCartStore } from '../../store/cartStore';
 import { CATEGORY_MAP, CATEGORY_BADGE, formatPrice } from './Icons';
@@ -22,10 +23,6 @@ interface ProductCardProps {
   showAddToCart?: boolean;
 }
 
-/**
- * Shared product card with hover effects and add-to-cart action.
- * Isolated as a client component for interactive state.
- */
 const ProductCard = memo(function ProductCard({ product, showAddToCart = true }: ProductCardProps) {
   const [imgError, setImgError] = useState(false);
   const [added, setAdded] = useState(false);
@@ -54,9 +51,13 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
   };
 
   return (
-    <div className="product-card group">
+    <motion.div
+      className="product-card group"
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+    >
       <Link to={`/product/${product.id}`} className="block">
-        <div className="product-card-image">
+        <div className="product-card-image relative">
           {!imgError && product.images[0] ? (
             <img
               src={product.images[0]}
@@ -66,64 +67,66 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-cream-50">
-              <div className="w-12 h-12 rounded-2xl bg-cream-200 flex items-center justify-center mb-2">
-                <Heart size={22} weight="fill" className="text-coral-300" />
+            <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-100">
+              <div className="w-12 h-12 rounded-2xl bg-neutral-200 flex items-center justify-center mb-2">
+                <Heart size={22} weight="fill" className="text-neutral-400" />
               </div>
-              <span className="text-xs font-medium text-zinc-400">No preview</span>
+              <span className="text-xs font-medium text-neutral-400">No preview</span>
             </div>
           )}
+          <div className="absolute top-3 left-3">
+            <span className={`badge ${badgeClass}`}>{categoryLabel}</span>
+          </div>
         </div>
       </Link>
 
       <div className="product-card-body">
-        <div className="mb-2.5">
-          <span className={`badge ${badgeClass}`}>{categoryLabel}</span>
-        </div>
-
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-sm font-semibold text-zinc-900 line-clamp-2 hover:text-coral-600 transition-colors duration-200 leading-snug">
+          <h3 className="font-display text-sm font-semibold text-neutral-900 line-clamp-2 hover:text-coral-600 transition-colors duration-200 leading-snug">
             {product.name}
           </h3>
         </Link>
 
         <div className="flex items-center justify-between mt-3">
-          <span className="font-body text-lg font-bold text-coral-600">
+          <span className="font-mono text-base font-semibold text-coral-600 tracking-tight">
             {formatPrice(product.price)}
           </span>
 
           {showAddToCart && product.stock > 0 && !added && (
-            <button
+            <motion.button
               onClick={handleAddToCart}
-              className="p-2 rounded-xl bg-cream-50 text-coral-500 hover:bg-coral-500 hover:text-white
-                         transition-all duration-200 ease-spring
-                         active:scale-[0.92]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.92 }}
+              className="p-2 rounded-xl bg-neutral-100 text-neutral-500 hover:bg-coral-500 hover:text-white transition-colors duration-200 ease-spring"
               aria-label="Add to cart"
             >
-              <ShoppingCart size={16} weight="bold" />
-            </button>
+              <ShoppingCart size={15} weight="bold" />
+            </motion.button>
           )}
 
           {added && (
-            <span className="inline-flex items-center gap-1 text-xs font-semibold text-sage-600 animate-scale-in">
-              <Heart size={14} weight="fill" className="text-coral-400" />
+            <motion.span
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600"
+            >
+              <Heart size={13} weight="fill" className="text-coral-400" />
               Added
-            </span>
+            </motion.span>
           )}
         </div>
 
-        {product.stock > 0 && product.stock <= 5 && (
+        {product.stock > 0 && product.stock <= 3 && (
           <p className="text-xs text-amber-600 mt-2.5 font-medium">
-            Only {product.stock} left
+            Only {product.stock} remaining
           </p>
         )}
         {product.stock === 0 && (
-          <p className="text-xs text-red-500 mt-2.5 font-medium">
-            Out of stock
-          </p>
+          <p className="text-xs text-red-500 mt-2.5 font-medium">Sold out</p>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 });
 
