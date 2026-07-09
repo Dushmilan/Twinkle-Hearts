@@ -215,7 +215,7 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-cream-100">
-                {stats?.recentOrders.map((order: any) => (
+                {stats?.recentOrders?.map((order: any) => (
                   <tr key={order.id} className="hover:bg-cream-50 transition-colors">
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-mono text-gray-900">
                       #{order.id.slice(0, 8).toUpperCase()}
