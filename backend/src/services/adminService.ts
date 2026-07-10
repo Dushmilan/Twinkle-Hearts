@@ -37,8 +37,8 @@ export async function createProduct(env: Env, input: any) {
   });
 
   const cache = getCacheRepository(env.KV);
-  await cache.delete( CacheKeys.productsCatalog(1, 100));
-  await cache.delete( CacheKeys.productsFeatured());
+  await cache.deleteByPrefix(CacheKeys.productsCatalogPrefix());
+  await cache.delete(CacheKeys.productsFeatured());
 
   return product;
 }
@@ -52,8 +52,8 @@ export async function updateProduct(env: Env, id: string, input: any) {
   const updatedProduct = await prisma.product.update({ where: { id }, data: input });
 
   const cache = getCacheRepository(env.KV);
-  await cache.delete( CacheKeys.productsCatalog(1, 100));
-  await cache.delete( CacheKeys.productsFeatured());
+  await cache.deleteByPrefix(CacheKeys.productsCatalogPrefix());
+  await cache.delete(CacheKeys.productsFeatured());
   await cache.delete( CacheKeys.product(id));
 
   return updatedProduct;
@@ -84,8 +84,8 @@ export async function deleteProduct(env: Env, id: string) {
   }
 
   const cache = getCacheRepository(env.KV);
-  await cache.delete( CacheKeys.productsCatalog(1, 100));
-  await cache.delete( CacheKeys.productsFeatured());
+  await cache.deleteByPrefix(CacheKeys.productsCatalogPrefix());
+  await cache.delete(CacheKeys.productsFeatured());
   await cache.delete( CacheKeys.product(id));
 
   await prisma.product.delete({ where: { id } });

@@ -38,6 +38,22 @@ export class KVCacheRepository implements CacheRepository {
     }
   }
 
+  async deleteByPrefix(prefix: string): Promise<void> {
+    try {
+      const fullPrefix = this.fullKey(prefix);
+      let cursor: string | undefined;
+      do {
+        const list = await this.kv.list({ prefix: fullPrefix, cursor });
+        for (const key of list.keys) {
+          await this.kv.delete(key.name);
+        }
+        cursor = list.list_complete ? undefined : list.cursor;
+      } while (cursor);
+    } catch {
+      console.error('Cache deleteByPrefix error');
+    }
+  }
+
   async getSession(sessionId: string): Promise<SessionData | null> {
     return this.get(CacheKeys.session(sessionId));
   }

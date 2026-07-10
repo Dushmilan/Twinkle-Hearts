@@ -202,6 +202,14 @@ export class TestCacheRepository implements CacheRepository {
     this.store.delete(key);
   }
 
+  async deleteByPrefix(prefix: string): Promise<void> {
+    for (const key of this.store.keys()) {
+      if (key.startsWith(prefix)) {
+        this.store.delete(key);
+      }
+    }
+  }
+
   async getSession(sessionId: string): Promise<SessionData | null> {
     return this.get(`session:${sessionId}`);
   }

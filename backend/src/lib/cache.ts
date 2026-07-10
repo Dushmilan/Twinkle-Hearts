@@ -66,6 +66,7 @@ export const CacheKeys = {
   userAddresses: (userId: string) => `user:addresses:${userId}`,
   product: (productId: string) => `product:${productId}`,
   productsCatalog: (page: number, limit: number) => `products:catalog:${page}:${limit}`,
+  productsCatalogPrefix: () => 'products:catalog:',
   productsFeatured: () => 'products:featured',
   adminStats: () => 'admin:stats',
   otp: (phone: string) => `otp:${phone}`,

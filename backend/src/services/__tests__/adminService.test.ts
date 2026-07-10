@@ -23,6 +23,7 @@ describe('adminService', () => {
 
     mockCache = {
       delete: vi.fn().mockResolvedValue(undefined),
+      deleteByPrefix: vi.fn().mockResolvedValue(undefined),
       get: vi.fn(),
       set: vi.fn(),
     };
@@ -74,7 +75,8 @@ describe('adminService', () => {
       const result = await createProduct(mockEnv, productInput);
 
       expect(result.id).toBe('prod-1');
-      expect(mockCache.delete).toHaveBeenCalledTimes(2);
+      expect(mockCache.deleteByPrefix).toHaveBeenCalledTimes(1);
+      expect(mockCache.delete).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -86,7 +88,8 @@ describe('adminService', () => {
       const result = await updateProduct(mockEnv, 'prod-1', { name: 'Updated Name' });
 
       expect(result.name).toBe('Updated Name');
-      expect(mockCache.delete).toHaveBeenCalledTimes(3);
+      expect(mockCache.deleteByPrefix).toHaveBeenCalledTimes(1);
+      expect(mockCache.delete).toHaveBeenCalledTimes(2);
     });
 
     it('should throw if product not found', async () => {

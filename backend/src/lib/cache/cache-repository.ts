@@ -28,6 +28,7 @@ export interface CacheRepository {
   get(key: string): Promise<any | null>;
   set(key: string, value: any, ttl?: number): Promise<void>;
   delete(key: string): Promise<void>;
+  deleteByPrefix(prefix: string): Promise<void>;
 
   checkRateLimit(identifier: string, max: number, ttlSeconds: number): Promise<boolean>;
 }
