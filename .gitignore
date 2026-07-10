@@ -95,6 +95,8 @@ jest-results/
 
 # Husky
 .husky/
+!.husky/post-commit
+!.husky/pre-commit
 
 # Commitlint
 .commitlintrc.json

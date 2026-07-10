@@ -1,1 +1,1 @@
-npx --yes graphify update .
+"$HOME/.local/bin/graphify" update .
