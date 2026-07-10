@@ -70,7 +70,7 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* Trilingual Asymmetric Hero */}
-      <section className="relative overflow-hidden bg-greeting-charcoal-400">
+      <section className="relative overflow-hidden bg-greeting-charcoal-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center min-h-[70dvh]">
             {/* Left: Trilingual hero stack (7 cols) */}
@@ -104,7 +104,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="trilingual-line-ta text-2xl sm:text-3xl lg:text-4xl mt-2 leading-snug"
               >
-                <span className="text-greeting-plum-400">ஒரு அழகான</span> அட்டையுடன்
+                <span className="text-greeting-lilac-300">ஒரு அழகான</span> அட்டையுடன்
               </motion.p>
 
               {/* SI line */}
@@ -115,7 +115,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="trilingual-line-si text-2xl sm:text-3xl lg:text-4xl mt-1 leading-snug"
               >
-                <span className="text-greeting-plum-400">ලස්සන කාඩ්</span> එකකින් කියන්න
+                <span className="text-greeting-lilac-300">ලස්සන කාඩ්</span> එකකින් කියන්න
               </motion.p>
 
               {/* EN finish */}
@@ -125,7 +125,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="trilingual-line-en text-5xl sm:text-6xl lg:text-7xl font-display font-semibold tracking-tight-display leading-[1.05] mt-1"
               >
-                <span className="text-greeting-plum-400">beautiful card</span>
+                <span className="text-greeting-lilac-300">beautiful card</span>
               </motion.p>
 
               <motion.p
@@ -148,7 +148,7 @@ export default function HomePage() {
                   href="https://wa.me/947XXXXXXXX"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-ghost text-base"
+                  className="inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-full border border-greeting-bronze-300 bg-transparent hover:bg-greeting-bronze-300/10 text-greeting-bronze-300 font-semibold text-sm transition-all active:scale-[0.98]"
                 >
                   <WhatsappLogo size={18} />
                   Chat with us
@@ -162,15 +162,15 @@ export default function HomePage() {
                 className="mt-12 flex items-center gap-6 text-xs text-gray-500"
               >
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-teal-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-bronze-300" />
                   1,200+ orders delivered
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-plum-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-bronze-300" />
                   65+ unique designs
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-gray-500" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-bronze-300" />
                   4.9 rating
                 </span>
               </motion.div>
@@ -185,7 +185,7 @@ export default function HomePage() {
                 className="absolute top-2 right-2 w-[260px] h-[340px] z-20"
                 title="With Love"
                 subtitle="For someone special"
-                accent="magenta"
+                textColor="text-greeting-plum-400"
                 delay={0}
               />
               <FloatingLetterpressCard
@@ -195,7 +195,7 @@ export default function HomePage() {
                 className="absolute bottom-4 right-36 w-[240px] h-[310px] z-10"
                 title="Happy Birthday"
                 subtitle="Celebrate in style"
-                accent="cyan"
+                textColor="text-greeting-lilac-300"
                 delay={1}
               />
               <FloatingLetterpressCard
@@ -205,7 +205,7 @@ export default function HomePage() {
                 className="absolute top-24 right-56 w-[220px] h-[280px] z-0"
                 title="Joy & Peace"
                 subtitle="Warm wishes"
-                accent="magenta"
+                textColor="text-greeting-teal-400"
                 delay={2}
               />
             </div>
@@ -423,6 +423,12 @@ export default function HomePage() {
 
 /* ---- Floating Letterpress Card (3D paper card mockup) ---- */
 
+const cardAccentMap: Record<string, { iconBg: string; footerBg: string }> = {
+  'text-greeting-plum-400': { iconBg: 'bg-greeting-plum-400/20', footerBg: 'bg-greeting-plum-400/15' },
+  'text-greeting-lilac-300': { iconBg: 'bg-greeting-lilac-300/20', footerBg: 'bg-greeting-lilac-300/15' },
+  'text-greeting-teal-400': { iconBg: 'bg-greeting-teal-400/20', footerBg: 'bg-greeting-teal-400/15' },
+};
+
 function FloatingLetterpressCard({
   rotate,
   yOffset,
@@ -430,7 +436,7 @@ function FloatingLetterpressCard({
   className,
   title,
   subtitle,
-  accent,
+  textColor,
   delay,
 }: {
   rotate: number;
@@ -439,13 +445,10 @@ function FloatingLetterpressCard({
   className: string;
   title: string;
   subtitle: string;
-  accent: 'magenta' | 'cyan';
+  textColor: string;
   delay: number;
 }) {
-  const accentBorder = accent === 'magenta' ? 'border-greeting-plum-500/30' : 'border-greeting-teal-500/30';
-  const accentBg = accent === 'magenta' ? 'bg-greeting-plum-500/20' : 'bg-greeting-teal-500/20';
-  const accentText = accent === 'magenta' ? 'text-greeting-plum-400' : 'text-greeting-teal-400';
-  const accentLight = accent === 'magenta' ? 'bg-greeting-plum-500/30' : 'bg-greeting-teal-500/30';
+  const accent = cardAccentMap[textColor] ?? { iconBg: 'bg-greeting-plum-400/20', footerBg: 'bg-greeting-plum-400/15' };
 
   return (
     <motion.div
@@ -467,13 +470,13 @@ function FloatingLetterpressCard({
       }}
       className={className}
     >
-      <div className={`w-full h-full rounded-[2rem] ${accentBg} border ${accentBorder} shadow-lg flex flex-col overflow-hidden`}>
+      <div className="w-full h-full rounded-[2rem] bg-greeting-bronze-100 border border-greeting-bronze-300 shadow-[0_20px_50px_-12px_rgba(190,131,82,0.3)] flex flex-col overflow-hidden">
         {/* Card face — decorative top */}
         <div className="flex-1 flex flex-col items-center justify-center px-8">
-          <div className={`w-14 h-14 rounded-full ${accentLight} flex items-center justify-center mb-5`}>
-            <Heart size={22} className={accentText} />
+          <div className={`w-14 h-14 rounded-full ${accent.iconBg} flex items-center justify-center mb-5`}>
+            <Heart size={22} className={textColor} />
           </div>
-          <p className={`text-center font-display font-semibold text-lg ${accentText} leading-tight`}>
+          <p className={`text-center font-display font-semibold text-lg ${textColor} leading-tight`}>
             {title}
           </p>
           <p className="text-center text-sm text-gray-500 mt-1.5 font-body">
@@ -481,7 +484,7 @@ function FloatingLetterpressCard({
           </p>
         </div>
         {/* Card footer — decorative stripe */}
-        <div className={`h-1.5 ${accent === 'magenta' ? 'bg-greeting-plum-500/20' : 'bg-greeting-teal-500/20'}`} />
+        <div className={`h-1.5 ${accent.footerBg}`} />
       </div>
     </motion.div>
   );
@@ -647,7 +650,7 @@ function FeatureItem({ icon: Icon, title, description }: {
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
     <div className="stat-card">
-      <div className="font-mono text-2xl sm:text-3xl font-bold text-greeting-plum-400 mb-0.5 tracking-tight">
+      <div className="font-mono text-2xl sm:text-3xl font-bold text-gray-100 mb-0.5 tracking-tight">
         {value}
       </div>
       <div className="text-sm text-gray-400">{label}</div>
