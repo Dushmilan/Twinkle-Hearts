@@ -378,24 +378,30 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA — Dark ink section */}
-      <section className="bg-greeting-dark-purple-500 text-gray-100 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{
+      {/* CTA — Warm paper bridge */}
+      <section className="bg-greeting-bg-500 text-gray-100 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundRepeat: 'repeat',
           backgroundSize: '128px 128px',
         }} />
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(214,54,142,0.06), transparent)',
+        }} />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center relative z-10">
-          <h2 className="text-3xl sm:text-4xl font-display font-semibold tracking-tight mb-4">
+          <p className="text-xs font-body font-medium tracking-[0.2em] uppercase text-greeting-magenta-400 mb-5">
+            Handwritten with care
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-display font-semibold tracking-tight mb-4 text-gray-50">
             Ready to make someone smile?
           </h2>
-          <p className="text-base text-gray-400 mb-10 max-w-lg mx-auto leading-relaxed font-body">
+          <p className="text-base text-gray-400 mb-10 max-w-md mx-auto leading-relaxed font-body">
             Browse our collection of greeting cards and find the perfect message for your loved ones.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/shop"
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-[10px] bg-greeting-magenta-500 text-gray-100 hover:bg-greeting-magenta-600 font-semibold text-sm transition-all active:scale-[0.98] shadow-lg"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-[10px] bg-greeting-magenta-500 text-gray-100 hover:bg-greeting-magenta-600 font-semibold text-sm transition-all active:scale-[0.98] shadow-lg shadow-greeting-magenta-500/20"
             >
               Shop All Cards
             </Link>
@@ -403,7 +409,7 @@ export default function HomePage() {
               href="https://wa.me/947XXXXXXXX"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-[10px] bg-greeting-bg-500 hover:bg-greeting-bg-400 text-gray-100 font-medium text-sm transition-all active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-[10px] border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800/30 text-gray-200 font-medium text-sm transition-all active:scale-[0.98]"
             >
               <WhatsappLogo size={18} />
               Chat on WhatsApp
