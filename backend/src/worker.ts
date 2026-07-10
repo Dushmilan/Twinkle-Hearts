@@ -48,6 +48,10 @@ app.get('/health', async (c) => {
   return c.json(health, statusCode as 200 | 503);
 });
 
+// Image serving (R2)
+import imageRoutes from './routes/imageRoutes.js';
+app.route('/images', imageRoutes);
+
 // API Routes
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';

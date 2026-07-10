@@ -1,7 +1,6 @@
 import { getPrismaRepository } from '../lib/prisma.js';
 import { CacheKeys, getCacheRepository } from '../lib/cache/index.js';
 import { NotFoundError, BadRequestError } from '../middleware/errorHandler.js';
-import type { Env } from '../types.js';
 import { uploadToR2, deleteMultipleFromR2, uploadToCloudinary, extractR2Key, isR2Url } from '../lib/images.js';
 import type { Env } from '../types.js';
 

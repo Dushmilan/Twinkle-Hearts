@@ -1,22 +1,33 @@
 import { getPrismaRepository } from '../lib/prisma.js';
 import { CacheKeys, getCacheRepository } from '../lib/cache/index.js';
+import { getPublicUrl } from '../lib/images.js';
 import { NotFoundError } from '../middleware/errorHandler.js';
 import type { Env } from '../types.js';
 
+function isAbsoluteUrl(url: string): boolean {
+  return url.startsWith('http://') || url.startsWith('https://');
+}
+
 function normalizeImages(images: unknown): string[] {
-  if (Array.isArray(images)) return images.filter((i): i is string => typeof i === 'string');
-  if (typeof images !== 'string') return [];
-  const trimmed = images.trim();
-  if (!trimmed || trimmed === '[]') return [];
-  if (trimmed.startsWith('[')) {
-    try {
-      const parsed = JSON.parse(trimmed);
-      if (Array.isArray(parsed)) return parsed.filter((i): i is string => typeof i === 'string');
-    } catch {
-      // fall through to comma split
+  let arr: string[];
+  if (Array.isArray(images)) arr = images.filter((i): i is string => typeof i === 'string');
+  else if (typeof images !== 'string') return [];
+  else {
+    const trimmed = images.trim();
+    if (!trimmed || trimmed === '[]') return [];
+    if (trimmed.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (Array.isArray(parsed)) arr = parsed.filter((i): i is string => typeof i === 'string');
+        else arr = [];
+      } catch {
+        arr = trimmed.split(',').map((s) => s.trim()).filter(Boolean);
+      }
+    } else {
+      arr = trimmed.split(',').map((s) => s.trim()).filter(Boolean);
     }
   }
-  return trimmed.split(',').map((s) => s.trim()).filter(Boolean);
+  return arr.map((url) => isAbsoluteUrl(url) ? url : getPublicUrl(url));
 }
 
 function normalizeProduct<T extends { images: unknown }>(product: T): T {

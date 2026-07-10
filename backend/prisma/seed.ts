@@ -15,7 +15,7 @@ async function main() {
       stock: 100,
 
       category: 'Birthday',
-      images: ['/images/cards/birthday-sparkles-1.jpg', '/images/cards/birthday-sparkles-2.jpg'],
+      images: ['https://picsum.photos/seed/birthday-sparkles/600/800'],
       isFeatured: true,
     },
     {
@@ -25,7 +25,7 @@ async function main() {
       stock: 80,
 
       category: 'Love',
-      images: ['/images/cards/love-forever-1.jpg'],
+      images: ['https://picsum.photos/seed/forever-yours/600/800'],
       isFeatured: true,
     },
     {
@@ -35,7 +35,7 @@ async function main() {
       stock: 60,
 
       category: 'Anniversary',
-      images: ['/images/cards/golden-anniversary-1.jpg'],
+      images: ['https://picsum.photos/seed/golden-anniversary/600/800'],
       isFeatured: true,
     },
     {
@@ -45,7 +45,7 @@ async function main() {
       stock: 120,
 
       category: 'Friendship',
-      images: ['/images/cards/friendship-tropical-1.jpg'],
+      images: ['https://picsum.photos/seed/friends-like-you/600/800'],
     },
     {
       name: 'Avurudu Blessings',
@@ -54,7 +54,7 @@ async function main() {
       stock: 90,
 
       category: 'Festival',
-      images: ['/images/cards/avurudu-blessings-1.jpg'],
+      images: ['https://picsum.photos/seed/avurudu-blessings/600/800'],
       isFeatured: true,
     },
     {
@@ -64,7 +64,7 @@ async function main() {
       stock: 70,
 
       category: 'Sympathy',
-      images: ['/images/cards/sympathy-lavender-1.jpg'],
+      images: ['https://picsum.photos/seed/thinking-of-you/600/800'],
     },
     {
       name: 'Birthday Wishes in Sinhala',
@@ -73,7 +73,7 @@ async function main() {
       stock: 85,
 
       category: 'Birthday',
-      images: ['/images/cards/birthday-sinhala-1.jpg'],
+      images: ['https://picsum.photos/seed/birthday-wishes-sinhala/600/800'],
     },
     {
       name: 'Love in Tamil',
@@ -82,7 +82,7 @@ async function main() {
       stock: 65,
 
       category: 'Love',
-      images: ['/images/cards/love-tamil-1.jpg'],
+      images: ['https://picsum.photos/seed/love-tamil/600/800'],
     },
     {
       name: 'Baby Shower Blessings',
@@ -91,7 +91,7 @@ async function main() {
       stock: 75,
 
       category: 'Birthday',
-      images: ['/images/cards/baby-shower-1.jpg'],
+      images: ['https://picsum.photos/seed/baby-shower/600/800'],
     },
     {
       name: 'Vesak Blessings',
@@ -100,7 +100,7 @@ async function main() {
       stock: 95,
 
       category: 'Festival',
-      images: ['/images/cards/vesak-blessings-1.jpg'],
+      images: ['https://picsum.photos/seed/vesak-blessings/600/800'],
       isFeatured: true,
     },
     {
@@ -110,7 +110,7 @@ async function main() {
       stock: 80,
 
       category: 'Sympathy',
-      images: ['/images/cards/get-well-sunflower-1.jpg'],
+      images: ['https://picsum.photos/seed/get-well-soon/600/800'],
     },
     {
       name: 'Christmas Joy',
@@ -119,7 +119,7 @@ async function main() {
       stock: 100,
 
       category: 'Festival',
-      images: ['/images/cards/christmas-joy-1.jpg'],
+      images: ['https://picsum.photos/seed/christmas-joy/600/800'],
     },
   ];
 
