@@ -38,9 +38,9 @@ function AdminDashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-greeting-bg-500 flex items-center justify-center">
+      <div className="min-h-screen bg-greeting-charcoal-500 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-10 h-10 border-2 border-greeting-magenta-500 border-t-transparent rounded-full mx-auto" />
+          <div className="animate-spin w-10 h-10 border-2 border-greeting-berry-500 border-t-transparent rounded-full mx-auto" />
           <p className="text-gray-400 mt-4">Loading dashboard...</p>
         </div>
       </div>
@@ -48,9 +48,9 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-greeting-bg-500">
+    <div className="min-h-screen bg-greeting-charcoal-500">
       {/* Admin Header */}
-      <header className="card border-b border-greeting-purple-700">
+      <header className="card border-b border-greeting-cocoa-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
@@ -99,7 +99,7 @@ function AdminDashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             }
-            color="bg-greeting-magenta-500"
+            color="bg-greeting-berry-500"
           />
           <StatCard
             title="Total Cards"
@@ -115,16 +115,16 @@ function AdminDashboard() {
 
         {/* Pending Orders Alert */}
         {stats && stats.pendingOrders > 0 && (
-          <div className="bg-greeting-dark-purple-500 border border-greeting-purple-700 rounded-xl p-5 mb-8">
+          <div className="bg-greeting-charcoal-500 border border-greeting-cocoa-700 rounded-xl p-5 mb-8">
             <div className="flex items-center gap-3">
-              <svg className="w-6 h-6 text-greeting-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6 text-greeting-teal-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <div>
                 <p className="text-gray-100 font-medium">
                   {stats.pendingOrders} order{stats.pendingOrders > 1 ? 's' : ''} pending WhatsApp confirmation
                 </p>
-                <Link to="/admin/orders" className="text-greeting-cyan-400 hover:text-greeting-cyan-300 underline text-sm">
+                <Link to="/admin/orders" className="text-greeting-teal-400 hover:text-greeting-teal-300 underline text-sm">
                   View all pending orders →
                 </Link>
               </div>
@@ -140,8 +140,8 @@ function AdminDashboard() {
             className="card p-5 hover:shadow-lg transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-greeting-magenta-500/20 rounded-xl flex items-center justify-center group-hover:bg-greeting-magenta-500/30 transition-colors">
-                <svg className="w-6 h-6 text-greeting-magenta-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 bg-greeting-berry-500/20 rounded-xl flex items-center justify-center group-hover:bg-greeting-berry-500/30 transition-colors">
+                <svg className="w-6 h-6 text-greeting-berry-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </div>
@@ -156,8 +156,8 @@ function AdminDashboard() {
             className="card p-5 hover:shadow-lg transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-greeting-cyan-500/20 rounded-xl flex items-center justify-center group-hover:bg-greeting-cyan-500/30 transition-colors">
-                <svg className="w-6 h-6 text-greeting-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 bg-greeting-teal-500/20 rounded-xl flex items-center justify-center group-hover:bg-greeting-teal-500/30 transition-colors">
+                <svg className="w-6 h-6 text-greeting-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
@@ -172,8 +172,8 @@ function AdminDashboard() {
             className="card p-5 hover:shadow-lg transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-greeting-purple-500/20 rounded-xl flex items-center justify-center group-hover:bg-greeting-purple-500/30 transition-colors">
-                <svg className="w-6 h-6 text-greeting-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 bg-greeting-cocoa-500/20 rounded-xl flex items-center justify-center group-hover:bg-greeting-cocoa-500/30 transition-colors">
+                <svg className="w-6 h-6 text-greeting-cocoa-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
@@ -189,13 +189,13 @@ function AdminDashboard() {
         <div className="card p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="font-display text-xl font-semibold text-gray-100">Recent Orders</h2>
-            <Link to="/admin/orders" className="text-sm text-greeting-magenta-400 hover:text-greeting-magenta-300 font-medium">
+            <Link to="/admin/orders" className="text-sm text-greeting-berry-400 hover:text-greeting-berry-300 font-medium">
               View All →
             </Link>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-700">
-              <thead className="bg-greeting-bg-400">
+              <thead className="bg-greeting-charcoal-400">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Order ID
@@ -216,7 +216,7 @@ function AdminDashboard() {
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {stats?.recentOrders?.map((order: any) => (
-                  <tr key={order.id} className="hover:bg-greeting-bg-400 transition-colors">
+                  <tr key={order.id} className="hover:bg-greeting-charcoal-400 transition-colors">
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-mono text-gray-100">
                       #{order.id.slice(0, 8).toUpperCase()}
                     </td>
@@ -228,9 +228,9 @@ function AdminDashboard() {
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <span className={`badge ${
-                        order.status === 'CONFIRMED' ? 'badge-cyan' :
-                        order.status === 'PENDING_WHATSAPP_CONFIRMATION' ? 'badge-magenta' :
-                        'badge-purple'
+                        order.status === 'CONFIRMED' ? 'badge-teal' :
+                        order.status === 'PENDING_WHATSAPP_CONFIRMATION' ? 'badge-berry' :
+                        'badge-cocoa'
                       }`}>
                         {order.status?.replace(/_/g, ' ')}
                       </span>

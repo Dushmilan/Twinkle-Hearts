@@ -46,12 +46,12 @@ export default function OrderHistoryPage() {
   const getStatusBadge = (status?: string) => {
     if (!status) return null;
     const statusMap: Record<string, { label: string; variant: string }> = {
-      PENDING_WHATSAPP_CONFIRMATION: { label: 'Pending', variant: 'badge-magenta' },
-      CONFIRMED: { label: 'Confirmed', variant: 'badge-cyan' },
-      CANCELLED: { label: 'Cancelled', variant: 'badge-purple' },
-      EXPIRED: { label: 'Expired', variant: 'badge-purple' },
+      PENDING_WHATSAPP_CONFIRMATION: { label: 'Pending', variant: 'badge-berry' },
+      CONFIRMED: { label: 'Confirmed', variant: 'badge-teal' },
+      CANCELLED: { label: 'Cancelled', variant: 'badge-cocoa' },
+      EXPIRED: { label: 'Expired', variant: 'badge-cocoa' },
     };
-    const s = statusMap[status] || { label: status, variant: 'badge-magenta' };
+    const s = statusMap[status] || { label: status, variant: 'badge-berry' };
     return <span className={`badge ${s.variant}`}>{s.label}</span>;
   };
 
@@ -104,7 +104,7 @@ export default function OrderHistoryPage() {
                 {getStatusBadge(order.status)}
               </div>
 
-              <div className="border-t border-b border-greeting-purple-700 py-4 my-4 space-y-3">
+              <div className="border-t border-b border-greeting-cocoa-700 py-4 my-4 space-y-3">
                 {order.items.map((item: any, index) => (
                   <div key={index} className="flex justify-between items-center">
                     <div>
@@ -121,12 +121,12 @@ export default function OrderHistoryPage() {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm text-gray-400">
-                    Total: <span className="text-lg font-bold text-greeting-magenta-400">{formatCurrency(order.total)}</span>
+                    Total: <span className="text-lg font-bold text-greeting-berry-400">{formatCurrency(order.total)}</span>
                   </p>
                 </div>
                 <Link
                   to={`/order-success/${order.id}`}
-                  className="btn-secondary text-sm"
+                  className="btn-outline text-sm"
                 >
                   View Details
                 </Link>

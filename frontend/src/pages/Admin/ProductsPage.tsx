@@ -193,7 +193,7 @@ function AdminProducts() {
               <p className="text-gray-600 mt-1">Create and manage products</p>
             </div>
             <div className="flex gap-4">
-              <Link to="/admin" className="text-greeting-magenta-400 hover:text-greeting-magenta-300 font-medium">
+              <Link to="/admin" className="text-greeting-berry-400 hover:text-greeting-berry-300 font-medium">
                 Back to Dashboard
               </Link>
               <button
@@ -207,7 +207,7 @@ function AdminProducts() {
                     resetForm();
                   }
                 }}
-                className="bg-greeting-magenta-500 text-gray-100 px-6 py-3 rounded-lg font-semibold hover:bg-greeting-magenta-600 transition"
+                className="bg-greeting-berry-500 text-gray-100 px-6 py-3 rounded-lg font-semibold hover:bg-greeting-berry-600 transition"
               >
                 {isCreating ? 'Cancel' : '+ Add Product'}
               </button>
@@ -235,7 +235,7 @@ function AdminProducts() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-magenta-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-berry-500 focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
@@ -251,7 +251,7 @@ function AdminProducts() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-magenta-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-berry-500 focus:border-transparent"
                   disabled={isUploadingImages}
                 />
               </div>
@@ -268,7 +268,7 @@ function AdminProducts() {
                     step="0.01"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-magenta-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-berry-500 focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
@@ -282,7 +282,7 @@ function AdminProducts() {
                     min="0"
                     value={formData.stock}
                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-magenta-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-berry-500 focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
@@ -295,7 +295,7 @@ function AdminProducts() {
                     required
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-magenta-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-berry-500 focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
@@ -318,7 +318,7 @@ function AdminProducts() {
                   id="isActive"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-4 h-4 text-greeting-magenta-400 border-gray-300 rounded focus:ring-greeting-magenta-500"
+                  className="w-4 h-4 text-greeting-berry-400 border-gray-300 rounded focus:ring-greeting-berry-500"
                   disabled={isUploadingImages}
                 />
                 <label htmlFor="isActive" className="ml-2 text-sm text-gray-300">
@@ -330,7 +330,7 @@ function AdminProducts() {
                 <button
                   type="submit"
                   disabled={isUploadingImages}
-                  className="bg-greeting-magenta-500 text-gray-100 px-6 py-3 rounded-lg font-semibold hover:bg-greeting-magenta-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-greeting-berry-500 text-gray-100 px-6 py-3 rounded-lg font-semibold hover:bg-greeting-berry-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isUploadingImages 
                     ? 'Uploading...' 
@@ -362,11 +362,11 @@ function AdminProducts() {
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-magenta-500 focus:border-transparent"
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-berry-500 focus:border-transparent"
             />
             <button
               onClick={fetchProducts}
-              className="bg-greeting-magenta-500 text-gray-100 px-6 py-3 rounded-lg font-semibold hover:bg-greeting-magenta-600 transition"
+              className="bg-greeting-berry-500 text-gray-100 px-6 py-3 rounded-lg font-semibold hover:bg-greeting-berry-600 transition"
             >
               Search
             </button>
@@ -450,7 +450,7 @@ function AdminProducts() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button
                           onClick={() => handleEdit(product)}
-                          className="text-greeting-magenta-400 hover:text-greeting-magenta-300 font-medium mr-4"
+                          className="text-greeting-berry-400 hover:text-greeting-berry-300 font-medium mr-4"
                         >
                           Edit
                         </button>

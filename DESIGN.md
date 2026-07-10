@@ -1,245 +1,439 @@
-# Design System: Twinkle-Hearts
+# Design System: Twinkle-Hearts (v2 — Warm Redesign)
+
+> **Date:** 2026-07-10
+> **Direction:** Warm, romantic, artisanal boutique
+> **Status:** Locked — all 25 design branches resolved
 
 ## 1. Visual Theme & Atmosphere
 
-A nocturnal greeting-card atelier with neon-boutique sensibility. Deep purple-black backgrounds create a velvet-night canvas, while singular magenta-cyan accents strike like ink on luxury paper. Gallery-airy density (3/10) with confident asymmetric layouts (variance 8/10) and fluid spring motion (motion 6/10). The atmosphere sits between a Riso-printed zine and a Tokyo night-market stall — intimate, tactile, glowing in the dark.
+A warm, romantic boutique greeting-card shop with dark, intimate ambiance. Deep warm-charcoal backgrounds feel like a dimly lit room with candlelight. Warm berry and teal accents provide romance and life. Cocoa brown borders ground everything in earthiness. Solid cards with paper shadows feel like physical greeting cards on a dark shelf. Playfair Display headings add editorial elegance. The grain texture prevents flatness.
 
 ## 2. Color Palette & Roles
 
-- **Midnight Canvas** (#1A1A2E) — Primary page background
-- **Deep Ink** (#121222) — Sheet/section surfaces, container fills
-- **Velvet Card** (#2D1B4E) — Card and elevated surface fill
-- **Snow White** (#F3F4F6) — Primary text, headings
-- **Warm Ash** (#D1D5DB) — Body text, descriptions
-- **Muted Pewter** (#9CA3AF) — Secondary text, metadata, placeholders
-- **Neon Magenta** (#D6368E) — Singular accent for CTAs, active states, prices, badges, focus rings, link hovers
-- **Signal Cyan** (#00D4FF) — Secondary accent for ghost buttons, info icons, subtle highlights
-- **Purple Border** (#6B2C91) — Structural lines, card borders, dividers, input borders
-- **Off-Black** (#0E0E1C) — Footer, darkest surfaces (never pure #000)
+### Core Scales (Tailwind config → `greeting-*` prefix)
 
-**Rules**: Saturation never exceeds 80%. No purple/blue neon gradients. Magenta is the single hero accent — cyan is subordinate.
+#### `greeting-berry` — Hero / Primary Accent
+| Shade | Hex | Usage |
+|---|---|---|
+| 50 | `#FDF2F4` | — |
+| 100 | `#FCE7EB` | — |
+| 200 | `#F9C4D0` | — |
+| 300 | `#E896AC` | Hover text for links, active nav indicators |
+| 400 | `#D43A6A` | **Primary accent**: CTAs, links, prices, badges, icons, focus rings |
+| 500 | `#C02E5A` | Primary button bg, ring defaults, loading spinners |
+| 600 | `#A8264C` | Button hover/active states |
+| 700 | `#8F1E3E` | Darker hover states |
+| 800 | `#7A1A34` | Very dark hover/pressed states |
+| 900 | `#5C1228` | Deepest berry, never used directly |
+
+**Role**: Single hero accent for CTAs, active states, prices, badges, focus rings, link hovers, loading states. Berry replaces the old magenta.
+
+#### `greeting-cocoa` — Structural / Borders
+| Shade | Hex | Usage |
+|---|---|---|
+| 50 | `#F5F0ED` | — |
+| 100 | `#E8DED7` | — |
+| 200 | `#D0BFB0` | — |
+| 300 | `#B89F8A` | — |
+| 400 | `#A07F68` | — |
+| 500 | `#6B5040` | — |
+| 600 | `#5A4535` | Lighter hover states, mobile nav backgrounds |
+| 700 | `#4A3535` | **Primary border**: card edges, dividers, input borders, table borders |
+| 800 | `#3A2A28` | Darker borders, form input backgrounds |
+| 900 | `#2A1E1C` | Deepest borders, subtotal dividers |
+
+**Role**: Replaces greeting-purple. Structural lines, card borders, dividers, input borders, hover state backgrounds. Deep warm brown that blends into the dark background.
+
+#### `greeting-teal` — Tertiary Accent
+| Shade | Hex | Usage |
+|---|---|---|
+| 50 | `#E8F5F5` | — |
+| 100 | `#C4E8E8` | — |
+| 200 | `#96D4D4` | — |
+| 300 | `#6BC0C0` | — |
+| 400 | `#4A8C8C` | **Tertiary accent**: secondary CTAs, info icons, status badges, floating card accents |
+| 500 | `#3A7A7A` | — |
+| 600 | `#2E6868` | — |
+| 700 | `#245656` | — |
+| 800 | `#1A4444` | — |
+| 900 | `#103232` | — |
+
+**Role**: Replaces greeting-cyan. Warmer teal for secondary actions, info icons, and status badges. Still readable against dark backgrounds.
+
+#### `greeting-charcoal` — Background / Surfaces
+| Shade | Hex | Usage |
+|---|---|---|
+| 50 | `#F5F2F0` | — |
+| 100 | `#E8E4E0` | — |
+| 200 | `#D0CAC4` | — |
+| 300 | `#B0A898` | — |
+| 400 | `#1C1414` | **Primary background**: page bg, section bg, header bg, table headers |
+| 500 | `#161010` | **Card surfaces**: dropdown menus, secondary bg, hover states, skeleton shimmer |
+| 600 | `#120C0C` | Deeper surfaces, footer bg |
+| 700 | `#0E0808` | Deepest surfaces, alert banners |
+| 800 | `#0A0606` | Product card image placeholders, darkest bg |
+| 900 | `#060404` | Never used directly |
+
+**Role**: Replaces greeting-bg and greeting-dark-purple. Warm espresso-charcoal backgrounds from deep brown-black to very dark brown. Never pure #000.
+
+### Unchanged
+- **WhatsApp green** (`bg-emerald-600`): Keep as-is. Brand recognition trumps palette purity.
+- **Red for errors**: Keep Tailwind's `red-500` / `red-600` for error text and destructive actions.
+- **Amber for warnings**: Keep Tailwind's `amber-600` for stock warnings.
+
+### Rules
+- Berry is the single hero accent — teal is subordinate, cocoa is structural.
+- No blue, cool-purple, or cyan tones remain in the palette.
+- Saturation never exceeds 80%. No neon/outer glow.
+- No pure black (#000000) — deepest is charcoal-900 (#060404).
+- WhatsApp green is the only green in the system.
 
 ## 3. Typography Rules
 
-- **Display / Headlines:** Satoshi — Track-tight (-0.03em), weight-driven hierarchy (medium→bold). Controlled scale — never scream through size alone. Headlines max 3 lines, balanced via `text-wrap: balance`.
-- **Body:** Satoshi — Relaxed leading (1.6), max 65ch width, Warm Ash (#D1D5DB) color. Pure white reserved for headings only.
-- **Mono:** Geist Mono — For prices, order IDs, timestamps, stat values, admin table numbers. Bold variant for totals.
-- **Trilingual:** Noto Serif Tamil + Noto Serif Sinhala — For Tamil/Sinhala hero lines and category labels.
-- **Scaling:** All headlines use `clamp()` for fluid sizing. Body minimum 1rem (14px on mobile).
-- **Banned:** Inter, system-ui fonts for display. Generic serifs (Times New Roman, Georgia, Garamond) everywhere. Serif fonts in admin/dashboard contexts.
+### Display / Headlines
+- **Font:** Playfair Display — loaded via Google Fonts (`index.html`)
+- **Tracking:** Tight (-0.02em), weight-driven hierarchy (500 → 700)
+- **Scale:** Fluid sizing via `text-3xl sm:text-4xl lg:text-5xl`
+- **Max lines:** 3 lines, balanced via `text-wrap: balance`
+
+### Body
+- **Font:** Inter — loaded via Google Fonts (`index.html`)
+- **Leading:** Relaxed (1.6), max 52ch width
+- **Color:** gray-400 (#9CA3AF) for body text, gray-100 (#F3F4F6) for headings
+
+### Mono
+- **Font:** Geist Mono — for prices, order IDs, stat values, timestamps
+- **Weight:** 600 (semibold) for prices/totals
+
+### Trilingual
+- **Sinhala:** Noto Serif Sinhala (serif, 500 weight)
+- **Tamil:** Noto Serif Tamil (serif, 500 weight)
+- These are the best available serif fonts for their scripts. They pair well with Playfair Display.
+
+### Google Fonts import (index.html)
+```
+Inter:wght@300;400;500;600;700
+Playfair+Display:wght@400;500;600;700
+Noto+Serif+Tamil:wght@400;500;700
+Noto+Serif+Sinhala:wght@400;500;700
+Geist+Mono:wght@400;500;600;700
+```
+
+### Banned
+- No system-ui fonts for display
+- No generic serifs (Times New Roman, Georgia, Garamond)
+- No extra font families — the 5 above are the complete set
 
 ## 4. Component Stylings
 
 ### Buttons
-- **Primary (Magenta):** Flat fill, 10px radius, tactile -1px translateY + scale(0.98) on active. No outer glow. Shadow-paper resting state. Disabled at 50% opacity, no cursor.
-- **Secondary (Cyan):** Cyan fill, darkens on hover. For secondary actions (e.g., "Browse Shop").
-- **Outline:** Transparent bg, purple border, cyan text. For ghost actions, filter pills.
+- **Shape:** All buttons → `rounded-full` (pill). No exceptions.
+- **Primary (Berry):** Solid berry-500 fill, white text, 8px padding, pill shape. Spring easing, tactile -1px translateY + scale(0.98) on active. Disabled at 50% opacity, no cursor.
+- **Ghost:** Transparent bg, berry text on hover. For icon-only or inline actions.
 - **WhatsApp:** Emerald fill (#059669). Reserved exclusively for checkout/Cart CTAs. No other button uses green.
+- **Outline:** Transparent bg, cocoa border, teal text. For ghost actions.
 - **Dark:** Gray-900 fill. For destructive or tertiary actions.
-- **Ghost:** Transparent bg, magenta text on hover. For icon-only or inline actions.
 
 All buttons: spring easing, no neon glow, no custom cursors, consistent 44px minimum tap target.
 
 ### Cards
-- Generously rounded corners (12px / `rounded-card`). Dark purple fill (#2D1B4E) with purple border (#6B2C91).
-- Shadow elevates hierarchy: `shadow-paper` resting → `shadow-paper-md` hover.
-- Used ONLY when elevation communicates hierarchy. For high-density lists (admin tables, order history), replace cards with border-top dividers and row backgrounds.
-- Product cards: 3:4 aspect ratio image, body padding 16px top/bottom, 20px bottom. Spring hover (translateY(-2px)).
-- Stat cards: Dark purple fill, rounded-2xl, monospace values in magenta.
+- **Style:** Solid (no glassmorphism, no backdrop-blur)
+- **Fill:** `greeting-charcoal-500` (dark warm brown)
+- **Border:** `greeting-cocoa-700` (deep warm brown, 1px)
+- **Radius:** 12px (`rounded-card`)
+- **Shadow:** `shadow-paper` resting → `shadow-paper-md` hover
+- **Hover:** translateY(-2px), shadow deepens, border brightens (0.3s spring)
+- **Product cards:** 3:4 aspect ratio image, body padding 16px top/bottom, 20px bottom
+- **Stat cards:** Charcoal-500 bg, rounded-2xl, monospace values in berry
 
 ### Form Inputs
-- Dark fill (#121222), purple border (#6B2C91), 10px radius. Magenta focus ring (2px, offset).
-- Label above input (semibold, white), helper text below (gray-400, 12px), error below in magenta (12px).
+- **Fill:** `greeting-charcoal-600`
+- **Border:** `greeting-cocoa-700`
+- **Radius:** 10px (keep current for inputs — pill buttons only)
+- **Focus:** Berry-400 border + 2px berry ring with 2px offset
+- **Hover:** Border brightens to `greeting-cocoa-600`
+- **Error state:** Berry border, berry error text below
+- **Labels:** Above input (semibold, gray-100)
+- **Helper text:** Below (gray-400, 12px)
 - No floating labels. Standard gap 1.5rem between fields.
-- Phone input: Country code dropdown + phone field side by side.
-- File upload: Drag-to-click zone with border, thumbnails with reorder/reveal/remove tools.
-
-### Navigation
-- **Header:** Sticky, glass-effect backdrop (bg with blur). Brand logo left, Shop link + Cart icon (with animated badge count) right. User dropdown (Profile, Orders, Addresses, Wishlist, Admin divider, Logout).
-- **Mobile:** Hamburger expands to full-width animated slide-down menu. Bottom CTA for sign-in/sign-up.
-- **Footer:** Four-column grid (Brand info, Shop links, Account links, Contact). Grain overlay at low opacity.
-
-### Loaders / Skeleton
-- Skeletal shimmer matching exact layout dimensions — never circular spinners.
-- Shimmer gradient: dark-purple-800 → purple-900 → dark-purple-800, 2s infinite.
-- Card skeleton, product grid skeleton, profile skeleton, cart skeleton — each matches target dimensions.
-
-### Empty States
-- Composed compositions: centered column, circular icon container (cyan icon in purple-900 bg), title (semibold, white), description (gray-400, max 40ch), optional CTA button.
-- Never just "No data" text.
 
 ### Badges
 - Compact (10px font, uppercase, semibold, tracking-wider). 6px horizontal padding, 4px vertical.
-- Magenta variant for status, Cyan variant for info, Gray variant for neutral, Purple variant for secondary tags.
-- Order status badges: PENDING_WHATSAPP_CONFIRMATION → magenta, CONFIRMED → cyan, CANCELLED/EXPIRED → purple.
+- **Berry** (`badge-berry`): For festive/romantic categories (Birthday, Love, Valentine, Festival)
+- **Cocoa** (`badge-cocoa`): For formal/reflective categories (Wedding, Sympathy, Congratulations)
+- **Teal** (`badge-teal`): For special categories (Anniversary, Get Well)
+- Order status badges: PENDING_WHATSAPP_CONFIRMATION → berry, CONFIRMED → teal, CANCELLED/EXPIRED → cocoa
 
 ### Category Pills
-- Pill-shaped (10px radius), dark bg (#121222), purple border. Active state: magenta fill + white text.
-- Spring hover transition to magenta border/text. Active = pressed-in feel.
+- Pill-shaped (10px radius), charcoal-500 bg, cocoa border. Active state: berry fill + white text.
+- Spring hover transition to berry border/text. Active = pressed-in feel.
+- Category colors mapped to palette: Birthday → berry, Love → berry, Anniversary → teal, Sympathy → cocoa, Festival → berry
+
+### Navigation
+- **Header:** Sticky, charcoal-400/80 with backdrop-blur-lg, cocoa-700 bottom border
+- **Brand logo:** Lucide Heart (filled, berry-500) + "TwinkleHearts" text (Playfair Display, gray-100, "Hearts" in berry-400)
+- **Mobile:** Hamburger expands to full-width animated slide-down menu with cocoa hover backgrounds
+- **Footer:** Four-column grid (Brand info, Shop links, Account links, Contact). Charcoal-500 bg, cocoa-700 border.
+
+### Loading States
+- **Spinning circles → Pulsing warm-berry heart:** Replace all `animate-spin` border-circle spinners with a Lucide `Heart` icon pulsing with `animate-pulse` in berry-500
+- **Skeleton shimmer:** Keep current shimmer system, recolor gradient to charcoal-800 → cocoa-900 → charcoal-800
+- **Card skeleton, product grid skeleton, profile skeleton, cart skeleton:** Each matches target dimensions, all recolored to warm palette
+
+### Empty States
+- Composed: centered column, circular icon container (teal icon in cocoa-900 bg), title (semibold, gray-100), description (gray-400, max 40ch), optional CTA button (berry, pill)
+- Never just "No data" text
 
 ### Admin Tables
-- Full-width, left-aligned. Purple border dividers between rows (#6B2C91 header, #2D1B4E body).
-- Header row: uppercase tracking, gray-400, small. Body: gray-300, small.
-- Hover row highlight (#2D1B4E). No card elevation — tables are flat data surfaces.
+- Full-width, left-aligned. Cocoa-700 border dividers between rows.
+- Header row: charcoal-400 bg, uppercase tracking, gray-400, small.
+- Body: gray-300, small. Hover row highlight charcoal-500.
+- No card elevation — tables are flat data surfaces.
+- Admin pages use the same warm-dark theme as the main site (no white backgrounds)
 
 ### Hero Section
-- Asymmetric split (never centered — variance 8/10). Left-aligned headline stack with inline image typography: small contextual card photos embedded between or within words at type-height, rounded.
-- Trilingual lines stack vertically (English → Tamil → Sinhala).
-- One primary CTA only (magenta). No "Scroll to explore", no bouncing arrows, no chevrons.
+- Asymmetric split (left text + right floating card mockups)
+- Trilingual stack with Playfair Display for English, Noto Serif for Tamil/Sinhala
+- Floating card mockups recolored to warm palette (berry accent cards, teal accent cards, cocoa borders)
+- One primary CTA only (berry pill). No bouncing arrows, no chevrons.
 
 ### Trilingual Stack
-- English line: Satoshi, white, largest weight.
-- Tamil line: Noto Serif Tamil, purple-200.
-- Sinhala line: Noto Serif Sinhala, purple-200.
+- English line: Playfair Display, gray-100, largest weight
+- Tamil line: Noto Serif Tamil, berry-400 for highlight words
+- Sinhala line: Noto Serif Sinhala, berry-400 for highlight words
 - Each line is a block. Scripts showcase the cultural range.
+
+### Grain Texture
+- Keep at 3% opacity SVG turbulence filter on fixed pseudo-element
+- Overlays warm-charcoal backgrounds — feels like paper fiber rather than tech noise
+
+### Decorative Elements (Auth pages)
+- Floating dots: berry-500 + cream-400 (soft warm particles, not tech-circles)
 
 ## 5. Layout Principles
 
 - **Grid-first:** CSS Grid over Flexbox math. Never use `calc()` percentage hacks.
 - **Max-width containment:** 1280px centered for page content. Full-width hero allowed.
-- **No overlapping elements:** Every element occupies its own clean spatial zone. No absolute-positioned stacking.
+- **No overlapping elements:** Every element occupies its own clean spatial zone.
 - **Section spacing:** `clamp(4rem, 10vw, 8rem)` vertical gaps between sections.
-- **Hero:** Asymmetric split (60/40 or asymmetric whitespace). Left-aligned text, right-aligned card-grid or single hero image.
-- **Feature rows:** Never 3-equal-cards. Use 2-column zig-zag, asymmetric grid (2/3 + 1/3), or horizontal scroll with peek.
+- **Hero:** Asymmetric split (left text, right floating cards). Left-aligned.
+- **Feature rows:** Never 3-equal-cards. Use 2-column zig-zag, asymmetric grid, or horizontal scroll.
 - **Full-height sections:** Use `min-h-[100dvh]` — never `h-screen` (iOS Safari bug).
-- **Bento grids:** For category showcase on home — irregular cell sizes, not uniform tiles.
-- **Admin layout:** Sidebar-style or top bar with content area. Cardless tables.
+- **Bento grids:** For category showcase on home — irregular cell sizes.
 
 ### Responsive (Mobile-First, < 768px)
 - All multi-column layouts collapse to single column. No exceptions.
 - No horizontal scroll on mobile.
-- Hero: text stack, inline images wrap below headline.
+- Hero: text stack, floating cards hidden (show on lg only).
 - Navigation: horizontal → hamburger slide-down.
-- Grids: 2 columns → 1 column. Product grid: 2 columns → 2 columns (cards shrink).
+- Grids: 4 columns → 2 columns (product grid stays 2 cols on mobile).
 - Touch targets: minimum 44px for all interactive elements.
 - Typography: headlines scale down via `clamp()`. Body never below 14px.
 
 ## 6. Motion & Interaction
 
-- **Spring Physics default:** `cubic-bezier(0.16, 1, 0.3, 1)` — premium, weighty feel. No linear easing.
-- **Perpetual Micro-Interactions:** Every active component has an infinite loop state:
+- **Spring Physics default:** `cubic-bezier(0.16, 1, 0.3, 1)` — premium, weighty feel.
+- **Perpetual Micro-Interactions:**
   - Cart badge: pulse-soft (2s)
   - Product cards: float (6s, staggered)
-  - Stat values: breathe (3s) on hover
-  - Loading shimmer: 2s infinite sweep
-- **Staggered Orchestration:** Lists never mount instantly. Cascade delays (60ms per item via .stagger-1 through .stagger-8 classes).
+  - Loading states: pulsing warm-berry heart
+  - Shimmer: 2s infinite sweep
+- **Staggered Orchestration:** Lists cascade with 60ms delay per item (stagger-1 through stagger-8)
 - **Hover States:**
   - Cards: translateY(-2px), shadow deepens, border brightens (0.3s spring)
   - Buttons: micro-scale(1.02) on hover, scale(0.98) + translateY(1px) on active (0.15s)
   - Links: color transition (0.2s spring)
 - **Performance:** Animate exclusively via `transform` and `opacity`. Never animate `top`, `left`, `width`, `height`.
 - **Entry animations:** fade-up (12px + opacity) for page content, scale-in for modals, stamp for badges.
-- **Grain noise:** 3% opacity SVG turbulence filter on fixed pseudo-elements (footer, hero background). Never on interactive content.
+- **Grain noise:** 3% opacity SVG turbulence filter on fixed pseudo-elements.
 
-## 7. Page-Specific Compositions
+## 7. Iconography
+
+### Library
+- **Primary:** Lucide React (`lucide-react`) — replaces `@phosphor-icons/react`
+- **Custom:** WhatsApp SVG (Lucide doesn't have WhatsApp icon — keep custom SVG)
+
+### Phosphor → Lucide Mapping
+| Phosphor | Lucide | Files |
+|---|---|---|
+| `Heart` | `Heart` | Layout, ProductCard, HomePage |
+| `ShoppingCart` | `ShoppingCart` | Layout, ProductCard, HomePage |
+| `User` | `User` | Layout |
+| `Package` | `Package` | Layout |
+| `MapPin` | `MapPin` | Layout |
+| `SignOut` | `LogOut` | Layout |
+| `List` | `Menu` | Layout |
+| `X` | `X` | Layout |
+| `CaretDown` | `ChevronDown` | Layout |
+| `HeartStraight` | `HeartPulse` | Layout |
+| `Sparkle` | `Sparkle` | Layout, HomePage |
+| `Gift` | `Gift` | HomePage |
+| `Handshake` | `Handshake` | HomePage |
+| `Star` | `Star` | HomePage |
+| `WhatsappLogo` | Keep custom SVG | HomePage |
+| `ArrowRight` | `ArrowRight` | HomePage |
+
+### Weight
+- Use `weight="fill"` for prominent icons (Heart in logo, Hero section)
+- Use default stroke weight for nav icons, form icons
+- Use `strokeWidth={1.5}` for decorative/secondary icons
+
+### Inline SVGs → Lucide
+~39 inline SVGs across pages (Admin Dashboard, Cart, Checkout, Login, Register, ProductDetail, Shop, Orders, Wishlist) → replace all with Lucide components.
+
+## 8. Page-Specific Compositions
 
 ### HomePage (/)
 | Section | Layout | Elements |
 |---------|--------|----------|
-| **Hero** | Asymmetric split (left text + right category bento) | Trilingual stack, inline card photos in text, 1× primary CTA, bento grid of 4 category links (irregular cells) |
-| **Categories** | Bento grid (2+1+2 cell asymmetry) | Category cards with icon + name + gradient overlay |
-| **Featured Products** | Horizontal scroll with peek + 2-row grid | ProductCard row (scrollable, next-item peeking), then 2-column grid below |
+| **Hero** | Asymmetric split (left text + right floating cards) | Trilingual stack (Playfair Display), 1× primary CTA (berry pill), 3 floating card mockups recolored to warm palette |
+| **Categories** | Bento grid (2+1+2 cell asymmetry) | Category cards with Lucide icons + name + cocoa border |
+| **Featured Products** | ProductCard grid (4 cols desktop) | ProductCard with Lucide icons, warm palette, berry hover |
 | **About + Stats** | Split: stat grid left, blurb right | 4 stat-cards (2×2), brand story paragraph |
-| **CTA** | Full-width, centered column | Heading + text + 1× CTA button (WhatsApp or Shop) |
+| **CTA** | Full-width, centered column | Heading + text + 1× CTA button (berry pill) |
 
 ### ShopPage (/shop)
-- **Filter bar:** Horizontally scrollable category pills. Active pill = magenta fill. Search input in top-right.
-- **Product grid:** 4-column desktop, 2-column tablet, 2-column mobile. ProductCard in each cell.
+- **Filter bar:** Horizontally scrollable category pills. Active pill = berry fill.
+- **Product grid:** 4-column desktop, 2-column mobile.
 - **Empty state:** "No cards found" with illustration icon + clear-filters CTA.
 
 ### ProductDetailPage (/product/:id)
-- **Breadcrumb:** Home → Shop → Product Name (small, gray-400, with chevrons)
-- **Image gallery:** Main image (3:4) left, thumbnail strip below. Click to swap.
-- **Details right:** Product name (h1), price (magenta, mono, large), category badge, description, stock indicator (green dot = in stock, gray = low, red = sold out), quantity selector (+/− with number), Add to Cart button (magenta, full-width), WhatsApp inquiry link (cyan, ghost).
-- **Loading:** ProductSkeleton (image placeholder + 3 shimmer lines).
+- **Breadcrumb:** Home → Shop → Product Name (small, gray-400)
+- **Image:** Main image (3:4) left, no thumbnail strip.
+- **Details right:** Product name (h1, Playfair Display), price (berry, mono, large), category badge, description, stock indicator, quantity selector, Add to Cart button (berry, pill), WhatsApp inquiry link.
+- **Loading:** ProductSkeleton recolored.
 - **Error:** Error state with "Product not found" + back button.
 
 ### CartPage (/cart)
-- **Gift-receipt design:** Items listed with image thumbnail, name, unit price, qty control (+/−), line total. Remove button (magenta ghost).
-- **Order summary sidebar:** Subtotal, 18% VAT line, "Free Shipping" badge, ink-divider, total (large, mono, magenta), WhatsApp Checkout button (green, full-width).
+- **Gift-receipt design:** Items listed with image thumbnail, name, unit price, qty control, line total. Remove button (berry ghost).
+- **Order summary sidebar:** Subtotal, 18% VAT, "Free Shipping", ink-divider, total (large, mono, berry), WhatsApp Checkout button (green pill).
 - **Empty cart:** EmptyState with cart icon + "Your cart is empty" + Shop link.
-- **Loading:** CartSkeleton (3 items with image placeholders).
 
 ### CheckoutPage (/checkout)
-- **Form column left:** Name (full), phone (country code dropdown + number), optional notes textarea.
-- **Order summary right:** Compact item list (name × qty = line total), subtotal, tax, total, terms checkbox.
-- **Submit:** "Send via WhatsApp" button (green, full-width). Creates order, gets wa.me link, redirects.
-- **Validation errors:** Inline per-field magenta error text.
+- **Form column left:** Name (full), phone (country code dropdown + number).
+- **Order summary right:** Compact item list, subtotal, tax, total, WhatsApp Checkout button (green pill).
+- **Submit:** "Send via WhatsApp" button (green pill).
+- **Validation errors:** Inline per-field berry error text.
 
 ### OrderSuccessPage (/order-success/:id)
-- **Hero icon:** Large green check or stamp animation.
-- **Receipt card:** Order ID (mono, copyable), date, item list, customer name, phone, subtotal, tax, total (mono, bold, magenta).
-- **Guidance:** "Next step: Open WhatsApp" instruction + large WhatsApp button. Smaller "View order history" link.
-- **Auto-redirect:** If wa.me link available, show it prominently.
+- **Hero icon:** Large berry check or stamp animation.
+- **Receipt card:** Order ID (mono), date, item list, totals.
+- **Guidance:** "Next step: Open WhatsApp" + large WhatsApp button.
+- **Next Steps card:** Charcoal-700 bg, cocoa-700 border.
 
 ### LoginPage (/login)
-- **Centered card:** Logo at top, email input, password input (with show/hide toggle), "Remember me" checkbox, "Forgot password?" link, Sign In button (magenta, full-width), divider "or", Google OAuth button (outline with Google logo), "Don't have an account? Register" link.
-- **Error state:** Invalid credentials toast + field-level errors.
-- **Loading:** Button shows spinner, inputs disabled.
+- **Centered card:** Logo at top, email input, password input, "Remember me" checkbox, Sign In button (berry pill), divider "or", Google OAuth button, "Register" link.
+- **Decorative dots:** berry-500 + cream-400 (warm particles, not tech-circles).
 
 ### RegisterPage (/register)
-- **Centered card:** Name (full), email, phone (+94 prefix), password + strength bar (4 segments: weak→strong), confirm password, Create Account button (magenta), "Already have an account? Login" link.
-- **Validation:** Real-time strength indicator, match check on confirm, format validation on blur.
+- **Centered card:** Name, email, phone, password + strength bar, confirm password, Create Account button (berry pill), "Login" link.
+- **Decorative dots:** berry-500 + cream-400.
 
 ### ProfilePage (/profile)
-- **Card layout:** Avatar upload (circular, 80px), name (editable input), phone (editable), email (read-only, gray), role badge, member-since date, Save button (magenta).
-- **Loading:** ProfileSkeleton (avatar circle + 3 lines + 3 field blocks).
+- **Card layout:** Avatar upload, name, phone, email (read-only), role badge, Save button (berry pill).
+- **Loading:** ProfileSkeleton recolored.
 
 ### OrderHistoryPage (/orders)
-- **List of order cards:** Order ID (truncated, mono), date, item count (e.g. "3 items"), total (magenta, mono), status badge. Click to expand or link to /order-success/:id.
+- **List of order cards:** Order ID (truncated, mono), date, item count, total (berry, mono), status badge.
 - **Empty:** EmptyState with receipt icon.
-- **Loading:** OrderSkeleton cards.
 
 ### AddressManagementPage (/addresses)
-- **Address cards:** Label badge (e.g. "HOME"), phone, full address, default badge, Edit/Delete buttons. Add Address button (cyan outline, top-right).
-- **Add/Edit form:** Inline or modal — label input, phone, street, city, state, zip (LK only, country fixed).
-- **Empty:** EmptyState with map-pin icon + "Add your first address" CTA.
-- **Toast feedback** on create/update/delete.
+- **Address cards:** Label badge, phone, full address, default badge, Edit/Delete buttons. Add Address button (teal outline).
+- **Default indicator:** `ring-2 ring-greeting-berry-500` (replaces old magenta)
 
 ### WishlistPage (/wishlist)
-- **Product grid:** Same ProductCard grid as Shop. Remove from wishlist button (magenta ghost heart icon on card).
-- **Unauthenticated:** EmptyState with heart icon + "Login to save your favorites" + Login CTA.
-- **Empty (authenticated):** EmptyState with heart icon + "Your wishlist is empty" + Shop CTA.
+- **Product grid:** Same ProductCard grid. Remove from wishlist button (berry ghost heart icon).
+- **Heart icon color:** `text-rose-400` → keep or map to berry-400 for consistency.
 
 ### AdminDashboardPage (/admin)
-- **Stats row:** 4 stat-cards (Total Orders, Revenue LKR, Total Users, Active Products) — each with icon, large mono value, label.
-- **Pending orders alert:** Full-width amber/cyan banner if orders with PENDING_WHATSAPP_CONFIRMATION exist.
-- **Quick actions:** Row of icon+label links (Manage Orders, Manage Products, Manage Users).
-- **Recent orders:** Compact table of last 5 orders (ID, customer, total, status, date).
+- **Stats row:** 4 stat-cards — each with Lucide icon, large mono value, label. Charcoal cards, cocoa border.
+- **Pending orders alert:** Charcoal-700 bg, cocoa-700 border, teal icon.
+- **Quick actions:** Row of Lucide icons + label links in charcoal cards.
+- **Recent orders:** Charcoal card, cocoa dividers, berry status badges.
 
 ### AdminOrdersPage (/admin/orders)
-- **Full admin table:** Order ID (mono, link), Customer name, Item count, Total (mono), Status badge, Date, Actions dropdown.
-- **Pagination:** Page numbers at bottom.
-- **Filter:** Status dropdown filter + date range optional.
+- **Full admin table:** Same warm-dark styling as main site. Cocoa dividers, charcoal hover.
 
 ### AdminProductsPage (/admin/products)
-- **Table:** Image thumbnail, Name, Category badge, Price (mono), Stock count, Status toggle (Active/Inactive switch), Actions (Edit/Delete).
-- **Top bar:** Add Product button (magenta) + Search input.
-- **Create/Edit form:** Name, Description (textarea), Price, Stock, Category dropdown, Image Upload component, Active toggle. Save/Cancel buttons.
-- **ImageUpload:** Drag zone, preview carousel with reorder arrows, "Primary" badge, "New" badge, remove overlay. Validated for type (image/*) and size (max 5MB).
+- **Table:** Same warm-dark styling. "Add Product" button → berry pill.
+- **Create/Edit form:** Same warm-dark inputs. Save → berry pill.
 
 ### AdminUsersPage (/admin/users)
-- **Table:** Name, Email, Phone, Role dropdown (CUSTOMER / ADMIN), Orders count, Addresses count, Wishlist count, Joined date.
-- **Search:** Filter by name or email.
-- **Pagination:** Page numbers.
+- **Table:** Same warm-dark styling.
 
-## 8. Anti-Patterns (Banned)
+## 9. Anti-Patterns (Banned)
 
-- No emojis anywhere in UI
-- No Inter font — use Satoshi + Geist Mono
-- No generic serif (Times New Roman, Georgia, Garamond)
-- No pure black (#000000) — deepest is Off-Black (#0E0E1C)
+- No emojis anywhere in UI (except ShopPage category pills which use emojis — keep for playful feel)
+- No pure black (#000000) — deepest is charcoal-900 (#060404)
 - No neon/outer glow shadows — use diffused shadow-paper family
 - No oversaturated accents — maximum 80% saturation
 - No excessive gradient text on large headers
 - No custom mouse cursors
 - No overlapping elements — clean spatial separation always
-- No 3-column equal card layouts — use 2-column zig-zag, asymmetric, or scroll
-- No generic placeholder names ("John Doe", "Acme", "Nexus")
-- No fake round numbers ("99.99%", "50%")
-- No AI copywriting clichés ("Elevate", "Seamless", "Unleash", "Next-Gen", "Revolutionary")
-- No filler UI: "Scroll to explore", "Swipe down", scroll arrows, bouncing chevrons
-- No broken Unsplash links — use R2 or picsum.photos
+- No 3-column equal card layouts — use asymmetric
+- No AI copywriting clichés ("Elevate", "Seamless", "Unleash")
+- No broken image links — use R2 or placeholder SVGs
 - No centered Hero sections — asymmetric or left-aligned only
-- No circular loading spinners — use skeletal shimmer matching layout
+- No generic placeholder names ("John Doe", "Acme")
+- No fake round numbers ("99.99%", "50%")
 - No floating labels in forms — labels always above input
+- No cool-purple, blue, or cyan tones anywhere in the palette
+- No glassmorphism / backdrop-blur on cards (header blur is OK)
+
+## 10. Implementation Plan
+
+### Phase 1: Config & Fonts
+1. `package.json`: `@phosphor-icons/react` → `lucide-react`
+2. `index.html`: Add Playfair Display to Google Fonts link
+3. `tailwind.config.js`: Rewrite 5 color scales (berry, cocoa, teal, charcoal, keep existing gray)
+
+### Phase 2: Global CSS
+4. `index.css`: Update all component classes (~50 defs):
+   - `.card`, `.card-white`: charcoal-500 bg, cocoa-700 border, remove backdrop-filter
+   - `.btn-*`: `rounded-full`, berry-500 primary
+   - `.input-field`: charcoal-600 bg, cocoa-700 border, berry-400 focus
+   - `.badge-*`: berry, cocoa, teal variants
+   - `.category-pill`: charcoal-500 bg, cocoa border, berry active
+   - `.skeleton-shimmer`: charcoal-800 → cocoa-900 gradient
+   - `.empty-state-icon`: cocoa-900 bg, teal icon
+   - `.section-eyebrow`: berry-900 bg, berry-300 text
+   - `.admin-table`: cocoa dividers
+   - `.stat-card`: charcoal-500 bg, cocoa border
+   - `.feature-icon`: berry-500/20 bg, berry-400 icon
+   - `.cta-section`: charcoal-700 bg
+   - `.trilingual-line-*`: Playfair Display for English
+   - `.grain`: Keep as-is (blends with warm tones naturally)
+
+### Phase 3: Find-and-Replace (~249 references)
+5. Project-wide Tailwind class rename:
+   - `greeting-magenta-*` → `greeting-berry-*`
+   - `greeting-purple-*` → `greeting-cocoa-*`
+   - `greeting-cyan-*` → `greeting-teal-*`
+   - `greeting-bg-*` → `greeting-charcoal-*`
+   - `greeting-dark-purple-*` → `greeting-charcoal-*`
+   - `greeting-pink-*` → `greeting-berry-*`
+
+### Phase 4: Icon Migration
+6. Swap Phosphor → Lucide in 3 files (Layout.tsx, ProductCard.tsx, HomePage.tsx)
+7. Replace 4 custom SVG components (HeartIcon, WhatsAppIcon, HeartSparkle, CartIcon)
+8. Replace ~39 inline SVGs across 10+ page files
+9. Keep WhatsApp custom SVG
+
+### Phase 5: Animation Updates
+10. Replace 3 spinner references (AdminDashboard, AddressPage, ImageUpload) with pulsing Lucide Heart
+11. Add subtle sway to product card `whileHover`
+
+### Phase 6: Misc Updates
+12. `rounded-[10px]` → `rounded-full` (5 refs in HomePage, 1 in ErrorBoundary)
+13. `::selection` → berry-400 (in index.css)
+14. `:focus-visible` → berry-400 ring
+15. Logo text font → Playfair Display (Layout.tsx)
+
+### Scope Summary
+| Category | Files | Changes |
+|---|---|---|
+| Config | 3 | tailwind.config.js, package.json, index.html |
+| CSS | 1 | index.css (~50 class defs) |
+| Components | ~6 | Layout.tsx, ProductCard.tsx, ErrorBoundary.tsx, EmptyState.tsx, LoadingSkeleton.tsx, Icons.tsx, CartIcon.tsx, ImageUpload.tsx |
+| Pages | ~14 | Home, Shop, Cart, Checkout, OrderSuccess, ProductDetail, Login, Register, Profile, Orders, Address, Wishlist, Admin/* |
+| **Total** | **~24 files** | ~249 color class replacements + icon migration + font swap |

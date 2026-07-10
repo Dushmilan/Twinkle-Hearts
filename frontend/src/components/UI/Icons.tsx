@@ -37,17 +37,17 @@ export const CATEGORY_MAP: Record<string, string> = {
 };
 
 export const CATEGORY_BADGE: Record<string, string> = {
-  birthday: 'badge-magenta',
-  wedding: 'badge-purple',
-  anniversary: 'badge-purple',
-  sympathy: 'badge-purple',
-  congratulations: 'badge-purple',
-  thank_you: 'badge-magenta',
-  get_well: 'badge-purple',
-  new_baby: 'badge-purple',
-  valentine: 'badge-magenta',
-  christmas: 'badge-purple',
-  general: 'badge-purple',
+  birthday: 'badge-berry',
+  wedding: 'badge-cocoa',
+  anniversary: 'badge-cocoa',
+  sympathy: 'badge-cocoa',
+  congratulations: 'badge-cocoa',
+  thank_you: 'badge-berry',
+  get_well: 'badge-cocoa',
+  new_baby: 'badge-cocoa',
+  valentine: 'badge-berry',
+  christmas: 'badge-cocoa',
+  general: 'badge-cocoa',
 };
 
 export function formatPrice(price: number): string {

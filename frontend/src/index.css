@@ -17,8 +17,8 @@
 
   body {
     font-family: theme('fontFamily.body');
-    background-color: theme('colors.greeting-bg.400');
-    color: theme('colors.gray.100');
+    background-color: theme('colors.greeting-charcoal.400');
+    color: theme('colors.gray.400');
     line-height: 1.6;
     margin: 0;
     padding: 0;
@@ -40,12 +40,12 @@
   }
 
   ::selection {
-    background-color: theme('colors.greeting-magenta.400');
-    color: theme('colors.greeting-dark-purple.900');
+    background-color: theme('colors.greeting-berry.400');
+    color: theme('colors.gray.100');
   }
 
   :focus-visible {
-    outline: 2px solid theme('colors.greeting-magenta.400');
+    outline: 2px solid theme('colors.greeting-berry.400');
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -61,25 +61,24 @@
 
 @layer components {
   /* ============================================
-     GLASS CARD — dark glassmorphism
+     CARD — solid dark card
      ============================================ */
   .card {
-    background: theme('colors.greeting-dark-purple.700');
-    border: 1px solid theme('colors.greeting-purple.700');
+    background: theme('colors.greeting-charcoal.500');
+    border: 1px solid theme('colors.greeting-cocoa.700');
     border-radius: theme('borderRadius.card');
-    backdrop-filter: blur(8px);
     box-shadow: theme('boxShadow.paper');
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .card:hover {
     box-shadow: theme('boxShadow.paper-md');
-    border-color: theme('colors.greeting-purple.600');
+    border-color: theme('colors.greeting-cocoa.600');
   }
 
   .card-white {
-    background: theme('colors.greeting-bg.500');
-    border: 1px solid theme('colors.greeting-purple.700');
+    background: theme('colors.greeting-charcoal.500');
+    border: 1px solid theme('colors.greeting-cocoa.700');
     border-radius: theme('borderRadius.card');
     box-shadow: theme('boxShadow.paper');
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -93,16 +92,9 @@
      SHEET — page section backgrounds
      ============================================ */
   .sheet {
-    background: theme('colors.greeting-bg.600');
-    border: 1px solid theme('colors.greeting-purple.800');
+    background: theme('colors.greeting-charcoal.600');
+    border: 1px solid theme('colors.greeting-cocoa.700');
     border-radius: theme('borderRadius.container');
-  }
-
-  /* ============================================
-     MAINTENANCE — REMOVED paper-based effects (not tech aesthetic)
-     ============================================ */
-  .letterpress-text, .letterpress-surface, .deckle-edge, .ruby-seal {
-    /* Removed paper/book textures for tech aesthetic */
   }
 
   /* ============================================
@@ -110,71 +102,64 @@
      ============================================ */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2.5
-           bg-greeting-magenta-500 hover:bg-greeting-magenta-400 active:bg-greeting-pink-400
+           bg-greeting-berry-500 hover:bg-greeting-berry-400 active:bg-greeting-berry-600
            text-white font-body font-semibold
-           py-3 px-7 rounded-[10px]
-           transition-all duration-300 ease-spring
+           py-3 px-6 rounded-full
+           transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-greeting-magenta-300 focus-visible:ring-offset-2
+           focus-visible:ring-2 focus-visible:ring-greeting-berry-400 focus-visible:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:scale-100
-           shadow-paper;
+           shadow-paper
+           min-h-[44px];
   }
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2
-           bg-transparent hover:bg-greeting-magenta-900 active:bg-greeting-magenta-800
-           text-greeting-magenta-400 hover:text-greeting-magenta-300
+           bg-transparent hover:bg-greeting-berry-900/30 active:bg-greeting-berry-800/30
+           text-greeting-berry-400 hover:text-greeting-berry-300
            font-body font-medium
-           py-2.5 px-5 rounded-[10px]
-           transition-all duration-300 ease-spring
+           py-2.5 px-5 rounded-full
+           transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-greeting-magenta-300;
-  }
-
-  .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2
-           bg-greeting-cyan-500 hover:bg-greeting-cyan-600 active:bg-greeting-cyan-700
-           text-greeting-dark-purple-900 hover:text-white
-           font-body font-semibold
-           py-2.5 px-6 rounded-[10px]
-           border border-greeting-cyan-700 hover:border-greeting-cyan-600
-           transition-all duration-300 ease-spring
-           active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-greeting-cyan-300 focus-visible:ring-offset-2;
+           focus-visible:ring-2 focus-visible:ring-greeting-berry-400
+           min-h-[44px];
   }
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2
-           bg-transparent hover:bg-greeting-purple-900 active:bg-greeting-purple-800
-           text-greeting-cyan-400 hover:text-greeting-cyan-300
+           bg-transparent hover:bg-greeting-berry-900/20 active:bg-greeting-berry-800/20
+           text-greeting-teal-400 hover:text-greeting-teal-300
            font-body font-semibold
-           py-2.5 px-6 rounded-[10px]
-           border border-greeting-purple-700 hover:border-greeting-purple-600
-           transition-all duration-300 ease-spring
+           py-2.5 px-6 rounded-full
+           border border-greeting-cocoa-700 hover:border-greeting-cocoa-600
+           transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-greeting-cyan-300 focus-visible:ring-offset-2;
+           focus-visible:ring-2 focus-visible:ring-greeting-berry-400 focus-visible:ring-offset-2
+           min-h-[44px];
   }
 
   .btn-whatsapp {
     @apply inline-flex items-center justify-center gap-2.5
            bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800
            text-white font-body font-semibold
-           py-3 px-7 rounded-[10px]
-           transition-all duration-300 ease-spring
+           py-3 px-6 rounded-full
+           transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
            focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:scale-100
-           shadow-paper;
+           shadow-paper
+           min-h-[44px];
   }
 
   .btn-dark {
     @apply inline-flex items-center justify-center gap-2
            bg-gray-900 hover:bg-gray-800 active:bg-gray-950
            text-white font-body font-semibold
-           py-3 px-7 rounded-[10px]
-           transition-all duration-300 ease-spring
+           py-3 px-7 rounded-full
+           transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-gray-300 focus-visible:ring-offset-2;
+           focus-visible:ring-2 focus-visible:ring-gray-300 focus-visible:ring-offset-2
+           min-h-[44px];
   }
 
   /* ============================================
@@ -182,17 +167,17 @@
      ============================================ */
   .input-field {
     @apply w-full px-4 py-3
-           bg-greeting-bg-600 border border-greeting-purple-800 rounded-[10px]
+           bg-greeting-charcoal-600 border border-greeting-cocoa-700 rounded-[10px]
            font-body text-gray-100 text-sm
            placeholder:text-gray-500
-           focus:border-greeting-magenta-400 focus:ring-2 focus:ring-greeting-magenta-900
-           hover:border-greeting-purple-700
+           focus:border-greeting-berry-400 focus:ring-2 focus:ring-greeting-berry-400/20 focus:ring-offset-2 focus:ring-offset-greeting-charcoal-600
+           hover:border-greeting-cocoa-600
            outline-none
            transition-all duration-200 ease-spring;
   }
 
   .input-field-error {
-    @apply border-greeting-pink-400 focus:border-greeting-magenta-400 focus:ring-greeting-magenta-900;
+    @apply border-greeting-berry-400 focus:border-greeting-berry-400 focus:ring-greeting-berry-400/20;
   }
 
   .label-text {
@@ -204,7 +189,7 @@
   }
 
   .error-text {
-    @apply block text-xs font-body text-greeting-magenta-400 mt-1;
+    @apply block text-xs font-body text-greeting-berry-400 mt-1;
   }
 
   /* ============================================
@@ -212,26 +197,26 @@
      ============================================ */
   .badge {
     @apply inline-flex items-center justify-center
-           px-2.5 py-1 rounded-md
+           px-1.5 py-1 rounded-md
            text-[10px] font-body font-semibold
            whitespace-nowrap
            tracking-wider uppercase;
   }
 
-  .badge-magenta {
-    @apply bg-greeting-magenta-900 text-greeting-magenta-300;
+  .badge-berry {
+    @apply bg-greeting-berry-900/30 text-greeting-berry-300;
+  }
+
+  .badge-cocoa {
+    @apply bg-greeting-cocoa-900/30 text-greeting-cocoa-300;
+  }
+
+  .badge-teal {
+    @apply bg-greeting-teal-900/30 text-greeting-teal-300;
   }
 
   .badge-gray {
     @apply bg-gray-800 text-gray-300;
-  }
-
-  .badge-cyan {
-    @apply bg-greeting-cyan-900 text-greeting-cyan-300;
-  }
-
-  .badge-purple {
-    @apply bg-greeting-purple-800 text-greeting-purple-200;
   }
 
   /* ============================================
@@ -241,18 +226,18 @@
     @apply inline-flex items-center gap-2
            px-4 py-2.5 rounded-[10px]
            font-body text-sm font-medium
-           bg-greeting-bg-600 border border-greeting-purple-800
+           bg-greeting-charcoal-500 border border-greeting-cocoa-700
            text-gray-300
-           hover:border-greeting-magenta-500 hover:text-greeting-magenta-400 hover:bg-greeting-magenta-900
-           active:bg-greeting-magenta-800 active:translate-y-[1px]
+           hover:border-greeting-berry-500 hover:text-greeting-berry-400
+           active:bg-greeting-berry-500 active:text-white active:border-greeting-berry-500
            transition-all duration-200 ease-spring
            cursor-pointer select-none
            whitespace-nowrap;
   }
 
   .category-pill-active {
-    @apply bg-greeting-magenta-500 text-white border-greeting-magenta-500 shadow-paper
-           hover:bg-greeting-magenta-400 hover:text-white hover:border-greeting-magenta-400;
+    @apply bg-greeting-berry-500 text-white border-greeting-berry-500 shadow-paper
+           hover:bg-greeting-berry-400 hover:text-white hover:border-greeting-berry-400;
   }
 
   /* ============================================
@@ -263,7 +248,7 @@
   }
 
   .product-card-image {
-    @apply aspect-[3/4] bg-greeting-dark-purple-800 overflow-hidden;
+    @apply aspect-[3/4] bg-greeting-charcoal-800 overflow-hidden;
   }
 
   .product-card-body {
@@ -280,9 +265,9 @@
   .skeleton-shimmer {
     background: linear-gradient(
       90deg,
-      theme('colors.greeting-dark-purple.800') 25%,
-      theme('colors.greeting-purple.900') 37%,
-      theme('colors.greeting-dark-purple.800') 63%
+      theme('colors.greeting-charcoal.800') 25%,
+      theme('colors.greeting-cocoa.900') 37%,
+      theme('colors.greeting-charcoal.800') 63%
     );
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
@@ -307,8 +292,8 @@
   }
 
   .empty-state-icon {
-    @apply w-14 h-14 rounded-full bg-greeting-purple-900 flex items-center justify-center mb-4
-           text-greeting-cyan-500;
+    @apply w-14 h-14 rounded-full bg-greeting-cocoa-900 flex items-center justify-center mb-4
+           text-greeting-teal-400;
   }
 
   .empty-state-title {
@@ -325,7 +310,7 @@
   .section-eyebrow {
     @apply inline-flex items-center gap-2
            px-3 py-1.5 rounded-full
-           bg-greeting-magenta-900 text-greeting-magenta-300
+           bg-greeting-berry-900/30 text-greeting-berry-300
            text-xs font-body font-semibold uppercase tracking-wider;
   }
 
@@ -336,15 +321,8 @@
            text-xs font-body font-semibold uppercase tracking-wider;
   }
 
-  .section-eyebrow-cyan {
-    @apply inline-flex items-center gap-2
-           px-3 py-1.5 rounded-full
-           bg-greeting-cyan-900 text-greeting-cyan-300
-           text-xs font-body font-semibold uppercase tracking-wider;
-  }
-
   .section-heading {
-    @apply text-3xl sm:text-4xl lg:text-5xl font-display font-semibold tracking-tight-display text-gray-100;
+    @apply text-3xl sm:text-4xl lg:text-5xl font-display font-semibold tracking-tight text-gray-100;
   }
 
   .section-subheading {
@@ -360,15 +338,22 @@
 
   .admin-table th {
     @apply px-4 py-3 text-xs font-body font-semibold text-gray-400 uppercase tracking-wider
-           border-b border-greeting-purple-800;
+           bg-greeting-charcoal-400 border-b border-greeting-cocoa-700;
   }
 
   .admin-table td {
-    @apply px-4 py-3.5 text-sm text-gray-300 border-b border-greeting-purple-900;
+    @apply px-4 py-3.5 text-sm text-gray-300 border-b border-greeting-cocoa-700;
   }
 
   .admin-table tr {
-    @apply transition-colors duration-150 hover:bg-greeting-dark-purple-800;
+    @apply transition-colors duration-150 hover:bg-greeting-charcoal-500;
+  }
+
+  /* ============================================
+     FONT DISPLAY UTILITY
+     ============================================ */
+  .font-display {
+    font-family: theme('fontFamily.display');
   }
 
   /* ============================================
@@ -379,28 +364,29 @@
   }
 
   .trilingual-line-en {
-    @apply font-display text-gray-100;
+    font-family: 'Playfair Display', serif;
+    @apply text-gray-100;
   }
 
   .trilingual-line-ta {
     font-family: 'Noto Serif Tamil', serif;
-    @apply text-greeting-purple-200;
+    @apply text-gray-200;
   }
 
   .trilingual-line-si {
     font-family: 'Noto Serif Sinhala', serif;
-    @apply text-greeting-purple-200;
+    @apply text-gray-200;
   }
 
   /* ============================================
      STAT CARD
      ============================================ */
   .stat-card {
-    @apply bg-greeting-dark-purple-700 rounded-2xl p-6 border border-greeting-purple-800;
+    @apply bg-greeting-charcoal-500 rounded-2xl p-6 border border-greeting-cocoa-700;
   }
 
   .stat-value {
-    @apply font-mono text-2xl sm:text-3xl font-bold text-greeting-magenta-400 mb-0.5 tracking-tight;
+    @apply font-mono text-2xl sm:text-3xl font-bold text-greeting-berry-400 mb-0.5 tracking-tight;
   }
 
   .stat-label {
@@ -411,11 +397,11 @@
      FEATURE ITEM
      ============================================ */
   .feature-icon {
-    @apply w-10 h-10 rounded-xl bg-greeting-magenta-900 flex items-center justify-center flex-shrink-0;
+    @apply w-10 h-10 rounded-xl bg-greeting-berry-500/20 flex items-center justify-center flex-shrink-0;
   }
 
   .feature-icon-inner {
-    @apply text-greeting-magenta-400;
+    @apply text-greeting-berry-400;
   }
 
   .feature-title {
@@ -430,7 +416,8 @@
      CTA SECTION
      ============================================ */
   .cta-section {
-    @apply bg-greeting-dark-purple-900 text-white;
+    @apply bg-greeting-charcoal-700 text-white;
+    border-top: 1px solid theme('colors.greeting-cocoa.700');
   }
 
   .cta-heading {
@@ -479,8 +466,8 @@
     background: linear-gradient(
       to right,
       transparent,
-      theme('colors.greeting-purple.700'),
-      theme('colors.greeting-purple.700'),
+      theme('colors.greeting-cocoa.700'),
+      theme('colors.greeting-cocoa.700'),
       transparent
     );
     border: none;

@@ -7,21 +7,28 @@ import {
   Handshake,
   Star,
   Sparkle,
-  WhatsappLogo,
   ShoppingCart,
   ArrowRight,
-} from '@phosphor-icons/react';
+} from 'lucide-react';
+
+function WhatsappLogo({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+  );
+}
 import { api } from '../../api';
 import { getImageSrc } from '../../utils/images';
 import type { ProductListItem } from '@twinkle-hearts/shared';
 
 const CATEGORIES = [
-  { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-greeting-magenta-400', bg: 'bg-greeting-magenta-500/20' },
-  { key: 'love', label: 'Love', icon: Heart, color: 'text-greeting-pink-400', bg: 'bg-greeting-pink-500/20' },
-  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-greeting-cyan-400', bg: 'bg-greeting-cyan-500/20' },
+    { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-greeting-berry-400', bg: 'bg-greeting-berry-500/20' },
+  { key: 'love', label: 'Love', icon: Heart, color: 'text-greeting-berry-400', bg: 'bg-greeting-berry-500/20' },
+  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-greeting-teal-400', bg: 'bg-greeting-teal-500/20' },
   { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-gray-400', bg: 'bg-gray-500/20' },
-  { key: 'festival', label: 'Festival', icon: Star, color: 'text-greeting-magenta-300', bg: 'bg-greeting-magenta-500/20' },
-  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-greeting-purple-400', bg: 'bg-greeting-purple-500/20' },
+  { key: 'festival', label: 'Festival', icon: Star, color: 'text-greeting-berry-300', bg: 'bg-greeting-berry-500/20' },
+  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-greeting-cocoa-400', bg: 'bg-greeting-cocoa-500/20' },
 ] as const;
 
 const containerVariants: Variants = {
@@ -63,7 +70,7 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* Trilingual Asymmetric Hero */}
-      <section className="relative overflow-hidden bg-greeting-bg-500">
+      <section className="relative overflow-hidden bg-greeting-charcoal-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center min-h-[70dvh]">
             {/* Left: Trilingual hero stack (7 cols) */}
@@ -97,7 +104,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="trilingual-line-ta text-2xl sm:text-3xl lg:text-4xl mt-2 leading-snug"
               >
-                <span className="text-greeting-magenta-400">ஒரு அழகான</span> அட்டையுடன்
+                <span className="text-greeting-berry-400">ஒரு அழகான</span> அட்டையுடன்
               </motion.p>
 
               {/* SI line */}
@@ -108,7 +115,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="trilingual-line-si text-2xl sm:text-3xl lg:text-4xl mt-1 leading-snug"
               >
-                <span className="text-greeting-magenta-400">ලස්සන කාඩ්</span> එකකින් කියන්න
+                <span className="text-greeting-berry-400">ලස්සන කාඩ්</span> එකකින් කියන්න
               </motion.p>
 
               {/* EN finish */}
@@ -118,7 +125,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="trilingual-line-en text-5xl sm:text-6xl lg:text-7xl font-display font-semibold tracking-tight-display leading-[1.05] mt-1"
               >
-                <span className="text-greeting-magenta-400">beautiful card</span>
+                <span className="text-greeting-berry-400">beautiful card</span>
               </motion.p>
 
               <motion.p
@@ -155,11 +162,11 @@ export default function HomePage() {
                 className="mt-12 flex items-center gap-6 text-xs text-gray-500"
               >
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-cyan-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-teal-400" />
                   1,200+ orders delivered
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-magenta-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-berry-400" />
                   65+ unique designs
                 </span>
                 <span className="flex items-center gap-1.5">
@@ -207,7 +214,7 @@ export default function HomePage() {
       </section>
 
       {/* Categories Bento Grid */}
-      <section className="bg-greeting-bg-400">
+      <section className="bg-greeting-charcoal-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="flex items-end justify-between mb-10">
             <div>
@@ -216,7 +223,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-greeting-magenta-400 hover:text-greeting-magenta-300 transition-colors font-body"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-greeting-berry-400 hover:text-greeting-berry-300 transition-colors font-body"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -235,11 +242,11 @@ export default function HomePage() {
                   to={`/shop?category=${cat.key}`}
                   className={`flex flex-col items-start gap-4 p-5 rounded-2xl border transition-all duration-300 active:scale-[0.97] ${
                     cat.key === 'birthday'
-                      ? `${cat.bg} ${cat.color} border-greeting-purple-700 hover:shadow-lg`
-                      : 'bg-greeting-bg-400 border-greeting-purple-700 hover:bg-greeting-bg-500 hover:shadow-lg'
+                      ? `${cat.bg} ${cat.color} border-greeting-cocoa-700 hover:shadow-lg`
+                      : 'bg-greeting-charcoal-400 border-greeting-cocoa-700 hover:bg-greeting-charcoal-500 hover:shadow-lg'
                   }`}
                 >
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-greeting-bg-500/50`}>
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-greeting-charcoal-500/50`}>
                     <cat.icon size={22} className={cat.key === 'birthday' ? cat.color : 'text-gray-400'} />
                   </div>
                   <div>
@@ -256,7 +263,7 @@ export default function HomePage() {
           </motion.div>
 
           <div className="mt-6 sm:hidden text-center">
-            <Link to="/shop" className="text-sm font-semibold text-greeting-magenta-400 hover:text-greeting-magenta-300 transition-colors inline-flex items-center gap-1 font-body">
+            <Link to="/shop" className="text-sm font-semibold text-greeting-berry-400 hover:text-greeting-berry-300 transition-colors inline-flex items-center gap-1 font-body">
               View all categories <ArrowRight size={14} />
             </Link>
           </div>
@@ -264,7 +271,7 @@ export default function HomePage() {
       </section>
 
       {/* Featured Products */}
-      <section className="bg-greeting-bg-400">
+      <section className="bg-greeting-charcoal-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="flex items-end justify-between mb-10">
             <div>
@@ -276,7 +283,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-greeting-magenta-400 hover:text-greeting-magenta-300 transition-colors font-body"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-greeting-berry-400 hover:text-greeting-berry-300 transition-colors font-body"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -336,7 +343,7 @@ export default function HomePage() {
       </section>
 
       {/* About + Stats Split */}
-      <section className="bg-greeting-bg-400">
+      <section className="bg-greeting-charcoal-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
@@ -369,7 +376,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA — Warm paper bridge */}
-      <section className="bg-greeting-bg-500 text-gray-100 relative overflow-hidden">
+      <section className="bg-greeting-charcoal-500 text-gray-100 relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundRepeat: 'repeat',
@@ -379,7 +386,7 @@ export default function HomePage() {
           background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(214,54,142,0.06), transparent)',
         }} />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center relative z-10">
-          <p className="text-xs font-body font-medium tracking-[0.2em] uppercase text-greeting-magenta-400 mb-5">
+          <p className="text-xs font-body font-medium tracking-[0.2em] uppercase text-greeting-berry-400 mb-5">
             Handwritten with care
           </p>
           <h2 className="text-3xl sm:text-4xl font-display font-semibold tracking-tight mb-4 text-gray-50">
@@ -391,7 +398,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/shop"
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-[10px] bg-greeting-magenta-500 text-gray-100 hover:bg-greeting-magenta-600 font-semibold text-sm transition-all active:scale-[0.98] shadow-lg shadow-greeting-magenta-500/20"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-greeting-berry-500 text-gray-100 hover:bg-greeting-berry-600 font-semibold text-sm transition-all active:scale-[0.98] shadow-lg shadow-greeting-berry-500/20"
             >
               Shop All Cards
             </Link>
@@ -399,7 +406,7 @@ export default function HomePage() {
               href="https://wa.me/947XXXXXXXX"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-[10px] border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800/30 text-gray-200 font-medium text-sm transition-all active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800/30 text-gray-200 font-medium text-sm transition-all active:scale-[0.98]"
             >
               <WhatsappLogo size={18} />
               Chat on WhatsApp
@@ -435,10 +442,10 @@ function FloatingLetterpressCard({
   accent: 'magenta' | 'cyan';
   delay: number;
 }) {
-  const accentBorder = accent === 'magenta' ? 'border-greeting-magenta-500/30' : 'border-greeting-cyan-500/30';
-  const accentBg = accent === 'magenta' ? 'bg-greeting-magenta-500/20' : 'bg-greeting-cyan-500/20';
-  const accentText = accent === 'magenta' ? 'text-greeting-magenta-400' : 'text-greeting-cyan-400';
-  const accentLight = accent === 'magenta' ? 'bg-greeting-magenta-500/30' : 'bg-greeting-cyan-500/30';
+  const accentBorder = accent === 'magenta' ? 'border-greeting-berry-500/30' : 'border-greeting-teal-500/30';
+  const accentBg = accent === 'magenta' ? 'bg-greeting-berry-500/20' : 'bg-greeting-teal-500/20';
+  const accentText = accent === 'magenta' ? 'text-greeting-berry-400' : 'text-greeting-teal-400';
+  const accentLight = accent === 'magenta' ? 'bg-greeting-berry-500/30' : 'bg-greeting-teal-500/30';
 
   return (
     <motion.div
@@ -464,7 +471,7 @@ function FloatingLetterpressCard({
         {/* Card face — decorative top */}
         <div className="flex-1 flex flex-col items-center justify-center px-8">
           <div className={`w-14 h-14 rounded-full ${accentLight} flex items-center justify-center mb-5`}>
-            <Heart size={22} weight="fill" className={accentText} />
+            <Heart size={22} className={accentText} />
           </div>
           <p className={`text-center font-display font-semibold text-lg ${accentText} leading-tight`}>
             {title}
@@ -474,7 +481,7 @@ function FloatingLetterpressCard({
           </p>
         </div>
         {/* Card footer — decorative stripe */}
-        <div className={`h-1.5 ${accent === 'magenta' ? 'bg-greeting-magenta-500/20' : 'bg-greeting-cyan-500/20'}`} />
+        <div className={`h-1.5 ${accent === 'magenta' ? 'bg-greeting-berry-500/20' : 'bg-greeting-teal-500/20'}`} />
       </div>
     </motion.div>
   );
@@ -516,10 +523,10 @@ function MagneticButton({ to, label, dark }: { to: string; label: string; dark?:
       onMouseMove={handleMouse}
       onMouseLeave={handleLeave}
       style={{ x, y }}
-      className={`inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-[10px] font-semibold text-sm transition-all active:scale-[0.98] ${
+      className={`inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-full font-semibold text-sm transition-all active:scale-[0.98] ${
         dark
           ? 'bg-white text-gray-100 hover:bg-gray-100'
-          : 'bg-greeting-magenta-500 hover:bg-greeting-magenta-600 text-gray-100 shadow-lg'
+          : 'bg-greeting-berry-500 hover:bg-greeting-berry-600 text-gray-100 shadow-lg'
       }`}
     >
       {label}
@@ -566,28 +573,28 @@ function ProductCard({ product }: { product: ProductListItem }) {
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-bg-400">
-              <div className="w-12 h-12 rounded-2xl bg-greeting-bg-500 flex items-center justify-center mb-2">
-                <Heart size={22} weight="fill" className="text-gray-500" />
+            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-charcoal-400">
+              <div className="w-12 h-12 rounded-2xl bg-greeting-charcoal-500 flex items-center justify-center mb-2">
+                <Heart size={22} className="text-gray-500" />
               </div>
               <span className="text-xs font-medium text-gray-500">No preview</span>
             </div>
           )}
           <div className="absolute top-3 left-3">
-            <span className="badge badge-magenta">{getCategoryBadge(product.category)}</span>
+            <span className="badge badge-berry">{getCategoryBadge(product.category)}</span>
           </div>
         </div>
       </Link>
 
       <div className="product-card-body">
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-sm font-semibold text-gray-100 line-clamp-2 hover:text-greeting-magenta-400 transition-colors leading-snug">
+          <h3 className="font-display text-sm font-semibold text-gray-100 line-clamp-2 hover:text-greeting-berry-400 transition-colors leading-snug">
             {product.name}
           </h3>
         </Link>
 
         <div className="flex items-center justify-between mt-3">
-          <span className="font-mono text-base font-semibold text-greeting-magenta-400 tracking-tight">
+          <span className="font-mono text-base font-semibold text-greeting-berry-400 tracking-tight">
             {formatPrice(product.price)}
           </span>
 
@@ -595,10 +602,10 @@ function ProductCard({ product }: { product: ProductListItem }) {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.92 }}
-              className="p-2 rounded-xl bg-greeting-bg-400 text-gray-400 hover:bg-greeting-magenta-500 hover:text-gray-100 transition-colors duration-200"
+              className="p-2 rounded-xl bg-greeting-charcoal-400 text-gray-400 hover:bg-greeting-berry-500 hover:text-gray-100 transition-colors duration-200"
               aria-label="Add to cart"
             >
-              <ShoppingCart size={15} weight="bold" />
+              <ShoppingCart size={15} />
             </motion.button>
           ) : (
             <span className="text-xs text-gray-500 font-medium">Sold out</span>
@@ -606,7 +613,7 @@ function ProductCard({ product }: { product: ProductListItem }) {
         </div>
 
         {product.stock > 0 && product.stock <= 3 && (
-          <p className="text-xs text-greeting-magenta-400 mt-2.5 font-medium">
+          <p className="text-xs text-greeting-berry-400 mt-2.5 font-medium">
             Only {product.stock} remaining
           </p>
         )}
@@ -624,8 +631,8 @@ function FeatureItem({ icon: Icon, title, description }: {
 }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-10 h-10 rounded-xl bg-greeting-magenta-500/20 flex items-center justify-center flex-shrink-0">
-        <Icon size={18} className="text-greeting-magenta-400" />
+      <div className="w-10 h-10 rounded-xl bg-greeting-berry-500/20 flex items-center justify-center flex-shrink-0">
+        <Icon size={18} className="text-greeting-berry-400" />
       </div>
       <div>
         <h4 className="font-semibold text-sm text-gray-100">{title}</h4>
@@ -640,7 +647,7 @@ function FeatureItem({ icon: Icon, title, description }: {
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
     <div className="stat-card">
-      <div className="font-mono text-2xl sm:text-3xl font-bold text-greeting-magenta-400 mb-0.5 tracking-tight">
+      <div className="font-mono text-2xl sm:text-3xl font-bold text-greeting-berry-400 mb-0.5 tracking-tight">
         {value}
       </div>
       <div className="text-sm text-gray-400">{label}</div>

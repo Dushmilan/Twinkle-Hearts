@@ -6,13 +6,13 @@ import {
   User,
   Package,
   MapPin,
-  SignOut,
-  List,
+  LogOut,
+  Menu,
   X,
-  CaretDown,
-  HeartStraight,
+  ChevronDown,
+  HeartPulse,
   Sparkle,
-} from '@phosphor-icons/react';
+} from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
 import { useAuth } from '../../context/AuthContext';
 import { useState } from 'react';
@@ -59,27 +59,26 @@ export default function Layout({ children }: LayoutProps) {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-greeting-bg-400 flex flex-col">
+    <div className="min-h-[100dvh] bg-greeting-charcoal-400 flex flex-col">
       <OfflineBanner />
 
-      <header className="sticky top-0 z-50 bg-greeting-bg-400/80 backdrop-blur-lg border-b border-greeting-purple-700">
+      <header className="sticky top-0 z-50 bg-greeting-charcoal-400/80 backdrop-blur-lg border-b border-greeting-cocoa-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center gap-2.5 group">
               <div className="relative">
                 <Heart
                   size={20}
-                  weight="fill"
-                  className="text-greeting-magenta-500 group-hover:scale-110 transition-transform duration-300"
+                  className="text-greeting-berry-500 group-hover:scale-110 transition-transform duration-300"
                 />
                 <motion.span
-                  className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-greeting-magenta-400"
+                  className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-greeting-berry-400"
                   animate={{ opacity: [0.4, 1, 0.4] }}
                   transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
                 />
               </div>
               <span className="text-xl font-display font-semibold text-gray-100 tracking-tight">
-                Twinkle<span className="text-greeting-magenta-400">Hearts</span>
+                Twinkle<span className="text-greeting-berry-400">Hearts</span>
               </span>
             </Link>
 
@@ -93,7 +92,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center gap-2">
               <Link
                 to="/cart"
-                className="relative p-2.5 text-gray-400 hover:text-gray-100 transition-colors rounded-xl hover:bg-greeting-purple-900"
+                className="relative p-2.5 text-gray-400 hover:text-gray-100 transition-colors rounded-xl hover:bg-greeting-cocoa-900"
               >
                 <ShoppingCart size={20} />
                 <AnimatePresence>
@@ -104,7 +103,7 @@ export default function Layout({ children }: LayoutProps) {
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                      className="absolute -top-0.5 -right-0.5 bg-greeting-magenta-500 text-white text-[11px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center"
+                      className="absolute -top-0.5 -right-0.5 bg-greeting-berry-500 text-white text-[11px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center"
                     >
                       {itemCount > 9 ? '9+' : itemCount}
                     </motion.span>
@@ -116,14 +115,13 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="relative">
                   <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-greeting-purple-900 transition-colors"
+                    className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-greeting-cocoa-900 transition-colors"
                   >
-                    <div className="w-8 h-8 bg-greeting-magenta-900 rounded-full flex items-center justify-center">
-                      <User size={15} className="text-greeting-magenta-400" />
+                    <div className="w-8 h-8 bg-greeting-berry-900 rounded-full flex items-center justify-center">
+                      <User size={15} className="text-greeting-berry-400" />
                     </div>
-                    <CaretDown
+                    <ChevronDown
                       size={10}
-                      weight="bold"
                       className={`text-gray-500 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`}
                     />
                   </button>
@@ -137,9 +135,9 @@ export default function Layout({ children }: LayoutProps) {
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: -6, scale: 0.96 }}
                           transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                          className="absolute right-0 mt-2 w-56 bg-greeting-bg-500 rounded-xl shadow-lg border border-greeting-purple-700 z-20 overflow-hidden"
+                          className="absolute right-0 mt-2 w-56 bg-greeting-charcoal-500 rounded-xl shadow-lg border border-greeting-cocoa-700 z-20 overflow-hidden"
                         >
-                          <div className="px-4 py-3 border-b border-greeting-purple-900">
+                          <div className="px-4 py-3 border-b border-greeting-cocoa-900">
                             <p className="text-sm font-semibold text-gray-100">{user?.name}</p>
                             <p className="text-xs text-gray-400 truncate">{user?.email}</p>
                           </div>
@@ -158,19 +156,19 @@ export default function Layout({ children }: LayoutProps) {
                             </DropdownLink>
                             {user?.role === 'ADMIN' && (
                               <>
-                                <div className="my-1.5 border-t border-greeting-purple-700" />
-                                <DropdownLink to="/admin" icon={HeartStraight} onClick={() => setIsMenuOpen(false)} highlight>
+                                <div className="my-1.5 border-t border-greeting-cocoa-700" />
+                                <DropdownLink to="/admin" icon={HeartPulse} onClick={() => setIsMenuOpen(false)} highlight>
                                   Admin Dashboard
                                 </DropdownLink>
                               </>
                             )}
                           </div>
-                          <div className="border-t border-greeting-purple-700 py-1.5">
+                          <div className="border-t border-greeting-cocoa-700 py-1.5">
                             <button
                               onClick={handleLogout}
-                              className="flex items-center gap-3 w-full text-left px-4 py-2 text-sm text-greeting-magenta-400 hover:bg-greeting-magenta-500/20 transition-colors"
+                              className="flex items-center gap-3 w-full text-left px-4 py-2 text-sm text-greeting-berry-400 hover:bg-greeting-berry-500/20 transition-colors"
                             >
-                              <SignOut size={15} />
+                              <LogOut size={15} />
                               Logout
                             </button>
                           </div>
@@ -191,11 +189,11 @@ export default function Layout({ children }: LayoutProps) {
               )}
 
               <button
-                className="md:hidden p-2 rounded-xl text-gray-400 hover:text-gray-100 hover:bg-greeting-purple-700 transition-colors"
+                className="md:hidden p-2 rounded-xl text-gray-400 hover:text-gray-100 hover:bg-greeting-cocoa-700 transition-colors"
                 onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
                 aria-label="Toggle navigation"
               >
-                {isMobileNavOpen ? <X size={20} /> : <List size={20} />}
+                {isMobileNavOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
             </div>
           </div>
@@ -208,7 +206,7 @@ export default function Layout({ children }: LayoutProps) {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="md:hidden border-t border-greeting-purple-700 overflow-hidden"
+              className="md:hidden border-t border-greeting-cocoa-700 overflow-hidden"
             >
               <motion.div
                 variants={staggerContainer}
@@ -233,14 +231,14 @@ export default function Layout({ children }: LayoutProps) {
                     )}
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-3 py-2.5 text-sm text-greeting-magenta-400 hover:bg-greeting-magenta-500/20 rounded-lg transition-colors"
+                      className="w-full text-left px-3 py-2.5 text-sm text-greeting-berry-400 hover:bg-greeting-berry-500/20 rounded-lg transition-colors"
                     >
                       Logout
                     </button>
                   </>
                 ) : (
                   <div className="px-3 space-y-2 pt-1">
-                    <Link to="/login" className="block w-full text-center py-2.5 text-sm font-medium text-gray-300 hover:bg-greeting-purple-700 rounded-lg transition-colors" onClick={() => setIsMobileNavOpen(false)}>
+                    <Link to="/login" className="block w-full text-center py-2.5 text-sm font-medium text-gray-300 hover:bg-greeting-cocoa-700 rounded-lg transition-colors" onClick={() => setIsMobileNavOpen(false)}>
                       Sign In
                     </Link>
                     <Link to="/register" className="btn-primary w-full justify-center text-sm" onClick={() => setIsMobileNavOpen(false)}>
@@ -258,14 +256,14 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
 
-      <footer className="bg-greeting-bg-500 border-t border-greeting-purple-700 mt-auto">
+      <footer className="bg-greeting-charcoal-500 border-t border-greeting-cocoa-700 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-2 mb-3">
-                <Heart size={18} weight="fill" className="text-greeting-magenta-400" />
+                <Heart size={18} className="text-greeting-berry-400" />
                 <span className="text-lg font-display font-semibold text-gray-100 tracking-tight">
-                  Twinkle<span className="text-greeting-magenta-400">Hearts</span>
+                  Twinkle<span className="text-greeting-berry-400">Hearts</span>
                 </span>
               </div>
               <p className="text-sm text-gray-400 leading-relaxed max-w-[48ch] font-body">
@@ -304,12 +302,12 @@ export default function Layout({ children }: LayoutProps) {
               <h3 className="text-xs font-semibold text-gray-100 mb-4 uppercase tracking-widest">Contact</h3>
               <ul className="space-y-2.5 text-sm text-gray-400">
                 <li>
-                  <a href="https://wa.me/947XXXXXXXX" target="_blank" rel="noopener noreferrer" className="hover:text-greeting-magenta-400 transition-colors">
+                  <a href="https://wa.me/947XXXXXXXX" target="_blank" rel="noopener noreferrer" className="hover:text-greeting-berry-400 transition-colors">
                     WhatsApp
                   </a>
                 </li>
                 <li>
-                  <a href="mailto:hello@twinklehearts.lk" className="hover:text-greeting-magenta-400 transition-colors">
+                  <a href="mailto:hello@twinklehearts.lk" className="hover:text-greeting-berry-400 transition-colors">
                     hello@twinklehearts.lk
                   </a>
                 </li>
@@ -320,7 +318,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
           </div>
 
-          <div className="mt-10 pt-6 border-t border-greeting-purple-900 text-center">
+          <div className="mt-10 pt-6 border-t border-greeting-cocoa-900 text-center">
             <p className="text-xs text-gray-500">
               &copy; 2026 TwinkleHearts. Made with care in Sri Lanka.
             </p>
@@ -342,11 +340,11 @@ function NavLink({ to, active, children }: { to: string; active: boolean; childr
       {active && (
         <motion.div
           layoutId="nav-indicator"
-          className="absolute inset-0 bg-greeting-magenta-500/20 rounded-lg -z-10"
+          className="absolute inset-0 bg-greeting-berry-500/20 rounded-lg -z-10"
           transition={{ type: 'spring', stiffness: 350, damping: 25 }}
         />
       )}
-      <span className={`relative z-10 ${active ? 'text-greeting-magenta-300' : 'text-gray-300 hover:text-gray-100'}`}>
+      <span className={`relative z-10 ${active ? 'text-greeting-berry-300' : 'text-gray-300 hover:text-gray-100'}`}>
         {children}
       </span>
     </Link>
@@ -368,10 +366,10 @@ function MobileNavItem({ to, label, location, highlight, onClick }: {
         onClick={onClick}
         className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
           highlight
-            ? 'text-greeting-magenta-300 bg-greeting-magenta-500/20'
+            ? 'text-greeting-berry-300 bg-greeting-berry-500/20'
             : active
-            ? 'text-greeting-magenta-300 bg-greeting-magenta-500/20'
-            : 'text-gray-400 hover:text-gray-100 hover:bg-greeting-purple-700'
+            ? 'text-greeting-berry-300 bg-greeting-berry-500/20'
+            : 'text-gray-400 hover:text-gray-100 hover:bg-greeting-cocoa-700'
         }`}
       >
         {label}
@@ -393,8 +391,8 @@ function DropdownLink({ to, icon: Icon, onClick, highlight, children }: {
       onClick={onClick}
       className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
         highlight
-          ? 'text-greeting-magenta-300 hover:bg-greeting-magenta-500/20 font-medium'
-          : 'text-gray-300 hover:bg-greeting-purple-700'
+          ? 'text-greeting-berry-300 hover:bg-greeting-berry-500/20 font-medium'
+          : 'text-gray-300 hover:bg-greeting-cocoa-700'
       }`}
     >
       <Icon size={15} className="text-gray-400" />
@@ -406,7 +404,7 @@ function DropdownLink({ to, icon: Icon, onClick, highlight, children }: {
 function FooterLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <li>
-      <Link to={to} className="text-sm text-gray-400 hover:text-greeting-magenta-400 transition-colors">
+      <Link to={to} className="text-sm text-gray-400 hover:text-greeting-berry-400 transition-colors">
         {children}
       </Link>
     </li>

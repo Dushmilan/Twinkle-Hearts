@@ -48,16 +48,16 @@ export default function ProfilePage() {
 
       <div className="card p-6">
         {/* Avatar & Name */}
-        <div className="flex items-center gap-5 mb-8 pb-6 border-b border-greeting-purple-700">
-          <div className="w-20 h-20 bg-greeting-magenta-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-2xl font-display font-bold text-greeting-magenta-400">
+        <div className="flex items-center gap-5 mb-8 pb-6 border-b border-greeting-cocoa-700">
+          <div className="w-20 h-20 bg-greeting-berry-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-2xl font-display font-bold text-greeting-berry-400">
               {user?.name?.charAt(0).toUpperCase() || 'U'}
             </span>
           </div>
           <div>
             <h2 className="font-display text-2xl font-semibold text-gray-100">{user?.name}</h2>
             <p className="text-gray-400">{user?.email}</p>
-            <span className="inline-block mt-2 badge badge-magenta capitalize">
+            <span className="inline-block mt-2 badge badge-berry capitalize">
               {user?.role?.toLowerCase() || 'customer'}
             </span>
           </div>
@@ -81,7 +81,7 @@ export default function ProfilePage() {
                 type="email"
                 value={user?.email || ''}
                 disabled
-                className="input-field bg-greeting-bg-400 text-gray-400 cursor-not-allowed"
+                className="input-field bg-greeting-charcoal-400 text-gray-400 cursor-not-allowed"
               />
               <p className="mt-1 text-xs text-gray-500">Email cannot be changed</p>
             </div>
@@ -104,7 +104,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="btn-secondary"
+                className="btn-outline"
               >
                 Cancel
               </button>

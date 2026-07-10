@@ -78,9 +78,9 @@ export default function ShopPage() {
   };
 
   return (
-    <div className="bg-greeting-bg-500 min-h-screen">
+    <div className="bg-greeting-charcoal-500 min-h-screen">
       {/* Page Header */}
-      <section className="bg-greeting-bg-400 border-b border-greeting-purple-700">
+      <section className="bg-greeting-charcoal-400 border-b border-greeting-cocoa-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <h1 className="font-display text-4xl sm:text-5xl font-bold text-gray-100 mb-4">
@@ -94,7 +94,7 @@ export default function ShopPage() {
       </section>
 
       {/* Category Pills */}
-      <section className="bg-greeting-bg-400 border-b border-greeting-purple-700 sticky top-16 z-30">
+      <section className="bg-greeting-charcoal-400 border-b border-greeting-cocoa-700 sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
             {CATEGORIES.map((cat) => (
@@ -205,15 +205,15 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
   const getCategoryBadge = (category?: string) => {
     const catMap: Record<string, { label: string; variant: string }> = {
-      birthday: { label: '🎂 Birthday', variant: 'badge-magenta' },
-      love: { label: '💕 Love', variant: 'badge-purple' },
-      anniversary: { label: '🥂 Anniversary', variant: 'badge-cyan' },
-      friendship: { label: '🤝 Friendship', variant: 'badge-purple' },
-      festival: { label: '🎊 Festival', variant: 'badge-magenta' },
-      sympathy: { label: '🕊️ Sympathy', variant: 'badge-cyan' },
+      birthday: { label: '🎂 Birthday', variant: 'badge-berry' },
+      love: { label: '💕 Love', variant: 'badge-cocoa' },
+      anniversary: { label: '🥂 Anniversary', variant: 'badge-teal' },
+      friendship: { label: '🤝 Friendship', variant: 'badge-cocoa' },
+      festival: { label: '🎊 Festival', variant: 'badge-berry' },
+      sympathy: { label: '🕊️ Sympathy', variant: 'badge-teal' },
     };
     const key = category?.toLowerCase() || '';
-    const cat = catMap[key] || { label: category || 'General', variant: 'badge-magenta' };
+    const cat = catMap[key] || { label: category || 'General', variant: 'badge-berry' };
     return <span className={`badge ${cat.variant}`}>{cat.label}</span>;
   };
 
@@ -232,7 +232,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
               }}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-bg-400 text-gray-500">
+            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-charcoal-400 text-gray-500">
               <span className="text-3xl mb-2">💌</span>
               <span className="text-sm font-display">Card Preview</span>
             </div>
@@ -249,14 +249,14 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
         {/* Title */}
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-base font-semibold text-gray-100 mb-2 line-clamp-2 hover:text-greeting-magenta-400 transition-colors">
+          <h3 className="font-display text-base font-semibold text-gray-100 mb-2 line-clamp-2 hover:text-greeting-berry-400 transition-colors">
             {product.name}
           </h3>
         </Link>
 
         {/* Price & Add to Cart */}
         <div className="flex items-center justify-between mt-3">
-          <span className="font-body text-lg font-bold text-greeting-magenta-400">
+          <span className="font-body text-lg font-bold text-greeting-berry-400">
             {formatPrice(product.price)}
           </span>
           <button
@@ -264,8 +264,8 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
             disabled={product.stock === 0}
             className={`inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 ${
               product.stock === 0
-                ? 'opacity-40 cursor-not-allowed bg-greeting-bg-400'
-                : 'bg-greeting-magenta-500 hover:bg-greeting-magenta-600 active:scale-90 text-white shadow-lg hover:shadow-greeting-magenta-500/30'
+                ? 'opacity-40 cursor-not-allowed bg-greeting-charcoal-400'
+                : 'bg-greeting-berry-500 hover:bg-greeting-berry-600 active:scale-90 text-white shadow-lg hover:shadow-greeting-berry-500/30'
             }`}
             title={product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
           >

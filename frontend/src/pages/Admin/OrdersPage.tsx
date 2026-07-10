@@ -56,7 +56,7 @@ function AdminOrders() {
             <div className="flex gap-4">
               <Link
                 to="/admin"
-                className="text-greeting-magenta-400 hover:text-greeting-magenta-300 font-medium"
+                className="text-greeting-berry-400 hover:text-greeting-berry-300 font-medium"
               >
                 Back to Dashboard
               </Link>

@@ -253,7 +253,7 @@ export default function AddressManagementPage() {
                 id="isDefault"
                 checked={formData.isDefault}
                 onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-                className="w-4 h-4 text-greeting-magenta-400 border-greeting-purple-700 rounded focus:ring-greeting-magenta-400"
+                className="w-4 h-4 text-greeting-berry-400 border-greeting-cocoa-700 rounded focus:ring-greeting-berry-400"
               />
               <label htmlFor="isDefault" className="text-sm text-gray-300">
                 Set as default address
@@ -270,7 +270,7 @@ export default function AddressManagementPage() {
                   setIsAdding(false);
                   setEditingId(null);
                 }}
-                className="btn-secondary"
+                className="btn-outline"
               >
                 Cancel
               </button>
@@ -281,7 +281,7 @@ export default function AddressManagementPage() {
 
       {isLoading ? (
         <div className="text-center py-12">
-          <div className="animate-spin w-8 h-8 border-2 border-greeting-magenta-500 border-t-transparent rounded-full mx-auto" />
+          <div className="animate-spin w-8 h-8 border-2 border-greeting-berry-500 border-t-transparent rounded-full mx-auto" />
           <p className="text-gray-400 mt-4">Loading addresses...</p>
         </div>
       ) : addresses.length === 0 ? (
@@ -296,11 +296,11 @@ export default function AddressManagementPage() {
             <div
               key={address.id}
               className={`card p-6 relative ${
-                address.isDefault ? 'ring-2 ring-greeting-magenta-500 shadow-lg' : ''
+                address.isDefault ? 'ring-2 ring-greeting-berry-500 shadow-lg' : ''
               }`}
             >
               {address.isDefault && (
-                <span className="absolute top-4 right-4 badge badge-magenta text-xs">
+                <span className="absolute top-4 right-4 badge badge-berry text-xs">
                   Default
                 </span>
               )}
@@ -313,7 +313,7 @@ export default function AddressManagementPage() {
               <div className="flex gap-3 mt-4">
                 <button
                   onClick={() => handleEdit(address)}
-                  className="text-sm text-greeting-magenta-400 hover:text-greeting-magenta-300 font-medium transition-colors"
+                  className="text-sm text-greeting-berry-400 hover:text-greeting-berry-300 font-medium transition-colors"
                 >
                   Edit
                 </button>

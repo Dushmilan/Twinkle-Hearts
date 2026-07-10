@@ -80,7 +80,7 @@ export default function WishlistPage() {
             <Link to="/login" className="btn-primary">
               Sign In
             </Link>
-            <Link to="/register" className="btn-secondary">
+            <Link to="/register" className="btn-outline">
               Register
             </Link>
           </div>
@@ -121,7 +121,7 @@ export default function WishlistPage() {
             <div key={item.id} className="product-card group">
               <div className="relative">
                 <Link to={`/product/${item.product.id}`} className="block">
-                  <div className="aspect-[3/4] bg-greeting-bg-400 overflow-hidden">
+                  <div className="aspect-[3/4] bg-greeting-charcoal-400 overflow-hidden">
                     <img
                       src={getImageSrc(item.product.images?.[0]) || ''}
                       alt={item.product.name}
@@ -134,7 +134,7 @@ export default function WishlistPage() {
                 </Link>
                 <button
                   onClick={() => removeFromWishlist(item.productId)}
-                  className="absolute top-2 right-2 p-1.5 bg-greeting-bg-400 rounded-full shadow-lg hover:bg-greeting-magenta-500/20 transition-colors"
+                  className="absolute top-2 right-2 p-1.5 bg-greeting-charcoal-400 rounded-full shadow-lg hover:bg-greeting-berry-500/20 transition-colors"
                   title="Remove from wishlist"
                 >
                   <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
@@ -145,23 +145,23 @@ export default function WishlistPage() {
               <div className="p-4">
                 <p className="text-xs text-gray-500 mb-1 capitalize">{item.product.category}</p>
                 <Link to={`/product/${item.product.id}`}>
-                  <h3 className="font-display text-sm font-semibold text-gray-100 mb-2 line-clamp-2 hover:text-greeting-magenta-400 transition-colors">
+                  <h3 className="font-display text-sm font-semibold text-gray-100 mb-2 line-clamp-2 hover:text-greeting-berry-400 transition-colors">
                     {item.product.name}
                   </h3>
                 </Link>
-                <p className="font-body text-base font-bold text-greeting-magenta-400 mb-3">
+                <p className="font-body text-base font-bold text-greeting-berry-400 mb-3">
                   {formatCurrency(item.product.price)}
                 </p>
                 <div className="flex gap-2">
                   <Link
                     to={`/product/${item.product.id}`}
-                    className="flex-1 text-center px-3 py-2 border border-greeting-purple-700 text-gray-300 rounded-pill text-sm font-medium hover:bg-greeting-purple-700 hover:border-greeting-magenta-400 transition-all"
+                    className="flex-1 text-center px-3 py-2 border border-greeting-cocoa-700 text-gray-300 rounded-pill text-sm font-medium hover:bg-greeting-cocoa-700 hover:border-greeting-berry-400 transition-all"
                   >
                     View
                   </Link>
                   <Link
                     to={`/cart?add=${item.product.id}`}
-                    className="flex-1 text-center px-3 py-2 bg-greeting-magenta-500 text-gray-100 rounded-pill text-sm font-medium hover:bg-greeting-magenta-600 transition-colors"
+                    className="flex-1 text-center px-3 py-2 bg-greeting-berry-500 text-gray-100 rounded-pill text-sm font-medium hover:bg-greeting-berry-600 transition-colors"
                   >
                     Add
                   </Link>
