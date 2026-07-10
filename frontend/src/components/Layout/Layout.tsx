@@ -59,26 +59,26 @@ export default function Layout({ children }: LayoutProps) {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-greeting-charcoal-200 flex flex-col">
+    <div className="min-h-[100dvh] bg-twinkle-canvas flex flex-col">
       <OfflineBanner />
 
-      <header className="sticky top-0 z-50 bg-greeting-charcoal-200/80 backdrop-blur-lg border-b border-greeting-bronze-400">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-twinkle-mist/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center gap-2.5 group">
               <div className="relative">
                 <Heart
                   size={20}
-                  className="text-greeting-plum-500 group-hover:scale-110 transition-transform duration-300"
+                  className="text-twinkle-blush group-hover:scale-110 transition-transform duration-300"
                 />
                 <motion.span
-                  className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-greeting-plum-400"
+                  className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-twinkle-blush"
                   animate={{ opacity: [0.4, 1, 0.4] }}
                   transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
                 />
               </div>
-              <span className="text-xl font-display font-semibold text-gray-100 tracking-tight">
-                Twinkle<span className="text-greeting-plum-400">Hearts</span>
+              <span className="text-xl font-display font-semibold text-twinkle-ink tracking-tight">
+                Twinkle<span className="text-twinkle-blush">Hearts</span>
               </span>
             </Link>
 
@@ -92,7 +92,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center gap-2">
               <Link
                 to="/cart"
-                className="relative p-2.5 text-gray-400 hover:text-gray-100 transition-colors rounded-xl hover:bg-greeting-bronze-400"
+                className="relative p-2.5 text-twinkle-ink/50 hover:text-twinkle-ink transition-colors rounded-xl hover:bg-twinkle-mist/30"
               >
                 <ShoppingCart size={20} />
                 <AnimatePresence>
@@ -103,7 +103,7 @@ export default function Layout({ children }: LayoutProps) {
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                      className="absolute -top-0.5 -right-0.5 bg-greeting-plum-500 text-white text-[11px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center"
+                      className="absolute -top-0.5 -right-0.5 bg-twinkle-blush text-white text-[11px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center"
                     >
                       {itemCount > 9 ? '9+' : itemCount}
                     </motion.span>
@@ -115,14 +115,14 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="relative">
                   <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-greeting-bronze-400 transition-colors"
+                    className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-twinkle-mist/30 transition-colors"
                   >
-                    <div className="w-8 h-8 bg-greeting-plum-900 rounded-full flex items-center justify-center">
-                      <User size={15} className="text-greeting-plum-400" />
+                    <div className="w-8 h-8 bg-twinkle-ink/10 rounded-full flex items-center justify-center">
+                      <User size={15} className="text-twinkle-blush" />
                     </div>
                     <ChevronDown
                       size={10}
-                      className={`text-gray-500 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`}
+                      className={`text-twinkle-ink/40 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`}
                     />
                   </button>
 
@@ -135,11 +135,11 @@ export default function Layout({ children }: LayoutProps) {
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: -6, scale: 0.96 }}
                           transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                          className="absolute right-0 mt-2 w-56 bg-greeting-charcoal-400 rounded-xl shadow-lg border border-greeting-bronze-400 z-20 overflow-hidden"
+                          className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-twinkle-mist z-20 overflow-hidden"
                         >
-                          <div className="px-4 py-3 border-b border-greeting-bronze-400">
-                            <p className="text-sm font-semibold text-gray-100">{user?.name}</p>
-                            <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                          <div className="px-4 py-3 border-b border-twinkle-mist/40">
+                            <p className="text-sm font-semibold text-twinkle-ink">{user?.name}</p>
+                            <p className="text-xs text-twinkle-ink/50 truncate">{user?.email}</p>
                           </div>
                           <div className="py-1.5">
                             <DropdownLink to="/profile" icon={User} onClick={() => setIsMenuOpen(false)}>
@@ -156,17 +156,17 @@ export default function Layout({ children }: LayoutProps) {
                             </DropdownLink>
                             {user?.role === 'ADMIN' && (
                               <>
-                                <div className="my-1.5 border-t border-greeting-bronze-400" />
+                                <div className="my-1.5 border-t border-twinkle-mist/40" />
                                 <DropdownLink to="/admin" icon={HeartPulse} onClick={() => setIsMenuOpen(false)} highlight>
                                   Admin Dashboard
                                 </DropdownLink>
                               </>
                             )}
                           </div>
-                          <div className="border-t border-greeting-bronze-400 py-1.5">
+                          <div className="border-t border-twinkle-mist/40 py-1.5">
                             <button
                               onClick={handleLogout}
-                              className="flex items-center gap-3 w-full text-left px-4 py-2 text-sm text-greeting-plum-400 hover:bg-greeting-plum-500/20 transition-colors"
+                              className="flex items-center gap-3 w-full text-left px-4 py-2 text-sm text-twinkle-blush hover:bg-twinkle-blush/20 transition-colors"
                             >
                               <LogOut size={15} />
                               Logout
@@ -189,7 +189,7 @@ export default function Layout({ children }: LayoutProps) {
               )}
 
               <button
-                className="md:hidden p-2 rounded-xl text-gray-400 hover:text-gray-100 hover:bg-greeting-bronze-400 transition-colors"
+                className="md:hidden p-2 rounded-xl text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30 transition-colors"
                 onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
                 aria-label="Toggle navigation"
               >
@@ -206,7 +206,7 @@ export default function Layout({ children }: LayoutProps) {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="md:hidden border-t border-greeting-bronze-400 overflow-hidden"
+              className="md:hidden border-t border-twinkle-mist/40 overflow-hidden"
             >
               <motion.div
                 variants={staggerContainer}
@@ -217,7 +217,7 @@ export default function Layout({ children }: LayoutProps) {
                 <MobileNavItem to="/shop" label="Shop" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
 
                 <div className="pt-3 pb-2">
-                  <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest px-3">Account</p>
+                  <p className="text-[11px] font-semibold text-twinkle-ink/40 uppercase tracking-widest px-3">Account</p>
                 </div>
 
                 {isAuthenticated ? (
@@ -231,14 +231,14 @@ export default function Layout({ children }: LayoutProps) {
                     )}
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-3 py-2.5 text-sm text-greeting-plum-400 hover:bg-greeting-plum-500/20 rounded-lg transition-colors"
+                      className="w-full text-left px-3 py-2.5 text-sm text-twinkle-blush hover:bg-twinkle-blush/20 rounded-lg transition-colors"
                     >
                       Logout
                     </button>
                   </>
                 ) : (
                   <div className="px-3 space-y-2 pt-1">
-                    <Link to="/login" className="block w-full text-center py-2.5 text-sm font-medium text-gray-300 hover:bg-greeting-bronze-400 rounded-lg transition-colors" onClick={() => setIsMobileNavOpen(false)}>
+                    <Link to="/login" className="block w-full text-center py-2.5 text-sm font-medium text-twinkle-ink/70 hover:bg-twinkle-mist/30 rounded-lg transition-colors" onClick={() => setIsMobileNavOpen(false)}>
                       Sign In
                     </Link>
                     <Link to="/register" className="btn-primary w-full justify-center text-sm" onClick={() => setIsMobileNavOpen(false)}>
@@ -256,23 +256,23 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
 
-      <footer className="bg-greeting-charcoal-400 border-t border-greeting-bronze-400 mt-auto">
+      <footer className="bg-twinkle-sky/30 border-t border-twinkle-sky/60 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-2 mb-3">
-                <Heart size={18} className="text-greeting-plum-400" />
-                <span className="text-lg font-display font-semibold text-gray-100 tracking-tight">
-                  Twinkle<span className="text-greeting-plum-400">Hearts</span>
+                <Heart size={18} className="text-twinkle-blush" />
+                <span className="text-lg font-display font-semibold text-twinkle-ink tracking-tight">
+                  Twinkle<span className="text-twinkle-blush">Hearts</span>
                 </span>
               </div>
-              <p className="text-sm text-gray-400 leading-relaxed max-w-[48ch] font-body">
+              <p className="text-sm text-twinkle-ink/60 leading-relaxed max-w-[48ch] font-body">
                 Beautiful greeting cards delivered with care across Sri Lanka. Order via WhatsApp for a personal touch.
               </p>
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-gray-100 mb-4 uppercase tracking-widest">Shop</h3>
+              <h3 className="text-xs font-semibold text-twinkle-ink mb-4 uppercase tracking-widest">Shop</h3>
               <ul className="space-y-2.5">
                 <FooterLink to="/shop">All Cards</FooterLink>
                 <FooterLink to="/shop?category=birthday">Birthday</FooterLink>
@@ -283,7 +283,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-gray-100 mb-4 uppercase tracking-widest">Account</h3>
+              <h3 className="text-xs font-semibold text-twinkle-ink mb-4 uppercase tracking-widest">Account</h3>
               <ul className="space-y-2.5">
                 <FooterLink to="/cart">Cart</FooterLink>
                 {isAuthenticated ? (
@@ -299,27 +299,27 @@ export default function Layout({ children }: LayoutProps) {
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-gray-100 mb-4 uppercase tracking-widest">Contact</h3>
-              <ul className="space-y-2.5 text-sm text-gray-400">
+              <h3 className="text-xs font-semibold text-twinkle-ink mb-4 uppercase tracking-widest">Contact</h3>
+              <ul className="space-y-2.5 text-sm text-twinkle-ink/60">
                 <li>
-                  <a href="https://wa.me/947XXXXXXXX" target="_blank" rel="noopener noreferrer" className="hover:text-greeting-plum-400 transition-colors">
+                  <a href="https://wa.me/947XXXXXXXX" target="_blank" rel="noopener noreferrer" className="hover:text-twinkle-blush transition-colors">
                     WhatsApp
                   </a>
                 </li>
                 <li>
-                  <a href="mailto:hello@twinklehearts.lk" className="hover:text-greeting-plum-400 transition-colors">
+                  <a href="mailto:hello@twinklehearts.lk" className="hover:text-twinkle-blush transition-colors">
                     hello@twinklehearts.lk
                   </a>
                 </li>
-                <li className="text-gray-500 text-xs pt-1">
+                <li className="text-twinkle-ink/40 text-xs pt-1">
                   Colombo, Sri Lanka
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-10 pt-6 border-t border-greeting-bronze-400 text-center">
-            <p className="text-xs text-gray-500">
+          <div className="mt-10 pt-6 border-t border-twinkle-mist/40 text-center">
+            <p className="text-xs text-twinkle-ink/40">
               &copy; 2026 TwinkleHearts. Made with care in Sri Lanka.
             </p>
           </div>
@@ -340,11 +340,11 @@ function NavLink({ to, active, children }: { to: string; active: boolean; childr
       {active && (
         <motion.div
           layoutId="nav-indicator"
-          className="absolute inset-0 bg-greeting-plum-500/20 rounded-lg -z-10"
+          className="absolute inset-0 bg-twinkle-blush/20 rounded-lg -z-10"
           transition={{ type: 'spring', stiffness: 350, damping: 25 }}
         />
       )}
-      <span className={`relative z-10 ${active ? 'text-greeting-plum-300' : 'text-gray-300 hover:text-gray-100'}`}>
+      <span className={`relative z-10 ${active ? 'text-twinkle-blush' : 'text-twinkle-ink/70 hover:text-twinkle-ink'}`}>
         {children}
       </span>
     </Link>
@@ -366,10 +366,10 @@ function MobileNavItem({ to, label, location, highlight, onClick }: {
         onClick={onClick}
         className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
           highlight
-            ? 'text-greeting-plum-300 bg-greeting-plum-500/20'
+            ? 'text-twinkle-blush bg-twinkle-blush/20'
             : active
-            ? 'text-greeting-plum-300 bg-greeting-plum-500/20'
-            : 'text-gray-400 hover:text-gray-100 hover:bg-greeting-bronze-400'
+            ? 'text-twinkle-blush bg-twinkle-blush/20'
+            : 'text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30'
         }`}
       >
         {label}
@@ -391,11 +391,11 @@ function DropdownLink({ to, icon: Icon, onClick, highlight, children }: {
       onClick={onClick}
       className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
         highlight
-          ? 'text-greeting-plum-300 hover:bg-greeting-plum-500/20 font-medium'
-          : 'text-gray-300 hover:bg-greeting-bronze-400'
+          ? 'text-twinkle-blush hover:bg-twinkle-blush/20 font-medium'
+          : 'text-twinkle-ink/70 hover:bg-twinkle-mist/30'
       }`}
     >
-      <Icon size={15} className="text-gray-400" />
+      <Icon size={15} className="text-twinkle-ink/50" />
       {children}
     </Link>
   );
@@ -404,7 +404,7 @@ function DropdownLink({ to, icon: Icon, onClick, highlight, children }: {
 function FooterLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <li>
-      <Link to={to} className="text-sm text-gray-400 hover:text-greeting-plum-400 transition-colors">
+      <Link to={to} className="text-sm text-twinkle-ink/50 hover:text-twinkle-blush transition-colors">
         {children}
       </Link>
     </li>

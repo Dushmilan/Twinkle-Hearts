@@ -129,12 +129,12 @@ export default function AddressManagementPage() {
   };
 
   return (
-    <div className="bg-greeting-bronze-100 min-h-screen">
+    <div className="bg-twinkle-canvas min-h-screen">
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="font-display text-3xl font-bold text-greeting-plum-900">My Addresses</h1>
-          <p className="text-gray-700 mt-1">Manage your delivery addresses</p>
+          <h1 className="font-display text-3xl font-bold text-twinkle-ink">My Addresses</h1>
+          <p className="text-twinkle-ink/70 mt-1">Manage your delivery addresses</p>
         </div>
         <button
           onClick={() => {
@@ -159,7 +159,7 @@ export default function AddressManagementPage() {
 
       {isAdding && (
         <div className="card p-6 mb-8">
-          <h2 className="font-display text-xl font-semibold text-gray-100 mb-6">
+          <h2 className="font-display text-xl font-semibold text-twinkle-ink mb-6">
             {editingId ? 'Edit Address' : 'Add New Address'}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -178,7 +178,7 @@ export default function AddressManagementPage() {
               <div>
                 <label className="label-text">Phone Number</label>
                 <div className="flex gap-2">
-                  <div className="input-field text-gray-300 w-20 text-center font-medium" aria-label="Country code">
+                  <div className="input-field text-twinkle-ink/70 w-20 text-center font-medium" aria-label="Country code">
                     {COUNTRY_CODE}
                   </div>
                   <input
@@ -254,9 +254,9 @@ export default function AddressManagementPage() {
                 id="isDefault"
                 checked={formData.isDefault}
                 onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-                className="w-4 h-4 text-greeting-plum-400 border-greeting-bronze-400 rounded focus:ring-greeting-plum-400"
+                className="w-4 h-4 text-twinkle-blush border-twinkle-mist rounded focus:ring-twinkle-blush"
               />
-              <label htmlFor="isDefault" className="text-sm text-gray-300">
+              <label htmlFor="isDefault" className="text-sm text-twinkle-ink/70">
                 Set as default address
               </label>
             </div>
@@ -282,13 +282,13 @@ export default function AddressManagementPage() {
 
       {isLoading ? (
         <div className="text-center py-12">
-          <div className="animate-spin w-8 h-8 border-2 border-greeting-plum-500 border-t-transparent rounded-full mx-auto" />
-          <p className="text-gray-400 mt-4">Loading addresses...</p>
+          <div className="animate-spin w-8 h-8 border-2 border-twinkle-ink border-t-transparent rounded-full mx-auto" />
+          <p className="text-twinkle-ink/50 mt-4">Loading addresses...</p>
         </div>
       ) : addresses.length === 0 ? (
         <div className="card">
           <div className="empty-state py-12">
-            <p className="text-gray-400">No addresses saved yet</p>
+            <p className="text-twinkle-ink/50">No addresses saved yet</p>
           </div>
         </div>
       ) : (
@@ -297,7 +297,7 @@ export default function AddressManagementPage() {
             <div
               key={address.id}
               className={`card p-6 relative ${
-                address.isDefault ? 'ring-2 ring-greeting-plum-500 shadow-lg' : ''
+                address.isDefault ? 'ring-2 ring-twinkle-blush shadow-lg' : ''
               }`}
             >
               {address.isDefault && (
@@ -305,16 +305,16 @@ export default function AddressManagementPage() {
                   Default
                 </span>
               )}
-              <h3 className="font-display font-semibold text-gray-100 mb-2">{address.label}</h3>
-              <p className="text-sm text-gray-400 mb-1">{address.phone}</p>
-              <p className="text-sm text-gray-400 mb-1">{address.street}</p>
-              <p className="text-sm text-gray-400">
+              <h3 className="font-display font-semibold text-twinkle-ink mb-2">{address.label}</h3>
+              <p className="text-sm text-twinkle-ink/50 mb-1">{address.phone}</p>
+              <p className="text-sm text-twinkle-ink/50 mb-1">{address.street}</p>
+              <p className="text-sm text-twinkle-ink/50">
                 {address.city}, {address.state} {address.zip}
               </p>
               <div className="flex gap-3 mt-4">
                 <button
                   onClick={() => handleEdit(address)}
-                  className="text-sm text-greeting-plum-400 hover:text-greeting-plum-300 font-medium transition-colors"
+                  className="text-sm text-twinkle-ink hover:text-twinkle-blush font-medium transition-colors"
                 >
                   Edit
                 </button>

@@ -57,9 +57,9 @@ export default function OrderHistoryPage() {
 
   if (isLoading) {
     return (
-      <div className="bg-greeting-bronze-100 min-h-screen">
+      <div className="bg-twinkle-canvas min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="font-display text-3xl font-bold text-greeting-plum-900 mb-6">My Orders</h1>
+        <h1 className="font-display text-3xl font-bold text-twinkle-ink mb-6">My Orders</h1>
         <div className="space-y-4">
           <OrderSkeleton />
           <OrderSkeleton />
@@ -70,10 +70,10 @@ export default function OrderHistoryPage() {
   }
 
   return (
-    <div className="bg-greeting-bronze-100 min-h-screen">
+    <div className="bg-twinkle-canvas min-h-screen">
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="font-display text-3xl font-bold text-greeting-plum-900 mb-1">My Orders</h1>
-      <p className="text-gray-700 mb-8">Track your card orders</p>
+      <h1 className="font-display text-3xl font-bold text-twinkle-ink mb-1">My Orders</h1>
+      <p className="text-twinkle-ink/70 mb-8">Track your card orders</p>
 
       {orders.length === 0 ? (
         <div className="card">
@@ -97,24 +97,24 @@ export default function OrderHistoryPage() {
             <div key={order.id} className="card p-6">
               <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
                 <div>
-                  <h3 className="font-display text-lg font-semibold text-gray-100">
+                  <h3 className="font-display text-lg font-semibold text-twinkle-ink">
                     Order #{order.id.slice(0, 8).toUpperCase()}
                   </h3>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-twinkle-ink/50">
                     {new Date(order.createdAt).toLocaleDateString('en-LK', { year: 'numeric', month: 'long', day: 'numeric' })}
                   </p>
                 </div>
                 {getStatusBadge(order.status)}
               </div>
 
-              <div className="border-t border-b border-greeting-bronze-400 py-4 my-4 space-y-3">
+              <div className="border-t border-b border-twinkle-mist py-4 my-4 space-y-3">
                 {order.items.map((item: any, index) => (
                   <div key={index} className="flex justify-between items-center">
                     <div>
-                      <p className="font-medium text-gray-100">{item.productName}</p>
-                      <p className="text-sm text-gray-400">Qty: {item.quantity}</p>
+                      <p className="font-medium text-twinkle-ink">{item.productName}</p>
+                      <p className="text-sm text-twinkle-ink/50">Qty: {item.quantity}</p>
                     </div>
-                    <p className="font-medium text-gray-100">
+                    <p className="font-medium text-twinkle-ink">
                       {formatCurrency(item.price * item.quantity)}
                     </p>
                   </div>
@@ -123,8 +123,8 @@ export default function OrderHistoryPage() {
 
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-gray-400">
-                    Total: <span className="text-lg font-bold text-greeting-plum-400">{formatCurrency(order.total)}</span>
+                  <p className="text-sm text-twinkle-ink/50">
+                    Total: <span className="text-lg font-bold text-twinkle-blush">{formatCurrency(order.total)}</span>
                   </p>
                 </div>
                 <Link

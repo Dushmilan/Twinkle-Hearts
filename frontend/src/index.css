@@ -17,8 +17,8 @@
 
   body {
     font-family: theme('fontFamily.body');
-    background-color: theme('colors.greeting-charcoal.200');
-    color: theme('colors.gray.400');
+    background-color: theme('colors.twinkle.canvas');
+    color: theme('colors.twinkle.ink');
     line-height: 1.6;
     margin: 0;
     padding: 0;
@@ -28,7 +28,7 @@
     font-family: theme('fontFamily.display');
     font-weight: 600;
     line-height: 1.1;
-    color: theme('colors.gray.100');
+    color: theme('colors.twinkle.ink');
     letter-spacing: -0.02em;
     font-variation-settings: 'opsz' 72, 'SOFT' 50;
   }
@@ -40,12 +40,12 @@
   }
 
   ::selection {
-    background-color: theme('colors.greeting-plum.400');
-    color: theme('colors.gray.100');
+    background-color: theme('colors.twinkle.blush');
+    color: theme('colors.twinkle.ink');
   }
 
   :focus-visible {
-    outline: 2px solid theme('colors.greeting-plum.400');
+    outline: 2px solid theme('colors.twinkle.blush');
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -61,27 +61,27 @@
 
 @layer components {
   /* ============================================
-     CARD — Light variant (shopping surfaces)
+     CARD — Shopping surfaces
      ============================================ */
   .card {
     background: #ffffff;
-    border: 1px solid theme('colors.greeting-lilac.200');
+    border: 1px solid theme('colors.twinkle.mist');
     border-radius: theme('borderRadius.card');
-    box-shadow: theme('boxShadow.lilac');
+    box-shadow: theme('boxShadow.blush');
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .card:hover {
     box-shadow: theme('boxShadow.paper-md');
-    border-color: theme('colors.greeting-plum.400');
+    border-color: theme('colors.twinkle.blush');
   }
 
   /* ============================================
-     CARD DARK — Solid dark card (brand/marketing)
+     CARD DARK — Brand/marketing cards
      ============================================ */
   .card-dark {
-    background: theme('colors.greeting-charcoal.400');
-    border: 1px solid theme('colors.greeting-bronze.400');
+    background: theme('colors.twinkle.sky');
+    border: 1px solid theme('colors.twinkle.mist');
     border-radius: theme('borderRadius.card');
     box-shadow: theme('boxShadow.paper');
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -89,7 +89,7 @@
 
   .card-dark:hover {
     box-shadow: theme('boxShadow.paper-md');
-    border-color: theme('colors.greeting-plum.400');
+    border-color: theme('colors.twinkle.blush');
   }
 
   /* ============================================
@@ -103,8 +103,8 @@
      SHEET — page section backgrounds
      ============================================ */
   .sheet {
-    background: theme('colors.greeting-charcoal.500');
-    border: 1px solid theme('colors.greeting-bronze.400');
+    background: theme('colors.white');
+    border: 1px solid theme('colors.twinkle.mist');
     border-radius: theme('borderRadius.container');
   }
 
@@ -113,12 +113,12 @@
      ============================================ */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2.5
-           bg-greeting-plum-500 hover:bg-greeting-plum-400 active:bg-greeting-plum-600
+           bg-twinkle-ink hover:bg-twinkle-ink/90 active:bg-twinkle-ink/80
            text-white font-body font-semibold
            py-3 px-6 rounded-full
            transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-greeting-plum-400 focus-visible:ring-offset-2
+           focus-visible:ring-2 focus-visible:ring-twinkle-blush focus-visible:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:scale-100
            shadow-paper
            min-h-[44px];
@@ -126,26 +126,26 @@
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2
-           bg-transparent hover:bg-greeting-plum-900/30 active:bg-greeting-plum-900/30
-           text-greeting-plum-400 hover:text-greeting-plum-300
+           bg-transparent hover:bg-twinkle-blush/20 active:bg-twinkle-blush/20
+           text-twinkle-ink hover:text-twinkle-blush
            font-body font-medium
            py-2.5 px-5 rounded-full
            transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-greeting-plum-400
+           focus-visible:ring-2 focus-visible:ring-twinkle-blush
            min-h-[44px];
   }
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2
-           bg-transparent hover:bg-greeting-plum-900/20 active:bg-greeting-plum-900/20
-           text-greeting-teal-400 hover:text-greeting-teal-300
+           bg-transparent hover:bg-twinkle-sky/30 active:bg-twinkle-sky/30
+           text-twinkle-ink hover:text-twinkle-ink
            font-body font-semibold
            py-2.5 px-6 rounded-full
-           border border-greeting-bronze-400 hover:border-greeting-bronze-300
+           border border-twinkle-mist hover:border-twinkle-blush
            transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-greeting-plum-400 focus-visible:ring-offset-2
+           focus-visible:ring-2 focus-visible:ring-twinkle-blush focus-visible:ring-offset-2
            min-h-[44px];
   }
 
@@ -164,12 +164,12 @@
 
   .btn-dark {
     @apply inline-flex items-center justify-center gap-2
-           bg-gray-900 hover:bg-gray-800 active:bg-gray-950
+           bg-twinkle-ink hover:bg-twinkle-ink/90 active:bg-twinkle-ink/80
            text-white font-body font-semibold
            py-3 px-7 rounded-full
            transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-gray-300 focus-visible:ring-offset-2
+           focus-visible:ring-2 focus-visible:ring-twinkle-blush focus-visible:ring-offset-2
            min-h-[44px];
   }
 
@@ -178,29 +178,29 @@
      ============================================ */
   .input-field {
     @apply w-full px-4 py-3
-           bg-greeting-charcoal-500 border border-greeting-bronze-400 rounded-[10px]
-           font-body text-gray-100 text-sm
-           placeholder:text-gray-500
-           focus:border-greeting-plum-400 focus:ring-2 focus:ring-greeting-plum-400/20 focus:ring-offset-2 focus:ring-offset-greeting-charcoal-500
-           hover:border-greeting-bronze-300
+           bg-white border border-twinkle-mist rounded-[10px]
+           font-body text-twinkle-ink text-sm
+           placeholder:text-twinkle-ink/40
+           focus:border-twinkle-blush focus:ring-2 focus:ring-twinkle-blush/20 focus:ring-offset-2 focus:ring-offset-white
+           hover:border-twinkle-blush/50
            outline-none
            transition-all duration-200 ease-spring;
   }
 
   .input-field-error {
-    @apply border-greeting-plum-400 focus:border-greeting-plum-400 focus:ring-greeting-plum-400/20;
+    @apply border-twinkle-blush focus:border-twinkle-blush focus:ring-twinkle-blush/20;
   }
 
   .label-text {
-    @apply block text-sm font-body font-semibold text-gray-100 mb-1.5;
+    @apply block text-sm font-body font-semibold text-twinkle-ink mb-1.5;
   }
 
   .helper-text {
-    @apply block text-xs font-body text-gray-400 mt-1;
+    @apply block text-xs font-body text-twinkle-ink/50 mt-1;
   }
 
   .error-text {
-    @apply block text-xs font-body text-greeting-plum-400 mt-1;
+    @apply block text-xs font-body text-twinkle-blush mt-1;
   }
 
   /* ============================================
@@ -215,23 +215,23 @@
   }
 
   .badge-plum {
-    @apply bg-greeting-plum-900/30 text-greeting-plum-400;
+    @apply bg-twinkle-blush/20 text-twinkle-blush;
   }
 
   .badge-lilac {
-    @apply bg-greeting-lilac-300/30 text-greeting-lilac-300;
+    @apply bg-twinkle-mist/30 text-twinkle-mist;
   }
 
   .badge-bronze {
-    @apply bg-greeting-bronze-400/30 text-greeting-bronze-300;
+    @apply bg-twinkle-sky/40 text-twinkle-ink/70;
   }
 
   .badge-teal {
-    @apply bg-greeting-teal-900/30 text-greeting-teal-300;
+    @apply bg-twinkle-sky/40 text-twinkle-sky;
   }
 
   .badge-gray {
-    @apply bg-gray-800 text-gray-300;
+    @apply bg-gray-200 text-gray-600;
   }
 
   /* ============================================
@@ -241,18 +241,18 @@
     @apply inline-flex items-center gap-2
            px-4 py-2.5 rounded-[10px]
            font-body text-sm font-medium
-           bg-greeting-charcoal-400 border border-greeting-bronze-400
-           text-gray-300
-           hover:border-greeting-plum-500 hover:text-greeting-plum-400
-           active:bg-greeting-plum-500 active:text-white active:border-greeting-plum-500
+           bg-white border border-twinkle-mist
+           text-twinkle-ink/70
+           hover:border-twinkle-blush hover:text-twinkle-blush
+           active:bg-twinkle-ink active:text-white active:border-twinkle-ink
            transition-all duration-200 ease-spring
            cursor-pointer select-none
            whitespace-nowrap;
   }
 
   .category-pill-active {
-    @apply bg-greeting-plum-500 text-white border-greeting-plum-500 shadow-paper
-           hover:bg-greeting-plum-400 hover:text-white hover:border-greeting-plum-400;
+    @apply bg-twinkle-ink text-white border-twinkle-ink shadow-paper
+           hover:bg-twinkle-ink/90 hover:text-white hover:border-twinkle-ink/90;
   }
 
   /* ============================================
@@ -263,7 +263,7 @@
   }
 
   .product-card-image {
-    @apply aspect-[3/4] bg-greeting-charcoal-700 overflow-hidden;
+    @apply aspect-[3/4] bg-twinkle-mist/20 overflow-hidden;
   }
 
   .product-card-body {
@@ -280,9 +280,9 @@
   .skeleton-shimmer {
     background: linear-gradient(
       90deg,
-      theme('colors.greeting-charcoal.700') 25%,
-      theme('colors.greeting-charcoal.600') 37%,
-      theme('colors.greeting-charcoal.700') 63%
+      theme('colors.twinkle.mist') 25%,
+      theme('colors.twinkle.sky') 37%,
+      theme('colors.twinkle.mist') 63%
     );
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
@@ -307,16 +307,16 @@
   }
 
   .empty-state-icon {
-    @apply w-14 h-14 rounded-full bg-greeting-bronze-400 flex items-center justify-center mb-4
-           text-greeting-teal-400;
+    @apply w-14 h-14 rounded-full bg-twinkle-sky/30 flex items-center justify-center mb-4
+           text-twinkle-sky;
   }
 
   .empty-state-title {
-    @apply text-lg font-semibold text-gray-100 mb-1;
+    @apply text-lg font-semibold text-twinkle-ink mb-1;
   }
 
   .empty-state-text {
-    @apply text-sm text-gray-400 max-w-[40ch] leading-relaxed;
+    @apply text-sm text-twinkle-ink/60 max-w-[40ch] leading-relaxed;
   }
 
   /* ============================================
@@ -325,23 +325,23 @@
   .section-eyebrow {
     @apply inline-flex items-center gap-2
            px-3 py-1.5 rounded-full
-           bg-greeting-plum-900/30 text-greeting-plum-400
+           bg-twinkle-blush/20 text-twinkle-blush
            text-xs font-body font-semibold uppercase tracking-wider;
   }
 
   .section-eyebrow-gray {
     @apply inline-flex items-center gap-2
            px-3 py-1.5 rounded-full
-           bg-gray-800 text-gray-300
+           bg-twinkle-mist/30 text-twinkle-ink/60
            text-xs font-body font-semibold uppercase tracking-wider;
   }
 
   .section-heading {
-    @apply text-3xl sm:text-4xl lg:text-5xl font-display font-semibold tracking-tight text-gray-100;
+    @apply text-3xl sm:text-4xl lg:text-5xl font-display font-semibold tracking-tight text-twinkle-ink;
   }
 
   .section-subheading {
-    @apply font-body text-base text-gray-400 leading-relaxed max-w-[52ch];
+    @apply font-body text-base text-twinkle-ink/60 leading-relaxed max-w-[52ch];
   }
 
   /* ============================================
@@ -352,16 +352,16 @@
   }
 
   .admin-table th {
-    @apply px-4 py-3 text-xs font-body font-semibold text-gray-400 uppercase tracking-wider
-           bg-greeting-charcoal-200 border-b border-greeting-bronze-400;
+    @apply px-4 py-3 text-xs font-body font-semibold text-twinkle-ink/50 uppercase tracking-wider
+           bg-twinkle-canvas border-b border-twinkle-mist;
   }
 
   .admin-table td {
-    @apply px-4 py-3.5 text-sm text-gray-300 border-b border-greeting-bronze-400;
+    @apply px-4 py-3.5 text-sm text-twinkle-ink/80 border-b border-twinkle-mist;
   }
 
   .admin-table tr {
-    @apply transition-colors duration-150 hover:bg-greeting-charcoal-400;
+    @apply transition-colors duration-150 hover:bg-twinkle-sky/20;
   }
 
   /* ============================================
@@ -380,17 +380,17 @@
 
   .trilingual-line-en {
     font-family: 'Playfair Display', serif;
-    @apply text-gray-100;
+    @apply text-twinkle-ink;
   }
 
   .trilingual-line-ta {
     font-family: 'Noto Serif Tamil', serif;
-    @apply text-gray-200;
+    @apply text-twinkle-ink/80;
   }
 
   .trilingual-line-si {
     font-family: 'Noto Serif Sinhala', serif;
-    @apply text-gray-200;
+    @apply text-twinkle-ink/80;
   }
 
   /* ============================================
@@ -401,38 +401,38 @@
   }
 
   .stat-value {
-    @apply font-mono text-2xl sm:text-3xl font-bold text-greeting-plum-400 mb-0.5 tracking-tight;
+    @apply font-mono text-2xl sm:text-3xl font-bold text-twinkle-blush mb-0.5 tracking-tight;
   }
 
   .stat-label {
-    @apply text-sm text-gray-400;
+    @apply text-sm text-twinkle-ink/60;
   }
 
   /* ============================================
      FEATURE ITEM
      ============================================ */
   .feature-icon {
-    @apply w-10 h-10 rounded-xl bg-greeting-plum-500/20 flex items-center justify-center flex-shrink-0;
+    @apply w-10 h-10 rounded-xl bg-twinkle-blush/20 flex items-center justify-center flex-shrink-0;
   }
 
   .feature-icon-inner {
-    @apply text-greeting-plum-400;
+    @apply text-twinkle-blush;
   }
 
   .feature-title {
-    @apply font-semibold text-sm text-gray-100;
+    @apply font-semibold text-sm text-twinkle-ink;
   }
 
   .feature-description {
-    @apply text-sm text-gray-400;
+    @apply text-sm text-twinkle-ink/60;
   }
 
   /* ============================================
      CTA SECTION
      ============================================ */
   .cta-section {
-    @apply bg-greeting-charcoal-600 text-white;
-    border-top: 1px solid theme('colors.greeting-bronze.400');
+    @apply bg-twinkle-sky/30 text-twinkle-ink;
+    border-top: 1px solid theme('colors.twinkle.mist');
   }
 
   .cta-heading {
@@ -440,7 +440,7 @@
   }
 
   .cta-text {
-    @apply text-base text-gray-400 mb-10 max-w-lg mx-auto leading-relaxed;
+    @apply text-base text-twinkle-ink/60 mb-10 max-w-lg mx-auto leading-relaxed;
   }
 }
 
@@ -481,8 +481,8 @@
     background: linear-gradient(
       to right,
       transparent,
-      theme('colors.greeting-bronze.400'),
-      theme('colors.greeting-bronze.400'),
+      theme('colors.twinkle.mist'),
+      theme('colors.twinkle.mist'),
       transparent
     );
     border: none;

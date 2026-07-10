@@ -30,7 +30,7 @@ export default function ProfilePage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="bg-greeting-bronze-100 min-h-screen">
+      <div className="bg-twinkle-canvas min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-16">
         <div className="empty-state">
           <h3 className="empty-state-title">Please log in to view your profile</h3>
@@ -45,21 +45,21 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="bg-greeting-bronze-100 min-h-screen">
+    <div className="bg-twinkle-canvas min-h-screen">
     <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="font-display text-3xl font-bold text-greeting-plum-900 mb-8">My Profile</h1>
+      <h1 className="font-display text-3xl font-bold text-twinkle-ink mb-8">My Profile</h1>
 
       <div className="card p-6">
         {/* Avatar & Name */}
-        <div className="flex items-center gap-5 mb-8 pb-6 border-b border-greeting-bronze-400">
-          <div className="w-20 h-20 bg-greeting-plum-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-2xl font-display font-bold text-greeting-plum-400">
+        <div className="flex items-center gap-5 mb-8 pb-6 border-b border-twinkle-mist">
+          <div className="w-20 h-20 bg-twinkle-blush/20 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-2xl font-display font-bold text-twinkle-blush">
               {user?.name?.charAt(0).toUpperCase() || 'U'}
             </span>
           </div>
           <div>
-            <h2 className="font-display text-2xl font-semibold text-gray-100">{user?.name}</h2>
-            <p className="text-gray-400">{user?.email}</p>
+            <h2 className="font-display text-2xl font-semibold text-twinkle-ink">{user?.name}</h2>
+            <p className="text-twinkle-ink/50">{user?.email}</p>
             <span className="inline-block mt-2 badge badge-plum capitalize">
               {user?.role?.toLowerCase() || 'customer'}
             </span>
@@ -84,9 +84,9 @@ export default function ProfilePage() {
                 type="email"
                 value={user?.email || ''}
                 disabled
-                className="input-field bg-greeting-charcoal-200 text-gray-400 cursor-not-allowed"
+                className="input-field bg-twinkle-mist/20 text-twinkle-ink/50 cursor-not-allowed"
               />
-              <p className="mt-1 text-xs text-gray-500">Email cannot be changed</p>
+              <p className="mt-1 text-xs text-twinkle-ink/40">Email cannot be changed</p>
             </div>
 
             <div>
@@ -117,12 +117,12 @@ export default function ProfilePage() {
           <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
-                <p className="text-sm text-gray-400 mb-1">Phone</p>
-                <p className="text-gray-100 font-medium">{user?.phone || 'Not provided'}</p>
+                <p className="text-sm text-twinkle-ink/50 mb-1">Phone</p>
+                <p className="text-twinkle-ink font-medium">{user?.phone || 'Not provided'}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-400 mb-1">Member Since</p>
-                <p className="text-gray-100 font-medium">
+                <p className="text-sm text-twinkle-ink/50 mb-1">Member Since</p>
+                <p className="text-twinkle-ink font-medium">
                   {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-LK', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
                 </p>
               </div>

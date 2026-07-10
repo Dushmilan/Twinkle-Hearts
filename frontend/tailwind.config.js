@@ -7,47 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        'greeting-plum': {
-          300: '#CE6BC8',
-          400: '#AD3CA6',
-          500: '#8B2E85',
-          600: '#6B1D67',
-          900: '#430C4E',
-        },
-        'greeting-lilac': {
-          100: '#F3E8FF',
-          200: '#E9D5FF',
-          300: '#D8B4FE',
-        },
-        'greeting-bronze': {
-          100: '#F5F0ED',
-          200: '#D0BFB0',
-          300: '#BE8352',
-          400: '#4A3535',
-        },
-        'greeting-teal': {
-          50: '#EFFCF9',
-          100: '#C8F5EC',
-          200: '#91EBD9',
-          300: '#52D8C0',
-          400: '#4A8C8C',
-          500: '#073A55',
-          600: '#0D8377',
-          700: '#106961',
-          800: '#12544F',
-          900: '#144643',
-        },
-        'greeting-charcoal': {
-          50: '#1F091D',
-          100: '#1E1818',
-          200: '#1C1414',
-          300: '#1A1414',
-          400: '#161010',
-          500: '#120D0D',
-          600: '#0E0A0A',
-          700: '#0B0808',
-          800: '#0A0606',
-          900: '#080606',
+        twinkle: {
+          canvas: '#F5F7F6',
+          sky: '#DDE7EE',
+          mist: '#E5E1F4',
+          blush: '#F3C5C1',
+          ink: '#1A2844',
         },
         gray: {
           50: '#F9FAFB',
@@ -71,12 +36,12 @@ export default {
         serif: ['Geist Mono', 'monospace'],
       },
       boxShadow: {
-        'paper': '0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
-        'paper-md': '0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3)',
-        'paper-lg': '0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4)',
-        'press': 'inset 0 1px 2px rgba(0, 0, 0, 0.6), inset 0 -1px 0 rgba(255, 255, 255, 0.1)',
-        'letterpress': 'inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.6)',
-        'lilac': '0 4px 12px rgba(216, 180, 254, 0.3), 0 1px 3px rgba(216, 180, 254, 0.2)',
+        'paper': '0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)',
+        'paper-md': '0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06)',
+        'paper-lg': '0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06)',
+        'press': 'inset 0 1px 2px rgba(0, 0, 0, 0.08), inset 0 -1px 0 rgba(255, 255, 255, 0.6)',
+        'letterpress': 'inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 2px rgba(0, 0, 0, 0.08)',
+        'blush': '0 4px 12px rgba(243, 197, 193, 0.25), 0 1px 3px rgba(243, 197, 193, 0.15)',
       },
       borderRadius: {
         'card': '12px',

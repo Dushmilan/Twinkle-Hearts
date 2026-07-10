@@ -23,12 +23,12 @@ import { getImageSrc } from '../../utils/images';
 import type { ProductListItem } from '@twinkle-hearts/shared';
 
 const CATEGORIES = [
-    { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-greeting-plum-400', bg: 'bg-greeting-plum-500/20' },
-  { key: 'love', label: 'Love', icon: Heart, color: 'text-greeting-plum-400', bg: 'bg-greeting-plum-500/20' },
-  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-greeting-teal-400', bg: 'bg-greeting-teal-500/20' },
-  { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-gray-400', bg: 'bg-gray-500/20' },
-  { key: 'festival', label: 'Festival', icon: Star, color: 'text-greeting-plum-300', bg: 'bg-greeting-plum-500/20' },
-  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-greeting-bronze-300', bg: 'bg-greeting-bronze-300/20' },
+    { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-twinkle-blush', bg: 'bg-twinkle-blush/20' },
+  { key: 'love', label: 'Love', icon: Heart, color: 'text-twinkle-blush', bg: 'bg-twinkle-blush/20' },
+  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-twinkle-sky', bg: 'bg-twinkle-sky/20' },
+  { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-twinkle-ink/50', bg: 'bg-twinkle-ink/10' },
+  { key: 'festival', label: 'Festival', icon: Star, color: 'text-twinkle-blush', bg: 'bg-twinkle-blush/20' },
+  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-twinkle-mist', bg: 'bg-twinkle-mist/20' },
 ] as const;
 
 const containerVariants: Variants = {
@@ -70,7 +70,7 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* Trilingual Asymmetric Hero */}
-      <section className="relative overflow-hidden bg-greeting-charcoal-50">
+      <section className="relative overflow-hidden bg-gradient-to-br from-white via-twinkle-canvas to-twinkle-sky/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center min-h-[70dvh]">
             {/* Left: Trilingual hero stack (7 cols) */}
@@ -104,7 +104,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="trilingual-line-ta text-2xl sm:text-3xl lg:text-4xl mt-2 leading-snug"
               >
-                <span className="text-greeting-lilac-300">ஒரு அழகான</span> அட்டையுடன்
+                <span className="text-twinkle-blush">ஒரு அழகான</span> அட்டையுடன்
               </motion.p>
 
               {/* SI line */}
@@ -115,7 +115,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="trilingual-line-si text-2xl sm:text-3xl lg:text-4xl mt-1 leading-snug"
               >
-                <span className="text-greeting-lilac-300">ලස්සන කාඩ්</span> එකකින් කියන්න
+                <span className="text-twinkle-blush">ලස්සන කාඩ්</span> එකකින් කියන්න
               </motion.p>
 
               {/* EN finish */}
@@ -125,14 +125,14 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="trilingual-line-en text-5xl sm:text-6xl lg:text-7xl font-display font-semibold tracking-tight-display leading-[1.05] mt-1"
               >
-                <span className="text-greeting-lilac-300">beautiful card</span>
+                <span className="text-twinkle-blush">beautiful card</span>
               </motion.p>
 
               <motion.p
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.35 }}
-                className="mt-6 text-base sm:text-lg text-gray-400 leading-relaxed max-w-[48ch] font-body"
+                className="mt-6 text-base sm:text-lg text-twinkle-ink/50 leading-relaxed max-w-[48ch] font-body"
               >
                 Greeting cards that speak from the heart. Order via WhatsApp — personal, warm, and delivered across Sri Lanka with care.
               </motion.p>
@@ -148,7 +148,7 @@ export default function HomePage() {
                   href="https://wa.me/947XXXXXXXX"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-full border border-greeting-bronze-300 bg-transparent hover:bg-greeting-bronze-300/10 text-greeting-bronze-300 font-semibold text-sm transition-all active:scale-[0.98]"
+                  className="inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-full border border-twinkle-mist bg-transparent hover:bg-twinkle-mist/20 text-twinkle-ink/70 font-semibold text-sm transition-all active:scale-[0.98]"
                 >
                   <WhatsappLogo size={18} />
                   Chat with us
@@ -159,18 +159,18 @@ export default function HomePage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
-                className="mt-12 flex items-center gap-6 text-xs text-gray-500"
+                className="mt-12 flex items-center gap-6 text-xs text-twinkle-ink/40"
               >
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-bronze-300" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-twinkle-mist" />
                   1,200+ orders delivered
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-bronze-300" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-twinkle-mist" />
                   65+ unique designs
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-bronze-300" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-twinkle-mist" />
                   4.9 rating
                 </span>
               </motion.div>
@@ -185,7 +185,7 @@ export default function HomePage() {
                 className="absolute top-2 right-2 w-[260px] h-[340px] z-20"
                 title="With Love"
                 subtitle="For someone special"
-                textColor="text-greeting-plum-400"
+                textColor="text-twinkle-blush"
                 delay={0}
               />
               <FloatingLetterpressCard
@@ -195,7 +195,7 @@ export default function HomePage() {
                 className="absolute bottom-4 right-36 w-[240px] h-[310px] z-10"
                 title="Happy Birthday"
                 subtitle="Celebrate in style"
-                textColor="text-greeting-lilac-300"
+                textColor="text-twinkle-mist"
                 delay={1}
               />
               <FloatingLetterpressCard
@@ -205,7 +205,7 @@ export default function HomePage() {
                 className="absolute top-24 right-56 w-[220px] h-[280px] z-0"
                 title="Joy & Peace"
                 subtitle="Warm wishes"
-                textColor="text-greeting-teal-400"
+                textColor="text-twinkle-sky"
                 delay={2}
               />
             </div>
@@ -214,7 +214,7 @@ export default function HomePage() {
       </section>
 
       {/* Categories Bento Grid */}
-      <section className="bg-greeting-charcoal-200">
+      <section className="bg-twinkle-canvas">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="flex items-end justify-between mb-10">
             <div>
@@ -223,7 +223,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-greeting-plum-400 hover:text-greeting-plum-300 transition-colors font-body"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-twinkle-ink hover:text-twinkle-blush transition-colors font-body"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -242,20 +242,20 @@ export default function HomePage() {
                   to={`/shop?category=${cat.key}`}
                   className={`flex flex-col items-start gap-4 p-5 rounded-2xl border transition-all duration-300 active:scale-[0.97] ${
                     cat.key === 'birthday'
-                      ? `${cat.bg} ${cat.color} border-greeting-bronze-400 hover:shadow-lg`
-                      : 'bg-greeting-charcoal-200 border-greeting-bronze-400 hover:bg-greeting-charcoal-400 hover:shadow-lg'
+                      ? `${cat.bg} ${cat.color} border-twinkle-mist hover:shadow-lg`
+                      : 'bg-white border-twinkle-mist hover:bg-twinkle-sky/20 hover:shadow-lg'
                   }`}
                 >
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-greeting-charcoal-400/50`}>
-                    <cat.icon size={22} className={cat.key === 'birthday' ? cat.color : 'text-gray-400'} />
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-twinkle-mist/20`}>
+                    <cat.icon size={22} className={cat.key === 'birthday' ? cat.color : 'text-twinkle-ink/50'} />
                   </div>
                   <div>
                     <h3 className={`font-semibold text-sm ${
-                      cat.key === 'birthday' ? cat.color : 'text-gray-300'
+                      cat.key === 'birthday' ? cat.color : 'text-twinkle-ink/70'
                     }`}>
                       {cat.label}
                     </h3>
-                    <p className="text-xs text-gray-500 mt-0.5">Browse cards</p>
+                    <p className="text-xs text-twinkle-ink/40 mt-0.5">Browse cards</p>
                   </div>
                 </Link>
               </motion.div>
@@ -263,7 +263,7 @@ export default function HomePage() {
           </motion.div>
 
           <div className="mt-6 sm:hidden text-center">
-            <Link to="/shop" className="text-sm font-semibold text-greeting-plum-400 hover:text-greeting-plum-300 transition-colors inline-flex items-center gap-1 font-body">
+            <Link to="/shop" className="text-sm font-semibold text-twinkle-ink hover:text-twinkle-blush transition-colors inline-flex items-center gap-1 font-body">
               View all categories <ArrowRight size={14} />
             </Link>
           </div>
@@ -271,7 +271,7 @@ export default function HomePage() {
       </section>
 
       {/* Featured Products */}
-      <section className="bg-greeting-charcoal-200">
+      <section className="bg-twinkle-canvas">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="flex items-end justify-between mb-10">
             <div>
@@ -283,7 +283,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-greeting-plum-400 hover:text-greeting-plum-300 transition-colors font-body"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-twinkle-ink hover:text-twinkle-blush transition-colors font-body"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -343,7 +343,7 @@ export default function HomePage() {
       </section>
 
       {/* About + Stats Split */}
-      <section className="bg-greeting-charcoal-200">
+      <section className="bg-twinkle-canvas">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
@@ -351,10 +351,10 @@ export default function HomePage() {
               <h2 className="section-heading mt-2">
                 Bringing joy, one card at a time
               </h2>
-              <p className="mt-5 text-base text-gray-400 leading-relaxed font-body">
+              <p className="mt-5 text-base text-twinkle-ink/50 leading-relaxed font-body">
                 At TwinkleHearts, we believe every occasion deserves to be celebrated with something special. Our beautifully crafted greeting cards are designed to make your loved ones smile.
               </p>
-              <p className="mt-4 text-base text-gray-400 leading-relaxed font-body">
+              <p className="mt-4 text-base text-twinkle-ink/50 leading-relaxed font-body">
                 Based in Colombo, Sri Lanka, we offer a personal touch with easy ordering via WhatsApp. Browse our collection, choose your favorite cards, and we will handle the rest.
               </p>
 
@@ -376,7 +376,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA — Warm paper bridge */}
-      <section className="bg-greeting-charcoal-400 text-gray-100 relative overflow-hidden">
+      <section className="bg-twinkle-sky/30 text-twinkle-ink relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundRepeat: 'repeat',
@@ -386,19 +386,19 @@ export default function HomePage() {
           background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(214,54,142,0.06), transparent)',
         }} />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center relative z-10">
-          <p className="text-xs font-body font-medium tracking-[0.2em] uppercase text-greeting-plum-400 mb-5">
+          <p className="text-xs font-body font-medium tracking-[0.2em] uppercase text-twinkle-blush mb-5">
             Handwritten with care
           </p>
-          <h2 className="text-3xl sm:text-4xl font-display font-semibold tracking-tight mb-4 text-gray-50">
+          <h2 className="text-3xl sm:text-4xl font-display font-semibold tracking-tight mb-4 text-twinkle-ink">
             Ready to make someone smile?
           </h2>
-          <p className="text-base text-gray-400 mb-10 max-w-md mx-auto leading-relaxed font-body">
+          <p className="text-base text-twinkle-ink/50 mb-10 max-w-md mx-auto leading-relaxed font-body">
             Browse our collection of greeting cards and find the perfect message for your loved ones.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/shop"
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-greeting-plum-500 text-gray-100 hover:bg-greeting-plum-600 font-semibold text-sm transition-all active:scale-[0.98] shadow-lg shadow-greeting-plum-500/20"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-twinkle-ink text-white hover:bg-twinkle-ink/90 font-semibold text-sm transition-all active:scale-[0.98] shadow-lg shadow-twinkle-ink/10"
             >
               Shop All Cards
             </Link>
@@ -406,7 +406,7 @@ export default function HomePage() {
               href="https://wa.me/947XXXXXXXX"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800/30 text-gray-200 font-medium text-sm transition-all active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-twinkle-mist/50 hover:border-twinkle-mist hover:bg-twinkle-mist/20 text-twinkle-ink/70 font-medium text-sm transition-all active:scale-[0.98]"
             >
               <WhatsappLogo size={18} />
               Chat on WhatsApp
@@ -424,9 +424,9 @@ export default function HomePage() {
 /* ---- Floating Letterpress Card (3D paper card mockup) ---- */
 
 const cardAccentMap: Record<string, { iconBg: string; footerBg: string }> = {
-  'text-greeting-plum-400': { iconBg: 'bg-greeting-plum-400/20', footerBg: 'bg-greeting-plum-400/15' },
-  'text-greeting-lilac-300': { iconBg: 'bg-greeting-lilac-300/20', footerBg: 'bg-greeting-lilac-300/15' },
-  'text-greeting-teal-400': { iconBg: 'bg-greeting-teal-400/20', footerBg: 'bg-greeting-teal-400/15' },
+  'text-twinkle-blush': { iconBg: 'bg-twinkle-blush/20', footerBg: 'bg-twinkle-blush/15' },
+  'text-twinkle-mist': { iconBg: 'bg-twinkle-mist/20', footerBg: 'bg-twinkle-mist/15' },
+  'text-twinkle-sky': { iconBg: 'bg-twinkle-sky/20', footerBg: 'bg-twinkle-sky/15' },
 };
 
 function FloatingLetterpressCard({
@@ -448,7 +448,7 @@ function FloatingLetterpressCard({
   textColor: string;
   delay: number;
 }) {
-  const accent = cardAccentMap[textColor] ?? { iconBg: 'bg-greeting-plum-400/20', footerBg: 'bg-greeting-plum-400/15' };
+  const accent = cardAccentMap[textColor] ?? { iconBg: 'bg-twinkle-blush/20', footerBg: 'bg-twinkle-blush/15' };
 
   return (
     <motion.div
@@ -470,7 +470,7 @@ function FloatingLetterpressCard({
       }}
       className={className}
     >
-      <div className="w-full h-full rounded-[2rem] bg-greeting-bronze-100 border border-greeting-bronze-300 shadow-[0_20px_50px_-12px_rgba(190,131,82,0.3)] flex flex-col overflow-hidden">
+      <div className="w-full h-full rounded-[2rem] bg-white border border-twinkle-mist shadow-[0_20px_50px_-12px_rgba(229,225,244,0.3)] flex flex-col overflow-hidden">
         {/* Card face — decorative top */}
         <div className="flex-1 flex flex-col items-center justify-center px-8">
           <div className={`w-14 h-14 rounded-full ${accent.iconBg} flex items-center justify-center mb-5`}>
@@ -479,7 +479,7 @@ function FloatingLetterpressCard({
           <p className={`text-center font-display font-semibold text-lg ${textColor} leading-tight`}>
             {title}
           </p>
-          <p className="text-center text-sm text-gray-500 mt-1.5 font-body">
+          <p className="text-center text-sm text-twinkle-ink/50 mt-1.5 font-body">
             {subtitle}
           </p>
         </div>
@@ -529,7 +529,7 @@ function MagneticButton({ to, label, dark }: { to: string; label: string; dark?:
       className={`inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-full font-semibold text-sm transition-all active:scale-[0.98] ${
         dark
           ? 'bg-white text-gray-100 hover:bg-gray-100'
-          : 'bg-greeting-plum-500 hover:bg-greeting-plum-600 text-gray-100 shadow-lg'
+          : 'bg-twinkle-ink hover:bg-twinkle-ink/90 text-white shadow-lg shadow-twinkle-ink/10'
       }`}
     >
       {label}
@@ -576,11 +576,11 @@ function ProductCard({ product }: { product: ProductListItem }) {
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-charcoal-200">
-              <div className="w-12 h-12 rounded-2xl bg-greeting-charcoal-400 flex items-center justify-center mb-2">
-                <Heart size={22} className="text-gray-500" />
+            <div className="w-full h-full flex flex-col items-center justify-center bg-twinkle-mist/20">
+              <div className="w-12 h-12 rounded-2xl bg-twinkle-mist/30 flex items-center justify-center mb-2">
+                <Heart size={22} className="text-twinkle-ink/40" />
               </div>
-              <span className="text-xs font-medium text-gray-500">No preview</span>
+              <span className="text-xs font-medium text-twinkle-ink/40">No preview</span>
             </div>
           )}
           <div className="absolute top-3 left-3">
@@ -591,13 +591,13 @@ function ProductCard({ product }: { product: ProductListItem }) {
 
       <div className="product-card-body">
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-sm font-semibold text-gray-100 line-clamp-2 hover:text-greeting-plum-400 transition-colors leading-snug">
+          <h3 className="font-display text-sm font-semibold text-twinkle-ink line-clamp-2 hover:text-twinkle-blush transition-colors leading-snug">
             {product.name}
           </h3>
         </Link>
 
         <div className="flex items-center justify-between mt-3">
-          <span className="font-mono text-base font-semibold text-greeting-plum-400 tracking-tight">
+          <span className="font-mono text-base font-semibold text-twinkle-blush tracking-tight">
             {formatPrice(product.price)}
           </span>
 
@@ -605,18 +605,18 @@ function ProductCard({ product }: { product: ProductListItem }) {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.92 }}
-              className="p-2 rounded-xl bg-greeting-charcoal-200 text-gray-400 hover:bg-greeting-plum-500 hover:text-gray-100 transition-colors duration-200"
+              className="p-2 rounded-xl bg-twinkle-mist/20 text-twinkle-ink/50 hover:bg-twinkle-blush hover:text-white transition-colors duration-200"
               aria-label="Add to cart"
             >
               <ShoppingCart size={15} />
             </motion.button>
           ) : (
-            <span className="text-xs text-gray-500 font-medium">Sold out</span>
+            <span className="text-xs text-twinkle-ink/40 font-medium">Sold out</span>
           )}
         </div>
 
         {product.stock > 0 && product.stock <= 3 && (
-          <p className="text-xs text-greeting-plum-400 mt-2.5 font-medium">
+          <p className="text-xs text-twinkle-blush mt-2.5 font-medium">
             Only {product.stock} remaining
           </p>
         )}
@@ -634,12 +634,12 @@ function FeatureItem({ icon: Icon, title, description }: {
 }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-10 h-10 rounded-xl bg-greeting-plum-500/20 flex items-center justify-center flex-shrink-0">
-        <Icon size={18} className="text-greeting-plum-400" />
+      <div className="w-10 h-10 rounded-xl bg-twinkle-blush/20 flex items-center justify-center flex-shrink-0">
+        <Icon size={18} className="text-twinkle-blush" />
       </div>
       <div>
-        <h4 className="font-semibold text-sm text-gray-100">{title}</h4>
-        <p className="text-sm text-gray-400">{description}</p>
+        <h4 className="font-semibold text-sm text-twinkle-ink">{title}</h4>
+        <p className="text-sm text-twinkle-ink/50">{description}</p>
       </div>
     </div>
   );
@@ -650,10 +650,10 @@ function FeatureItem({ icon: Icon, title, description }: {
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
     <div className="stat-card">
-      <div className="font-mono text-2xl sm:text-3xl font-bold text-gray-100 mb-0.5 tracking-tight">
+      <div className="font-mono text-2xl sm:text-3xl font-bold text-twinkle-ink mb-0.5 tracking-tight">
         {value}
       </div>
-      <div className="text-sm text-gray-400">{label}</div>
+      <div className="text-sm text-twinkle-ink/50">{label}</div>
     </div>
   );
 }

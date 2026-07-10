@@ -65,7 +65,7 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="bg-greeting-bronze-100 min-h-screen">
+      <div className="bg-twinkle-canvas min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
           <div className="card overflow-hidden">
@@ -86,7 +86,7 @@ export default function ProductDetailPage() {
 
   if (!product) {
     return (
-      <div className="bg-greeting-bronze-100 min-h-screen">
+      <div className="bg-twinkle-canvas min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center">
           <div className="empty-state">
@@ -111,22 +111,22 @@ export default function ProductDetailPage() {
   const images = Array.isArray(product.images) ? product.images : [];
 
   return (
-    <div className="bg-greeting-bronze-100 min-h-screen">
+    <div className="bg-twinkle-canvas min-h-screen">
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-gray-700 mb-8">
-        <Link to="/" className="hover:text-greeting-plum-400 transition-colors">Shop</Link>
-        <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <nav className="flex items-center gap-2 text-sm text-twinkle-ink/70 mb-8">
+        <Link to="/" className="hover:text-twinkle-blush transition-colors">Shop</Link>
+        <svg className="w-4 h-4 text-twinkle-ink/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
-        <span className="text-gray-300 font-medium truncate">{product.name}</span>
+        <span className="text-twinkle-ink/70 font-medium truncate">{product.name}</span>
       </nav>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
         {/* Product Images */}
         <div>
           {/* Main Image */}
-          <div className="aspect-[4/5] bg-greeting-charcoal-200 rounded-xl overflow-hidden shadow-lg mb-4">
+          <div className="aspect-[4/5] bg-twinkle-mist/20 rounded-xl overflow-hidden shadow-lg mb-4">
             {images[activeImage] ? (
               <img
                 src={getImageSrc(images[activeImage])}
@@ -137,7 +137,7 @@ export default function ProductDetailPage() {
                 }}
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-charcoal-200 text-gray-500">
+              <div className="w-full h-full flex flex-col items-center justify-center bg-twinkle-mist/20 text-twinkle-ink/40">
                 <span className="text-5xl mb-3">💌</span>
                 <span className="font-display text-lg">Card Preview</span>
               </div>
@@ -153,8 +153,8 @@ export default function ProductDetailPage() {
                   onClick={() => setActiveImage(idx)}
                   className={`w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all duration-200 ${
                     activeImage === idx
-                      ? 'border-greeting-plum-400 shadow-lg'
-                      : 'border-transparent hover:border-greeting-bronze-400'
+                      ? 'border-twinkle-blush shadow-lg'
+                      : 'border-transparent hover:border-twinkle-mist'
                   }`}
                 >
                   <img
@@ -176,21 +176,21 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Title */}
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-gray-100 mb-3">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-twinkle-ink mb-3">
             {product.name}
           </h1>
 
           {/* Price */}
           <div className="flex items-baseline gap-2 mb-6">
-            <span className="font-body text-3xl font-bold text-greeting-plum-400">
+            <span className="font-body text-3xl font-bold text-twinkle-blush">
               {formatPrice(product.price)}
             </span>
-            <span className="text-sm text-gray-400">incl. tax</span>
+            <span className="text-sm text-twinkle-ink/50">incl. tax</span>
           </div>
 
           {/* Description */}
           <div className="prose prose-sm max-w-none mb-6">
-            <p className="text-gray-300 leading-relaxed">{product.description}</p>
+            <p className="text-twinkle-ink/70 leading-relaxed">{product.description}</p>
           </div>
 
           {/* Stock Status */}
@@ -212,14 +212,14 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-lg border border-greeting-bronze-400 flex items-center justify-center hover:bg-greeting-bronze-400 hover:border-greeting-plum-400 transition-all text-gray-400 font-medium"
+                  className="w-10 h-10 rounded-lg border border-twinkle-mist flex items-center justify-center hover:bg-twinkle-mist/30 hover:border-twinkle-blush transition-all text-twinkle-ink/50 font-medium"
                 >
                   −
                 </button>
                 <span className="w-12 text-center font-body text-lg font-semibold">{quantity}</span>
                 <button
                   onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  className="w-10 h-10 rounded-lg border border-greeting-bronze-400 flex items-center justify-center hover:bg-greeting-bronze-400 hover:border-greeting-plum-400 transition-all text-gray-400 font-medium"
+                  className="w-10 h-10 rounded-lg border border-twinkle-mist flex items-center justify-center hover:bg-twinkle-mist/30 hover:border-twinkle-blush transition-all text-twinkle-ink/50 font-medium"
                 >
                   +
                 </button>
@@ -259,21 +259,21 @@ export default function ProductDetailPage() {
             href="https://wa.me/947XXXXXXXX?text=Hi!%20I%20have%20a%20question%20about%20this%20card."
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-ghost w-full justify-center mt-3 text-gray-400"
+            className="btn-ghost w-full justify-center mt-3 text-twinkle-ink/50"
           >
             <WhatsAppIcon className="w-4 h-4" />
             Have a question? Chat with us
           </a>
 
           {/* Details */}
-          <div className="mt-8 pt-8 border-t border-greeting-bronze-400">
+          <div className="mt-8 pt-8 border-t border-twinkle-mist">
             <dl className="space-y-4 text-sm">
               <div className="flex justify-between">
-                <dt className="text-gray-400">Category</dt>
-                <dd className="font-medium text-gray-300 capitalize">{product.category || '—'}</dd>
+                <dt className="text-twinkle-ink/50">Category</dt>
+                <dd className="font-medium text-twinkle-ink/70 capitalize">{product.category || '—'}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-gray-400">Delivery</dt>
+                <dt className="text-twinkle-ink/50">Delivery</dt>
                 <dd className="font-medium text-emerald-600">Free via WhatsApp delivery 🇱🇰</dd>
               </div>
             </dl>

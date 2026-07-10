@@ -51,7 +51,7 @@ export default function EmptyState({
   return (
     <div className="empty-state">
       <div className={`empty-state-icon ${iconClassName}`}>
-        <Icon size={28} className="text-greeting-plum-400" />
+        <Icon size={28} className="text-twinkle-blush" />
       </div>
       <h3 className="empty-state-title">{title}</h3>
       <p className="empty-state-text">{description}</p>

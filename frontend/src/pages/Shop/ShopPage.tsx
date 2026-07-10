@@ -78,15 +78,15 @@ export default function ShopPage() {
   };
 
   return (
-    <div className="bg-greeting-bronze-100 min-h-screen">
+    <div className="bg-twinkle-canvas min-h-screen">
       {/* Page Header */}
-      <section className="bg-greeting-bronze-100 border-b border-greeting-bronze-200">
+      <section className="bg-twinkle-sky/40 border-b border-twinkle-mist/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
-            <h1 className="font-display text-4xl sm:text-5xl font-bold text-greeting-plum-900 mb-4">
+            <h1 className="font-display text-4xl sm:text-5xl font-bold text-twinkle-ink mb-4">
               Browse Our Collection
             </h1>
-            <p className="font-body text-lg text-gray-700">
+            <p className="font-body text-lg text-twinkle-ink/70">
               Beautiful greeting cards for every occasion
             </p>
           </div>
@@ -94,7 +94,7 @@ export default function ShopPage() {
       </section>
 
       {/* Category Pills */}
-      <section className="bg-white border-b border-greeting-bronze-200 sticky top-16 z-30">
+      <section className="bg-white border-b border-twinkle-mist/50 sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
             {CATEGORIES.map((cat) => (
@@ -119,10 +119,10 @@ export default function ShopPage() {
           {/* Section header */}
           <div className="flex items-end justify-between mb-8">
             <div>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-greeting-plum-900">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-twinkle-ink">
                 {activeCategory === 'all' ? 'All Greeting Cards' : `${CATEGORIES.find(c => c.key === activeCategory)?.label} Cards`}
               </h2>
-              <p className="text-gray-700 mt-1">
+              <p className="text-twinkle-ink/70 mt-1">
                 {products.length} card{products.length !== 1 ? 's' : ''} available
               </p>
             </div>
@@ -146,7 +146,7 @@ export default function ShopPage() {
             </div>
           ) : error ? (
             <div className="text-center py-16">
-              <p className="text-gray-400 mb-4">{error}</p>
+              <p className="text-twinkle-ink/50 mb-4">{error}</p>
               <button onClick={fetchProducts} className="btn-primary">
                 Try Again
               </button>
@@ -232,7 +232,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
               }}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-charcoal-200 text-gray-500">
+            <div className="w-full h-full flex flex-col items-center justify-center bg-twinkle-mist/20 text-twinkle-ink/40">
               <span className="text-3xl mb-2">💌</span>
               <span className="text-sm font-display">Card Preview</span>
             </div>
@@ -249,14 +249,14 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
         {/* Title */}
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-base font-semibold text-gray-100 mb-2 line-clamp-2 hover:text-greeting-plum-400 transition-colors">
+          <h3 className="font-display text-base font-semibold text-twinkle-ink mb-2 line-clamp-2 hover:text-twinkle-blush transition-colors">
             {product.name}
           </h3>
         </Link>
 
         {/* Price & Add to Cart */}
         <div className="flex items-center justify-between mt-3">
-          <span className="font-body text-lg font-bold text-greeting-plum-400">
+          <span className="font-body text-lg font-bold text-twinkle-blush">
             {formatPrice(product.price)}
           </span>
           <button
@@ -264,8 +264,8 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
             disabled={product.stock === 0}
             className={`inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 ${
               product.stock === 0
-                ? 'opacity-40 cursor-not-allowed bg-greeting-charcoal-200'
-                : 'bg-greeting-plum-500 hover:bg-greeting-plum-600 active:scale-90 text-white shadow-lg hover:shadow-greeting-plum-500/30'
+                ? 'opacity-40 cursor-not-allowed bg-twinkle-mist/20'
+                : 'bg-twinkle-blush hover:bg-twinkle-blush/90 active:scale-90 text-white shadow-lg hover:shadow-twinkle-blush/30'
             }`}
             title={product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
           >

@@ -183,17 +183,17 @@ function AdminProducts() {
   };
 
   return (
-    <div className="min-h-screen bg-greeting-bronze-100">
+    <div className="min-h-screen bg-twinkle-canvas">
       {/* Header */}
-      <header className="bg-greeting-bronze-100 shadow-sm">
+      <header className="bg-twinkle-canvas shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-greeting-plum-900">Product Management</h1>
+              <h1 className="text-3xl font-bold text-twinkle-ink">Product Management</h1>
               <p className="text-gray-600 mt-1">Create and manage products</p>
             </div>
             <div className="flex gap-4">
-              <Link to="/admin" className="text-greeting-plum-400 hover:text-greeting-plum-300 font-medium">
+              <Link to="/admin" className="text-twinkle-ink hover:text-twinkle-blush font-medium">
                 Back to Dashboard
               </Link>
               <button
@@ -207,7 +207,7 @@ function AdminProducts() {
                     resetForm();
                   }
                 }}
-                className="bg-greeting-plum-500 text-gray-100 px-6 py-3 rounded-lg font-semibold hover:bg-greeting-plum-600 transition"
+                className="bg-twinkle-ink text-white px-6 py-3 rounded-lg font-semibold hover:bg-twinkle-ink/90 transition"
               >
                 {isCreating ? 'Cancel' : '+ Add Product'}
               </button>
@@ -227,7 +227,7 @@ function AdminProducts() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-twinkle-ink/70 mb-2">
                     Product Name
                   </label>
                   <input
@@ -235,7 +235,7 @@ function AdminProducts() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-plum-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
@@ -243,7 +243,7 @@ function AdminProducts() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-twinkle-ink/70 mb-2">
                   Description
                 </label>
                 <textarea
@@ -251,14 +251,14 @@ function AdminProducts() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-plum-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
                   disabled={isUploadingImages}
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-twinkle-ink/70 mb-2">
                     Price (₹)
                   </label>
                   <input
@@ -268,12 +268,12 @@ function AdminProducts() {
                     step="0.01"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-plum-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-twinkle-ink/70 mb-2">
                     Stock
                   </label>
                   <input
@@ -282,12 +282,12 @@ function AdminProducts() {
                     min="0"
                     value={formData.stock}
                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-plum-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-twinkle-ink/70 mb-2">
                     Category
                   </label>
                   <input
@@ -295,7 +295,7 @@ function AdminProducts() {
                     required
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-plum-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
@@ -318,10 +318,10 @@ function AdminProducts() {
                   id="isActive"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-4 h-4 text-greeting-plum-400 border-gray-300 rounded focus:ring-greeting-plum-500"
+                  className="w-4 h-4 text-twinkle-blush border-twinkle-mist rounded focus:ring-twinkle-blush"
                   disabled={isUploadingImages}
                 />
-                <label htmlFor="isActive" className="ml-2 text-sm text-gray-300">
+                <label htmlFor="isActive" className="ml-2 text-sm text-twinkle-ink/70">
                   Active (visible on store)
                 </label>
               </div>
@@ -330,7 +330,7 @@ function AdminProducts() {
                 <button
                   type="submit"
                   disabled={isUploadingImages}
-                  className="bg-greeting-plum-500 text-gray-100 px-6 py-3 rounded-lg font-semibold hover:bg-greeting-plum-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-twinkle-ink text-white px-6 py-3 rounded-lg font-semibold hover:bg-twinkle-ink/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isUploadingImages 
                     ? 'Uploading...' 
@@ -345,7 +345,7 @@ function AdminProducts() {
                     resetForm();
                   }}
                   disabled={isUploadingImages}
-                  className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-twinkle-mist/30 text-twinkle-ink/70 px-6 py-3 rounded-lg font-semibold hover:bg-twinkle-mist/50 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </button>
@@ -362,11 +362,11 @@ function AdminProducts() {
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greeting-plum-500 focus:border-transparent"
+              className="flex-1 px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
             />
             <button
               onClick={fetchProducts}
-              className="bg-greeting-plum-500 text-gray-100 px-6 py-3 rounded-lg font-semibold hover:bg-greeting-plum-600 transition"
+              className="bg-twinkle-ink text-white px-6 py-3 rounded-lg font-semibold hover:bg-twinkle-ink/90 transition"
             >
               Search
             </button>
@@ -377,24 +377,24 @@ function AdminProducts() {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-twinkle-sky/30">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
                     Product
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
                     Category
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
                     Price
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
                     Stock
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -410,13 +410,13 @@ function AdminProducts() {
                   </tr>
                 ) : products.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={6} className="px-6 py-12 text-center text-twinkle-ink/40">
                       No products found
                     </td>
                   </tr>
                 ) : (
                   products.map((product) => (
-                    <tr key={product.id} className="hover:bg-gray-50">
+                    <tr key={product.id} className="hover:bg-twinkle-sky/20">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           {product.images[0] && (
@@ -431,13 +431,13 @@ function AdminProducts() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-twinkle-ink/50">
                         {product.category}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {formatCurrency(product.price)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-twinkle-ink/50">
                         {product.stock} in stock
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -450,7 +450,7 @@ function AdminProducts() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button
                           onClick={() => handleEdit(product)}
-                          className="text-greeting-plum-400 hover:text-greeting-plum-300 font-medium mr-4"
+                          className="text-twinkle-ink hover:text-twinkle-blush font-medium mr-4"
                         >
                           Edit
                         </button>

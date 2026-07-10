@@ -21,7 +21,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-greeting-bronze-100 min-h-screen">
+      <div className="bg-twinkle-canvas min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="empty-state">
             <div className="empty-state-icon">
@@ -44,14 +44,14 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-greeting-bronze-100 min-h-screen">
+    <div className="bg-twinkle-canvas min-h-screen">
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-display text-3xl font-bold text-greeting-plum-900 mb-1">
+        <h1 className="font-display text-3xl font-bold text-twinkle-ink mb-1">
           Your Selection
         </h1>
-        <p className="text-gray-700">
+        <p className="text-twinkle-ink/70">
           {items.length} item{items.length !== 1 ? 's' : ''} — pick the perfect cards
         </p>
       </div>
@@ -73,7 +73,7 @@ export default function CartPage() {
           <div className="flex justify-end pt-2">
             <button
               onClick={clearCart}
-              className="text-sm text-gray-400 hover:text-greeting-plum-400 transition-colors font-medium"
+              className="text-sm text-twinkle-ink/50 hover:text-twinkle-blush transition-colors font-medium"
             >
               Clear all items
             </button>
@@ -82,14 +82,14 @@ export default function CartPage() {
 
         {/* Order Summary — Gift Receipt Style */}
         <div className="lg:col-span-2">
-          <div className="card rounded-xl border-2 border-dashed border-greeting-bronze-400 p-6 sticky top-24 shadow-lg">
+          <div className="card rounded-xl border-2 border-dashed border-twinkle-mist p-6 sticky top-24 shadow-lg">
             {/* Gift Receipt Header */}
-            <div className="text-center mb-6 pb-4 border-b border-greeting-bronze-400">
-              <HeartIcon className="w-8 h-8 text-greeting-plum-400 mx-auto mb-2" />
-              <h2 className="font-display text-xl font-semibold text-gray-100">
+            <div className="text-center mb-6 pb-4 border-b border-twinkle-mist">
+              <HeartIcon className="w-8 h-8 text-twinkle-blush mx-auto mb-2" />
+              <h2 className="font-display text-xl font-semibold text-twinkle-ink">
                 Order Summary
               </h2>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-twinkle-ink/40 mt-1">
                 A personal touch, delivered
               </p>
             </div>
@@ -98,10 +98,10 @@ export default function CartPage() {
             <div className="space-y-3 mb-4">
               {items.map((item) => (
                 <div key={item.productId} className="flex justify-between text-sm">
-                  <span className="text-gray-300">
-                    {item.productName} <span className="text-gray-500">× {item.quantity}</span>
+                  <span className="text-twinkle-ink/70">
+                    {item.productName} <span className="text-twinkle-ink/40">× {item.quantity}</span>
                   </span>
-                  <span className="font-medium text-gray-100">
+                  <span className="font-medium text-twinkle-ink">
                     {formatPrice(item.price * item.quantity)}
                   </span>
                 </div>
@@ -109,22 +109,22 @@ export default function CartPage() {
             </div>
 
             {/* Totals */}
-            <div className="border-t border-greeting-bronze-400 pt-4 space-y-2 mb-6">
+            <div className="border-t border-twinkle-mist pt-4 space-y-2 mb-6">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Subtotal</span>
+                <span className="text-twinkle-ink/50">Subtotal</span>
                 <span className="font-medium">{formatPrice(total)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Shipping</span>
+                <span className="text-twinkle-ink/50">Shipping</span>
                 <span className="font-medium text-emerald-400">Free</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Tax (18%)</span>
+                <span className="text-twinkle-ink/50">Tax (18%)</span>
                 <span className="font-medium">{formatPrice(tax)}</span>
               </div>
-              <div className="flex justify-between text-lg font-bold pt-2 border-t border-greeting-bronze-400">
-                <span className="text-gray-100">Total</span>
-                <span className="text-greeting-plum-400">{formatPrice(finalTotal)}</span>
+              <div className="flex justify-between text-lg font-bold pt-2 border-t border-twinkle-mist">
+                <span className="text-twinkle-ink">Total</span>
+                <span className="text-twinkle-blush">{formatPrice(finalTotal)}</span>
               </div>
             </div>
 
@@ -137,13 +137,13 @@ export default function CartPage() {
               Send Order via WhatsApp
             </button>
 
-            <p className="text-xs text-gray-500 text-center mt-3 leading-relaxed">
+            <p className="text-xs text-twinkle-ink/40 text-center mt-3 leading-relaxed">
               You'll be redirected to WhatsApp with your order details pre-filled
             </p>
 
             <Link
               to="/"
-              className="block text-center text-sm text-greeting-plum-400 hover:text-greeting-plum-300 font-medium mt-4 transition-colors"
+              className="block text-center text-sm text-twinkle-ink hover:text-twinkle-blush font-medium mt-4 transition-colors"
             >
               ← Continue Shopping
             </Link>
@@ -172,7 +172,7 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
       {/* Product Image */}
       <Link
         to={`/product/${item.productId}`}
-        className="w-20 h-24 sm:w-24 sm:h-28 rounded-lg flex-shrink-0 overflow-hidden bg-greeting-charcoal-200"
+        className="w-20 h-24 sm:w-24 sm:h-28 rounded-lg flex-shrink-0 overflow-hidden bg-twinkle-mist/20"
       >
         {item.image ? (
           <img
@@ -181,7 +181,7 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-500 text-2xl">
+          <div className="w-full h-full flex items-center justify-center text-twinkle-ink/40 text-2xl">
             💌
           </div>
         )}
@@ -191,34 +191,34 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
       <div className="flex-1 min-w-0">
         <Link
           to={`/product/${item.productId}`}
-          className="font-display text-base font-semibold text-gray-100 hover:text-greeting-plum-400 transition-colors truncate block"
+          className="font-display text-base font-semibold text-twinkle-ink hover:text-twinkle-blush transition-colors truncate block"
         >
           {item.productName || 'Greeting Card'}
         </Link>
-        <p className="text-greeting-plum-400 font-bold mt-1">
+        <p className="text-twinkle-blush font-bold mt-1">
           {formatPrice(item.price)}
         </p>
 
         {/* Quantity Controls */}
         <div className="flex items-center gap-3 mt-3">
-          <div className="flex items-center gap-1 bg-greeting-charcoal-200 rounded-lg">
+          <div className="flex items-center gap-1 bg-twinkle-mist/20 rounded-lg">
             <button
               onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)}
-              className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-100 hover:bg-greeting-bronze-400 rounded-l-lg transition-colors font-medium"
+              className="w-8 h-8 flex items-center justify-center text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30 rounded-l-lg transition-colors font-medium"
             >
               −
             </button>
             <span className="w-8 text-center text-sm font-semibold">{item.quantity}</span>
             <button
               onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
-              className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-100 hover:bg-greeting-bronze-400 rounded-r-lg transition-colors font-medium"
+              className="w-8 h-8 flex items-center justify-center text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30 rounded-r-lg transition-colors font-medium"
             >
               +
             </button>
           </div>
           <button
             onClick={() => onRemove(item.productId)}
-            className="ml-auto text-gray-500 hover:text-greeting-plum-400 transition-colors p-1"
+            className="ml-auto text-twinkle-ink/40 hover:text-twinkle-blush transition-colors p-1"
             title="Remove item"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -230,12 +230,10 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
 
       {/* Item Total */}
       <div className="text-right hidden sm:block">
-        <p className="font-bold text-gray-100 text-lg">
+        <p className="font-bold text-twinkle-ink text-lg">
           {formatPrice(item.price * item.quantity)}
         </p>
       </div>
     </div>
   );
 }
-
-
