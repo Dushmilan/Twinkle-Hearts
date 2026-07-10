@@ -11,7 +11,6 @@ interface Product {
   stock: number;
   images: string[];
   category: string;
-  sku?: string;
 }
 
 export default function ProductDetailPage() {

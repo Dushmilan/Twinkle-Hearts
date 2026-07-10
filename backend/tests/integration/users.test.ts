@@ -218,7 +218,7 @@ describe('User API', () => {
     it('should return user order history', async () => {
       // Arrange
       const { user, token } = await createAuthenticatedUser();
-      const product = await createProduct({ sku: 'USER-ORDER-001' });
+      const product = await createProduct({ });
 
       await createOrder({
         userId: user.id,
@@ -261,7 +261,7 @@ describe('User API', () => {
     it('should support pagination', async () => {
       // Arrange
       const { user, token } = await createAuthenticatedUser();
-      const product = await createProduct({ sku: 'USER-ORDER-PAGE-001' });
+      const product = await createProduct({ });
 
       // Create multiple orders
       for (let i = 0; i < 5; i++) {
@@ -513,7 +513,7 @@ describe('User API', () => {
     describe('GET /api/users/wishlist', () => {
       it('should return user wishlist', async () => {
         // Arrange
-        const product = await createProduct({ sku: 'WISHLIST-001' });
+        const product = await createProduct({ });
 
         await testPrisma.wishlist.create({
           data: {
@@ -549,7 +549,7 @@ describe('User API', () => {
     describe('POST /api/users/wishlist/:productId', () => {
       it('should add product to wishlist', async () => {
         // Arrange
-        const product = await createProduct({ sku: 'WISHLIST-ADD-001' });
+        const product = await createProduct({ });
 
         // Act
         const response = await request(app)
@@ -564,7 +564,7 @@ describe('User API', () => {
 
       it('should reject adding same product twice', async () => {
         // Arrange
-        const product = await createProduct({ sku: 'WISHLIST-DUP-001' });
+        const product = await createProduct({ });
 
         await testPrisma.wishlist.create({
           data: {
@@ -596,7 +596,7 @@ describe('User API', () => {
     describe('DELETE /api/users/wishlist/:productId', () => {
       it('should remove product from wishlist', async () => {
         // Arrange
-        const product = await createProduct({ sku: 'WISHLIST-REMOVE-001' });
+        const product = await createProduct({ });
 
         await testPrisma.wishlist.create({
           data: {
@@ -618,7 +618,7 @@ describe('User API', () => {
 
       it('should reject removing non-existent wishlist item', async () => {
         // Arrange
-        const product = await createProduct({ sku: 'WISHLIST-NOTFOUND-001' });
+        const product = await createProduct({ });
 
         // Act
         const response = await request(app)

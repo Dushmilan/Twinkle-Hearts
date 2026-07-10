@@ -13,7 +13,7 @@ describe('Cart API', () => {
   describe('POST /api/cart/sync', () => {
     it('should sync cart and return current prices', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-CART-001' });
+      const product = await createProduct({ });
 
       const cartItems = [
         { productId: product.id, quantity: 2, price: Number(product.price) },
@@ -57,7 +57,7 @@ describe('Cart API', () => {
 
     it('should mark item as out of stock when quantity exceeds available stock', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-CART-002', stock: 5 });
+      const product = await createProduct({ stock: 5 });
 
       const cartItems = [
         { productId: product.id, quantity: 10 }, // More than stock
@@ -76,9 +76,9 @@ describe('Cart API', () => {
 
     it('should handle multiple cart items', async () => {
       // Arrange
-      const product1 = await createProduct({ sku: 'TEST-CART-003' });
-      const product2 = await createProduct({ sku: 'TEST-CART-004' });
-      const product3 = await createProduct({ sku: 'TEST-CART-005' });
+      const product1 = await createProduct({ });
+      const product2 = await createProduct({ });
+      const product3 = await createProduct({ });
 
       const cartItems = [
         { productId: product1.id, quantity: 1, price: Number(product1.price) },
@@ -118,7 +118,7 @@ describe('Cart API', () => {
 
     it('should handle mix of valid and invalid products', async () => {
       // Arrange
-      const validProduct = await createProduct({ sku: 'TEST-CART-006' });
+      const validProduct = await createProduct({ });
 
       const cartItems = [
         { productId: validProduct.id, quantity: 1, price: Number(validProduct.price) },
@@ -141,7 +141,7 @@ describe('Cart API', () => {
 
     it('should reject invalid quantity (zero)', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-CART-007' });
+      const product = await createProduct({ });
 
       const cartItems = [
         { productId: product.id, quantity: 0 },
@@ -159,7 +159,7 @@ describe('Cart API', () => {
 
     it('should reject invalid quantity (negative)', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-CART-008' });
+      const product = await createProduct({ });
 
       const cartItems = [
         { productId: product.id, quantity: -5 },
@@ -178,7 +178,6 @@ describe('Cart API', () => {
     it('should handle inactive products (should not return them)', async () => {
       // Arrange
       const inactiveProduct = await createProduct({
-        sku: 'TEST-CART-009',
         isActive: false,
       });
 
@@ -199,7 +198,7 @@ describe('Cart API', () => {
 
     it('should return syncedAt timestamp', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-CART-010' });
+      const product = await createProduct({ });
 
       const beforeSync = Date.now();
       const cartItems = [

@@ -32,7 +32,7 @@ describe('productService', () => {
 
   describe('listProducts', () => {
     const mockProducts = [
-      { id: 'prod-1', name: 'Product 1', description: 'Desc 1', price: 100, stock: 10, sku: 'SKU1', category: 'Cat1', images: [], isActive: true, createdAt: new Date() },
+      { id: 'prod-1', name: 'Product 1', description: 'Desc 1', price: 100, stock: 10, category: 'Cat1', images: [], isActive: true, createdAt: new Date() },
     ];
 
     it('should return paginated product list', async () => {
@@ -145,7 +145,7 @@ describe('productService', () => {
   });
 
   describe('getProductById', () => {
-    const mockProduct = { id: 'prod-1', name: 'Test Product', description: 'Test description', price: 2999, stock: 10, sku: 'SKU-1', images: [], category: 'Cat1', isActive: true, createdAt: new Date() };
+    const mockProduct = { id: 'prod-1', name: 'Test Product', description: 'Test description', price: 2999, stock: 10, images: [], category: 'Cat1', isActive: true, createdAt: new Date() };
 
     it('should return product by id', async () => {
       mockPrisma.product.findUnique.mockResolvedValue(mockProduct);

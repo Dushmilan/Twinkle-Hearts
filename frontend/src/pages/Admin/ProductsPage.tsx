@@ -11,7 +11,6 @@ interface Product {
   description: string;
   price: number;
   stock: number;
-  sku?: string;
   category: string;
   images: string[];
   isActive: boolean;

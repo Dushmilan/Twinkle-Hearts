@@ -68,7 +68,7 @@ describe('Admin API', () => {
       const { token } = await createAdminUser();
 
       // Seed some data
-      await createProduct({ sku: 'ADMIN-STATS-001' });
+      await createProduct({ });
       await createUser({ email: 'stats-user@example.com' });
 
       const response = await request(app)
@@ -114,8 +114,7 @@ describe('Admin API', () => {
         name: 'Admin Created Product',
         description: 'A product created by admin for testing',
         price: 2999,
-        stock: 100,
-        sku: 'ADMIN-PRODUCT-001',
+        stock: 100
         category: 'Admin Test',
         images: ['https://example.com/image.jpg'],
       };
@@ -128,7 +127,6 @@ describe('Admin API', () => {
       expect(response.status).toBe(HTTP_STATUS.CREATED);
       expect(response.body.data.name).toBe('Admin Created Product');
       expect(response.body.data.price).toBe(2999);
-      expect(response.body.data.sku).toBe('ADMIN-PRODUCT-001');
     });
 
     it('should reject product creation with invalid data', async () => {
@@ -151,8 +149,8 @@ describe('Admin API', () => {
     it('should get all products with pagination', async () => {
       const { token } = await createAdminUser();
 
-      await createProduct({ sku: 'ADMIN-PRODUCTS-LIST-001' });
-      await createProduct({ sku: 'ADMIN-PRODUCTS-LIST-002' });
+      await createProduct({ });
+      await createProduct({ });
 
       const response = await request(app)
         .get('/api/admin/products')
@@ -167,7 +165,6 @@ describe('Admin API', () => {
       const { token } = await createAdminUser();
 
       await createProduct({
-        sku: 'ADMIN-SEARCH-001',
         name: 'Unique Admin Search Product',
       });
 
@@ -183,11 +180,9 @@ describe('Admin API', () => {
       const { token } = await createAdminUser();
 
       await createProduct({
-        sku: 'ADMIN-CAT-001',
         category: 'Electronics',
       });
       await createProduct({
-        sku: 'ADMIN-CAT-002',
         category: 'Clothing',
       });
 
@@ -203,7 +198,7 @@ describe('Admin API', () => {
     it('should update a product', async () => {
       const { token } = await createAdminUser();
 
-      const product = await createProduct({ sku: 'ADMIN-UPDATE-001' });
+      const product = await createProduct({ });
 
       const updateData = {
         name: 'Updated Product Name',
@@ -235,7 +230,6 @@ describe('Admin API', () => {
       const { token } = await createAdminUser();
 
       const product = await createProduct({
-        sku: 'ADMIN-PARTIAL-UPDATE-001',
         name: 'Original Name',
       });
 
@@ -253,7 +247,6 @@ describe('Admin API', () => {
       const { token } = await createAdminUser();
 
       const product = await createProduct({
-        sku: 'ADMIN-DELETE-001',
         images: [],
       });
 

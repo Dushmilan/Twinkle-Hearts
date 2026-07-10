@@ -81,7 +81,7 @@ describe('Admin Routes (Integration)', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: 'New Product', description: 'A great product description', price: 2999, stock: 10,
-            sku: 'SKU-001', category: 'Electronics', images: ['https://img.jpg'],
+            category: 'Electronics', images: ['https://img.jpg'],
           }),
         }),
         mockEnv

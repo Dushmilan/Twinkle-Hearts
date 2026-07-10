@@ -28,7 +28,6 @@ describe('Products API', () => {
     it('should only return active products', async () => {
       // Arrange
       const inactiveProduct = await createProduct({
-        sku: 'TEST-INACTIVE-001',
         isActive: false,
       });
 
@@ -54,7 +53,6 @@ describe('Products API', () => {
     it('should support search by name', async () => {
       // Arrange
       const searchProduct = await createProduct({
-        sku: 'TEST-SEARCH-001',
         name: 'Unique Search Test Product',
       });
 
@@ -70,7 +68,6 @@ describe('Products API', () => {
     it('should support search by description', async () => {
       // Arrange
       const searchProduct = await createProduct({
-        sku: 'TEST-SEARCH-002',
         description: 'This has a unique description for testing',
       });
 
@@ -86,7 +83,6 @@ describe('Products API', () => {
     it('should support filter by category', async () => {
       // Arrange
       const categoryProduct = await createProduct({
-        sku: 'TEST-CATEGORY-001',
         category: 'Test Category',
       });
 
@@ -124,7 +120,7 @@ describe('Products API', () => {
   describe('GET /api/products/:id', () => {
     it('should return a single active product', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-SINGLE-001' });
+      const product = await createProduct({ });
 
       // Act
       const response = await request(app).get(`/api/products/${product.id}`);
@@ -148,7 +144,6 @@ describe('Products API', () => {
     it('should return 404 for inactive product', async () => {
       // Arrange
       const inactiveProduct = await createProduct({
-        sku: 'TEST-SINGLE-002',
         isActive: false,
       });
 
@@ -162,7 +157,6 @@ describe('Products API', () => {
     it('should include all product fields', async () => {
       // Arrange
       const product = await createProduct({
-        sku: 'TEST-SINGLE-003',
         images: ['/img1.jpg', '/img2.jpg'],
         category: 'Test Category',
       });
@@ -177,8 +171,7 @@ describe('Products API', () => {
         name: product.name,
         description: product.description,
         price: Number(product.price),
-        stock: product.stock,
-        sku: product.sku,
+        stock: product.stock
         category: product.category,
         images: product.images,
         isActive: true,
@@ -190,7 +183,6 @@ describe('Products API', () => {
     it('should return products matching search query', async () => {
       // Arrange
       const searchProduct = await createProduct({
-        sku: 'TEST-SEARCH-API-001',
         name: 'Searchable Product',
       });
 
@@ -216,7 +208,6 @@ describe('Products API', () => {
     it('should search case-insensitively', async () => {
       // Arrange
       const searchProduct = await createProduct({
-        sku: 'TEST-SEARCH-API-002',
         name: 'Case Insensitive Test',
       });
 

@@ -14,7 +14,7 @@ describe('Orders API', () => {
   describe('POST /api/orders/create', () => {
     it('should create an order successfully', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-API-001' });
+      const product = await createProduct({ });
 
       const orderData = {
         items: [
@@ -43,8 +43,8 @@ describe('Orders API', () => {
 
     it('should create an order with multiple items', async () => {
       // Arrange
-      const product1 = await createProduct({ sku: 'TEST-ORDER-API-002' });
-      const product2 = await createProduct({ sku: 'TEST-ORDER-API-003' });
+      const product1 = await createProduct({ });
+      const product2 = await createProduct({ });
 
       const orderData = {
         items: [
@@ -87,7 +87,7 @@ describe('Orders API', () => {
 
     it('should reject order with invalid customer name', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-API-004' });
+      const product = await createProduct({ });
 
       const orderData = {
         items: [{ productId: product.id, quantity: 1 }],
@@ -107,7 +107,7 @@ describe('Orders API', () => {
 
     it('should reject order with invalid phone number', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-ORDER-API-005' });
+      const product = await createProduct({ });
 
       const orderData = {
         items: [{ productId: product.id, quantity: 1 }],
@@ -146,7 +146,6 @@ describe('Orders API', () => {
     it('should reject order when product is inactive', async () => {
       // Arrange
       const product = await createProduct({
-        sku: 'TEST-ORDER-API-006',
         isActive: false,
       });
 
@@ -169,7 +168,6 @@ describe('Orders API', () => {
     it('should reject order when stock is insufficient', async () => {
       // Arrange
       const product = await createProduct({
-        sku: 'TEST-ORDER-API-007',
         stock: 1,
       });
 
@@ -243,7 +241,7 @@ describe('Orders API', () => {
     it('should return user orders', async () => {
       // Arrange
       const user = await createUser({ email: 'orders-list@example.com' });
-      const product = await createProduct({ sku: 'TEST-ORDER-LIST-001' });
+      const product = await createProduct({ });
 
       await createOrder({
         userId: user.id,
@@ -286,7 +284,7 @@ describe('Orders API', () => {
     it('should handle pagination', async () => {
       // Arrange
       const user = await createUser({ email: 'pagination-test@example.com' });
-      const product = await createProduct({ sku: 'TEST-ORDER-PAGE-001' });
+      const product = await createProduct({ });
 
       // Create 5 orders
       for (let i = 0; i < 5; i++) {

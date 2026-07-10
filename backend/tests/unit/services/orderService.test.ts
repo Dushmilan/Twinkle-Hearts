@@ -17,7 +17,7 @@ describe('Order Service', () => {
   describe('createOrder', () => {
     it('should create an order with items successfully', async () => {
       const user = await createUser({ email: 'order-test-1@example.com' });
-      const product = await createProduct({ sku: 'TEST-ORDER-SVC-001', price: 2999, stock: 10 });
+      const product = await createProduct({ price: 2999, stock: 10 });
 
       const order = await createOrder({
         userId: user.id,
@@ -54,8 +54,8 @@ describe('Order Service', () => {
 
     it('should create an order with multiple items', async () => {
       const user = await createUser({ email: 'order-test-2@example.com' });
-      const product1 = await createProduct({ sku: 'TEST-ORDER-SVC-002', price: 4999, stock: 10 });
-      const product2 = await createProduct({ sku: 'TEST-ORDER-SVC-003', price: 1999, stock: 10 });
+      const product1 = await createProduct({ price: 4999, stock: 10 });
+      const product2 = await createProduct({ price: 1999, stock: 10 });
 
       const order = await createOrder({
         userId: user.id,
@@ -79,7 +79,7 @@ describe('Order Service', () => {
 
     it('should fail if stock is insufficient', async () => {
       const user = await createUser({ email: 'order-test-3@example.com' });
-      const product = await createProduct({ sku: 'TEST-ORDER-SVC-004', price: 2999, stock: 1 });
+      const product = await createProduct({ price: 2999, stock: 1 });
 
       await expect(
         createOrder({
@@ -99,8 +99,8 @@ describe('Order Service', () => {
 
     it('should fail atomically when one item is out of stock', async () => {
       const user = await createUser({ email: 'order-test-4@example.com' });
-      const product1 = await createProduct({ sku: 'TEST-ORDER-SVC-005', price: 1000, stock: 10 });
-      const product2 = await createProduct({ sku: 'TEST-ORDER-SVC-006', price: 2000, stock: 1 });
+      const product1 = await createProduct({ price: 1000, stock: 10 });
+      const product2 = await createProduct({ price: 2000, stock: 1 });
 
       await expect(
         createOrder({
@@ -125,7 +125,7 @@ describe('Order Service', () => {
   describe('getOrderById', () => {
     it('should return an order with items', async () => {
       const user = await createUser({ email: 'order-test-5@example.com' });
-      const product = await createProduct({ sku: 'TEST-ORDER-SVC-007', price: 2999, stock: 10 });
+      const product = await createProduct({ price: 2999, stock: 10 });
       const createdOrder = await createOrder({
         userId: user.id,
         customerName: 'Get Order Test',
@@ -150,7 +150,7 @@ describe('Order Service', () => {
     it('should return null if order belongs to different user', async () => {
       const user1 = await createUser({ email: 'order-owner@example.com' });
       const user2 = await createUser({ email: 'order-other@example.com' });
-      const product = await createProduct({ sku: 'TEST-ORDER-SVC-008', price: 1000, stock: 10 });
+      const product = await createProduct({ price: 1000, stock: 10 });
       const order = await createOrder({
         userId: user1.id,
         customerName: 'Owner',
@@ -166,7 +166,7 @@ describe('Order Service', () => {
   describe('getUserOrders', () => {
     it('should return user orders', async () => {
       const user = await createUser({ email: 'order-test-6@example.com' });
-      const product = await createProduct({ sku: 'TEST-ORDER-SVC-009', price: 2999, stock: 10 });
+      const product = await createProduct({ price: 2999, stock: 10 });
 
       await createOrder({
         userId: user.id,
@@ -183,7 +183,7 @@ describe('Order Service', () => {
 
     it('should handle pagination', async () => {
       const user = await createUser({ email: 'order-test-7@example.com' });
-      const product = await createProduct({ sku: 'TEST-ORDER-SVC-010', price: 2999, stock: 100 });
+      const product = await createProduct({ price: 2999, stock: 100 });
 
       for (let i = 0; i < 5; i++) {
         await createOrder({

@@ -105,7 +105,7 @@ describe('Validation Middleware', () => {
   describe('validateOrder', () => {
     it('should validate order and attach validatedItems to request', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-VAL-001' });
+      const product = await createProduct({ });
       const req = createMockRequest({
         items: [{ productId: product.id, quantity: 2, price: 1999 }],
         customerName: 'John Doe',
@@ -144,7 +144,7 @@ describe('Validation Middleware', () => {
 
     it('should reject order when stock is insufficient', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-VAL-002', stock: 5 });
+      const product = await createProduct({ stock: 5 });
       const req = createMockRequest({
         items: [{ productId: product.id, quantity: 10 }], // More than stock
         customerName: 'John Doe',
@@ -162,8 +162,8 @@ describe('Validation Middleware', () => {
 
     it('should handle multiple products in order', async () => {
       // Arrange
-      const product1 = await createProduct({ sku: 'TEST-VAL-003' });
-      const product2 = await createProduct({ sku: 'TEST-VAL-004' });
+      const product1 = await createProduct({ });
+      const product2 = await createProduct({ });
       const req = createMockRequest({
         items: [
           { productId: product1.id, quantity: 1, price: Number(product1.price) },
@@ -185,7 +185,7 @@ describe('Validation Middleware', () => {
 
     it('should reject order with inactive product', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-VAL-005', isActive: false });
+      const product = await createProduct({ isActive: false });
       const req = createMockRequest({
         items: [{ productId: product.id, quantity: 2 }],
         customerName: 'John Doe',
@@ -203,7 +203,7 @@ describe('Validation Middleware', () => {
 
     it('should use database price, not frontend price', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-VAL-006', price: 2999 });
+      const product = await createProduct({ price: 2999 });
       const req = createMockRequest({
         items: [{ productId: product.id, quantity: 1, price: 1999 }], // Frontend says 1999
         customerName: 'John Doe',
@@ -224,7 +224,7 @@ describe('Validation Middleware', () => {
   describe('validateCartSync', () => {
     it('should validate cart and return current prices', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-SYNC-001' });
+      const product = await createProduct({ });
       const req = createMockRequest({
         items: [{ productId: product.id, quantity: 2 }],
       });
@@ -256,7 +256,7 @@ describe('Validation Middleware', () => {
 
     it('should mark item as out of stock when quantity exceeds stock', async () => {
       // Arrange
-      const product = await createProduct({ sku: 'TEST-SYNC-002', stock: 3 });
+      const product = await createProduct({ stock: 3 });
       const req = createMockRequest({
         items: [{ productId: product.id, quantity: 10 }],
       });
@@ -288,8 +288,8 @@ describe('Validation Middleware', () => {
 
     it('should handle multiple cart items', async () => {
       // Arrange
-      const product1 = await createProduct({ sku: 'TEST-SYNC-003' });
-      const product2 = await createProduct({ sku: 'TEST-SYNC-004' });
+      const product1 = await createProduct({ });
+      const product2 = await createProduct({ });
       const req = createMockRequest({
         items: [
           { productId: product1.id, quantity: 1 },

@@ -12,7 +12,6 @@ interface Product {
   price: number;
   images: string[];
   stock: number;
-  sku?: string;
   category: string;
 }
 

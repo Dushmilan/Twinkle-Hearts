@@ -129,7 +129,6 @@ interface ProductListItem {
   description: string;
   price: number;
   stock: number;
-  sku?: string;
   category?: string;
   images: string[];
   createdAt: string;
@@ -151,7 +150,6 @@ interface ProductDetail {
   description: string;
   price: number;
   stock: number;
-  sku?: string;
   images: string[];
   category: string;
   isActive: boolean;
@@ -227,7 +225,6 @@ interface WishlistItem {
     price: number;
     images: string[];
     stock: number;
-    sku?: string;
     category: string;
     description: string;
   };
@@ -393,7 +390,6 @@ type Api = {
         description: string;
         price: number;
         stock: number;
-        sku?: string;
         category: string;
         images: string[];
         isActive?: boolean;
@@ -403,7 +399,6 @@ type Api = {
         description: string;
         price: number;
         stock: number;
-        sku?: string;
         category: string;
         images: string[];
         isActive: boolean;

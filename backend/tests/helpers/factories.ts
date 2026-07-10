@@ -41,7 +41,6 @@ export async function createProduct(overrides: Partial<Prisma.ProductCreateInput
       description: TEST_PRODUCT_DESCRIPTION,
       price: TEST_PRODUCT_PRICE,
       stock: TEST_PRODUCT_STOCK,
-      sku: `TEST-${generateTestUniqueId()}`,
       category: TEST_PRODUCT_CATEGORY,
       images: [],
       isFeatured: false,
