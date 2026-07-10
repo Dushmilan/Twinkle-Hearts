@@ -6,6 +6,7 @@ import {
   uploadProductImages, updateUserRole, getAllUsers,
 } from '../services/adminService.js';
 import { BadRequestError } from '../middleware/errorHandler.js';
+import { getPrismaRepository } from '../lib/prisma.js';
 import type { Env, Variables } from '../types.js';
 
 type AdminEnv = { Bindings: Env; Variables: Variables };
@@ -19,7 +20,15 @@ const productSchema = z.object({
   price: z.number().positive('Price must be positive'),
   stock: z.number().int().nonnegative('Stock cannot be negative'),
   category: z.string().min(1, 'Category is required'),
-  images: z.array(z.string()).min(1, 'At least one product image is required'),
+  images: z.preprocess(
+    (val) => {
+      if (typeof val === 'string') {
+        try { return JSON.parse(val); } catch { return [val]; }
+      }
+      return val;
+    },
+    z.array(z.string()).min(1, 'At least one product image is required')
+  ),
   isActive: z.boolean().optional().default(true),
 });
 
@@ -47,8 +56,7 @@ router.get('/stats', async (c) => {
 router.get('/orders', async (c) => {
   const page = parseInt(c.req.query('page') || '1');
   const limit = parseInt(c.req.query('limit') || '20');
-  const { getPrisma } = await import('../lib/prisma.js');
-  const prisma = getPrisma(c.env.DB);
+  const prisma = getPrismaRepository(c.env.DB);
 
   const [orders, total] = await Promise.all([
     prisma.order.findMany({
@@ -71,8 +79,7 @@ router.get('/products', async (c) => {
   const limit = parseInt(c.req.query('limit') || '20');
   const category = c.req.query('category');
   const search = c.req.query('search');
-  const { getPrisma } = await import('../lib/prisma.js');
-  const prisma = getPrisma(c.env.DB);
+  const prisma = getPrismaRepository(c.env.DB);
 
   const where: any = {};
   if (category) where.category = category;
@@ -104,7 +111,8 @@ router.post('/products', async (c) => {
 router.put('/products/:id', async (c) => {
   const body: any = await c.req.json();
   const input = updateProductSchema.parse(body);
-  const product = await updateProduct(c.env, c.req.param('id'), input);
+  const data = input.images !== undefined ? { ...input, images: JSON.stringify(input.images) } : input;
+  const product = await updateProduct(c.env, c.req.param('id'), data);
   return c.json({ success: true, data: product });
 });
 
