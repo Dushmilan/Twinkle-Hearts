@@ -1,12 +1,5 @@
 import { db } from './db';
 
-interface CartItemDB {
-  id?: number;
-  productId: string;
-  quantity: number;
-  addedAt: number;
-}
-
 export async function upsertCartItem(productId: string, quantity: number, addedAt: number): Promise<void> {
   try {
     const existing = await db.cart.get({ productId });

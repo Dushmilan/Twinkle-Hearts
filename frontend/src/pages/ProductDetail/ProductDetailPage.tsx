@@ -2,16 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCartStore } from '../../store/cartStore';
 import { api } from '../../api.js';
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  images: string[];
-  category: string;
-}
+import type { Product } from '@twinkle-hearts/shared';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -58,7 +49,7 @@ export default function ProductDetailPage() {
     return `Rs. ${price.toLocaleString('en-IN')}`;
   };
 
-  const getCategoryBadge = (category: string) => {
+  const getCategoryBadge = (category?: string) => {
     const catMap: Record<string, { label: string; variant: string }> = {
       birthday: { label: '🎂 Birthday', variant: 'badge-magenta' },
       love: { label: '💕 Love', variant: 'badge-purple' },
@@ -67,7 +58,7 @@ export default function ProductDetailPage() {
       festival: { label: '🎊 Festival', variant: 'badge-magenta' },
       sympathy: { label: '🕊️ Sympathy', variant: 'badge-cyan' },
     };
-    const cat = catMap[category?.toLowerCase()] || { label: category, variant: 'badge-magenta' };
+    const cat = catMap[category?.toLowerCase() ?? ''] || { label: category ?? 'General', variant: 'badge-magenta' };
     return <span className={`badge ${cat.variant}`}>{cat.label}</span>;
   };
 

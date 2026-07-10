@@ -12,17 +12,7 @@ import {
   ArrowRight,
 } from '@phosphor-icons/react';
 import { api } from '../../api';
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  category?: string;
-  images: string[];
-  createdAt: string;
-}
+import type { ProductListItem } from '@twinkle-hearts/shared';
 
 const CATEGORIES = [
   { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-greeting-magenta-400', bg: 'bg-greeting-magenta-500/20' },
@@ -50,7 +40,7 @@ const itemVariants: Variants = {
 };
 
 export default function HomePage() {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<ProductListItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -538,7 +528,7 @@ function MagneticButton({ to, label, dark }: { to: string; label: string; dark?:
 
 /* ---- Product Card ---- */
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product }: { product: ProductListItem }) {
   const [imgError, setImgError] = useState(false);
 
   const formatPrice = (price: number) => {

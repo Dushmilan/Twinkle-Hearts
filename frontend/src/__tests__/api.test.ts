@@ -125,7 +125,7 @@ describe('api client', () => {
       });
 
       await api.orders.create({
-        items: [{ productId: 'prod-1', quantity: 2 }],
+        items: [{ productId: 'prod-1', quantity: 2, price: 1500 }],
         customerName: 'John',
         customerPhone: '+919876543210',
       });
