@@ -47,7 +47,7 @@ export default function ProductDetailPage() {
       productName: product.name,
       quantity,
       price: product.price,
-      image: product.images[0],
+      image: Array.isArray(product.images) ? product.images[0] : undefined,
     });
 
     setJustAdded(true);
@@ -112,6 +112,8 @@ export default function ProductDetailPage() {
     );
   }
 
+  const images = Array.isArray(product.images) ? product.images : [];
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
@@ -128,9 +130,9 @@ export default function ProductDetailPage() {
         <div>
           {/* Main Image */}
           <div className="aspect-[4/5] bg-greeting-bg-400 rounded-xl overflow-hidden shadow-lg mb-4">
-            {product.images[activeImage] ? (
+            {images[activeImage] ? (
               <img
-                src={product.images[activeImage]}
+                src={images[activeImage]}
                 alt={product.name}
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -146,9 +148,9 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Thumbnail Strip */}
-          {product.images.length > 1 && (
+          {images.length > 1 && (
             <div className="flex gap-2 overflow-x-auto pb-1">
-              {product.images.map((image, idx) => (
+              {images.map((image, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveImage(idx)}

@@ -1,18 +1,44 @@
-import { getPrisma } from '../lib/prisma.js';
-import { cacheGet, cacheSet, cacheDelete, cacheWrap, CacheKeys, CACHE_TTL } from '../lib/cache.js';
+import { getPrismaRepository } from '../lib/prisma.js';
+import { CacheKeys, getCacheRepository } from '../lib/cache/index.js';
 import { NotFoundError } from '../middleware/errorHandler.js';
 import type { Env } from '../types.js';
+
+function normalizeImages(images: unknown): string[] {
+  if (Array.isArray(images)) return images.filter((i): i is string => typeof i === 'string');
+  if (typeof images !== 'string') return [];
+  const trimmed = images.trim();
+  if (!trimmed || trimmed === '[]') return [];
+  if (trimmed.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) return parsed.filter((i): i is string => typeof i === 'string');
+    } catch {
+      // fall through to comma split
+    }
+  }
+  return trimmed.split(',').map((s) => s.trim()).filter(Boolean);
+}
+
+function normalizeProduct<T extends { images: unknown }>(product: T): T {
+  return { ...product, images: normalizeImages(product.images) as T['images'] };
+}
 
 export const productService = {
   async listProducts(env: Env, params: { page: number; limit: number; search?: string; category?: string; activeOnly?: boolean }) {
     const { page, limit, search, category, activeOnly } = params;
     const skip = (page - 1) * limit;
     const cacheKey = CacheKeys.productsCatalog(page, limit) + (search ? `:s:${search}` : '') + (category ? `:c:${category}` : '');
+    const cache = getCacheRepository(env.KV);
 
-    const cached = await cacheGet<any>(env.KV, cacheKey);
-    if (cached) return cached;
+    const cached = await cache.get(cacheKey) as { products: any[]; pagination: any } | null;
+    if (cached) {
+      return {
+        ...cached,
+        products: cached.products.map((p: any) => normalizeProduct(p)),
+      };
+    }
 
-    const prisma = getPrisma(env.DB);
+    const prisma = getPrismaRepository(env.DB);
     const where: any = {};
 
     if (search) {
@@ -30,17 +56,17 @@ export const productService = {
     ]);
 
     const result = {
-      products,
+      products: products.map((p) => normalizeProduct(p)),
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     };
 
-    await cacheSet(env.KV, cacheKey, result, CACHE_TTL.PRODUCT_CATALOG);
+    await cache.set(cacheKey, result);
     return result;
   },
 
   async searchProducts(env: Env, query: string, limit: number = 20) {
-    const prisma = getPrisma(env.DB);
-    return prisma.product.findMany({
+    const prisma = getPrismaRepository(env.DB);
+    const products = await prisma.product.findMany({
       where: {
         OR: [
           { name: { contains: query } },
@@ -50,19 +76,22 @@ export const productService = {
       take: limit,
       orderBy: { createdAt: 'desc' },
     });
+    return products.map((p) => normalizeProduct(p));
   },
 
   async getProductById(env: Env, id: string, activeOnly?: boolean) {
     const cacheKey = CacheKeys.product(id);
-    const cached = await cacheGet<any>(env.KV, cacheKey);
+    const cache = getCacheRepository(env.KV);
+    const cached = (await cache.get(cacheKey)) as any;
     if (cached) {
-      if (activeOnly !== undefined && cached.isActive !== activeOnly) {
+      const normalized = normalizeProduct(cached);
+      if (activeOnly !== undefined && normalized.isActive !== activeOnly) {
         throw new NotFoundError(`Product with id ${id} not found`);
       }
-      return cached;
+      return normalized;
     }
 
-    const prisma = getPrisma(env.DB);
+    const prisma = getPrismaRepository(env.DB);
     const product = await prisma.product.findUnique({ where: { id } });
 
     if (!product) throw new NotFoundError(`Product with id ${id} not found`);
@@ -70,7 +99,8 @@ export const productService = {
       throw new NotFoundError(`Product with id ${id} not found`);
     }
 
-    await cacheSet(env.KV, cacheKey, product, CACHE_TTL.PRODUCT_CATALOG);
-    return product;
+    const normalized = normalizeProduct(product);
+    await cache.set(cacheKey, normalized);
+    return normalized;
   },
 };

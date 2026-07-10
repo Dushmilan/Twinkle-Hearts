@@ -126,7 +126,7 @@ async function main() {
   for (const product of products) {
     const existing = await prisma.product.findFirst({ where: { name: product.name } });
     if (!existing) {
-      await prisma.product.create({ data: product });
+      await prisma.product.create({ data: { ...product, images: JSON.stringify(product.images) } });
       console.log(`✓ Created: ${product.name}`);
     } else {
       console.log(`• Already exists: ${product.name}`);

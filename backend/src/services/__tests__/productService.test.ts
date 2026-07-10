@@ -1,33 +1,38 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('../../lib/prisma.js');
-vi.mock('../../lib/cache.js');
+vi.mock('../../lib/cache/index.js');
 
-import { getPrisma } from '../../lib/prisma.js';
-import * as cacheLib from '../../lib/cache.js';
+import { getPrisma, getPrismaRepository } from '../../lib/prisma.js';
+import { getCacheRepository } from '../../lib/cache/index.js';
 import { productService } from '../productService.js';
 import { NotFoundError } from '../../middleware/errorHandler.js';
 
 describe('productService', () => {
   let mockPrisma: any;
   let mockEnv: any;
+  let mockCache: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    mockCache = {
+      get: vi.fn().mockResolvedValue(null),
+      set: vi.fn().mockResolvedValue(undefined),
+      delete: vi.fn().mockResolvedValue(undefined),
+    };
+    vi.mocked(getCacheRepository).mockReturnValue(mockCache as any);
 
     mockPrisma = {
       product: { findMany: vi.fn(), count: vi.fn(), findUnique: vi.fn() },
     };
 
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
+    vi.mocked(getPrismaRepository).mockReturnValue(mockPrisma as any);
 
     mockEnv = {
       DB: {} as any,
       KV: { get: vi.fn(), put: vi.fn(), delete: vi.fn() } as any,
     } as any;
-
-    vi.mocked(cacheLib.cacheGet).mockResolvedValue(null);
-    vi.mocked(cacheLib.cacheSet).mockResolvedValue(undefined);
   });
 
   describe('listProducts', () => {
@@ -54,7 +59,7 @@ describe('productService', () => {
 
     it('should return cached results if available', async () => {
       const cached = { products: mockProducts, pagination: { page: 1, limit: 20, total: 1, totalPages: 1 } };
-      vi.mocked(cacheLib.cacheGet).mockResolvedValue(cached);
+      mockCache.get.mockResolvedValue(cached);
 
       const result = await productService.listProducts(mockEnv, { page: 1, limit: 20 });
 
@@ -110,7 +115,28 @@ describe('productService', () => {
 
       await productService.listProducts(mockEnv, { page: 1, limit: 20, activeOnly: true });
 
-      expect(cacheLib.cacheSet).toHaveBeenCalled();
+      expect(mockCache.set).toHaveBeenCalled();
+    });
+
+    it('should normalize images from JSON string to array', async () => {
+      const dbProduct = { id: 'prod-1', name: 'P', description: 'd', price: 100, stock: 10, category: 'Cat', images: '["a.jpg","b.jpg"]', isActive: true, createdAt: new Date() };
+      mockPrisma.product.findMany.mockResolvedValue([dbProduct]);
+      mockPrisma.product.count.mockResolvedValue(1);
+
+      const result = await productService.listProducts(mockEnv, { page: 1, limit: 20 });
+
+      expect(result.products[0].images).toEqual(['a.jpg', 'b.jpg']);
+      expect(Array.isArray(result.products[0].images)).toBe(true);
+    });
+
+    it('should normalize images from comma-joined string to array', async () => {
+      const dbProduct = { id: 'prod-1', name: 'P', description: 'd', price: 100, stock: 10, category: 'Cat', images: '/x.jpg,/y.jpg', isActive: true, createdAt: new Date() };
+      mockPrisma.product.findMany.mockResolvedValue([dbProduct]);
+      mockPrisma.product.count.mockResolvedValue(1);
+
+      const result = await productService.listProducts(mockEnv, { page: 1, limit: 20 });
+
+      expect(result.products[0].images).toEqual(['/x.jpg', '/y.jpg']);
     });
   });
 
@@ -153,11 +179,11 @@ describe('productService', () => {
       const result = await productService.getProductById(mockEnv, 'prod-1');
 
       expect(result).toEqual(mockProduct);
-      expect(cacheLib.cacheSet).toHaveBeenCalled();
+      expect(mockCache.set).toHaveBeenCalled();
     });
 
     it('should return cached product', async () => {
-      vi.mocked(cacheLib.cacheGet).mockResolvedValue(mockProduct);
+      mockCache.get.mockResolvedValue(mockProduct);
 
       const result = await productService.getProductById(mockEnv, 'prod-1');
 
@@ -173,7 +199,7 @@ describe('productService', () => {
 
     it('should check activeOnly against cached product', async () => {
       const inactiveProduct = { ...mockProduct, isActive: false };
-      vi.mocked(cacheLib.cacheGet).mockResolvedValue(inactiveProduct);
+      mockCache.get.mockResolvedValue(inactiveProduct);
 
       await expect(productService.getProductById(mockEnv, 'prod-1', true)).rejects.toThrow(NotFoundError);
     });
@@ -183,6 +209,27 @@ describe('productService', () => {
       mockPrisma.product.findUnique.mockResolvedValue(inactiveProduct);
 
       await expect(productService.getProductById(mockEnv, 'prod-1', true)).rejects.toThrow(NotFoundError);
+    });
+
+    it('should normalize images from JSON string to array', async () => {
+      mockPrisma.product.findUnique.mockResolvedValue({ ...mockProduct, images: '["main.jpg","thumb.jpg"]' });
+
+      const result = await productService.getProductById(mockEnv, 'prod-1');
+
+      expect(Array.isArray(result.images)).toBe(true);
+      expect(result.images).toEqual(['main.jpg', 'thumb.jpg']);
+      expect(mockCache.set).toHaveBeenCalled();
+      const setVal = mockCache.set.mock.calls[0]?.[1] as any;
+      expect(setVal.images).toEqual(['main.jpg', 'thumb.jpg']);
+    });
+
+    it('should normalize images on cache hit (idempotent for arrays)', async () => {
+      mockCache.get.mockResolvedValue({ ...mockProduct, images: ['already-array.jpg'] });
+
+      const result = await productService.getProductById(mockEnv, 'prod-1');
+
+      expect(Array.isArray(result.images)).toBe(true);
+      expect(result.images).toEqual(['already-array.jpg']);
     });
   });
 });
