@@ -303,3 +303,10 @@ mock-data/
 
 # Local sqlite dev db
 *.db-journal
+
+# Graphify knowledge graph (regenerate with `graphify update .`)
+graphify-out/
+graph.html
+
+# OpenCode local cache (keep .opencode/ skills+agents committed)
+.opencode/cache/
