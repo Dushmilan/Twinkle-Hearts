@@ -7,6 +7,7 @@ import {
 } from '../services/adminService.js';
 import { BadRequestError } from '../middleware/errorHandler.js';
 import { getPrismaRepository } from '../lib/prisma.js';
+import { normalizeImages } from '../services/productService.js';
 import type { Env, Variables } from '../types.js';
 
 type AdminEnv = { Bindings: Env; Variables: Variables };
@@ -95,9 +96,14 @@ router.get('/products', async (c) => {
     prisma.product.count({ where }),
   ]);
 
+  const normalized = products.map((p) => ({
+    ...p,
+    images: JSON.stringify(normalizeImages(p.images)),
+  }));
+
   return c.json({
     success: true,
-    data: { products, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } },
+    data: { products: normalized, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } },
   });
 });
 

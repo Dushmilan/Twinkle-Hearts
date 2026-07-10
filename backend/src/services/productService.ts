@@ -5,10 +5,10 @@ import { NotFoundError } from '../middleware/errorHandler.js';
 import type { Env } from '../types.js';
 
 function isAbsoluteUrl(url: string): boolean {
-  return url.startsWith('http://') || url.startsWith('https://');
+  return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/images/');
 }
 
-function normalizeImages(images: unknown): string[] {
+export function normalizeImages(images: unknown): string[] {
   let arr: string[];
   if (Array.isArray(images)) arr = images.filter((i): i is string => typeof i === 'string');
   else if (typeof images !== 'string') return [];
