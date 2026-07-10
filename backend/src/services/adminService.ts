@@ -1,11 +1,12 @@
-import { getPrisma } from '../lib/prisma.js';
-import { cacheDelete, CacheKeys } from '../lib/cache.js';
+import { getPrismaRepository } from '../lib/prisma.js';
+import { CacheKeys, getCacheRepository } from '../lib/cache/index.js';
 import { NotFoundError, BadRequestError } from '../middleware/errorHandler.js';
+import type { Env } from '../types.js';
 import { uploadToR2, deleteMultipleFromR2, uploadToCloudinary, extractR2Key, isR2Url } from '../lib/images.js';
 import type { Env } from '../types.js';
 
 export async function getDashboardStats(env: Env) {
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
 
   const [totalOrders, totalRevenue, totalUsers, totalProducts, recentOrders] = await Promise.all([
     prisma.order.count(),
@@ -29,36 +30,38 @@ export async function getDashboardStats(env: Env) {
 }
 
 export async function createProduct(env: Env, input: any) {
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   const { name, description, price, stock, category, images, isActive = true } = input;
 
   const product = await prisma.product.create({
-    data: { name, description, price, stock, category, images, isActive },
+    data: { name, description, price, stock, category, images, isActive, sku: '' },
   });
 
-  await cacheDelete(env.KV, CacheKeys.productsCatalog(1, 100));
-  await cacheDelete(env.KV, CacheKeys.productsFeatured());
+  const cache = getCacheRepository(env.KV);
+  await cache.delete( CacheKeys.productsCatalog(1, 100));
+  await cache.delete( CacheKeys.productsFeatured());
 
   return product;
 }
 
 export async function updateProduct(env: Env, id: string, input: any) {
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   const product = await prisma.product.findUnique({ where: { id } });
 
   if (!product) throw new NotFoundError('Product not found');
 
   const updatedProduct = await prisma.product.update({ where: { id }, data: input });
 
-  await cacheDelete(env.KV, CacheKeys.productsCatalog(1, 100));
-  await cacheDelete(env.KV, CacheKeys.productsFeatured());
-  await cacheDelete(env.KV, CacheKeys.product(id));
+  const cache = getCacheRepository(env.KV);
+  await cache.delete( CacheKeys.productsCatalog(1, 100));
+  await cache.delete( CacheKeys.productsFeatured());
+  await cache.delete( CacheKeys.product(id));
 
   return updatedProduct;
 }
 
 export async function deleteProduct(env: Env, id: string) {
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   const product = await prisma.product.findUnique({ where: { id } });
 
   if (!product) throw new NotFoundError('Product not found');
@@ -81,9 +84,10 @@ export async function deleteProduct(env: Env, id: string) {
     }
   }
 
-  await cacheDelete(env.KV, CacheKeys.productsCatalog(1, 100));
-  await cacheDelete(env.KV, CacheKeys.productsFeatured());
-  await cacheDelete(env.KV, CacheKeys.product(id));
+  const cache = getCacheRepository(env.KV);
+  await cache.delete( CacheKeys.productsCatalog(1, 100));
+  await cache.delete( CacheKeys.productsFeatured());
+  await cache.delete( CacheKeys.product(id));
 
   await prisma.product.delete({ where: { id } });
   return { id };
@@ -124,7 +128,7 @@ export async function updateUserRole(env: Env, id: string, role: string, request
     throw new BadRequestError('Cannot modify your own role');
   }
 
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   const user = await prisma.user.findUnique({ where: { id } });
 
   if (!user) throw new NotFoundError('User not found');
@@ -142,12 +146,12 @@ export async function updateUserRole(env: Env, id: string, role: string, request
     select: { id: true, name: true, email: true, role: true },
   });
 
-  await cacheDelete(env.KV, CacheKeys.user(id));
+  await getCacheRepository(env.KV).delete( CacheKeys.user(id));
   return updatedUser;
 }
 
 export async function getAllUsers(env: Env, page: number, limit: number, search: string) {
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   const where: any = {};
 
   if (search) {
