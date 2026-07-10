@@ -135,7 +135,7 @@ describe('User Routes (Integration)', () => {
     });
 
     it('POST /api/users/addresses should create address', async () => {
-      vi.mocked(userService.createAddress).mockResolvedValue({ id: 'addr-1', label: 'Home', street: '123 St', city: 'Colombo', state: 'Western', zip: '00100', country: 'LK', phone: '+949876543210', isDefault: true, userId: 'user-1' });
+      vi.mocked(userService.createAddress).mockResolvedValue({ id: 'addr-1', label: 'Home', street: '123 St', city: 'Colombo', state: 'Western', zip: '00100', country: 'LK', phone: '+949876543210', isDefault: true, userId: 'user-1', type: 'HOME', createdAt: new Date(), updatedAt: new Date() });
 
       const res = await app.fetch(
         new Request('http://localhost/api/users/addresses', {

@@ -54,7 +54,6 @@ describe('orderService', () => {
       vi.mocked(orderIntake.processOrder).mockResolvedValue({
         order: {
           id: 'order-1',
-          userId: 'user-1',
           customerName: 'John Doe',
           customerPhone: '+919876543210',
           subtotal: 5998,
@@ -80,7 +79,7 @@ describe('orderService', () => {
     it('should pass env TAX_RATE to facade', async () => {
       mockEnv.TAX_RATE = '0.05';
       vi.mocked(orderIntake.processOrder).mockResolvedValue({
-        order: { id: 'order-2', subtotal: 1000, tax: 50, total: 1050, status: 'PENDING_WHATSAPP_CONFIRMATION', items: [], createdAt: new Date() },
+        order: { id: 'order-2', subtotal: 1000, tax: 50, total: 1050, status: 'PENDING_WHATSAPP_CONFIRMATION', items: [], createdAt: new Date(), customerName: 'John Doe', customerPhone: '+919876543210' },
         whatsappDeepLink: '',
       });
 
@@ -111,7 +110,7 @@ describe('orderService', () => {
       };
 
       vi.mocked(orderIntake.processOrder).mockResolvedValue({
-        order: { id: 'order-3', subtotal: 10996, tax: 1979.28, total: 12975.28, status: 'PENDING_WHATSAPP_CONFIRMATION', items: [], createdAt: new Date() },
+        order: { id: 'order-3', subtotal: 10996, tax: 1979.28, total: 12975.28, status: 'PENDING_WHATSAPP_CONFIRMATION', items: [], createdAt: new Date(), customerName: 'Jane Smith', customerPhone: '+919876543211' },
         whatsappDeepLink: '',
       });
 
@@ -124,7 +123,7 @@ describe('orderService', () => {
     it('should handle empty TAX_RATE by defaulting to 0.18', async () => {
       mockEnv.TAX_RATE = undefined;
       vi.mocked(orderIntake.processOrder).mockResolvedValue({
-        order: { id: 'order-4', subtotal: 1000, tax: 180, total: 1180, status: 'PENDING_WHATSAPP_CONFIRMATION', items: [], createdAt: new Date() },
+        order: { id: 'order-4', subtotal: 1000, tax: 180, total: 1180, status: 'PENDING_WHATSAPP_CONFIRMATION', items: [], createdAt: new Date(), customerName: 'John Doe', customerPhone: '+919876543210' },
         whatsappDeepLink: '',
       });
 

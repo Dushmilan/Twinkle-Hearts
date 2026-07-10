@@ -25,7 +25,7 @@ describe('requestId middleware', () => {
     const ids: string[] = [];
 
     for (let i = 0; i < 10; i++) {
-      const ctx = { set: vi.fn(), header: vi.fn() };
+      const ctx: any = { set: vi.fn(), header: vi.fn() };
       await requestId(ctx, vi.fn());
       const id = ctx.set.mock.calls[0][1];
       ids.push(id);
