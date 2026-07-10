@@ -198,7 +198,7 @@ export default function ImageUpload({
               ? 'border-gray-300 bg-gray-50 cursor-not-allowed opacity-60'
               : previews.length >= maxImages
               ? 'border-gray-300 bg-gray-50 cursor-not-allowed'
-              : 'border-gray-300 hover:border-greeting-berry-500 hover:bg-greeting-berry-500/20 cursor-pointer'
+              : 'border-gray-300 hover:border-greeting-plum-500 hover:bg-greeting-plum-500/20 cursor-pointer'
             }`}
         >
           <input
@@ -213,7 +213,7 @@ export default function ImageUpload({
 
           {isUploading ? (
             <div className="flex flex-col items-center">
-              <Heart className="w-8 h-8 text-greeting-berry-500 animate-pulse" />
+              <Heart className="w-8 h-8 text-greeting-plum-500 animate-pulse" />
               <p className="text-sm text-gray-600">Uploading images...</p>
             </div>
           ) : previews.length >= maxImages ? (
@@ -303,7 +303,7 @@ export default function ImageUpload({
 
               {/* First image badge */}
               {index === 0 && (
-                <span className="absolute top-2 left-2 bg-greeting-berry-500 text-gray-100 text-xs px-2 py-1 rounded-full">
+                <span className="absolute top-2 left-2 bg-greeting-plum-500 text-gray-100 text-xs px-2 py-1 rounded-full">
                   Primary
                 </span>
               )}

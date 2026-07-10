@@ -78,15 +78,15 @@ export default function ShopPage() {
   };
 
   return (
-    <div className="bg-greeting-charcoal-500 min-h-screen">
+    <div className="bg-greeting-bronze-100 min-h-screen">
       {/* Page Header */}
-      <section className="bg-greeting-charcoal-400 border-b border-greeting-cocoa-700">
+      <section className="bg-greeting-bronze-100 border-b border-greeting-bronze-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
-            <h1 className="font-display text-4xl sm:text-5xl font-bold text-gray-100 mb-4">
+            <h1 className="font-display text-4xl sm:text-5xl font-bold text-greeting-plum-900 mb-4">
               Browse Our Collection
             </h1>
-            <p className="font-body text-lg text-gray-400">
+            <p className="font-body text-lg text-gray-700">
               Beautiful greeting cards for every occasion
             </p>
           </div>
@@ -94,7 +94,7 @@ export default function ShopPage() {
       </section>
 
       {/* Category Pills */}
-      <section className="bg-greeting-charcoal-400 border-b border-greeting-cocoa-700 sticky top-16 z-30">
+      <section className="bg-white border-b border-greeting-bronze-200 sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
             {CATEGORIES.map((cat) => (
@@ -119,10 +119,10 @@ export default function ShopPage() {
           {/* Section header */}
           <div className="flex items-end justify-between mb-8">
             <div>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-100">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-greeting-plum-900">
                 {activeCategory === 'all' ? 'All Greeting Cards' : `${CATEGORIES.find(c => c.key === activeCategory)?.label} Cards`}
               </h2>
-              <p className="text-gray-400 mt-1">
+              <p className="text-gray-700 mt-1">
                 {products.length} card{products.length !== 1 ? 's' : ''} available
               </p>
             </div>
@@ -205,15 +205,15 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
   const getCategoryBadge = (category?: string) => {
     const catMap: Record<string, { label: string; variant: string }> = {
-      birthday: { label: '🎂 Birthday', variant: 'badge-berry' },
-      love: { label: '💕 Love', variant: 'badge-cocoa' },
+      birthday: { label: '🎂 Birthday', variant: 'badge-plum' },
+      love: { label: '💕 Love', variant: 'badge-bronze' },
       anniversary: { label: '🥂 Anniversary', variant: 'badge-teal' },
-      friendship: { label: '🤝 Friendship', variant: 'badge-cocoa' },
-      festival: { label: '🎊 Festival', variant: 'badge-berry' },
+      friendship: { label: '🤝 Friendship', variant: 'badge-bronze' },
+      festival: { label: '🎊 Festival', variant: 'badge-plum' },
       sympathy: { label: '🕊️ Sympathy', variant: 'badge-teal' },
     };
     const key = category?.toLowerCase() || '';
-    const cat = catMap[key] || { label: category || 'General', variant: 'badge-berry' };
+    const cat = catMap[key] || { label: category || 'General', variant: 'badge-plum' };
     return <span className={`badge ${cat.variant}`}>{cat.label}</span>;
   };
 
@@ -232,7 +232,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
               }}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-charcoal-400 text-gray-500">
+            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-charcoal-200 text-gray-500">
               <span className="text-3xl mb-2">💌</span>
               <span className="text-sm font-display">Card Preview</span>
             </div>
@@ -249,14 +249,14 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
         {/* Title */}
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-base font-semibold text-gray-100 mb-2 line-clamp-2 hover:text-greeting-berry-400 transition-colors">
+          <h3 className="font-display text-base font-semibold text-gray-100 mb-2 line-clamp-2 hover:text-greeting-plum-400 transition-colors">
             {product.name}
           </h3>
         </Link>
 
         {/* Price & Add to Cart */}
         <div className="flex items-center justify-between mt-3">
-          <span className="font-body text-lg font-bold text-greeting-berry-400">
+          <span className="font-body text-lg font-bold text-greeting-plum-400">
             {formatPrice(product.price)}
           </span>
           <button
@@ -264,8 +264,8 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
             disabled={product.stock === 0}
             className={`inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 ${
               product.stock === 0
-                ? 'opacity-40 cursor-not-allowed bg-greeting-charcoal-400'
-                : 'bg-greeting-berry-500 hover:bg-greeting-berry-600 active:scale-90 text-white shadow-lg hover:shadow-greeting-berry-500/30'
+                ? 'opacity-40 cursor-not-allowed bg-greeting-charcoal-200'
+                : 'bg-greeting-plum-500 hover:bg-greeting-plum-600 active:scale-90 text-white shadow-lg hover:shadow-greeting-plum-500/30'
             }`}
             title={product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
           >

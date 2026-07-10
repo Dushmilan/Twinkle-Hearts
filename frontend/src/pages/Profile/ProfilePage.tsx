@@ -30,10 +30,12 @@ export default function ProfilePage() {
 
   if (!isAuthenticated) {
     return (
+      <div className="bg-greeting-bronze-100 min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-16">
         <div className="empty-state">
           <h3 className="empty-state-title">Please log in to view your profile</h3>
         </div>
+      </div>
       </div>
     );
   }
@@ -43,21 +45,22 @@ export default function ProfilePage() {
   }
 
   return (
+    <div className="bg-greeting-bronze-100 min-h-screen">
     <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="font-display text-3xl font-bold text-gray-100 mb-8">My Profile</h1>
+      <h1 className="font-display text-3xl font-bold text-greeting-plum-900 mb-8">My Profile</h1>
 
       <div className="card p-6">
         {/* Avatar & Name */}
-        <div className="flex items-center gap-5 mb-8 pb-6 border-b border-greeting-cocoa-700">
-          <div className="w-20 h-20 bg-greeting-berry-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-2xl font-display font-bold text-greeting-berry-400">
+        <div className="flex items-center gap-5 mb-8 pb-6 border-b border-greeting-bronze-400">
+          <div className="w-20 h-20 bg-greeting-plum-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-2xl font-display font-bold text-greeting-plum-400">
               {user?.name?.charAt(0).toUpperCase() || 'U'}
             </span>
           </div>
           <div>
             <h2 className="font-display text-2xl font-semibold text-gray-100">{user?.name}</h2>
             <p className="text-gray-400">{user?.email}</p>
-            <span className="inline-block mt-2 badge badge-berry capitalize">
+            <span className="inline-block mt-2 badge badge-plum capitalize">
               {user?.role?.toLowerCase() || 'customer'}
             </span>
           </div>
@@ -81,7 +84,7 @@ export default function ProfilePage() {
                 type="email"
                 value={user?.email || ''}
                 disabled
-                className="input-field bg-greeting-charcoal-400 text-gray-400 cursor-not-allowed"
+                className="input-field bg-greeting-charcoal-200 text-gray-400 cursor-not-allowed"
               />
               <p className="mt-1 text-xs text-gray-500">Email cannot be changed</p>
             </div>
@@ -136,6 +139,7 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }

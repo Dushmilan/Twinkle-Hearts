@@ -67,6 +67,7 @@ export default function WishlistPage() {
 
   if (!isAuthenticated) {
     return (
+      <div className="bg-greeting-bronze-100 min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-16">
         <div className="empty-state">
           <div className="empty-state-icon">
@@ -86,13 +87,15 @@ export default function WishlistPage() {
           </div>
         </div>
       </div>
+      </div>
     );
   }
 
   return (
+    <div className="bg-greeting-bronze-100 min-h-screen">
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="font-display text-3xl font-bold text-gray-100 mb-1">My Wishlist</h1>
-      <p className="text-gray-400 mb-8">Cards you love — save them for later</p>
+      <h1 className="font-display text-3xl font-bold text-greeting-plum-900 mb-1">My Wishlist</h1>
+      <p className="text-gray-700 mb-8">Cards you love — save them for later</p>
 
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -121,7 +124,7 @@ export default function WishlistPage() {
             <div key={item.id} className="product-card group">
               <div className="relative">
                 <Link to={`/product/${item.product.id}`} className="block">
-                  <div className="aspect-[3/4] bg-greeting-charcoal-400 overflow-hidden">
+                  <div className="aspect-[3/4] bg-greeting-charcoal-200 overflow-hidden">
                     <img
                       src={getImageSrc(item.product.images?.[0]) || ''}
                       alt={item.product.name}
@@ -134,7 +137,7 @@ export default function WishlistPage() {
                 </Link>
                 <button
                   onClick={() => removeFromWishlist(item.productId)}
-                  className="absolute top-2 right-2 p-1.5 bg-greeting-charcoal-400 rounded-full shadow-lg hover:bg-greeting-berry-500/20 transition-colors"
+                  className="absolute top-2 right-2 p-1.5 bg-greeting-charcoal-200 rounded-full shadow-lg hover:bg-greeting-plum-500/20 transition-colors"
                   title="Remove from wishlist"
                 >
                   <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
@@ -145,23 +148,23 @@ export default function WishlistPage() {
               <div className="p-4">
                 <p className="text-xs text-gray-500 mb-1 capitalize">{item.product.category}</p>
                 <Link to={`/product/${item.product.id}`}>
-                  <h3 className="font-display text-sm font-semibold text-gray-100 mb-2 line-clamp-2 hover:text-greeting-berry-400 transition-colors">
+                  <h3 className="font-display text-sm font-semibold text-gray-100 mb-2 line-clamp-2 hover:text-greeting-plum-400 transition-colors">
                     {item.product.name}
                   </h3>
                 </Link>
-                <p className="font-body text-base font-bold text-greeting-berry-400 mb-3">
+                <p className="font-body text-base font-bold text-greeting-plum-400 mb-3">
                   {formatCurrency(item.product.price)}
                 </p>
                 <div className="flex gap-2">
                   <Link
                     to={`/product/${item.product.id}`}
-                    className="flex-1 text-center px-3 py-2 border border-greeting-cocoa-700 text-gray-300 rounded-pill text-sm font-medium hover:bg-greeting-cocoa-700 hover:border-greeting-berry-400 transition-all"
+                    className="flex-1 text-center px-3 py-2 border border-greeting-bronze-400 text-gray-300 rounded-pill text-sm font-medium hover:bg-greeting-bronze-400 hover:border-greeting-plum-400 transition-all"
                   >
                     View
                   </Link>
                   <Link
                     to={`/cart?add=${item.product.id}`}
-                    className="flex-1 text-center px-3 py-2 bg-greeting-berry-500 text-gray-100 rounded-pill text-sm font-medium hover:bg-greeting-berry-600 transition-colors"
+                    className="flex-1 text-center px-3 py-2 bg-greeting-plum-500 text-gray-100 rounded-pill text-sm font-medium hover:bg-greeting-plum-600 transition-colors"
                   >
                     Add
                   </Link>
@@ -171,6 +174,7 @@ export default function WishlistPage() {
           ))}
         </div>
       )}
+    </div>
     </div>
   );
 }

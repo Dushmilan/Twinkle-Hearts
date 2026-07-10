@@ -88,6 +88,7 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
+      <div className="bg-greeting-bronze-100 min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="empty-state">
           <div className="empty-state-icon">
@@ -100,17 +101,19 @@ export default function CheckoutPage() {
           </button>
         </div>
       </div>
+      </div>
     );
   }
 
   return (
+    <div className="bg-greeting-bronze-100 min-h-screen">
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-display text-3xl font-bold text-gray-100 mb-1">
+        <h1 className="font-display text-3xl font-bold text-greeting-plum-900 mb-1">
           Checkout
         </h1>
-        <p className="text-gray-400">
+        <p className="text-gray-700">
           Just a few more steps to send your cards with love
         </p>
       </div>
@@ -121,7 +124,7 @@ export default function CheckoutPage() {
           <div className="lg:col-span-3">
             <div className="card p-6">
               <h2 className="font-display text-xl font-semibold text-gray-100 mb-6 flex items-center gap-2">
-                <HeartIcon className="w-5 h-5 text-greeting-berry-400" />
+                <HeartIcon className="w-5 h-5 text-greeting-plum-400" />
                 Your Details
               </h2>
 
@@ -163,7 +166,7 @@ export default function CheckoutPage() {
                 <div>
                   <label className="label-text">WhatsApp Number *</label>
                   <div className="flex">
-                    <span className="inline-flex items-center px-4 bg-greeting-charcoal-400 border border-r-0 border-greeting-cocoa-700 rounded-l-lg font-medium text-gray-300 text-sm">
+                    <span className="inline-flex items-center px-4 bg-greeting-charcoal-200 border border-r-0 border-greeting-bronze-400 rounded-l-lg font-medium text-gray-300 text-sm">
                       {formData.countryCode}
                     </span>
                     <input
@@ -188,9 +191,9 @@ export default function CheckoutPage() {
 
           {/* Order Summary — Gift Receipt */}
           <div className="lg:col-span-2">
-            <div className="card rounded-xl border-2 border-dashed border-greeting-cocoa-700 p-6 sticky top-24 shadow-lg">
-              <div className="text-center mb-6 pb-4 border-b border-greeting-cocoa-700">
-                <HeartIcon className="w-8 h-8 text-greeting-berry-400 mx-auto mb-2" />
+            <div className="card rounded-xl border-2 border-dashed border-greeting-bronze-400 p-6 sticky top-24 shadow-lg">
+              <div className="text-center mb-6 pb-4 border-b border-greeting-bronze-400">
+                <HeartIcon className="w-8 h-8 text-greeting-plum-400 mx-auto mb-2" />
                 <h2 className="font-display text-xl font-semibold text-gray-100">
                   Your Cards
                 </h2>
@@ -211,7 +214,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Totals */}
-              <div className="border-t border-greeting-cocoa-900 pt-4 space-y-2 mb-6">
+              <div className="border-t border-greeting-bronze-400 pt-4 space-y-2 mb-6">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Subtotal</span>
                   <span className="font-medium">{formatPrice(total)}</span>
@@ -220,9 +223,9 @@ export default function CheckoutPage() {
                   <span className="text-gray-400">Tax (18%)</span>
                   <span className="font-medium">{formatPrice(tax)}</span>
                 </div>
-                <div className="flex justify-between text-lg font-bold pt-2 border-t border-greeting-cocoa-900">
+                <div className="flex justify-between text-lg font-bold pt-2 border-t border-greeting-bronze-400">
                   <span>Total</span>
-                  <span className="text-greeting-berry-400">{formatPrice(finalTotal)}</span>
+                  <span className="text-greeting-plum-400">{formatPrice(finalTotal)}</span>
                 </div>
               </div>
 
@@ -267,6 +270,7 @@ export default function CheckoutPage() {
           </div>
         )}
       </form>
+    </div>
     </div>
   );
 }

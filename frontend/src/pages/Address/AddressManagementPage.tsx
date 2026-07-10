@@ -129,11 +129,12 @@ export default function AddressManagementPage() {
   };
 
   return (
+    <div className="bg-greeting-bronze-100 min-h-screen">
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="font-display text-3xl font-bold text-gray-100">My Addresses</h1>
-          <p className="text-gray-400 mt-1">Manage your delivery addresses</p>
+          <h1 className="font-display text-3xl font-bold text-greeting-plum-900">My Addresses</h1>
+          <p className="text-gray-700 mt-1">Manage your delivery addresses</p>
         </div>
         <button
           onClick={() => {
@@ -253,7 +254,7 @@ export default function AddressManagementPage() {
                 id="isDefault"
                 checked={formData.isDefault}
                 onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-                className="w-4 h-4 text-greeting-berry-400 border-greeting-cocoa-700 rounded focus:ring-greeting-berry-400"
+                className="w-4 h-4 text-greeting-plum-400 border-greeting-bronze-400 rounded focus:ring-greeting-plum-400"
               />
               <label htmlFor="isDefault" className="text-sm text-gray-300">
                 Set as default address
@@ -281,7 +282,7 @@ export default function AddressManagementPage() {
 
       {isLoading ? (
         <div className="text-center py-12">
-          <div className="animate-spin w-8 h-8 border-2 border-greeting-berry-500 border-t-transparent rounded-full mx-auto" />
+          <div className="animate-spin w-8 h-8 border-2 border-greeting-plum-500 border-t-transparent rounded-full mx-auto" />
           <p className="text-gray-400 mt-4">Loading addresses...</p>
         </div>
       ) : addresses.length === 0 ? (
@@ -296,11 +297,11 @@ export default function AddressManagementPage() {
             <div
               key={address.id}
               className={`card p-6 relative ${
-                address.isDefault ? 'ring-2 ring-greeting-berry-500 shadow-lg' : ''
+                address.isDefault ? 'ring-2 ring-greeting-plum-500 shadow-lg' : ''
               }`}
             >
               {address.isDefault && (
-                <span className="absolute top-4 right-4 badge badge-berry text-xs">
+                <span className="absolute top-4 right-4 badge badge-plum text-xs">
                   Default
                 </span>
               )}
@@ -313,7 +314,7 @@ export default function AddressManagementPage() {
               <div className="flex gap-3 mt-4">
                 <button
                   onClick={() => handleEdit(address)}
-                  className="text-sm text-greeting-berry-400 hover:text-greeting-berry-300 font-medium transition-colors"
+                  className="text-sm text-greeting-plum-400 hover:text-greeting-plum-300 font-medium transition-colors"
                 >
                   Edit
                 </button>
@@ -338,6 +339,7 @@ export default function AddressManagementPage() {
           ))}
         </div>
       )}
+    </div>
     </div>
   );
 }

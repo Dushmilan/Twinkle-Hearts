@@ -17,7 +17,7 @@
 
   body {
     font-family: theme('fontFamily.body');
-    background-color: theme('colors.greeting-charcoal.400');
+    background-color: theme('colors.greeting-charcoal.200');
     color: theme('colors.gray.400');
     line-height: 1.6;
     margin: 0;
@@ -40,12 +40,12 @@
   }
 
   ::selection {
-    background-color: theme('colors.greeting-berry.400');
+    background-color: theme('colors.greeting-plum.400');
     color: theme('colors.gray.100');
   }
 
   :focus-visible {
-    outline: 2px solid theme('colors.greeting-berry.400');
+    outline: 2px solid theme('colors.greeting-plum.400');
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -61,39 +61,50 @@
 
 @layer components {
   /* ============================================
-     CARD — solid dark card
+     CARD — Light variant (shopping surfaces)
      ============================================ */
   .card {
-    background: theme('colors.greeting-charcoal.500');
-    border: 1px solid theme('colors.greeting-cocoa.700');
+    background: #ffffff;
+    border: 1px solid theme('colors.greeting-lilac.200');
     border-radius: theme('borderRadius.card');
-    box-shadow: theme('boxShadow.paper');
+    box-shadow: theme('boxShadow.lilac');
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .card:hover {
     box-shadow: theme('boxShadow.paper-md');
-    border-color: theme('colors.greeting-cocoa.600');
+    border-color: theme('colors.greeting-plum.400');
   }
 
-  .card-white {
-    background: theme('colors.greeting-charcoal.500');
-    border: 1px solid theme('colors.greeting-cocoa.700');
+  /* ============================================
+     CARD DARK — Solid dark card (brand/marketing)
+     ============================================ */
+  .card-dark {
+    background: theme('colors.greeting-charcoal.400');
+    border: 1px solid theme('colors.greeting-bronze.400');
     border-radius: theme('borderRadius.card');
     box-shadow: theme('boxShadow.paper');
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .card-white:hover {
+  .card-dark:hover {
     box-shadow: theme('boxShadow.paper-md');
+    border-color: theme('colors.greeting-plum.400');
+  }
+
+  /* ============================================
+     CARD LIGHT — Alias for .card (legacy support)
+     ============================================ */
+  .card-light {
+    @apply card;
   }
 
   /* ============================================
      SHEET — page section backgrounds
      ============================================ */
   .sheet {
-    background: theme('colors.greeting-charcoal.600');
-    border: 1px solid theme('colors.greeting-cocoa.700');
+    background: theme('colors.greeting-charcoal.500');
+    border: 1px solid theme('colors.greeting-bronze.400');
     border-radius: theme('borderRadius.container');
   }
 
@@ -102,12 +113,12 @@
      ============================================ */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2.5
-           bg-greeting-berry-500 hover:bg-greeting-berry-400 active:bg-greeting-berry-600
+           bg-greeting-plum-500 hover:bg-greeting-plum-400 active:bg-greeting-plum-600
            text-white font-body font-semibold
            py-3 px-6 rounded-full
            transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-greeting-berry-400 focus-visible:ring-offset-2
+           focus-visible:ring-2 focus-visible:ring-greeting-plum-400 focus-visible:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:scale-100
            shadow-paper
            min-h-[44px];
@@ -115,26 +126,26 @@
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2
-           bg-transparent hover:bg-greeting-berry-900/30 active:bg-greeting-berry-800/30
-           text-greeting-berry-400 hover:text-greeting-berry-300
+           bg-transparent hover:bg-greeting-plum-900/30 active:bg-greeting-plum-900/30
+           text-greeting-plum-400 hover:text-greeting-plum-300
            font-body font-medium
            py-2.5 px-5 rounded-full
            transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-greeting-berry-400
+           focus-visible:ring-2 focus-visible:ring-greeting-plum-400
            min-h-[44px];
   }
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2
-           bg-transparent hover:bg-greeting-berry-900/20 active:bg-greeting-berry-800/20
+           bg-transparent hover:bg-greeting-plum-900/20 active:bg-greeting-plum-900/20
            text-greeting-teal-400 hover:text-greeting-teal-300
            font-body font-semibold
            py-2.5 px-6 rounded-full
-           border border-greeting-cocoa-700 hover:border-greeting-cocoa-600
+           border border-greeting-bronze-400 hover:border-greeting-bronze-300
            transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-greeting-berry-400 focus-visible:ring-offset-2
+           focus-visible:ring-2 focus-visible:ring-greeting-plum-400 focus-visible:ring-offset-2
            min-h-[44px];
   }
 
@@ -167,17 +178,17 @@
      ============================================ */
   .input-field {
     @apply w-full px-4 py-3
-           bg-greeting-charcoal-600 border border-greeting-cocoa-700 rounded-[10px]
+           bg-greeting-charcoal-500 border border-greeting-bronze-400 rounded-[10px]
            font-body text-gray-100 text-sm
            placeholder:text-gray-500
-           focus:border-greeting-berry-400 focus:ring-2 focus:ring-greeting-berry-400/20 focus:ring-offset-2 focus:ring-offset-greeting-charcoal-600
-           hover:border-greeting-cocoa-600
+           focus:border-greeting-plum-400 focus:ring-2 focus:ring-greeting-plum-400/20 focus:ring-offset-2 focus:ring-offset-greeting-charcoal-500
+           hover:border-greeting-bronze-300
            outline-none
            transition-all duration-200 ease-spring;
   }
 
   .input-field-error {
-    @apply border-greeting-berry-400 focus:border-greeting-berry-400 focus:ring-greeting-berry-400/20;
+    @apply border-greeting-plum-400 focus:border-greeting-plum-400 focus:ring-greeting-plum-400/20;
   }
 
   .label-text {
@@ -189,7 +200,7 @@
   }
 
   .error-text {
-    @apply block text-xs font-body text-greeting-berry-400 mt-1;
+    @apply block text-xs font-body text-greeting-plum-400 mt-1;
   }
 
   /* ============================================
@@ -203,12 +214,16 @@
            tracking-wider uppercase;
   }
 
-  .badge-berry {
-    @apply bg-greeting-berry-900/30 text-greeting-berry-300;
+  .badge-plum {
+    @apply bg-greeting-plum-900/30 text-greeting-plum-400;
   }
 
-  .badge-cocoa {
-    @apply bg-greeting-cocoa-900/30 text-greeting-cocoa-300;
+  .badge-lilac {
+    @apply bg-greeting-lilac-300/30 text-greeting-lilac-300;
+  }
+
+  .badge-bronze {
+    @apply bg-greeting-bronze-400/30 text-greeting-bronze-300;
   }
 
   .badge-teal {
@@ -226,18 +241,18 @@
     @apply inline-flex items-center gap-2
            px-4 py-2.5 rounded-[10px]
            font-body text-sm font-medium
-           bg-greeting-charcoal-500 border border-greeting-cocoa-700
+           bg-greeting-charcoal-400 border border-greeting-bronze-400
            text-gray-300
-           hover:border-greeting-berry-500 hover:text-greeting-berry-400
-           active:bg-greeting-berry-500 active:text-white active:border-greeting-berry-500
+           hover:border-greeting-plum-500 hover:text-greeting-plum-400
+           active:bg-greeting-plum-500 active:text-white active:border-greeting-plum-500
            transition-all duration-200 ease-spring
            cursor-pointer select-none
            whitespace-nowrap;
   }
 
   .category-pill-active {
-    @apply bg-greeting-berry-500 text-white border-greeting-berry-500 shadow-paper
-           hover:bg-greeting-berry-400 hover:text-white hover:border-greeting-berry-400;
+    @apply bg-greeting-plum-500 text-white border-greeting-plum-500 shadow-paper
+           hover:bg-greeting-plum-400 hover:text-white hover:border-greeting-plum-400;
   }
 
   /* ============================================
@@ -248,7 +263,7 @@
   }
 
   .product-card-image {
-    @apply aspect-[3/4] bg-greeting-charcoal-800 overflow-hidden;
+    @apply aspect-[3/4] bg-greeting-charcoal-700 overflow-hidden;
   }
 
   .product-card-body {
@@ -256,7 +271,7 @@
   }
 
   .product-card-outline {
-    @apply card-white overflow-hidden;
+    @apply card overflow-hidden;
   }
 
   /* ============================================
@@ -265,9 +280,9 @@
   .skeleton-shimmer {
     background: linear-gradient(
       90deg,
-      theme('colors.greeting-charcoal.800') 25%,
-      theme('colors.greeting-cocoa.900') 37%,
-      theme('colors.greeting-charcoal.800') 63%
+      theme('colors.greeting-charcoal.700') 25%,
+      theme('colors.greeting-charcoal.600') 37%,
+      theme('colors.greeting-charcoal.700') 63%
     );
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
@@ -292,7 +307,7 @@
   }
 
   .empty-state-icon {
-    @apply w-14 h-14 rounded-full bg-greeting-cocoa-900 flex items-center justify-center mb-4
+    @apply w-14 h-14 rounded-full bg-greeting-bronze-400 flex items-center justify-center mb-4
            text-greeting-teal-400;
   }
 
@@ -310,7 +325,7 @@
   .section-eyebrow {
     @apply inline-flex items-center gap-2
            px-3 py-1.5 rounded-full
-           bg-greeting-berry-900/30 text-greeting-berry-300
+           bg-greeting-plum-900/30 text-greeting-plum-400
            text-xs font-body font-semibold uppercase tracking-wider;
   }
 
@@ -338,15 +353,15 @@
 
   .admin-table th {
     @apply px-4 py-3 text-xs font-body font-semibold text-gray-400 uppercase tracking-wider
-           bg-greeting-charcoal-400 border-b border-greeting-cocoa-700;
+           bg-greeting-charcoal-200 border-b border-greeting-bronze-400;
   }
 
   .admin-table td {
-    @apply px-4 py-3.5 text-sm text-gray-300 border-b border-greeting-cocoa-700;
+    @apply px-4 py-3.5 text-sm text-gray-300 border-b border-greeting-bronze-400;
   }
 
   .admin-table tr {
-    @apply transition-colors duration-150 hover:bg-greeting-charcoal-500;
+    @apply transition-colors duration-150 hover:bg-greeting-charcoal-400;
   }
 
   /* ============================================
@@ -382,11 +397,11 @@
      STAT CARD
      ============================================ */
   .stat-card {
-    @apply bg-greeting-charcoal-500 rounded-2xl p-6 border border-greeting-cocoa-700;
+    @apply card p-6;
   }
 
   .stat-value {
-    @apply font-mono text-2xl sm:text-3xl font-bold text-greeting-berry-400 mb-0.5 tracking-tight;
+    @apply font-mono text-2xl sm:text-3xl font-bold text-greeting-plum-400 mb-0.5 tracking-tight;
   }
 
   .stat-label {
@@ -397,11 +412,11 @@
      FEATURE ITEM
      ============================================ */
   .feature-icon {
-    @apply w-10 h-10 rounded-xl bg-greeting-berry-500/20 flex items-center justify-center flex-shrink-0;
+    @apply w-10 h-10 rounded-xl bg-greeting-plum-500/20 flex items-center justify-center flex-shrink-0;
   }
 
   .feature-icon-inner {
-    @apply text-greeting-berry-400;
+    @apply text-greeting-plum-400;
   }
 
   .feature-title {
@@ -416,8 +431,8 @@
      CTA SECTION
      ============================================ */
   .cta-section {
-    @apply bg-greeting-charcoal-700 text-white;
-    border-top: 1px solid theme('colors.greeting-cocoa.700');
+    @apply bg-greeting-charcoal-600 text-white;
+    border-top: 1px solid theme('colors.greeting-bronze.400');
   }
 
   .cta-heading {
@@ -466,8 +481,8 @@
     background: linear-gradient(
       to right,
       transparent,
-      theme('colors.greeting-cocoa.700'),
-      theme('colors.greeting-cocoa.700'),
+      theme('colors.greeting-bronze.400'),
+      theme('colors.greeting-bronze.400'),
       transparent
     );
     border: none;

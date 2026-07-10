@@ -46,31 +46,34 @@ export default function OrderHistoryPage() {
   const getStatusBadge = (status?: string) => {
     if (!status) return null;
     const statusMap: Record<string, { label: string; variant: string }> = {
-      PENDING_WHATSAPP_CONFIRMATION: { label: 'Pending', variant: 'badge-berry' },
+      PENDING_WHATSAPP_CONFIRMATION: { label: 'Pending', variant: 'badge-plum' },
       CONFIRMED: { label: 'Confirmed', variant: 'badge-teal' },
-      CANCELLED: { label: 'Cancelled', variant: 'badge-cocoa' },
-      EXPIRED: { label: 'Expired', variant: 'badge-cocoa' },
+      CANCELLED: { label: 'Cancelled', variant: 'badge-bronze' },
+      EXPIRED: { label: 'Expired', variant: 'badge-bronze' },
     };
-    const s = statusMap[status] || { label: status, variant: 'badge-berry' };
+    const s = statusMap[status] || { label: status, variant: 'badge-plum' };
     return <span className={`badge ${s.variant}`}>{s.label}</span>;
   };
 
   if (isLoading) {
     return (
+      <div className="bg-greeting-bronze-100 min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="font-display text-3xl font-bold text-gray-100 mb-6">My Orders</h1>
+        <h1 className="font-display text-3xl font-bold text-greeting-plum-900 mb-6">My Orders</h1>
         <div className="space-y-4">
           <OrderSkeleton />
           <OrderSkeleton />
         </div>
       </div>
+      </div>
     );
   }
 
   return (
+    <div className="bg-greeting-bronze-100 min-h-screen">
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="font-display text-3xl font-bold text-gray-100 mb-1">My Orders</h1>
-      <p className="text-gray-400 mb-8">Track your card orders</p>
+      <h1 className="font-display text-3xl font-bold text-greeting-plum-900 mb-1">My Orders</h1>
+      <p className="text-gray-700 mb-8">Track your card orders</p>
 
       {orders.length === 0 ? (
         <div className="card">
@@ -104,7 +107,7 @@ export default function OrderHistoryPage() {
                 {getStatusBadge(order.status)}
               </div>
 
-              <div className="border-t border-b border-greeting-cocoa-700 py-4 my-4 space-y-3">
+              <div className="border-t border-b border-greeting-bronze-400 py-4 my-4 space-y-3">
                 {order.items.map((item: any, index) => (
                   <div key={index} className="flex justify-between items-center">
                     <div>
@@ -121,7 +124,7 @@ export default function OrderHistoryPage() {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm text-gray-400">
-                    Total: <span className="text-lg font-bold text-greeting-berry-400">{formatCurrency(order.total)}</span>
+                    Total: <span className="text-lg font-bold text-greeting-plum-400">{formatCurrency(order.total)}</span>
                   </p>
                 </div>
                 <Link
@@ -135,6 +138,7 @@ export default function OrderHistoryPage() {
           ))}
         </div>
       )}
+    </div>
     </div>
   );
 }

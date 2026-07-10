@@ -145,7 +145,7 @@ function App() {
             },
             success: {
               iconTheme: {
-                primary: '#ec4899',
+                primary: '#8B2E85',
                 secondary: '#fff',
               },
             },

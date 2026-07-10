@@ -43,9 +43,9 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-greeting-charcoal-500 px-4">
-          <div className="max-w-md w-full bg-greeting-charcoal-400 shadow-lg rounded-xl p-8 text-center">
-            <div className="text-greeting-berry-400 text-5xl mb-4">!</div>
+        <div className="min-h-screen flex items-center justify-center bg-greeting-charcoal-400 px-4">
+          <div className="max-w-md w-full bg-greeting-charcoal-200 shadow-lg rounded-xl p-8 text-center">
+            <div className="text-greeting-plum-400 text-5xl mb-4">!</div>
             <h1 className="text-2xl font-display font-semibold text-gray-100 mb-2">
               Oops! Something went wrong
             </h1>
@@ -57,14 +57,14 @@ export class ErrorBoundary extends Component<Props, State> {
                 <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-300">
                   Error details
                 </summary>
-                <pre className="mt-2 p-3 bg-greeting-charcoal-500 rounded text-xs text-greeting-berry-400 overflow-auto">
+                <pre className="mt-2 p-3 bg-greeting-charcoal-400 rounded text-xs text-greeting-plum-400 overflow-auto">
                   {error.toString()}
                 </pre>
               </details>
             )}
             <button
               onClick={this.reset}
-              className="bg-greeting-berry-600 text-white px-6 py-2 rounded-full hover:bg-greeting-berry-700 transition-colors font-body font-semibold"
+              className="bg-greeting-plum-600 text-white px-6 py-2 rounded-full hover:bg-greeting-plum-700 transition-colors font-body font-semibold"
             >
               Try Again
             </button>

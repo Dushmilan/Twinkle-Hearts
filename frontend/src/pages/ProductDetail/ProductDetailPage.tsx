@@ -52,19 +52,20 @@ export default function ProductDetailPage() {
 
   const getCategoryBadge = (category?: string) => {
     const catMap: Record<string, { label: string; variant: string }> = {
-      birthday: { label: '🎂 Birthday', variant: 'badge-berry' },
-      love: { label: '💕 Love', variant: 'badge-cocoa' },
+      birthday: { label: '🎂 Birthday', variant: 'badge-plum' },
+      love: { label: '💕 Love', variant: 'badge-bronze' },
       anniversary: { label: '🥂 Anniversary', variant: 'badge-teal' },
-      friendship: { label: '🤝 Friendship', variant: 'badge-cocoa' },
-      festival: { label: '🎊 Festival', variant: 'badge-berry' },
+      friendship: { label: '🤝 Friendship', variant: 'badge-bronze' },
+      festival: { label: '🎊 Festival', variant: 'badge-plum' },
       sympathy: { label: '🕊️ Sympathy', variant: 'badge-teal' },
     };
-    const cat = catMap[category?.toLowerCase() ?? ''] || { label: category ?? 'General', variant: 'badge-berry' };
+    const cat = catMap[category?.toLowerCase() ?? ''] || { label: category ?? 'General', variant: 'badge-plum' };
     return <span className={`badge ${cat.variant}`}>{cat.label}</span>;
   };
 
   if (loading) {
     return (
+      <div className="bg-greeting-bronze-100 min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
           <div className="card overflow-hidden">
@@ -79,11 +80,13 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+      </div>
     );
   }
 
   if (!product) {
     return (
+      <div className="bg-greeting-bronze-100 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center">
           <div className="empty-state">
@@ -101,16 +104,18 @@ export default function ProductDetailPage() {
           </Link>
         </div>
       </div>
+      </div>
     );
   }
 
   const images = Array.isArray(product.images) ? product.images : [];
 
   return (
+    <div className="bg-greeting-bronze-100 min-h-screen">
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
-        <Link to="/" className="hover:text-greeting-berry-400 transition-colors">Shop</Link>
+      <nav className="flex items-center gap-2 text-sm text-gray-700 mb-8">
+        <Link to="/" className="hover:text-greeting-plum-400 transition-colors">Shop</Link>
         <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
@@ -121,7 +126,7 @@ export default function ProductDetailPage() {
         {/* Product Images */}
         <div>
           {/* Main Image */}
-          <div className="aspect-[4/5] bg-greeting-charcoal-400 rounded-xl overflow-hidden shadow-lg mb-4">
+          <div className="aspect-[4/5] bg-greeting-charcoal-200 rounded-xl overflow-hidden shadow-lg mb-4">
             {images[activeImage] ? (
               <img
                 src={getImageSrc(images[activeImage])}
@@ -132,7 +137,7 @@ export default function ProductDetailPage() {
                 }}
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-charcoal-400 text-gray-500">
+              <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-charcoal-200 text-gray-500">
                 <span className="text-5xl mb-3">💌</span>
                 <span className="font-display text-lg">Card Preview</span>
               </div>
@@ -148,8 +153,8 @@ export default function ProductDetailPage() {
                   onClick={() => setActiveImage(idx)}
                   className={`w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all duration-200 ${
                     activeImage === idx
-                      ? 'border-greeting-berry-400 shadow-lg'
-                      : 'border-transparent hover:border-greeting-cocoa-700'
+                      ? 'border-greeting-plum-400 shadow-lg'
+                      : 'border-transparent hover:border-greeting-bronze-400'
                   }`}
                 >
                   <img
@@ -177,7 +182,7 @@ export default function ProductDetailPage() {
 
           {/* Price */}
           <div className="flex items-baseline gap-2 mb-6">
-            <span className="font-body text-3xl font-bold text-greeting-berry-400">
+            <span className="font-body text-3xl font-bold text-greeting-plum-400">
               {formatPrice(product.price)}
             </span>
             <span className="text-sm text-gray-400">incl. tax</span>
@@ -207,14 +212,14 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-lg border border-greeting-cocoa-700 flex items-center justify-center hover:bg-greeting-cocoa-700 hover:border-greeting-berry-400 transition-all text-gray-400 font-medium"
+                  className="w-10 h-10 rounded-lg border border-greeting-bronze-400 flex items-center justify-center hover:bg-greeting-bronze-400 hover:border-greeting-plum-400 transition-all text-gray-400 font-medium"
                 >
                   −
                 </button>
                 <span className="w-12 text-center font-body text-lg font-semibold">{quantity}</span>
                 <button
                   onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  className="w-10 h-10 rounded-lg border border-greeting-cocoa-700 flex items-center justify-center hover:bg-greeting-cocoa-700 hover:border-greeting-berry-400 transition-all text-gray-400 font-medium"
+                  className="w-10 h-10 rounded-lg border border-greeting-bronze-400 flex items-center justify-center hover:bg-greeting-bronze-400 hover:border-greeting-plum-400 transition-all text-gray-400 font-medium"
                 >
                   +
                 </button>
@@ -261,7 +266,7 @@ export default function ProductDetailPage() {
           </a>
 
           {/* Details */}
-          <div className="mt-8 pt-8 border-t border-greeting-cocoa-700">
+          <div className="mt-8 pt-8 border-t border-greeting-bronze-400">
             <dl className="space-y-4 text-sm">
               <div className="flex justify-between">
                 <dt className="text-gray-400">Category</dt>
@@ -275,6 +280,7 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

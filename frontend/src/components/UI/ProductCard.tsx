@@ -29,7 +29,7 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
   const addItem = useCartStore((s) => s.addItem);
 
     const categoryKey = product.category?.toLowerCase() || '';
-  const badgeClass = CATEGORY_BADGE[categoryKey] || 'badge-berry';
+  const badgeClass = CATEGORY_BADGE[categoryKey] || 'badge-plum';
   const categoryLabel = CATEGORY_MAP[categoryKey] || product.category || 'General';
 
   const handleAddToCart = async (e: React.MouseEvent) => {
@@ -57,7 +57,7 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
       transition={{ type: 'spring', stiffness: 200, damping: 20 }}
     >
       <Link to={`/product/${product.id}`} className="block">
-        <div className="aspect-[3/4] bg-greeting-charcoal-800 relative">
+        <div className="aspect-[3/4] bg-greeting-charcoal-700 relative">
           {!imgError && product.images[0] ? (
             <img
               src={getImageSrc(product.images[0])}
@@ -67,8 +67,8 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-charcoal-800">
-              <div className="w-12 h-12 rounded-2xl bg-greeting-cocoa-800 flex items-center justify-center mb-2">
+            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-charcoal-700">
+              <div className="w-12 h-12 rounded-2xl bg-greeting-bronze-400 flex items-center justify-center mb-2">
                 <Heart size={22} fill="currentColor" className="text-greeting-teal-400" />
               </div>
               <span className="text-xs font-medium text-greeting-teal-400">No preview</span>
@@ -82,13 +82,13 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
 
       <div className="p-4 pb-5">
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-sm font-semibold text-gray-100 line-clamp-2 hover:text-greeting-berry-400 transition-colors duration-200 leading-snug">
+          <h3 className="font-display text-sm font-semibold text-greeting-plum-900 line-clamp-2 hover:text-greeting-plum-400 transition-colors duration-200 leading-snug">
             {product.name}
           </h3>
         </Link>
 
         <div className="flex items-center justify-between mt-3">
-          <span className="font-mono text-base font-semibold text-greeting-berry-400 tracking-tight">
+          <span className="font-mono text-base font-semibold text-greeting-plum-400 tracking-tight">
             {formatPrice(product.price)}
           </span>
 
@@ -97,7 +97,7 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
               onClick={handleAddToCart}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.92 }}
-              className="p-2 rounded-xl bg-greeting-charcoal-800 text-gray-400 hover:bg-greeting-berry-500 hover:text-white transition-colors duration-200 ease-spring"
+              className="p-2 rounded-xl bg-greeting-charcoal-700 text-gray-400 hover:bg-greeting-plum-500 hover:text-white transition-colors duration-200 ease-spring"
               aria-label="Add to cart"
             >
               <ShoppingCart size={15} />
@@ -111,7 +111,7 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
               exit={{ scale: 0, opacity: 0 }}
               className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600"
             >
-              <Heart size={13} fill="currentColor" className="text-greeting-berry-400" />
+              <Heart size={13} fill="currentColor" className="text-greeting-plum-400" />
               Added
             </motion.span>
           )}

@@ -68,26 +68,26 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-greeting-charcoal-500 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-greeting-charcoal-400 px-4 py-12">
       {/* Decorative sparkles */}
       <div className="absolute top-20 left-16 w-2 h-2 bg-greeting-teal-500 rounded-full animate-float opacity-40 hidden lg:block" />
-      <div className="absolute bottom-20 right-20 w-1.5 h-1.5 bg-greeting-berry-500 rounded-full animate-float-slow opacity-30 hidden lg:block" />
+      <div className="absolute bottom-20 right-20 w-1.5 h-1.5 bg-greeting-plum-500 rounded-full animate-float-slow opacity-30 hidden lg:block" />
 
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
-            <HeartIcon className="w-10 h-10 text-greeting-berry-400" />
+            <HeartIcon className="w-10 h-10 text-greeting-plum-400" />
             <span className="text-2xl font-display font-semibold text-gray-100">
-              Twinkle<span className="text-greeting-berry-400">Hearts</span>
+              Twinkle<span className="text-greeting-plum-400">Hearts</span>
             </span>
           </Link>
         </div>
 
         <div className="card rounded-2xl p-8">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 bg-greeting-berry-500/20 rounded-full mb-4">
-              <svg className="w-7 h-7 text-greeting-berry-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-greeting-plum-500/20 rounded-full mb-4">
+              <svg className="w-7 h-7 text-greeting-plum-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
@@ -148,11 +148,11 @@ export default function LoginPage() {
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-greeting-berry-400 border-greeting-cocoa-700 rounded focus:ring-greeting-berry-400"
+                  className="w-4 h-4 text-greeting-plum-400 border-greeting-bronze-400 rounded focus:ring-greeting-plum-400"
                 />
                 <span className="text-sm text-gray-300">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-greeting-berry-400 hover:text-greeting-berry-300 font-medium">
+              <a href="#" className="text-sm text-greeting-plum-400 hover:text-greeting-plum-300 font-medium">
                 Forgot password?
               </a>
             </div>
@@ -180,7 +180,7 @@ export default function LoginPage() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-greeting-cocoa-700"></div>
+                <div className="w-full border-t border-greeting-bronze-400"></div>
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-3 text-gray-500">Or continue with</span>
@@ -189,7 +189,7 @@ export default function LoginPage() {
 
             <button
               type="button"
-              className="mt-4 w-full flex items-center justify-center gap-3 card border border-gray-200 text-gray-300 py-3 rounded-lg font-medium hover:bg-greeting-cocoa-700 hover:border-greeting-berry-400 transition-all"
+              className="mt-4 w-full flex items-center justify-center gap-3 card border border-gray-200 text-gray-300 py-3 rounded-lg font-medium hover:bg-greeting-bronze-400 hover:border-greeting-plum-400 transition-all"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -203,7 +203,7 @@ export default function LoginPage() {
 
           <p className="mt-8 text-center text-sm text-gray-400">
             Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-greeting-berry-400 hover:text-greeting-berry-300">
+            <Link to="/register" className="font-medium text-greeting-plum-400 hover:text-greeting-plum-300">
               Sign up now
             </Link>
           </p>

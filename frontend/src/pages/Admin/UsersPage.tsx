@@ -61,18 +61,18 @@ function AdminUsers() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-greeting-bronze-100">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-greeting-bronze-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
+              <h1 className="text-3xl font-bold text-greeting-plum-900">User Management</h1>
               <p className="text-gray-600 mt-1">View and manage users</p>
             </div>
             <Link
               to="/admin"
-              className="text-greeting-berry-400 hover:text-greeting-berry-300 font-medium"
+              className="text-greeting-plum-400 hover:text-greeting-plum-300 font-medium"
             >
               Back to Dashboard
             </Link>
