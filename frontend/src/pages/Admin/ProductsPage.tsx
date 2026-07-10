@@ -4,6 +4,7 @@ import { AdminRoute } from '../../components/ProtectedRoute';
 import { api } from '../../api.js';
 import toastService from '../../utils/toast';
 import ImageUpload from '../../components/ImageUpload';
+import { getImageSrc } from '../../utils/images';
 
 interface Product {
   id: string;
@@ -420,7 +421,7 @@ function AdminProducts() {
                         <div className="flex items-center">
                           {product.images[0] && (
                             <img
-                              src={product.images[0]}
+                              src={getImageSrc(product.images[0])}
                               alt={product.name}
                               className="w-10 h-10 rounded object-cover mr-3"
                             />
