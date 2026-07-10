@@ -14,7 +14,7 @@ vi.mock('../../middleware/auth.js', () => ({
 
 import adminRoutes from '../adminRoutes.js';
 import * as adminService from '../../services/adminService.js';
-import { getPrisma } from '../../lib/prisma.js';
+import { getPrisma, getPrismaRepository } from '../../lib/prisma.js';
 import { errorHandler } from '../../middleware/errorHandler.js';
 import type { Env } from '../../types.js';
 
@@ -38,7 +38,7 @@ describe('Admin Routes (Integration)', () => {
       order: { findMany: vi.fn().mockResolvedValue([]), count: vi.fn().mockResolvedValue(0) },
       product: { findMany: vi.fn().mockResolvedValue([]), count: vi.fn().mockResolvedValue(0) },
     };
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
+    vi.mocked(getPrismaRepository).mockReturnValue(mockPrisma as any);
 
     mockEnv = { DB: {} as any, KV: {} as any, R2: {} as any };
   });

@@ -147,13 +147,13 @@ describe('cartStore', () => {
     });
   });
 
-  describe('syncWithBackend', () => {
+  describe('syncCart', () => {
     it('should send cart items to API', async () => {
       useCartStore.setState({
         items: [{ productId: 'prod-1', quantity: 2, price: 2999, addedAt: Date.now() }],
       });
 
-      await useCartStore.getState().syncWithBackend();
+      await useCartStore.getState().syncCart();
 
       expect(mockFetch).toHaveBeenCalledWith(
         '/api/cart/sync',
@@ -162,7 +162,7 @@ describe('cartStore', () => {
     });
 
     it('should do nothing when cart is empty', async () => {
-      await useCartStore.getState().syncWithBackend();
+      await useCartStore.getState().syncCart();
 
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -172,7 +172,7 @@ describe('cartStore', () => {
         items: [{ productId: 'prod-1', quantity: 1, price: 100, addedAt: Date.now() }],
       });
 
-      const syncPromise = useCartStore.getState().syncWithBackend();
+      const syncPromise = useCartStore.getState().syncCart();
 
       expect(useCartStore.getState().isSyncing).toBe(true);
 
@@ -193,7 +193,7 @@ describe('cartStore', () => {
         }),
       });
 
-      await useCartStore.getState().syncWithBackend();
+      await useCartStore.getState().syncCart();
 
       const items = useCartStore.getState().items;
       expect(items[0].price).toBe(150);

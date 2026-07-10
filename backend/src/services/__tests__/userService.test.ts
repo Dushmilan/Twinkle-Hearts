@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('../../lib/prisma.js');
-vi.mock('../../lib/cache.js');
+vi.mock('../../lib/cache/index.js');
 vi.mock('../../utils/password.js');
 
-import { getPrisma } from '../../lib/prisma.js';
-import * as cacheLib from '../../lib/cache.js';
+import { getPrisma, getPrismaRepository } from '../../lib/prisma.js';
+import { getCacheRepository } from '../../lib/cache/index.js';
 import * as passwordUtils from '../../utils/password.js';
 import {
   getUserProfile, updateUserProfile, changePassword,
@@ -17,9 +17,17 @@ import { NotFoundError, BadRequestError } from '../../middleware/errorHandler.js
 describe('userService', () => {
   let mockPrisma: any;
   let mockEnv: any;
+  let mockCache: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    mockCache = {
+      get: vi.fn().mockResolvedValue(null),
+      set: vi.fn().mockResolvedValue(undefined),
+      delete: vi.fn().mockResolvedValue(undefined),
+    };
+    vi.mocked(getCacheRepository).mockReturnValue(mockCache as any);
 
     mockPrisma = {
       user: { findUnique: vi.fn(), update: vi.fn() },
@@ -29,23 +37,19 @@ describe('userService', () => {
       product: { findUnique: vi.fn() },
     };
 
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
+    vi.mocked(getPrismaRepository).mockReturnValue(mockPrisma as any);
 
     mockEnv = {
       DB: {} as any,
       KV: { get: vi.fn(), put: vi.fn(), delete: vi.fn() } as any,
     } as any;
-
-    vi.mocked(cacheLib.cacheGet).mockResolvedValue(null);
-    vi.mocked(cacheLib.cacheSet).mockResolvedValue(undefined);
-    vi.mocked(cacheLib.cacheDelete).mockResolvedValue(undefined);
   });
 
   describe('getUserProfile', () => {
     const mockProfile = { id: 'user-1', email: 'test@example.com', name: 'Test', phone: '+919876543210', avatar: null, role: 'CUSTOMER', emailVerified: true, createdAt: new Date(), lastLoginAt: null, _count: { orders: 3, addresses: 2, wishlist: 5 } };
 
     it('should return user profile from cache if available', async () => {
-      vi.mocked(cacheLib.cacheGet).mockResolvedValue(mockProfile);
+      vi.mocked(mockCache.get).mockResolvedValue(mockProfile);
 
       const result = await getUserProfile(mockEnv, 'user-1');
 
@@ -59,7 +63,7 @@ describe('userService', () => {
       const result = await getUserProfile(mockEnv, 'user-1');
 
       expect(result).toEqual(mockProfile);
-      expect(cacheLib.cacheSet).toHaveBeenCalled();
+      expect(mockCache.set).toHaveBeenCalled();
     });
 
     it('should return null if user not found', async () => {
@@ -83,7 +87,7 @@ describe('userService', () => {
         data: updateData,
         select: expect.any(Object),
       });
-      expect(cacheLib.cacheDelete).toHaveBeenCalled();
+      expect(mockCache.delete).toHaveBeenCalled();
     });
   });
 
@@ -120,7 +124,7 @@ describe('userService', () => {
     const mockAddresses = [{ id: 'addr-1', label: 'Home', street: '123 Main St', city: 'Colombo', isDefault: true }];
 
     it('should return cached addresses', async () => {
-      vi.mocked(cacheLib.cacheGet).mockResolvedValue(mockAddresses);
+      vi.mocked(mockCache.get).mockResolvedValue(mockAddresses);
 
       const result = await getUserAddresses(mockEnv, 'user-1');
 
@@ -134,7 +138,7 @@ describe('userService', () => {
       const result = await getUserAddresses(mockEnv, 'user-1');
 
       expect(result).toEqual(mockAddresses);
-      expect(cacheLib.cacheSet).toHaveBeenCalled();
+      expect(mockCache.set).toHaveBeenCalled();
     });
   });
 
@@ -151,7 +155,7 @@ describe('userService', () => {
         where: { userId: 'user-1', isDefault: true },
         data: { isDefault: false },
       });
-      expect(cacheLib.cacheDelete).toHaveBeenCalled();
+      expect(mockCache.delete).toHaveBeenCalled();
     });
   });
 
@@ -163,7 +167,7 @@ describe('userService', () => {
       const result = await updateAddress(mockEnv, 'user-1', 'addr-1', { label: 'Work' });
 
       expect(result.label).toBe('Work');
-      expect(cacheLib.cacheDelete).toHaveBeenCalled();
+      expect(mockCache.delete).toHaveBeenCalled();
     });
 
     it('should throw if address not found', async () => {
@@ -193,7 +197,7 @@ describe('userService', () => {
   describe('getUserWishlist', () => {
     it('should return cached wishlist', async () => {
       const mockWishlist = [{ id: 'wish-1', productId: 'prod-1', product: { id: 'prod-1', name: 'Test Product', price: 100, images: [], stock: 10 } }];
-      vi.mocked(cacheLib.cacheGet).mockResolvedValue(mockWishlist);
+      vi.mocked(mockCache.get).mockResolvedValue(mockWishlist);
 
       const result = await getUserWishlist(mockEnv, 'user-1');
 
@@ -207,7 +211,7 @@ describe('userService', () => {
       const result = await getUserWishlist(mockEnv, 'user-1');
 
       expect(result).toEqual([]);
-      expect(cacheLib.cacheSet).toHaveBeenCalled();
+      expect(mockCache.set).toHaveBeenCalled();
     });
   });
 
@@ -220,7 +224,7 @@ describe('userService', () => {
       const result = await addToWishlist(mockEnv, 'user-1', 'prod-1');
 
       expect(result.productId).toBe('prod-1');
-      expect(cacheLib.cacheDelete).toHaveBeenCalled();
+      expect(mockCache.delete).toHaveBeenCalled();
     });
 
     it('should throw if product is inactive', async () => {
@@ -246,7 +250,7 @@ describe('userService', () => {
       expect(mockPrisma.wishlist.delete).toHaveBeenCalledWith({
         where: { userId_productId: { userId: 'user-1', productId: 'prod-1' } },
       });
-      expect(cacheLib.cacheDelete).toHaveBeenCalled();
+      expect(mockCache.delete).toHaveBeenCalled();
     });
 
     it('should throw if not in wishlist', async () => {

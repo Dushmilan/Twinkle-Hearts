@@ -170,3 +170,98 @@ export async function createCompleteOrder(orderOverrides: OrderFactoryOverrides 
 
   return { order, product };
 }
+
+/**
+ * Session factory - creates a session with customizable attributes
+ */
+export async function createSession(overrides: Partial<Prisma.SessionCreateInput> = {}) {
+  // Default: create a user if userId is not provided
+  let userId = (overrides as any).userId;
+  if (!userId) {
+    const user = await createUser();
+    userId = user.id;
+  }
+
+  const session = await testPrisma.session.create({
+    data: {
+      userId,
+      tokenHash: `token-hash-${generateTestUniqueId()}`,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      ...overrides,
+    },
+  });
+  return session;
+}
+
+/**
+ * Address factory - creates an address with customizable attributes
+ */
+export async function createAddress(overrides: Partial<Prisma.AddressCreateInput> = {}) {
+  let userId = (overrides as any).userId;
+  if (!userId) {
+    const user = await createUser();
+    userId = user.id;
+  }
+
+  const address = await testPrisma.address.create({
+    data: {
+      label: 'Home',
+      street: '123 Test Street',
+      city: 'Colombo',
+      state: 'Western',
+      zip: '00100',
+      country: 'LK',
+      phone: TEST_USER_PHONE,
+      user: { connect: { id: userId } },
+      ...overrides,
+    },
+  });
+  return address;
+}
+
+/**
+ * Wishlist factory - adds a product to a user's wishlist
+ */
+export async function createWishlistEntry(overrides: { userId?: string; productId?: string } = {}) {
+  let userId = overrides.userId;
+  let productId = overrides.productId;
+
+  if (!userId) {
+    const user = await createUser();
+    userId = user.id;
+  }
+  if (!productId) {
+    const product = await createProduct();
+    productId = product.id;
+  }
+
+  const entry = await testPrisma.wishlist.create({
+    data: {
+      userId,
+      productId,
+    },
+    include: { product: true },
+  });
+  return entry;
+}
+
+/**
+ * Admin log factory - creates an admin log entry
+ */
+export async function createAdminLog(overrides: Partial<Prisma.AdminLogCreateInput> = {}) {
+  let adminId = (overrides as any).adminId;
+  if (!adminId) {
+    const admin = await createUser({ role: 'ADMIN' });
+    adminId = admin.id;
+  }
+
+  const log = await testPrisma.adminLog.create({
+    data: {
+      action: 'TEST_ACTION',
+      entity: 'test',
+      admin: { connect: { id: adminId } },
+      ...overrides,
+    },
+  });
+  return log;
+}

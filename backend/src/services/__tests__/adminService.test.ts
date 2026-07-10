@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('../../lib/prisma.js');
-vi.mock('../../lib/cache.js');
+vi.mock('../../lib/cache/index.js');
 vi.mock('../../lib/images.js');
 
-import { getPrisma } from '../../lib/prisma.js';
-import * as cacheLib from '../../lib/cache.js';
+import { getPrisma, getPrismaRepository } from '../../lib/prisma.js';
+import { getCacheRepository } from '../../lib/cache/index.js';
 import * as imageLib from '../../lib/images.js';
 import {
   getDashboardStats, createProduct, updateProduct, deleteProduct,
@@ -16,9 +16,17 @@ import { NotFoundError, BadRequestError } from '../../middleware/errorHandler.js
 describe('adminService', () => {
   let mockPrisma: any;
   let mockEnv: any;
+  let mockCache: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    mockCache = {
+      delete: vi.fn().mockResolvedValue(undefined),
+      get: vi.fn(),
+      set: vi.fn(),
+    };
+    vi.mocked(getCacheRepository).mockReturnValue(mockCache as any);
 
     mockPrisma = {
       order: { count: vi.fn(), aggregate: vi.fn(), findMany: vi.fn() },
@@ -27,7 +35,7 @@ describe('adminService', () => {
       orderItem: { findFirst: vi.fn() },
     };
 
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
+    vi.mocked(getPrismaRepository).mockReturnValue(mockPrisma as any);
 
     mockEnv = {
       DB: {} as any,
@@ -37,8 +45,6 @@ describe('adminService', () => {
       CLOUDINARY_API_KEY: '',
       CLOUDINARY_API_SECRET: '',
     } as any;
-
-    vi.mocked(cacheLib.cacheDelete).mockResolvedValue(undefined);
   });
 
   describe('getDashboardStats', () => {
@@ -68,7 +74,7 @@ describe('adminService', () => {
       const result = await createProduct(mockEnv, productInput);
 
       expect(result.id).toBe('prod-1');
-      expect(cacheLib.cacheDelete).toHaveBeenCalledTimes(2);
+      expect(mockCache.delete).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -80,7 +86,7 @@ describe('adminService', () => {
       const result = await updateProduct(mockEnv, 'prod-1', { name: 'Updated Name' });
 
       expect(result.name).toBe('Updated Name');
-      expect(cacheLib.cacheDelete).toHaveBeenCalledTimes(3);
+      expect(mockCache.delete).toHaveBeenCalledTimes(3);
     });
 
     it('should throw if product not found', async () => {

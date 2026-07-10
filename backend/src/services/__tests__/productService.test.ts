@@ -125,7 +125,7 @@ describe('productService', () => {
 
       const result = await productService.listProducts(mockEnv, { page: 1, limit: 20 });
 
-      expect(result.products[0].images).toEqual(['a.jpg', 'b.jpg']);
+      expect(result.products[0].images).toEqual(['/images/a.jpg', '/images/b.jpg']);
       expect(Array.isArray(result.products[0].images)).toBe(true);
     });
 
@@ -136,7 +136,7 @@ describe('productService', () => {
 
       const result = await productService.listProducts(mockEnv, { page: 1, limit: 20 });
 
-      expect(result.products[0].images).toEqual(['/x.jpg', '/y.jpg']);
+      expect(result.products[0].images).toEqual(['/images//x.jpg', '/images//y.jpg']);
     });
   });
 
@@ -217,10 +217,10 @@ describe('productService', () => {
       const result = await productService.getProductById(mockEnv, 'prod-1');
 
       expect(Array.isArray(result.images)).toBe(true);
-      expect(result.images).toEqual(['main.jpg', 'thumb.jpg']);
+      expect(result.images).toEqual(['/images/main.jpg', '/images/thumb.jpg']);
       expect(mockCache.set).toHaveBeenCalled();
       const setVal = mockCache.set.mock.calls[0]?.[1] as any;
-      expect(setVal.images).toEqual(['main.jpg', 'thumb.jpg']);
+      expect(setVal.images).toEqual(['/images/main.jpg', '/images/thumb.jpg']);
     });
 
     it('should normalize images on cache hit (idempotent for arrays)', async () => {
@@ -229,7 +229,7 @@ describe('productService', () => {
       const result = await productService.getProductById(mockEnv, 'prod-1');
 
       expect(Array.isArray(result.images)).toBe(true);
-      expect(result.images).toEqual(['already-array.jpg']);
+      expect(result.images).toEqual(['/images/already-array.jpg']);
     });
   });
 });

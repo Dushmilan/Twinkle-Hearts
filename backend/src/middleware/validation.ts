@@ -1,8 +1,9 @@
 import type { Context, Next } from 'hono';
 import { z } from 'zod';
-import { getPrisma } from '../lib/prisma.js';
-import { BadRequestError, StockUnavailableError } from './errorHandler.js';
-import type { Env, Variables, ValidatedCartItem } from '../types.js';
+import { getPrismaRepository } from '../lib/prisma.js';
+import { hydrateOrderItems, hydrateCartItems } from '../lib/validators/index.js';
+import { BadRequestError } from './errorHandler.js';
+import type { Env, Variables } from '../types.js';
 
 type ValContext = { Bindings: Env; Variables: Variables };
 
@@ -22,58 +23,9 @@ export async function validateOrder(c: Context<ValContext>, next: Next) {
   try {
     const body = await c.req.json();
     const input = orderCreationSchema.parse(body);
-    const prisma = getPrisma(c.env.DB);
+    const prisma = getPrismaRepository(c.env.DB);
 
-    const productIds = input.items.map(item => item.productId);
-    const products = await prisma.product.findMany({
-      where: {
-        id: { in: productIds },
-        isActive: true,
-      },
-      select: {
-        id: true,
-        name: true,
-        price: true,
-        stock: true,
-      },
-    });
-
-    const productMap = new Map<string, { price: number; name: string; stock: number }>(
-      products.map(p => [p.id, {
-        price: Number(p.price),
-        name: p.name,
-        stock: p.stock,
-      }])
-    );
-
-    const validatedItems: ValidatedCartItem[] = [];
-    const outOfStockErrors: string[] = [];
-
-    for (const item of input.items) {
-      const product = productMap.get(item.productId);
-      if (!product) {
-        throw new BadRequestError(`Product ${item.productId} not found or inactive`);
-      }
-
-      if (product.stock < item.quantity) {
-        outOfStockErrors.push(
-          `${product.name}: Only ${product.stock} available, but ${item.quantity} requested`
-        );
-      } else {
-        validatedItems.push({
-          productId: item.productId,
-          quantity: item.quantity,
-          currentPrice: product.price,
-          frontendPrice: item.price,
-          productName: product.name,
-          stockAvailable: product.stock,
-        });
-      }
-    }
-
-    if (outOfStockErrors.length > 0) {
-      throw new StockUnavailableError(outOfStockErrors.join('; '));
-    }
+    const validatedItems = await hydrateOrderItems(prisma, input.items);
 
     c.set('validatedItems', validatedItems);
     c.set('customerName', input.customerName);
@@ -99,27 +51,9 @@ export async function validateCartSync(c: Context<ValContext>, next: Next) {
     }
 
     const parsed = z.array(cartItemSchema).parse(items);
-    const prisma = getPrisma(c.env.DB);
+    const prisma = getPrismaRepository(c.env.DB);
 
-    const productIds = parsed.map(item => item.productId);
-    const products = await prisma.product.findMany({
-      where: { id: { in: productIds }, isActive: true },
-      select: { id: true, price: true, stock: true },
-    });
-
-    const productMap = new Map<string, { price: number; stock: number }>(
-      products.map(p => [p.id, { price: Number(p.price), stock: p.stock }])
-    );
-
-    const validatedItems = parsed.map(item => {
-      const product = productMap.get(item.productId);
-      return {
-        productId: item.productId,
-        quantity: item.quantity,
-        currentPrice: product?.price || 0,
-        inStock: product ? product.stock >= item.quantity : false,
-      };
-    });
+    const validatedItems = await hydrateCartItems(prisma, parsed);
 
     c.set('validatedItems', validatedItems as any);
     await next();

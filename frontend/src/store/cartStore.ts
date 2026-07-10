@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { db } from './db';
-import { api } from '../api.js';
+import { upsertCartItem, removeCartItem, updateCartItemQuantity, clearCartItems } from './cart-db';
+import { syncWithBackend } from './cart-sync';
 
 export interface CartItem {
   productId: string;
@@ -17,13 +17,12 @@ interface CartState {
   lastSyncedAt: number | null;
   isSyncing: boolean;
   isOnline: boolean;
-  
-  // Actions
+
   addItem: (product: Omit<CartItem, 'addedAt'>) => Promise<void>;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  syncWithBackend: () => Promise<void>;
+  syncCart: () => Promise<void>;
   setOnlineStatus: (isOnline: boolean) => void;
   getTotal: () => number;
   getItemCount: () => number;
@@ -35,13 +34,11 @@ export const useCartStore = create<CartState>()(
       items: [],
       lastSyncedAt: null,
       isSyncing: false,
-      isOnline: navigator.onLine,
+      isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
 
       addItem: async (product) => {
         const addedAt = Date.now();
-        const newItem = { ...product, addedAt };
 
-        // Optimistic update
         set((state) => {
           const existingItem = state.items.find(
             (item) => item.productId === product.productId
@@ -55,34 +52,16 @@ export const useCartStore = create<CartState>()(
                 : item
             );
           } else {
-            newItems = [...state.items, newItem];
+            newItems = [...state.items, { ...product, addedAt }];
           }
 
           return { items: newItems };
         });
 
-        // Persist to IndexedDB
-        try {
-          const existingItem = await db.cart.get({ productId: product.productId });
-          
-          if (existingItem) {
-            await db.cart.update(existingItem.id!, {
-              quantity: existingItem.quantity + product.quantity,
-            });
-          } else {
-            await db.cart.add({
-              productId: product.productId,
-              quantity: product.quantity,
-              addedAt,
-            });
-          }
-        } catch (error) {
-          // Silently fail - IndexedDB is optional for persistence
-        }
+        await upsertCartItem(product.productId, product.quantity, addedAt);
 
-        // Sync with backend when online
         if (get().isOnline) {
-          await get().syncWithBackend();
+          await get().syncCart();
         }
       },
 
@@ -90,9 +69,7 @@ export const useCartStore = create<CartState>()(
         set((state) => ({
           items: state.items.filter((item) => item.productId !== productId),
         }));
-
-        // Remove from IndexedDB
-        db.cart.where('productId').equals(productId).delete().catch(console.error);
+        removeCartItem(productId);
       },
 
       updateQuantity: (productId, quantity) => {
@@ -107,48 +84,23 @@ export const useCartStore = create<CartState>()(
           ),
         }));
 
-        // Update IndexedDB
-        db.cart.where('productId').equals(productId).modify({ quantity }).catch(console.error);
+        updateCartItemQuantity(productId, quantity);
       },
 
       clearCart: () => {
         set({ items: [] });
-        db.cart.clear().catch(console.error);
+        clearCartItems();
       },
 
-      syncWithBackend: async () => {
+      syncCart: async () => {
         const { items } = get();
-        
         if (items.length === 0) return;
 
         set({ isSyncing: true });
 
         try {
-          const data = await api.cart.sync({
-            items: items.map((item) => ({
-              productId: item.productId,
-              quantity: item.quantity,
-              price: item.price,
-            })),
-          });
-
-          const updatedItems = items.map((item) => {
-            const validatedItem = data.items.find(
-              (v) => v.productId === item.productId
-            );
-            return validatedItem
-              ? {
-                  ...item,
-                  price: validatedItem.currentPrice,
-                  productName: validatedItem.productName,
-                }
-              : item;
-          });
-
-          set({
-            items: updatedItems,
-            lastSyncedAt: Date.now(),
-          });
+          const { items: updatedItems, updatedAt } = await syncWithBackend(items);
+          set({ items: updatedItems, lastSyncedAt: updatedAt });
         } catch (error) {
           console.error('Cart sync failed:', error);
         } finally {
@@ -158,9 +110,9 @@ export const useCartStore = create<CartState>()(
 
       setOnlineStatus: (isOnline) => {
         set({ isOnline });
-        
+
         if (isOnline && get().items.length > 0) {
-          get().syncWithBackend();
+          get().syncCart();
         }
       },
 
@@ -175,10 +127,19 @@ export const useCartStore = create<CartState>()(
     {
       name: 'cart-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ 
-        items: state.items, 
-        lastSyncedAt: state.lastSyncedAt 
+      partialize: (state) => ({
+        items: state.items,
+        lastSyncedAt: state.lastSyncedAt,
       }),
     }
   )
 );
+
+// Standalone selectors — use these in components for reactivity
+export const selectCartItems = (state: CartState) => state.items;
+export const selectCartTotal = (state: CartState) =>
+  state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+export const selectCartItemCount = (state: CartState) =>
+  state.items.reduce((count, item) => count + item.quantity, 0);
+export const selectIsSyncing = (state: CartState) => state.isSyncing;
+export const selectIsOnline = (state: CartState) => state.isOnline;

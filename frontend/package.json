@@ -31,6 +31,7 @@
     "vite": "^5.1.6",
     "vite-plugin-pwa": "^0.19.2",
     "workbox-window": "^7.0.0",
+    "@twinkle-hearts/shared": "*",
     "zustand": "^4.5.2"
   },
   "devDependencies": {

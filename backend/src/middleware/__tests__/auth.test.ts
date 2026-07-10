@@ -2,12 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Context } from 'hono';
 
 vi.mock('../../lib/jwt.js');
-vi.mock('../../lib/cache.js');
+vi.mock('../../lib/cache/index.js');
 vi.mock('../../lib/prisma.js');
 
 import { verifyToken } from '../../lib/jwt.js';
-import { cacheGet } from '../../lib/cache.js';
-import { getPrisma } from '../../lib/prisma.js';
+import { getCacheRepository } from '../../lib/cache/index.js';
+import { getPrisma, getPrismaRepository } from '../../lib/prisma.js';
 import { authenticate, requireRole, requireAdmin } from '../auth.js';
 import { UnauthorizedError, ForbiddenError } from '../errorHandler.js';
 
@@ -31,8 +31,19 @@ describe('authenticate middleware', () => {
   let mockContext: any;
   const nextFn = vi.fn();
 
+  let mockCache: any;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    mockCache = {
+      getSession: vi.fn(),
+      setSession: vi.fn(),
+      invalidateSession: vi.fn(),
+      get: vi.fn(),
+      set: vi.fn(),
+      delete: vi.fn(),
+    };
+    vi.mocked(getCacheRepository).mockReturnValue(mockCache as any);
     mockContext = createMockContext({
       req: {
         header: vi.fn(() => 'Bearer valid-token'),
@@ -48,7 +59,7 @@ describe('authenticate middleware', () => {
       role: 'CUSTOMER',
       sessionId: 'session-1',
     });
-    vi.mocked(cacheGet).mockResolvedValue({ userId: 'user-1' });
+    mockCache.getSession.mockResolvedValue({ userId: 'user-1' });
 
     await authenticate(mockContext, nextFn);
 
@@ -66,10 +77,10 @@ describe('authenticate middleware', () => {
       userId: 'user-1', email: 'test@example.com',
       role: 'CUSTOMER', sessionId: 'session-1',
     });
-    vi.mocked(cacheGet).mockResolvedValue(null);
+    mockCache.getSession.mockResolvedValue(null);
 
     const mockPrisma = { session: { findUnique: vi.fn().mockResolvedValue({ userId: 'user-1', expiresAt: new Date(Date.now() + 86400000) }) } };
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
+    vi.mocked(getPrismaRepository).mockReturnValue(mockPrisma as any);
 
     await authenticate(mockContext, nextFn);
 
@@ -107,10 +118,10 @@ describe('authenticate middleware', () => {
       userId: 'user-1', email: 'test@example.com',
       role: 'CUSTOMER', sessionId: 'session-1',
     });
-    vi.mocked(cacheGet).mockResolvedValue(null);
+    mockCache.getSession.mockResolvedValue(null);
 
     const mockPrisma = { session: { findUnique: vi.fn().mockResolvedValue({ userId: 'user-1', expiresAt: new Date(Date.now() - 86400000) }) } };
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
+    vi.mocked(getPrismaRepository).mockReturnValue(mockPrisma as any);
 
     await expect(authenticate(mockContext, nextFn)).rejects.toThrow(UnauthorizedError);
     await expect(authenticate(mockContext, nextFn)).rejects.toThrow('Session expired');
@@ -121,10 +132,10 @@ describe('authenticate middleware', () => {
       userId: 'user-1', email: 'test@example.com',
       role: 'CUSTOMER', sessionId: 'session-1',
     });
-    vi.mocked(cacheGet).mockResolvedValue(null);
+    mockCache.getSession.mockResolvedValue(null);
 
     const mockPrisma = { session: { findUnique: vi.fn().mockResolvedValue(null) } };
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
+    vi.mocked(getPrismaRepository).mockReturnValue(mockPrisma as any);
 
     await expect(authenticate(mockContext, nextFn)).rejects.toThrow(UnauthorizedError);
   });

@@ -1,6 +1,6 @@
-import { getPrisma } from '../lib/prisma.js';
-import { cacheGet, cacheSet, cacheDelete, CACHE_TTL, CacheKeys } from '../lib/cache.js';
-import { BadRequestError, StockUnavailableError } from '../middleware/errorHandler.js';
+import { getPrismaRepository } from '../lib/prisma.js';
+import { CacheKeys, getCacheRepository } from '../lib/cache/index.js';
+import { processOrder } from '../lib/order-intake/index.js';
 import type { Env } from '../types.js';
 
 export async function createOrder(
@@ -12,61 +12,17 @@ export async function createOrder(
     items: Array<{ productId: string; quantity: number; currentPrice: number; productName: string }>;
   }
 ) {
-  const { userId, customerName, customerPhone, items } = input;
+  const prisma = getPrismaRepository(env.DB);
+  const { order } = await processOrder(prisma, env, input);
 
-  const subtotal = items.reduce((sum, item) => sum + item.currentPrice * item.quantity, 0);
-  const taxRate = parseFloat(env.TAX_RATE || '0.18');
-  const tax = Math.round(subtotal * taxRate * 100) / 100;
-  const total = subtotal + tax;
-
-  const prisma = getPrisma(env.DB);
-
-  const order = await prisma.$transaction(async (tx: any) => {
-    for (const item of items) {
-      const result = await tx.product.updateMany({
-        where: { id: item.productId, stock: { gte: item.quantity } },
-        data: { stock: { decrement: item.quantity } },
-      });
-
-      if (result.count === 0) {
-        throw new StockUnavailableError(`Insufficient stock for product ${item.productId}`);
-      }
-    }
-
-    return tx.order.create({
-      data: {
-        userId,
-        customerName,
-        customerPhone,
-        subtotal,
-        tax,
-        total,
-        status: 'PENDING_WHATSAPP_CONFIRMATION',
-        items: {
-          create: items.map((item) => ({
-            productId: item.productId,
-            productName: item.productName,
-            quantity: item.quantity,
-            price: item.currentPrice,
-          })),
-        },
-        priceSnapshot: JSON.stringify(items.map((item) => ({
-          productId: item.productId,
-          priceAtOrder: item.currentPrice,
-        }))),
-      },
-      include: { items: true },
-    });
-  });
-
-  await cacheDelete(env.KV, CacheKeys.userOrders(userId));
-  console.info(`Order created: ${order.id} - Total: ₹${total}`);
+  await getCacheRepository(env.KV).delete( CacheKeys.userOrders(input.userId));
+  console.info(`Order created: ${order.id} - Total: ₹${order.total}`);
 
   return order;
 }
 
 export async function getOrderById(env: Env, orderId: string, userId: string) {
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   return prisma.order.findUnique({
     where: { id: orderId, userId },
     include: { items: true },
@@ -75,10 +31,11 @@ export async function getOrderById(env: Env, orderId: string, userId: string) {
 
 export async function getUserOrders(env: Env, userId: string, page: number = 1, limit: number = 20) {
   const cacheKey = CacheKeys.userOrders(userId);
-  const cached = await cacheGet(env.KV, cacheKey);
+  const cache = getCacheRepository(env.KV);
+  const cached = await cache.get(cacheKey);
   if (cached) return cached;
 
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   const skip = (page - 1) * limit;
 
   const [orders, total] = await Promise.all([
@@ -105,6 +62,6 @@ export async function getUserOrders(env: Env, userId: string, page: number = 1, 
     pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
   };
 
-  await cacheSet(env.KV, cacheKey, result, CACHE_TTL.USER_ORDERS);
+  await cache.set(cacheKey, result);
   return result;
 }

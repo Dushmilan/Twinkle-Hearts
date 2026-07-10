@@ -24,7 +24,7 @@ import AdminUsersPage from './pages/Admin/UsersPage';
 import { useCartStore } from './store/cartStore';
 
 function AppRoutes() {
-  const syncCart = useCartStore((state) => state.syncWithBackend);
+  const syncCart = useCartStore((state) => state.syncCart);
 
   // Sync cart on app mount
   useEffect(() => {

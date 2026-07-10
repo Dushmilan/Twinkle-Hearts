@@ -2,10 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { z } from 'zod';
 
 vi.mock('../../lib/prisma.js');
+vi.mock('../../lib/validators/index.js');
 
-import { getPrisma } from '../../lib/prisma.js';
+import { getPrismaRepository } from '../../lib/prisma.js';
+import { hydrateOrderItems, hydrateCartItems } from '../../lib/validators/index.js';
 import { validateOrder, validateCartSync, orderCreationSchema } from '../validation.js';
-import { BadRequestError, StockUnavailableError } from '../errorHandler.js';
+import { BadRequestError } from '../errorHandler.js';
 
 function createMockContext(overrides: any = {}): any {
   return {
@@ -78,91 +80,42 @@ describe('validateOrder middleware', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockContext = createMockContext();
+    vi.mocked(getPrismaRepository).mockReturnValue({} as any);
   });
 
   it('should validate and set validatedItems on context', async () => {
+    const hydratedItems = [
+      { productId: 'prod-1', quantity: 2, currentPrice: 2999, frontendPrice: 2500, productName: 'Test Product', stockAvailable: 10 },
+    ];
+    vi.mocked(hydrateOrderItems).mockResolvedValue(hydratedItems as any);
+
     mockContext.req.json.mockResolvedValue({
-      items: [{ productId: 'prod-1', quantity: 2 }],
+      items: [{ productId: 'prod-1', quantity: 2, price: 2500 }],
       customerName: 'John Doe',
       customerPhone: '+919876543210',
     });
 
-    const mockPrisma = {
-      product: {
-        findMany: vi.fn().mockResolvedValue([
-          { id: 'prod-1', name: 'Test Product', price: 2999, stock: 10 },
-        ]),
-      },
-    };
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
-
     await validateOrder(mockContext, nextFn);
 
-    expect(mockContext.set).toHaveBeenCalledWith('validatedItems', expect.arrayContaining([
-      expect.objectContaining({
-        productId: 'prod-1',
-        currentPrice: 2999,
-        quantity: 2,
-      }),
-    ]));
+    expect(hydrateOrderItems).toHaveBeenCalledWith({}, [
+      { productId: 'prod-1', quantity: 2, price: 2500 },
+    ]);
+    expect(mockContext.set).toHaveBeenCalledWith('validatedItems', hydratedItems);
     expect(mockContext.set).toHaveBeenCalledWith('customerName', 'John Doe');
     expect(mockContext.set).toHaveBeenCalledWith('customerPhone', '+919876543210');
     expect(nextFn).toHaveBeenCalled();
   });
 
-  it('should throw if product not found', async () => {
+  it('should propagate errors from hydrateOrderItems', async () => {
+    vi.mocked(hydrateOrderItems).mockRejectedValue(new BadRequestError('Product not found'));
+
     mockContext.req.json.mockResolvedValue({
       items: [{ productId: 'unknown', quantity: 1 }],
       customerName: 'John',
       customerPhone: '+919876543210',
     });
 
-    const mockPrisma = { product: { findMany: vi.fn().mockResolvedValue([]) } };
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
-
     await expect(validateOrder(mockContext, nextFn)).rejects.toThrow(BadRequestError);
-  });
-
-  it('should throw StockUnavailableError if stock insufficient', async () => {
-    mockContext.req.json.mockResolvedValue({
-      items: [{ productId: 'prod-1', quantity: 100 }],
-      customerName: 'John',
-      customerPhone: '+919876543210',
-    });
-
-    const mockPrisma = {
-      product: {
-        findMany: vi.fn().mockResolvedValue([
-          { id: 'prod-1', name: 'Test Product', price: 2999, stock: 5 },
-        ]),
-      },
-    };
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
-
-    await expect(validateOrder(mockContext, nextFn)).rejects.toThrow(StockUnavailableError);
-  });
-
-  it('should collect multiple out-of-stock errors', async () => {
-    mockContext.req.json.mockResolvedValue({
-      items: [
-        { productId: 'prod-1', quantity: 100 },
-        { productId: 'prod-2', quantity: 50 },
-      ],
-      customerName: 'John',
-      customerPhone: '+919876543210',
-    });
-
-    const mockPrisma = {
-      product: {
-        findMany: vi.fn().mockResolvedValue([
-          { id: 'prod-1', name: 'Product 1', price: 100, stock: 5 },
-          { id: 'prod-2', name: 'Product 2', price: 200, stock: 10 },
-        ]),
-      },
-    };
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
-
-    await expect(validateOrder(mockContext, nextFn)).rejects.toThrow('Only 5 available');
   });
 
   it('should handle Zod validation errors', async () => {
@@ -174,6 +127,22 @@ describe('validateOrder middleware', () => {
 
     await expect(validateOrder(mockContext, nextFn)).rejects.toThrow(BadRequestError);
   });
+
+  it('should forward customer name and phone to context', async () => {
+    vi.mocked(hydrateOrderItems).mockResolvedValue([] as any);
+
+    mockContext.req.json.mockResolvedValue({
+      items: [{ productId: 'p1', quantity: 1 }],
+      customerName: 'Alice',
+      customerPhone: '+94123456789',
+    });
+
+    await validateOrder(mockContext, nextFn);
+
+    expect(mockContext.set).toHaveBeenCalledWith('customerName', 'Alice');
+    expect(mockContext.set).toHaveBeenCalledWith('customerPhone', '+94123456789');
+    expect(nextFn).toHaveBeenCalled();
+  });
 });
 
 describe('validateCartSync middleware', () => {
@@ -183,25 +152,23 @@ describe('validateCartSync middleware', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockContext = createMockContext();
+    vi.mocked(getPrismaRepository).mockReturnValue({} as any);
   });
 
   it('should validate cart items', async () => {
+    const hydratedItems = [
+      { productId: 'prod-1', quantity: 2, currentPrice: 2999, inStock: true },
+    ];
+    vi.mocked(hydrateCartItems).mockResolvedValue(hydratedItems as any);
+
     mockContext.req.json.mockResolvedValue({
       items: [{ productId: 'prod-1', quantity: 2, price: 100 }],
     });
 
-    const mockPrisma = {
-      product: {
-        findMany: vi.fn().mockResolvedValue([
-          { id: 'prod-1', price: 2999, stock: 10 },
-        ]),
-      },
-    };
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
-
     await validateCartSync(mockContext, nextFn);
 
-    expect(mockContext.set).toHaveBeenCalledWith('validatedItems', expect.any(Array));
+    expect(hydrateCartItems).toHaveBeenCalled();
+    expect(mockContext.set).toHaveBeenCalledWith('validatedItems', hydratedItems);
     expect(nextFn).toHaveBeenCalled();
   });
 
@@ -217,25 +184,13 @@ describe('validateCartSync middleware', () => {
     await expect(validateCartSync(mockContext, nextFn)).rejects.toThrow(BadRequestError);
   });
 
-  it('should mark inStock as false when stock insufficient', async () => {
+  it('should propagate errors from hydrateCartItems', async () => {
+    vi.mocked(hydrateCartItems).mockRejectedValue(new BadRequestError('DB error'));
+
     mockContext.req.json.mockResolvedValue({
-      items: [{ productId: 'prod-1', quantity: 100 }],
+      items: [{ productId: 'p1', quantity: 1 }],
     });
 
-    const mockPrisma = {
-      product: {
-        findMany: vi.fn().mockResolvedValue([
-          { id: 'prod-1', price: 2999, stock: 5 },
-        ]),
-      },
-    };
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
-
-    await validateCartSync(mockContext, nextFn);
-
-    const validatedItems = vi.mocked(mockContext.set).mock.calls.find(
-      (call: any) => call[0] === 'validatedItems'
-    )?.[1];
-    expect(validatedItems[0].inStock).toBe(false);
+    await expect(validateCartSync(mockContext, nextFn)).rejects.toThrow(BadRequestError);
   });
 });

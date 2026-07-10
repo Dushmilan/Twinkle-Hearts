@@ -3,6 +3,7 @@ import { validateOrder } from '../middleware/validation.js';
 import { orderRateLimit } from '../middleware/rateLimiter.js';
 import { authenticate } from '../middleware/auth.js';
 import { createOrder, getOrderById, getUserOrders } from '../services/orderService.js';
+import { formatOrderMessage, buildWhatsAppDeepLink } from '../lib/order-intake/index.js';
 import type { Env, Variables } from '../types.js';
 
 type OrderEnv = { Bindings: Env; Variables: Variables };
@@ -24,7 +25,7 @@ router.post('/create', orderRateLimit, validateOrder, async (c) => {
   });
 
   const whatsappMessage = formatOrderMessage(order);
-  const whatsappDeepLink = `https://wa.me/${c.env.WHATSAPP_BUSINESS_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
+  const whatsappDeepLink = buildWhatsAppDeepLink(c.env.WHATSAPP_BUSINESS_NUMBER, whatsappMessage);
 
   return c.json({
     orderId: order.id,
@@ -69,27 +70,5 @@ router.get('/:id', async (c) => {
     },
   });
 });
-
-function formatOrderMessage(order: any): string {
-  const itemsList = order.items
-    .map((item: any, idx: number) => `${idx + 1}. ${item.productName} x${item.quantity} - ₹${item.price}`)
-    .join('\n');
-
-  return `
-🛒 *NEW ORDER REQUEST*
-━━━━━━━━━━━━━━━━━━━━
-*Order ID:* ${order.id.slice(0, 8).toUpperCase()}
-*Customer:* ${order.customerName}
-*Phone:* ${order.customerPhone}
-━━━━━━━━━━━━━━━━━━━━
-*Items:*
-${itemsList}
-━━━━━━━━━━━━━━━━━━━━
-*Subtotal:* ₹${order.subtotal}
-*Tax (18%):* ₹${order.tax}
-*TOTAL:* ₹${order.total}
-━━━━━━━━━━━━━━━━━━━━
-  `.trim();
-}
 
 export default router;

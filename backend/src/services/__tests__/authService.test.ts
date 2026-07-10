@@ -3,21 +3,32 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('../../lib/prisma.js');
 vi.mock('../../utils/password.js');
 vi.mock('../../lib/jwt.js');
-vi.mock('../../lib/cache.js');
+vi.mock('../../lib/cache/index.js');
 
-import { getPrisma } from '../../lib/prisma.js';
+import { getPrisma, getPrismaRepository } from '../../lib/prisma.js';
 import * as passwordUtils from '../../utils/password.js';
 import * as jwtLib from '../../lib/jwt.js';
-import * as cacheLib from '../../lib/cache.js';
+import { getCacheRepository } from '../../lib/cache/index.js';
 import { register, login, googleOAuth, refreshToken, logout, logoutAllSessions } from '../authService.js';
 import { BadRequestError, ConflictError, UnauthorizedError } from '../../middleware/errorHandler.js';
 
 describe('authService', () => {
   let mockPrisma: any;
   let mockEnv: any;
+  let mockCache: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    mockCache = {
+      setSession: vi.fn().mockResolvedValue(undefined),
+      invalidateSession: vi.fn().mockResolvedValue(undefined),
+      get: vi.fn().mockResolvedValue(null),
+      set: vi.fn().mockResolvedValue(undefined),
+      delete: vi.fn().mockResolvedValue(undefined),
+    };
+
+    vi.mocked(getCacheRepository).mockReturnValue(mockCache as any);
 
     mockPrisma = {
       user: {
@@ -33,7 +44,7 @@ describe('authService', () => {
       },
     };
 
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
+    vi.mocked(getPrismaRepository).mockReturnValue(mockPrisma as any);
 
     mockEnv = {
       DB: {} as any,
@@ -73,8 +84,6 @@ describe('authService', () => {
       mockPrisma.user.findUnique.mockResolvedValue(null);
       mockPrisma.user.create.mockResolvedValue(mockUser);
       mockPrisma.session.create.mockResolvedValue({ id: 'session-1' });
-      vi.mocked(cacheLib.cacheSet).mockResolvedValue(undefined);
-
       const result = await register(mockEnv, validInput);
 
       expect(result.user.email).toBe('test@example.com');
@@ -294,12 +303,10 @@ describe('authService', () => {
   describe('logout', () => {
     it('should delete session and cache', async () => {
       mockPrisma.session.delete.mockResolvedValue({ id: 'session-1' });
-      vi.mocked(cacheLib.cacheDelete).mockResolvedValue(undefined);
-
       await logout(mockEnv, 'session-1');
 
       expect(mockPrisma.session.delete).toHaveBeenCalledWith({ where: { id: 'session-1' } });
-      expect(cacheLib.cacheDelete).toHaveBeenCalled();
+      expect(mockCache.invalidateSession).toHaveBeenCalledWith('session-1');
     });
 
     it('should not throw if session delete fails', async () => {

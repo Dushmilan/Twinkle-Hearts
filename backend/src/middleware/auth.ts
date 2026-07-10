@@ -1,8 +1,8 @@
 import type { Context, Next } from 'hono';
 import { verifyToken } from '../lib/jwt.js';
-import { cacheGet, CacheKeys } from '../lib/cache.js';
+import { getCacheRepository } from '../lib/cache/index.js';
 import { UnauthorizedError, ForbiddenError } from './errorHandler.js';
-import { getPrisma } from '../lib/prisma.js';
+import { getPrismaRepository } from '../lib/prisma.js';
 import type { Env, Variables, UserInfo } from '../types.js';
 
 type AuthContext = { Bindings: Env; Variables: Variables };
@@ -25,11 +25,10 @@ export async function authenticate(c: Context<AuthContext>, next: Next) {
       throw new UnauthorizedError('Invalid token');
     }
 
-    const sessionKey = CacheKeys.session(payload.sessionId);
-    const session = await cacheGet<{ userId: string }>(c.env.KV, sessionKey);
+    const session = await getCacheRepository(c.env.KV).getSession(payload.sessionId);
 
     if (!session) {
-      const prisma = getPrisma(c.env.DB);
+      const prisma = getPrismaRepository(c.env.DB);
       const dbSession = await prisma.session.findUnique({
         where: { id: payload.sessionId },
         select: { userId: true, expiresAt: true },

@@ -1,7 +1,7 @@
-import { getPrisma } from '../lib/prisma.js';
+import { getPrismaRepository } from '../lib/prisma.js';
 import { hashPassword, comparePassword, validatePasswordStrength } from '../utils/password.js';
 import { signAccessToken, signRefreshToken, verifyToken } from '../lib/jwt.js';
-import { cacheSet, cacheDelete, CACHE_TTL, CacheKeys } from '../lib/cache.js';
+import { CacheKeys, getCacheRepository } from '../lib/cache/index.js';
 import { BadRequestError, ConflictError, UnauthorizedError } from '../middleware/errorHandler.js';
 import type { Env } from '../types.js';
 
@@ -32,7 +32,7 @@ interface AuthResponse {
 }
 
 async function createSession(env: Env, user: { id: string; email: string; name: string | null; phone: string | null; role: string; avatar: string | null }): Promise<AuthResponse> {
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   const sessionId = crypto.randomUUID();
 
   await prisma.session.create({
@@ -58,7 +58,7 @@ async function createSession(env: Env, user: { id: string; email: string; name: 
     env.REFRESH_TOKEN_EXPIRES_IN || '30d'
   );
 
-  await cacheSet(env.KV, CacheKeys.session(sessionId), { userId: user.id }, CACHE_TTL.SESSION);
+  await getCacheRepository(env.KV).setSession(sessionId, { userId: user.id });
 
   return { accessToken, refreshToken, sessionId, user };
 }
@@ -69,7 +69,7 @@ export async function register(env: Env, input: RegisterInput): Promise<AuthResp
     throw new BadRequestError(passwordValidation.errors.join(', '));
   }
 
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
 
   const existingUser = await prisma.user.findUnique({
     where: { email: input.email.toLowerCase() },
@@ -104,7 +104,7 @@ export async function register(env: Env, input: RegisterInput): Promise<AuthResp
 }
 
 export async function login(env: Env, input: LoginInput): Promise<AuthResponse> {
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
 
   const user = await prisma.user.findUnique({
     where: { email: input.email.toLowerCase() },
@@ -160,7 +160,7 @@ export async function googleOAuth(env: Env, idToken: string): Promise<AuthRespon
   const name = payload.name || '';
   const avatar = payload.picture || '';
 
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   let user = await prisma.user.findUnique({
     where: { email: email.toLowerCase() },
     select: { id: true, email: true, name: true, phone: true, role: true, avatar: true },
@@ -195,7 +195,7 @@ export async function refreshToken(env: Env, token: string): Promise<{ accessTok
     throw new UnauthorizedError('Invalid refresh token');
   }
 
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   const session = await prisma.session.findUnique({
     where: { id: payload.sessionId },
     select: { userId: true, expiresAt: true },
@@ -230,14 +230,14 @@ export async function refreshToken(env: Env, token: string): Promise<{ accessTok
 }
 
 export async function logout(env: Env, sessionId: string): Promise<void> {
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   await prisma.session.delete({ where: { id: sessionId } }).catch(() => {});
-  await cacheDelete(env.KV, CacheKeys.session(sessionId));
+  await getCacheRepository(env.KV).invalidateSession(sessionId);
   console.info(`Session invalidated: ${sessionId}`);
 }
 
 export async function logoutAllSessions(env: Env, userId: string): Promise<void> {
-  const prisma = getPrisma(env.DB);
+  const prisma = getPrismaRepository(env.DB);
   await prisma.session.deleteMany({ where: { userId } });
   console.info(`All sessions invalidated for user: ${userId}`);
 }

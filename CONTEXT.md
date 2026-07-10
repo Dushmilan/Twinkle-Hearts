@@ -67,11 +67,45 @@ no filesystem. Use `getPrisma()` (D1 adapter), not a raw Postgres client.
 
 ## Testing
 
-- **Backend**: Vitest, 254 tests (unit + integration). DB is mocked via
+- **Backend**: Vitest, 228 tests (unit + integration). DB is mocked via
   `backend/tests/helpers/` (testApp, db, factories, mocks).
-- **Frontend**: Vitest + Testing Library, jsdom env.
+- **Frontend**: Vitest + Testing Library, jsdom env. 62 tests.
 - Run `npm run test` (root) to cover both. Never run tests from repo root with
   raw `tsc` — use the workspace scripts.
+
+## Domain Terms (Architecture Deepening)
+
+These terms come from the architecture deepening plan. They describe seams being
+extracted from god-node monoliths.
+
+| Term | Definition | File |
+|------|-----------|------|
+| **Order Intake Module** | Facade orchestrating pricing, stock reservation, order creation, WhatsApp formatting | `backend/src/lib/order-intake/order-intake.ts` |
+| **Pricing Engine** | Pure function: subtotal + 18% VAT + LKR rounding | `backend/src/lib/order-intake/pricing-engine.ts` |
+| **Stock Reservation** | Atomic check-and-decrement via `updateMany` inside `$transaction` | `backend/src/lib/order-intake/stock-reservation.ts` |
+| **WhatsApp Formatter** | Formats order as WhatsApp message + builds wa.me deep link | `backend/src/lib/order-intake/whatsapp-formatter.ts` |
+| **Cache Repository** | Domain-specific KV operations (session, orders, products, rate-lists) | `backend/src/lib/cache/cache-repository.ts` |
+| **PrismaRepository** | Interface over Prisma delegates (user, product, order, session, address, wishlist) | `backend/src/lib/repositories/prisma-repository.ts` |
+| **TestPrismaRepository** | In-memory test double for PrismaRepository (Map per model) | `backend/tests/helpers/repositories.ts` |
+| **TestCacheRepository** | In-memory test double for CacheRepository (TTL-aware Map) | `backend/tests/helpers/repositories.ts` |
+| **Order Validators** | DB-backed validation functions (hydrateOrderItems, hydrateCartItems) extracted from middleware | `backend/src/lib/validators/order-validators.ts` |
+| **HttpClient** | Interface for fetch + auth interceptor (frontend) | `frontend/src/api/http-client.ts` |
+| **Cart DB** | IndexedDB persistence for cart (Dexie operations) | `frontend/src/store/cart-db.ts` |
+| **Cart Sync** | Backend cart sync logic (calls API, maps response) | `frontend/src/store/cart-sync.ts` |
+| **Cart Selectors** | Reactive Zustand selectors (selectCartTotal, etc.) | `frontend/src/store/cartStore.ts` |
+
+## Seam Extraction Status
+
+| # | Candidate | Status | Module |
+|---|-----------|--------|--------|
+| 1 | `getPrisma()` → `PrismaRepository` | ✅ Done | `backend/src/lib/repositories/prisma-repository.ts` |
+| 2 | `cache.ts` → `CacheRepository` | ✅ Done | `backend/src/lib/cache/kv-cache-repository.ts` |
+| 3 | `authService` → Auth domain modules | ⏳ Pending | |
+| 4 | `orderService` → Order Intake Module | ✅ Done | `backend/src/lib/order-intake/` |
+| 5 | `useCartStore` → Composed cart stores | ✅ Done | `frontend/src/store/cart-db.ts`, `cart-sync.ts`, `cartStore.ts` |
+| 6 | `api.ts` → Domain API clients + `HttpClient` | ✅ Done | `frontend/src/api/http-client.ts`, `api/index.ts` |
+| 7 | `shared` → Domain-aligned packages | ✅ Done | `shared/src/types/` (8 domain files) |
+| 8 | Validation middleware ↔ service | ✅ Done | `backend/src/lib/validators/order-validators.ts` |
 
 ## Conventions Summary (quick)
 
@@ -80,3 +114,4 @@ no filesystem. Use `getPrisma()` (D1 adapter), not a raw Postgres client.
 - Hono middleware order: requestId → rateLimiter → auth → validation → handler.
 - Zustand for all frontend state; Dexie for cart persistence.
 - Graphify graph in `graphify-out/` — regenerate with `graphify update .`.
+- Test doubles live in `backend/tests/helpers/repositories.ts` (TestPrismaRepository, TestCacheRepository).

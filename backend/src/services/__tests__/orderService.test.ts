@@ -1,31 +1,29 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('../../lib/prisma.js');
-vi.mock('../../lib/cache.js');
+vi.mock('../../lib/cache/index.js');
+vi.mock('../../lib/order-intake/index.js');
 
-import { getPrisma } from '../../lib/prisma.js';
-import * as cacheLib from '../../lib/cache.js';
+import { getPrisma, getPrismaRepository } from '../../lib/prisma.js';
+import { getCacheRepository } from '../../lib/cache/index.js';
+import * as orderIntake from '../../lib/order-intake/index.js';
 import { createOrder, getOrderById, getUserOrders } from '../orderService.js';
 import { StockUnavailableError } from '../../middleware/errorHandler.js';
 
 describe('orderService', () => {
   let mockPrisma: any;
   let mockEnv: any;
-  let mockTx: any;
+  let mockCache: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
 
-    mockTx = {
-      product: { updateMany: vi.fn() },
-      order: {
-        create: vi.fn(),
-        findUnique: vi.fn(),
-        findMany: vi.fn(),
-        count: vi.fn(),
-      },
-      orderItem: { create: vi.fn() },
+    mockCache = {
+      get: vi.fn().mockResolvedValue(null),
+      set: vi.fn().mockResolvedValue(undefined),
+      delete: vi.fn().mockResolvedValue(undefined),
     };
+    vi.mocked(getCacheRepository).mockReturnValue(mockCache as any);
 
     mockPrisma = {
       $transaction: vi.fn(),
@@ -33,17 +31,13 @@ describe('orderService', () => {
       order: { create: vi.fn(), findUnique: vi.fn(), findMany: vi.fn(), count: vi.fn() },
     };
 
-    vi.mocked(getPrisma).mockReturnValue(mockPrisma as any);
+    vi.mocked(getPrismaRepository).mockReturnValue(mockPrisma as any);
 
     mockEnv = {
       DB: {} as any,
       KV: { get: vi.fn(), put: vi.fn(), delete: vi.fn() } as any,
       TAX_RATE: '0.18',
     } as any;
-
-    vi.mocked(cacheLib.cacheGet).mockResolvedValue(null);
-    vi.mocked(cacheLib.cacheSet).mockResolvedValue(undefined);
-    vi.mocked(cacheLib.cacheDelete).mockResolvedValue(undefined);
   });
 
   describe('createOrder', () => {
@@ -57,21 +51,21 @@ describe('orderService', () => {
     };
 
     it('should create an order successfully', async () => {
-      mockTx.product.updateMany.mockResolvedValue({ count: 1 });
-      mockTx.order.create.mockResolvedValue({
-        id: 'order-1',
-        userId: 'user-1',
-        customerName: 'John Doe',
-        customerPhone: '+919876543210',
-        subtotal: 5998,
-        tax: 1079.64,
-        total: 7077.64,
-        status: 'PENDING_WHATSAPP_CONFIRMATION',
-        items: [{ productId: 'prod-1', productName: 'Test Product', quantity: 2, price: 2999 }],
-        priceSnapshot: JSON.stringify([{ productId: 'prod-1', priceAtOrder: 2999 }]),
-        createdAt: new Date(),
+      vi.mocked(orderIntake.processOrder).mockResolvedValue({
+        order: {
+          id: 'order-1',
+          userId: 'user-1',
+          customerName: 'John Doe',
+          customerPhone: '+919876543210',
+          subtotal: 5998,
+          tax: 1079.64,
+          total: 7077.64,
+          status: 'PENDING_WHATSAPP_CONFIRMATION',
+          items: [{ productId: 'prod-1', productName: 'Test Product', quantity: 2, price: 2999 }],
+          createdAt: new Date(),
+        },
+        whatsappDeepLink: 'https://wa.me/+94771234567?text=...',
       });
-      mockPrisma.$transaction.mockImplementation(async (callback: any) => callback(mockTx));
 
       const result = await createOrder(mockEnv, orderInput);
 
@@ -79,23 +73,16 @@ describe('orderService', () => {
       expect(result.subtotal).toBe(5998);
       expect(result.total).toBe(7077.64);
       expect(result.status).toBe('PENDING_WHATSAPP_CONFIRMATION');
-      expect(mockTx.product.updateMany).toHaveBeenCalledWith({
-        where: { id: 'prod-1', stock: { gte: 2 } },
-        data: { stock: { decrement: 2 } },
-      });
-      expect(cacheLib.cacheDelete).toHaveBeenCalled();
+      expect(orderIntake.processOrder).toHaveBeenCalledWith(mockPrisma, mockEnv, orderInput);
+      expect(mockCache.delete).toHaveBeenCalled();
     });
 
-    it('should calculate tax from env TAX_RATE', async () => {
+    it('should pass env TAX_RATE to facade', async () => {
       mockEnv.TAX_RATE = '0.05';
-      mockTx.product.updateMany.mockResolvedValue({ count: 1 });
-      mockTx.order.create.mockResolvedValue({
-        id: 'order-2', subtotal: 1000, tax: 50, total: 1050,
-        status: 'PENDING_WHATSAPP_CONFIRMATION', items: [],
-        priceSnapshot: '[]', createdAt: new Date(),
-        userId: 'user-1', customerName: 'Test', customerPhone: '+919876543210',
+      vi.mocked(orderIntake.processOrder).mockResolvedValue({
+        order: { id: 'order-2', subtotal: 1000, tax: 50, total: 1050, status: 'PENDING_WHATSAPP_CONFIRMATION', items: [], createdAt: new Date() },
+        whatsappDeepLink: '',
       });
-      mockPrisma.$transaction.mockImplementation(async (callback: any) => callback(mockTx));
 
       const result = await createOrder(mockEnv, {
         ...orderInput,
@@ -103,16 +90,16 @@ describe('orderService', () => {
       });
 
       expect(result.tax).toBe(50);
+      expect(orderIntake.processOrder).toHaveBeenCalledWith(mockPrisma, mockEnv, expect.any(Object));
     });
 
-    it('should throw StockUnavailableError if stock insufficient', async () => {
-      mockTx.product.updateMany.mockResolvedValue({ count: 0 });
-      mockPrisma.$transaction.mockImplementation(async (callback: any) => callback(mockTx));
+    it('should throw if facade throws', async () => {
+      vi.mocked(orderIntake.processOrder).mockRejectedValue(new StockUnavailableError('Insufficient stock'));
 
       await expect(createOrder(mockEnv, orderInput)).rejects.toThrow(StockUnavailableError);
     });
 
-    it('should handle multiple items with correct pricing', async () => {
+    it('should handle multiple items', async () => {
       const multiItemInput = {
         userId: 'user-1',
         customerName: 'Jane Smith',
@@ -123,31 +110,23 @@ describe('orderService', () => {
         ],
       };
 
-      mockTx.product.updateMany.mockResolvedValue({ count: 1 });
-      mockTx.order.create.mockResolvedValue({
-        id: 'order-3', subtotal: 10996, tax: 1979.28, total: 12975.28,
-        status: 'PENDING_WHATSAPP_CONFIRMATION', items: [],
-        priceSnapshot: '[]', createdAt: new Date(),
-        userId: 'user-1', customerName: 'Jane Smith', customerPhone: '+919876543211',
+      vi.mocked(orderIntake.processOrder).mockResolvedValue({
+        order: { id: 'order-3', subtotal: 10996, tax: 1979.28, total: 12975.28, status: 'PENDING_WHATSAPP_CONFIRMATION', items: [], createdAt: new Date() },
+        whatsappDeepLink: '',
       });
-      mockPrisma.$transaction.mockImplementation(async (callback: any) => callback(mockTx));
 
       const result = await createOrder(mockEnv, multiItemInput);
 
       expect(result.subtotal).toBe(10996);
-      expect(mockTx.product.updateMany).toHaveBeenCalledTimes(2);
+      expect(orderIntake.processOrder).toHaveBeenCalledWith(mockPrisma, mockEnv, multiItemInput);
     });
 
     it('should handle empty TAX_RATE by defaulting to 0.18', async () => {
       mockEnv.TAX_RATE = undefined;
-      mockTx.product.updateMany.mockResolvedValue({ count: 1 });
-      mockTx.order.create.mockResolvedValue({
-        id: 'order-4', subtotal: 1000, tax: 180, total: 1180,
-        status: 'PENDING_WHATSAPP_CONFIRMATION', items: [],
-        priceSnapshot: '[]', createdAt: new Date(),
-        userId: 'user-1', customerName: 'Test', customerPhone: '+919876543210',
+      vi.mocked(orderIntake.processOrder).mockResolvedValue({
+        order: { id: 'order-4', subtotal: 1000, tax: 180, total: 1180, status: 'PENDING_WHATSAPP_CONFIRMATION', items: [], createdAt: new Date() },
+        whatsappDeepLink: '',
       });
-      mockPrisma.$transaction.mockImplementation(async (callback: any) => callback(mockTx));
 
       const result = await createOrder(mockEnv, {
         ...orderInput,
@@ -207,7 +186,7 @@ describe('orderService', () => {
 
     it('should return cached orders if available', async () => {
       const cachedOrders = { orders: [{ id: 'order-1' }], pagination: { page: 1, limit: 20, total: 1, totalPages: 1 } };
-      vi.mocked(cacheLib.cacheGet).mockResolvedValue(cachedOrders);
+      vi.mocked(mockCache.get).mockResolvedValue(cachedOrders);
 
       const result = await getUserOrders(mockEnv, 'user-1', 1, 20);
 
