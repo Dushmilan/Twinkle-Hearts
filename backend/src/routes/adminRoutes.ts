@@ -98,7 +98,7 @@ router.get('/products', async (c) => {
 
   const normalized = products.map((p) => ({
     ...p,
-    images: JSON.stringify(normalizeImages(p.images)),
+    images: normalizeImages(p.images),
   }));
 
   return c.json({
