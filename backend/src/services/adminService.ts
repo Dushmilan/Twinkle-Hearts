@@ -1,7 +1,7 @@
 import { getPrismaRepository } from '../lib/prisma.js';
 import { CacheKeys, getCacheRepository } from '../lib/cache/index.js';
 import { NotFoundError, BadRequestError } from '../middleware/errorHandler.js';
-import { uploadToR2, deleteMultipleFromR2, uploadToCloudinary, extractR2Key, isR2Url } from '../lib/images.js';
+import { uploadToR2, deleteMultipleFromR2, extractR2Key, isR2Url } from '../lib/images.js';
 import type { Env } from '../types.js';
 
 export async function getDashboardStats(env: Env) {
@@ -93,22 +93,6 @@ export async function deleteProduct(env: Env, id: string) {
 }
 
 export async function uploadProductImages(env: Env, files: Array<{ name: string; type: string; size: number; arrayBuffer(): Promise<ArrayBuffer> }>) {
-  if (env.CLOUDINARY_CLOUD_NAME && env.CLOUDINARY_API_KEY && env.CLOUDINARY_API_SECRET) {
-    const urls: string[] = [];
-    for (const file of files) {
-      const buffer = await file.arrayBuffer();
-      const result = await uploadToCloudinary(
-        env.CLOUDINARY_CLOUD_NAME,
-        env.CLOUDINARY_API_KEY,
-        env.CLOUDINARY_API_SECRET,
-        buffer,
-        'twinkle-hearts/products'
-      );
-      urls.push(result.secure_url);
-    }
-    return { urls, count: urls.length };
-  }
-
   const urls: string[] = [];
   for (const file of files) {
     const key = await uploadToR2(env.R2, file);

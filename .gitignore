@@ -312,3 +312,9 @@ graph.html
 
 # OpenCode local cache (keep .opencode/ skills+agents committed)
 .opencode/cache/
+
+# Cloudflare Workers local state
+.wrangler/
+
+# Temporary files from debugging
+temp-*

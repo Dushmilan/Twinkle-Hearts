@@ -57,7 +57,7 @@ avoid hard-coding English-only assumptions in logic.
 | Compute | Hono on Workers | `wrangler dev` | Workers |
 | DB | Prisma + D1 adapter | local sqlite `dev.db` | D1 |
 | Cache/sessions | KV | Redis (docker) | KV |
-| Images | R2 / Cloudinary | Cloudinary | R2 |
+| Images | R2 | R2 | R2 |
 
 `backend/wrangler.toml` declares D1/KV/R2 bindings. `deploy-cloudflare.ps1` is the
 full prod deploy script (creates D1, KV, R2, JWT keys, deploys Worker + Pages).

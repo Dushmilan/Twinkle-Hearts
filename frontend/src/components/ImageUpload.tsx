@@ -2,7 +2,7 @@
 // Private Commercial Project - Confidential
 //
 // This component handles local file selection with preview
-// Actual upload to Cloudinary happens when the parent form is submitted
+// Actual upload to R2 happens when the parent form is submitted
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import toastService from '../utils/toast';

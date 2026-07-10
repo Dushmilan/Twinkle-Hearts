@@ -239,7 +239,7 @@ All buttons: spring easing, no neon glow, no custom cursors, consistent 44px min
 - No fake round numbers ("99.99%", "50%")
 - No AI copywriting clichés ("Elevate", "Seamless", "Unleash", "Next-Gen", "Revolutionary")
 - No filler UI: "Scroll to explore", "Swipe down", scroll arrows, bouncing chevrons
-- No broken Unsplash links — use Cloudinary or picsum.photos
+- No broken Unsplash links — use R2 or picsum.photos
 - No centered Hero sections — asymmetric or left-aligned only
 - No circular loading spinners — use skeletal shimmer matching layout
 - No floating labels in forms — labels always above input

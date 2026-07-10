@@ -12,6 +12,7 @@ import {
   ArrowRight,
 } from '@phosphor-icons/react';
 import { api } from '../../api';
+import { getImageSrc } from '../../utils/images';
 import type { ProductListItem } from '@twinkle-hearts/shared';
 
 const CATEGORIES = [
@@ -558,7 +559,7 @@ function ProductCard({ product }: { product: ProductListItem }) {
         <div className="product-card-image relative">
           {!imgError && product.images[0] ? (
             <img
-              src={product.images[0]}
+              src={getImageSrc(product.images[0])}
               alt={product.name}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
               loading="lazy"

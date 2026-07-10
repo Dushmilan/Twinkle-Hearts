@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
 import { api } from '../../api.js';
+import { getImageSrc } from '../../utils/images';
 
 interface Product {
   id: string;
@@ -223,7 +224,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
         <div className="product-card-image">
           {product.images[0] ? (
             <img
-              src={product.images[0]}
+              src={getImageSrc(product.images[0])}
               alt={product.name}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               onError={(e) => {

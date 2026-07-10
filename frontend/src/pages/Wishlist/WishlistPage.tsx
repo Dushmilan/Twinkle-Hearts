@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../api.js';
 import { useAuthStore } from '../../store/authStore';
+import { getImageSrc } from '../../utils/images';
 import { ProductSkeleton } from '../../components/UI/LoadingSkeleton';
 import toastService from '../../utils/toast';
 
@@ -122,9 +123,12 @@ export default function WishlistPage() {
                 <Link to={`/product/${item.product.id}`} className="block">
                   <div className="aspect-[3/4] bg-greeting-bg-400 overflow-hidden">
                     <img
-                      src={item.product.images?.[0] || '/placeholder.jpg'}
+                      src={getImageSrc(item.product.images?.[0]) || ''}
                       alt={item.product.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22 viewBox=%220 0 300 400%22%3E%3Crect fill=%22%23F5E0D3%22 width=%22300%22 height=%22400%22/%3E%3Ctext fill=%22%239BB89B%22 font-family=%22serif%22 font-size=%2218%22 x=%2250%25%22 y=%2245%25%22 text-anchor=%22middle%22%3E%F0%9F%93%8C%3C/text%3E%3C/svg%3E';
+                      }}
                     />
                   </div>
                 </Link>

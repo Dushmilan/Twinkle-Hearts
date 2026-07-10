@@ -42,9 +42,6 @@ describe('adminService', () => {
       DB: {} as any,
       KV: { get: vi.fn(), put: vi.fn(), delete: vi.fn() } as any,
       R2: {} as any,
-      CLOUDINARY_CLOUD_NAME: '',
-      CLOUDINARY_API_KEY: '',
-      CLOUDINARY_API_SECRET: '',
     } as any;
   });
 
@@ -187,21 +184,7 @@ describe('adminService', () => {
   });
 
   describe('uploadProductImages', () => {
-    it('should use Cloudinary when configured', async () => {
-      mockEnv.CLOUDINARY_CLOUD_NAME = 'cloud';
-      mockEnv.CLOUDINARY_API_KEY = 'key';
-      mockEnv.CLOUDINARY_API_SECRET = 'secret';
-      vi.mocked(imageLib.uploadToCloudinary).mockResolvedValue({ secure_url: 'https://cloudinary.com/img.jpg' } as any);
-
-      const mockFile = { name: 'test.jpg', type: 'image/jpeg', size: 1000, arrayBuffer: vi.fn().mockResolvedValue(new ArrayBuffer(8)) };
-
-      const result = await uploadProductImages(mockEnv, [mockFile as any]);
-
-      expect(result.urls).toHaveLength(1);
-      expect(imageLib.uploadToCloudinary).toHaveBeenCalled();
-    });
-
-    it('should fallback to R2 when Cloudinary not configured', async () => {
+    it('should upload to R2', async () => {
       vi.mocked(imageLib.uploadToR2).mockResolvedValue('r2-key');
 
       const mockFile = { name: 'test.jpg', type: 'image/jpeg', size: 1000, arrayBuffer: vi.fn().mockResolvedValue(new ArrayBuffer(8)) };

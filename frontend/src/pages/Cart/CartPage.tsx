@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
 import { HeartIcon, WhatsAppIcon } from '../../components/UI/Icons';
+import { getImageSrc } from '../../utils/images';
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -171,7 +172,7 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
       >
         {item.image ? (
           <img
-            src={item.image}
+            src={getImageSrc(item.image)}
             alt={item.productName}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />

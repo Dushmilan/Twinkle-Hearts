@@ -13,9 +13,6 @@ export interface Env {
   WHATSAPP_BUSINESS_ACCESS_TOKEN: string;
   WHATSAPP_PHONE_NUMBER_ID: string;
   WHATSAPP_BUSINESS_NUMBER: string;
-  CLOUDINARY_CLOUD_NAME: string;
-  CLOUDINARY_API_KEY: string;
-  CLOUDINARY_API_SECRET: string;
   RESEND_API_KEY: string;
   LOG_LEVEL: string;
   [key: string]: unknown;

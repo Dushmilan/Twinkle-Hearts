@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCartStore } from '../../store/cartStore';
 import { api } from '../../api.js';
+import { getImageSrc } from '../../utils/images';
 import type { Product } from '@twinkle-hearts/shared';
 
 export default function ProductDetailPage() {
@@ -123,7 +124,7 @@ export default function ProductDetailPage() {
           <div className="aspect-[4/5] bg-greeting-bg-400 rounded-xl overflow-hidden shadow-lg mb-4">
             {images[activeImage] ? (
               <img
-                src={images[activeImage]}
+                src={getImageSrc(images[activeImage])}
                 alt={product.name}
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -152,7 +153,7 @@ export default function ProductDetailPage() {
                   }`}
                 >
                   <img
-                    src={image}
+                    src={getImageSrc(image)}
                     alt={`${product.name} ${idx + 1}`}
                     className="w-full h-full object-cover"
                   />

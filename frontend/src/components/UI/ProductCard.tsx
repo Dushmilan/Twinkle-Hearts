@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Heart, ShoppingCart } from '@phosphor-icons/react';
 import { useCartStore } from '../../store/cartStore';
 import { CATEGORY_MAP, CATEGORY_BADGE, formatPrice } from './Icons';
+import { getImageSrc } from '../../utils/images';
 
 interface Product {
   id: string;
@@ -59,7 +60,7 @@ const ProductCard = memo(function ProductCard({ product, showAddToCart = true }:
         <div className="aspect-[3/4] bg-greeting-dark-purple-800 relative">
           {!imgError && product.images[0] ? (
             <img
-              src={product.images[0]}
+              src={getImageSrc(product.images[0])}
               alt={product.name}
               className="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-[1.04]"
               loading="lazy"
