@@ -4,6 +4,7 @@
     "AGENTS.md",
     "CONTEXT.md",
     "docs/deployment.md",
+    "docs/exploration.md",
     ".qwen/rules.md"
   ],
   "agent": {
