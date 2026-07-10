@@ -59,10 +59,10 @@ export default function Layout({ children }: LayoutProps) {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-paper-50 flex flex-col">
+    <div className="min-h-[100dvh] bg-greeting-bg-400 flex flex-col">
       <OfflineBanner />
 
-      <header className="sticky top-0 z-50 bg-paper-50/80 backdrop-blur-lg border-b border-sand-200">
+      <header className="sticky top-0 z-50 bg-greeting-bg-400/80 backdrop-blur-lg border-b border-greeting-purple-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center gap-2.5 group">
@@ -70,16 +70,16 @@ export default function Layout({ children }: LayoutProps) {
                 <Heart
                   size={20}
                   weight="fill"
-                  className="text-ruby-700 group-hover:scale-110 transition-transform duration-300"
+                  className="text-greeting-magenta-500 group-hover:scale-110 transition-transform duration-300"
                 />
                 <motion.span
-                  className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-ruby-500"
+                  className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-greeting-magenta-400"
                   animate={{ opacity: [0.4, 1, 0.4] }}
                   transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
                 />
               </div>
-              <span className="text-xl font-display font-semibold text-ink-900 tracking-tight">
-                Twinkle<span className="text-ruby-700">Hearts</span>
+              <span className="text-xl font-display font-semibold text-gray-100 tracking-tight">
+                Twinkle<span className="text-greeting-magenta-400">Hearts</span>
               </span>
             </Link>
 
@@ -93,7 +93,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center gap-2">
               <Link
                 to="/cart"
-                className="relative p-2.5 text-ink-600 hover:text-ink-900 transition-colors rounded-xl hover:bg-sand-100"
+                className="relative p-2.5 text-gray-400 hover:text-gray-100 transition-colors rounded-xl hover:bg-greeting-purple-900"
               >
                 <ShoppingCart size={20} />
                 <AnimatePresence>
@@ -104,7 +104,7 @@ export default function Layout({ children }: LayoutProps) {
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                      className="absolute -top-0.5 -right-0.5 bg-ruby-700 text-white text-[11px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center"
+                      className="absolute -top-0.5 -right-0.5 bg-greeting-magenta-500 text-white text-[11px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center"
                     >
                       {itemCount > 9 ? '9+' : itemCount}
                     </motion.span>
@@ -116,15 +116,15 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="relative">
                   <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-sand-100 transition-colors"
+                    className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-greeting-purple-900 transition-colors"
                   >
-                    <div className="w-8 h-8 bg-ruby-50 rounded-full flex items-center justify-center">
-                      <User size={15} className="text-ruby-700" />
+                    <div className="w-8 h-8 bg-greeting-magenta-900 rounded-full flex items-center justify-center">
+                      <User size={15} className="text-greeting-magenta-400" />
                     </div>
                     <CaretDown
                       size={10}
                       weight="bold"
-                      className={`text-ink-400 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`}
+                      className={`text-gray-500 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`}
                     />
                   </button>
 
@@ -137,11 +137,11 @@ export default function Layout({ children }: LayoutProps) {
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: -6, scale: 0.96 }}
                           transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                          className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-paper-md border border-sand-200 z-20 overflow-hidden"
+                          className="absolute right-0 mt-2 w-56 bg-greeting-bg-500 rounded-xl shadow-lg border border-greeting-purple-700 z-20 overflow-hidden"
                         >
-                          <div className="px-4 py-3 border-b border-sand-100">
-                            <p className="text-sm font-semibold text-ink-900">{user?.name}</p>
-                            <p className="text-xs text-ink-500 truncate">{user?.email}</p>
+                          <div className="px-4 py-3 border-b border-greeting-purple-900">
+                            <p className="text-sm font-semibold text-gray-100">{user?.name}</p>
+                            <p className="text-xs text-gray-400 truncate">{user?.email}</p>
                           </div>
                           <div className="py-1.5">
                             <DropdownLink to="/profile" icon={User} onClick={() => setIsMenuOpen(false)}>
@@ -158,17 +158,17 @@ export default function Layout({ children }: LayoutProps) {
                             </DropdownLink>
                             {user?.role === 'ADMIN' && (
                               <>
-                                <div className="my-1.5 border-t border-sand-100" />
+                                <div className="my-1.5 border-t border-greeting-purple-700" />
                                 <DropdownLink to="/admin" icon={HeartStraight} onClick={() => setIsMenuOpen(false)} highlight>
                                   Admin Dashboard
                                 </DropdownLink>
                               </>
                             )}
                           </div>
-                          <div className="border-t border-sand-100 py-1.5">
+                          <div className="border-t border-greeting-purple-700 py-1.5">
                             <button
                               onClick={handleLogout}
-                              className="flex items-center gap-3 w-full text-left px-4 py-2 text-sm text-ruby-600 hover:bg-ruby-50 transition-colors"
+                              className="flex items-center gap-3 w-full text-left px-4 py-2 text-sm text-greeting-magenta-400 hover:bg-greeting-magenta-500/20 transition-colors"
                             >
                               <SignOut size={15} />
                               Logout
@@ -191,7 +191,7 @@ export default function Layout({ children }: LayoutProps) {
               )}
 
               <button
-                className="md:hidden p-2 rounded-xl text-ink-600 hover:text-ink-900 hover:bg-sand-100 transition-colors"
+                className="md:hidden p-2 rounded-xl text-gray-400 hover:text-gray-100 hover:bg-greeting-purple-700 transition-colors"
                 onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
                 aria-label="Toggle navigation"
               >
@@ -208,7 +208,7 @@ export default function Layout({ children }: LayoutProps) {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="md:hidden border-t border-sand-100 overflow-hidden"
+              className="md:hidden border-t border-greeting-purple-700 overflow-hidden"
             >
               <motion.div
                 variants={staggerContainer}
@@ -219,7 +219,7 @@ export default function Layout({ children }: LayoutProps) {
                 <MobileNavItem to="/shop" label="Shop" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
 
                 <div className="pt-3 pb-2">
-                  <p className="text-[11px] font-semibold text-ink-400 uppercase tracking-widest px-3">Account</p>
+                  <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest px-3">Account</p>
                 </div>
 
                 {isAuthenticated ? (
@@ -233,14 +233,14 @@ export default function Layout({ children }: LayoutProps) {
                     )}
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-3 py-2.5 text-sm text-ruby-600 hover:bg-ruby-50 rounded-lg transition-colors"
+                      className="w-full text-left px-3 py-2.5 text-sm text-greeting-magenta-400 hover:bg-greeting-magenta-500/20 rounded-lg transition-colors"
                     >
                       Logout
                     </button>
                   </>
                 ) : (
                   <div className="px-3 space-y-2 pt-1">
-                    <Link to="/login" className="block w-full text-center py-2.5 text-sm font-medium text-ink-700 hover:bg-sand-50 rounded-lg transition-colors" onClick={() => setIsMobileNavOpen(false)}>
+                    <Link to="/login" className="block w-full text-center py-2.5 text-sm font-medium text-gray-300 hover:bg-greeting-purple-700 rounded-lg transition-colors" onClick={() => setIsMobileNavOpen(false)}>
                       Sign In
                     </Link>
                     <Link to="/register" className="btn-primary w-full justify-center text-sm" onClick={() => setIsMobileNavOpen(false)}>
@@ -258,23 +258,23 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
 
-      <footer className="bg-white border-t border-sand-200 mt-auto">
+      <footer className="bg-greeting-bg-500 border-t border-greeting-purple-700 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-2 mb-3">
-                <Heart size={18} weight="fill" className="text-ruby-700" />
-                <span className="text-lg font-display font-semibold text-ink-900 tracking-tight">
-                  Twinkle<span className="text-ruby-700">Hearts</span>
+                <Heart size={18} weight="fill" className="text-greeting-magenta-400" />
+                <span className="text-lg font-display font-semibold text-gray-100 tracking-tight">
+                  Twinkle<span className="text-greeting-magenta-400">Hearts</span>
                 </span>
               </div>
-              <p className="text-sm text-ink-500 leading-relaxed max-w-[48ch] font-body">
+              <p className="text-sm text-gray-400 leading-relaxed max-w-[48ch] font-body">
                 Beautiful greeting cards delivered with care across Sri Lanka. Order via WhatsApp for a personal touch.
               </p>
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-ink-900 mb-4 uppercase tracking-widest">Shop</h3>
+              <h3 className="text-xs font-semibold text-gray-100 mb-4 uppercase tracking-widest">Shop</h3>
               <ul className="space-y-2.5">
                 <FooterLink to="/shop">All Cards</FooterLink>
                 <FooterLink to="/shop?category=birthday">Birthday</FooterLink>
@@ -285,7 +285,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-ink-900 mb-4 uppercase tracking-widest">Account</h3>
+              <h3 className="text-xs font-semibold text-gray-100 mb-4 uppercase tracking-widest">Account</h3>
               <ul className="space-y-2.5">
                 <FooterLink to="/cart">Cart</FooterLink>
                 {isAuthenticated ? (
@@ -301,27 +301,27 @@ export default function Layout({ children }: LayoutProps) {
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-ink-900 mb-4 uppercase tracking-widest">Contact</h3>
-              <ul className="space-y-2.5 text-sm text-ink-500">
+              <h3 className="text-xs font-semibold text-gray-100 mb-4 uppercase tracking-widest">Contact</h3>
+              <ul className="space-y-2.5 text-sm text-gray-400">
                 <li>
-                  <a href="https://wa.me/947XXXXXXXX" target="_blank" rel="noopener noreferrer" className="hover:text-ruby-700 transition-colors">
+                  <a href="https://wa.me/947XXXXXXXX" target="_blank" rel="noopener noreferrer" className="hover:text-greeting-magenta-400 transition-colors">
                     WhatsApp
                   </a>
                 </li>
                 <li>
-                  <a href="mailto:hello@twinklehearts.lk" className="hover:text-ruby-700 transition-colors">
+                  <a href="mailto:hello@twinklehearts.lk" className="hover:text-greeting-magenta-400 transition-colors">
                     hello@twinklehearts.lk
                   </a>
                 </li>
-                <li className="text-ink-400 text-xs pt-1">
+                <li className="text-gray-500 text-xs pt-1">
                   Colombo, Sri Lanka
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-10 pt-6 border-t border-sand-100 text-center">
-            <p className="text-xs text-ink-400">
+          <div className="mt-10 pt-6 border-t border-greeting-purple-900 text-center">
+            <p className="text-xs text-gray-500">
               &copy; 2026 TwinkleHearts. Made with care in Sri Lanka.
             </p>
           </div>
@@ -342,11 +342,11 @@ function NavLink({ to, active, children }: { to: string; active: boolean; childr
       {active && (
         <motion.div
           layoutId="nav-indicator"
-          className="absolute inset-0 bg-ruby-50 rounded-lg -z-10"
+          className="absolute inset-0 bg-greeting-magenta-500/20 rounded-lg -z-10"
           transition={{ type: 'spring', stiffness: 350, damping: 25 }}
         />
       )}
-      <span className={`relative z-10 ${active ? 'text-ruby-700' : 'text-ink-600 hover:text-ink-900'}`}>
+      <span className={`relative z-10 ${active ? 'text-greeting-magenta-300' : 'text-gray-300 hover:text-gray-100'}`}>
         {children}
       </span>
     </Link>
@@ -368,10 +368,10 @@ function MobileNavItem({ to, label, location, highlight, onClick }: {
         onClick={onClick}
         className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
           highlight
-            ? 'text-ruby-700 bg-ruby-50'
+            ? 'text-greeting-magenta-300 bg-greeting-magenta-500/20'
             : active
-            ? 'text-ruby-700 bg-ruby-50'
-            : 'text-ink-600 hover:text-ink-900 hover:bg-sand-50'
+            ? 'text-greeting-magenta-300 bg-greeting-magenta-500/20'
+            : 'text-gray-400 hover:text-gray-100 hover:bg-greeting-purple-700'
         }`}
       >
         {label}
@@ -393,11 +393,11 @@ function DropdownLink({ to, icon: Icon, onClick, highlight, children }: {
       onClick={onClick}
       className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
         highlight
-          ? 'text-ruby-700 hover:bg-ruby-50 font-medium'
-          : 'text-ink-700 hover:bg-sand-50'
+          ? 'text-greeting-magenta-300 hover:bg-greeting-magenta-500/20 font-medium'
+          : 'text-gray-300 hover:bg-greeting-purple-700'
       }`}
     >
-      <Icon size={15} className="text-ink-400" />
+      <Icon size={15} className="text-gray-400" />
       {children}
     </Link>
   );
@@ -406,7 +406,7 @@ function DropdownLink({ to, icon: Icon, onClick, highlight, children }: {
 function FooterLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <li>
-      <Link to={to} className="text-sm text-ink-500 hover:text-ruby-700 transition-colors">
+      <Link to={to} className="text-sm text-gray-400 hover:text-greeting-magenta-400 transition-colors">
         {children}
       </Link>
     </li>

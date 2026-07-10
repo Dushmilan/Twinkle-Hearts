@@ -44,10 +44,10 @@ export default function CartPage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-display text-3xl font-bold text-ink-900 mb-1">
+        <h1 className="font-display text-3xl font-bold text-gray-100 mb-1">
           Your Selection
         </h1>
-        <p className="text-ink-500">
+        <p className="text-gray-400">
           {items.length} item{items.length !== 1 ? 's' : ''} — pick the perfect cards
         </p>
       </div>
@@ -69,7 +69,7 @@ export default function CartPage() {
           <div className="flex justify-end pt-2">
             <button
               onClick={clearCart}
-              className="text-sm text-ink-500 hover:text-red-600 transition-colors font-medium"
+              className="text-sm text-gray-400 hover:text-greeting-magenta-400 transition-colors font-medium"
             >
               Clear all items
             </button>
@@ -78,14 +78,14 @@ export default function CartPage() {
 
         {/* Order Summary — Gift Receipt Style */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-card border-2 border-dashed border-sand-200 p-6 sticky top-24 shadow-paper">
+          <div className="card rounded-xl border-2 border-dashed border-greeting-purple-700 p-6 sticky top-24 shadow-lg">
             {/* Gift Receipt Header */}
-            <div className="text-center mb-6 pb-4 border-b border-sand-100">
-              <HeartIcon className="w-8 h-8 text-ruby-400 mx-auto mb-2" />
-              <h2 className="font-display text-xl font-semibold text-ink-900">
+            <div className="text-center mb-6 pb-4 border-b border-greeting-purple-700">
+              <HeartIcon className="w-8 h-8 text-greeting-magenta-400 mx-auto mb-2" />
+              <h2 className="font-display text-xl font-semibold text-gray-100">
                 Order Summary
               </h2>
-              <p className="text-xs text-ink-400 mt-1">
+              <p className="text-xs text-gray-500 mt-1">
                 A personal touch, delivered
               </p>
             </div>
@@ -94,10 +94,10 @@ export default function CartPage() {
             <div className="space-y-3 mb-4">
               {items.map((item) => (
                 <div key={item.productId} className="flex justify-between text-sm">
-                  <span className="text-ink-600">
-                    {item.productName} <span className="text-ink-400">× {item.quantity}</span>
+                  <span className="text-gray-300">
+                    {item.productName} <span className="text-gray-500">× {item.quantity}</span>
                   </span>
-                  <span className="font-medium text-ink-900">
+                  <span className="font-medium text-gray-100">
                     {formatPrice(item.price * item.quantity)}
                   </span>
                 </div>
@@ -105,22 +105,22 @@ export default function CartPage() {
             </div>
 
             {/* Totals */}
-            <div className="border-t border-sand-200 pt-4 space-y-2 mb-6">
+            <div className="border-t border-greeting-purple-900 pt-4 space-y-2 mb-6">
               <div className="flex justify-between text-sm">
-                <span className="text-ink-500">Subtotal</span>
+                <span className="text-gray-400">Subtotal</span>
                 <span className="font-medium">{formatPrice(total)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-ink-500">Shipping</span>
-                <span className="font-medium text-emerald-600">Free</span>
+                <span className="text-gray-400">Shipping</span>
+                <span className="font-medium text-emerald-400">Free</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-ink-500">Tax (18%)</span>
+                <span className="text-gray-400">Tax (18%)</span>
                 <span className="font-medium">{formatPrice(tax)}</span>
               </div>
-              <div className="flex justify-between text-lg font-bold pt-2 border-t border-sand-100">
-                <span className="text-ink-900">Total</span>
-                <span className="text-ruby-600">{formatPrice(finalTotal)}</span>
+              <div className="flex justify-between text-lg font-bold pt-2 border-t border-greeting-purple-900">
+                <span className="text-gray-100">Total</span>
+                <span className="text-greeting-magenta-400">{formatPrice(finalTotal)}</span>
               </div>
             </div>
 
@@ -133,13 +133,13 @@ export default function CartPage() {
               Send Order via WhatsApp
             </button>
 
-            <p className="text-xs text-ink-400 text-center mt-3 leading-relaxed">
+            <p className="text-xs text-gray-500 text-center mt-3 leading-relaxed">
               You'll be redirected to WhatsApp with your order details pre-filled
             </p>
 
             <Link
               to="/"
-              className="block text-center text-sm text-ruby-600 hover:text-ruby-700 font-medium mt-4 transition-colors"
+              className="block text-center text-sm text-greeting-magenta-400 hover:text-greeting-magenta-300 font-medium mt-4 transition-colors"
             >
               ← Continue Shopping
             </Link>
@@ -163,11 +163,11 @@ interface CartItemProps {
 
 function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemProps) {
   return (
-    <div className="paper-card flex gap-4 p-4 group">
+    <div className="card flex gap-4 p-4 group">
       {/* Product Image */}
       <Link
         to={`/product/${item.productId}`}
-        className="w-20 h-24 sm:w-24 sm:h-28 rounded-lg flex-shrink-0 overflow-hidden bg-sand-100"
+        className="w-20 h-24 sm:w-24 sm:h-28 rounded-lg flex-shrink-0 overflow-hidden bg-greeting-bg-400"
       >
         {item.image ? (
           <img
@@ -176,7 +176,7 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-ink-300 text-2xl">
+          <div className="w-full h-full flex items-center justify-center text-gray-500 text-2xl">
             💌
           </div>
         )}
@@ -186,34 +186,34 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
       <div className="flex-1 min-w-0">
         <Link
           to={`/product/${item.productId}`}
-          className="font-display text-base font-semibold text-ink-900 hover:text-ruby-600 transition-colors truncate block"
+          className="font-display text-base font-semibold text-gray-100 hover:text-greeting-magenta-400 transition-colors truncate block"
         >
           {item.productName || 'Greeting Card'}
         </Link>
-        <p className="text-ruby-600 font-bold mt-1">
+        <p className="text-greeting-magenta-400 font-bold mt-1">
           {formatPrice(item.price)}
         </p>
 
         {/* Quantity Controls */}
         <div className="flex items-center gap-3 mt-3">
-          <div className="flex items-center gap-1 bg-sand-100 rounded-lg">
+          <div className="flex items-center gap-1 bg-greeting-bg-400 rounded-lg">
             <button
               onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)}
-              className="w-8 h-8 flex items-center justify-center text-ink-600 hover:text-ink-900 hover:bg-sand-200 rounded-l-lg transition-colors font-medium"
+              className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-100 hover:bg-greeting-purple-700 rounded-l-lg transition-colors font-medium"
             >
               −
             </button>
             <span className="w-8 text-center text-sm font-semibold">{item.quantity}</span>
             <button
               onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
-              className="w-8 h-8 flex items-center justify-center text-ink-600 hover:text-ink-900 hover:bg-sand-200 rounded-r-lg transition-colors font-medium"
+              className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-100 hover:bg-greeting-purple-700 rounded-r-lg transition-colors font-medium"
             >
               +
             </button>
           </div>
           <button
             onClick={() => onRemove(item.productId)}
-            className="ml-auto text-ink-400 hover:text-red-500 transition-colors p-1"
+            className="ml-auto text-gray-500 hover:text-greeting-magenta-400 transition-colors p-1"
             title="Remove item"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -225,7 +225,7 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
 
       {/* Item Total */}
       <div className="text-right hidden sm:block">
-        <p className="font-bold text-ink-900 text-lg">
+        <p className="font-bold text-gray-100 text-lg">
           {formatPrice(item.price * item.quantity)}
         </p>
       </div>

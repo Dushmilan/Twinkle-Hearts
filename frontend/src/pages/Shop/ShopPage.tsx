@@ -77,15 +77,15 @@ export default function ShopPage() {
   };
 
   return (
-    <div className="bg-paper-50 min-h-screen">
+    <div className="bg-greeting-bg-500 min-h-screen">
       {/* Page Header */}
-      <section className="bg-gradient-to-b from-neutral-50 to-white border-b border-neutral-200">
+      <section className="bg-greeting-bg-400 border-b border-greeting-purple-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
-            <h1 className="font-display text-4xl sm:text-5xl font-bold text-ink-900 mb-4">
+            <h1 className="font-display text-4xl sm:text-5xl font-bold text-gray-100 mb-4">
               Browse Our Collection
             </h1>
-            <p className="font-body text-lg text-ink-500">
+            <p className="font-body text-lg text-gray-400">
               Beautiful greeting cards for every occasion
             </p>
           </div>
@@ -93,7 +93,7 @@ export default function ShopPage() {
       </section>
 
       {/* Category Pills */}
-      <section className="bg-white border-b border-neutral-200 sticky top-16 z-30">
+      <section className="bg-greeting-bg-400 border-b border-greeting-purple-700 sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
             {CATEGORIES.map((cat) => (
@@ -118,10 +118,10 @@ export default function ShopPage() {
           {/* Section header */}
           <div className="flex items-end justify-between mb-8">
             <div>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink-900">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-100">
                 {activeCategory === 'all' ? 'All Greeting Cards' : `${CATEGORIES.find(c => c.key === activeCategory)?.label} Cards`}
               </h2>
-              <p className="text-ink-500 mt-1">
+              <p className="text-gray-400 mt-1">
                 {products.length} card{products.length !== 1 ? 's' : ''} available
               </p>
             </div>
@@ -130,7 +130,7 @@ export default function ShopPage() {
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {[...Array(8)].map((_, i) => (
-                <div key={i} className="skeleton-card rounded-card overflow-hidden" style={{ animationDelay: `${i * 60}ms` }}>
+                <div key={i} className="card overflow-hidden" style={{ animationDelay: `${i * 60}ms` }}>
                   <div className="skeleton-card-image" />
                   <div className="p-4 space-y-3">
                     <div className="skeleton-card-line" />
@@ -145,7 +145,7 @@ export default function ShopPage() {
             </div>
           ) : error ? (
             <div className="text-center py-16">
-              <p className="text-ink-500 mb-4">{error}</p>
+              <p className="text-gray-400 mb-4">{error}</p>
               <button onClick={fetchProducts} className="btn-primary">
                 Try Again
               </button>
@@ -204,15 +204,15 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
   const getCategoryBadge = (category?: string) => {
     const catMap: Record<string, { label: string; variant: string }> = {
-      birthday: { label: '🎂 Birthday', variant: 'badge-sand' },
-      love: { label: '💕 Love', variant: 'badge-ruby' },
-      anniversary: { label: '🥂 Anniversary', variant: 'badge-peacock' },
-      friendship: { label: '🤝 Friendship', variant: 'badge-ruby' },
-      festival: { label: '🎊 Festival', variant: 'badge-sand' },
-      sympathy: { label: '🕊️ Sympathy', variant: 'badge-peacock' },
+      birthday: { label: '🎂 Birthday', variant: 'badge-magenta' },
+      love: { label: '💕 Love', variant: 'badge-purple' },
+      anniversary: { label: '🥂 Anniversary', variant: 'badge-cyan' },
+      friendship: { label: '🤝 Friendship', variant: 'badge-purple' },
+      festival: { label: '🎊 Festival', variant: 'badge-magenta' },
+      sympathy: { label: '🕊️ Sympathy', variant: 'badge-cyan' },
     };
     const key = category?.toLowerCase() || '';
-    const cat = catMap[key] || { label: category || 'General', variant: 'badge-ruby' };
+    const cat = catMap[key] || { label: category || 'General', variant: 'badge-magenta' };
     return <span className={`badge ${cat.variant}`}>{cat.label}</span>;
   };
 
@@ -231,7 +231,7 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
               }}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-paper-200 text-ink-300">
+            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-bg-400 text-gray-500">
               <span className="text-3xl mb-2">💌</span>
               <span className="text-sm font-display">Card Preview</span>
             </div>
@@ -248,14 +248,14 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
         {/* Title */}
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-base font-semibold text-ink-900 mb-2 line-clamp-2 hover:text-ruby-600 transition-colors">
+          <h3 className="font-display text-base font-semibold text-gray-100 mb-2 line-clamp-2 hover:text-greeting-magenta-400 transition-colors">
             {product.name}
           </h3>
         </Link>
 
         {/* Price & Add to Cart */}
         <div className="flex items-center justify-between mt-3">
-          <span className="font-body text-lg font-bold text-ruby-600">
+          <span className="font-body text-lg font-bold text-greeting-magenta-400">
             {formatPrice(product.price)}
           </span>
           <button
@@ -263,8 +263,8 @@ function ProductCard({ product, onAddToCart }: ProductCardProps) {
             disabled={product.stock === 0}
             className={`inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 ${
               product.stock === 0
-                ? 'opacity-40 cursor-not-allowed bg-sand-100'
-                : 'bg-ruby-500 hover:bg-ruby-600 active:scale-90 text-white shadow-paper hover:shadow-ruby-glow'
+                ? 'opacity-40 cursor-not-allowed bg-greeting-bg-400'
+                : 'bg-greeting-magenta-500 hover:bg-greeting-magenta-600 active:scale-90 text-white shadow-lg hover:shadow-greeting-magenta-500/30'
             }`}
             title={product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
           >

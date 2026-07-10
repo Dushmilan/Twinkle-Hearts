@@ -26,12 +26,12 @@ interface Product {
 }
 
 const CATEGORIES = [
-  { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-ruby-600', bg: 'bg-ruby-50' },
-  { key: 'love', label: 'Love', icon: Heart, color: 'text-ruby-500', bg: 'bg-ruby-50' },
-  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-peacock-600', bg: 'bg-peacock-50' },
-  { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-ink-500', bg: 'bg-ink-50' },
-  { key: 'festival', label: 'Festival', icon: Star, color: 'text-ruby-400', bg: 'bg-ruby-50' },
-  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-peacock-500', bg: 'bg-peacock-50' },
+  { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-greeting-magenta-400', bg: 'bg-greeting-magenta-500/20' },
+  { key: 'love', label: 'Love', icon: Heart, color: 'text-greeting-pink-400', bg: 'bg-greeting-pink-500/20' },
+  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-greeting-cyan-400', bg: 'bg-greeting-cyan-500/20' },
+  { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-gray-400', bg: 'bg-gray-500/20' },
+  { key: 'festival', label: 'Festival', icon: Star, color: 'text-greeting-magenta-300', bg: 'bg-greeting-magenta-500/20' },
+  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-greeting-purple-400', bg: 'bg-greeting-purple-500/20' },
 ] as const;
 
 const containerVariants: Variants = {
@@ -73,7 +73,7 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* Trilingual Asymmetric Hero */}
-      <section className="relative overflow-hidden bg-paper-50">
+      <section className="relative overflow-hidden bg-greeting-bg-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center min-h-[70dvh]">
             {/* Left: Trilingual hero stack (7 cols) */}
@@ -107,7 +107,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="trilingual-line-ta text-2xl sm:text-3xl lg:text-4xl mt-2 leading-snug"
               >
-                <span className="text-ruby-700">ஒரு அழகான</span> அட்டையுடன்
+                <span className="text-greeting-magenta-400">ஒரு அழகான</span> அட்டையுடன்
               </motion.p>
 
               {/* SI line */}
@@ -118,7 +118,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="trilingual-line-si text-2xl sm:text-3xl lg:text-4xl mt-1 leading-snug"
               >
-                <span className="text-ruby-700">ලස්සන කාඩ්</span> එකකින් කියන්න
+                <span className="text-greeting-magenta-400">ලස්සන කාඩ්</span> එකකින් කියන්න
               </motion.p>
 
               {/* EN finish */}
@@ -128,14 +128,14 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="trilingual-line-en text-5xl sm:text-6xl lg:text-7xl font-display font-semibold tracking-tight-display leading-[1.05] mt-1"
               >
-                <span className="text-ruby-700">beautiful card</span>
+                <span className="text-greeting-magenta-400">beautiful card</span>
               </motion.p>
 
               <motion.p
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.35 }}
-                className="mt-6 text-base sm:text-lg text-ink-500 leading-relaxed max-w-[48ch] font-body"
+                className="mt-6 text-base sm:text-lg text-gray-400 leading-relaxed max-w-[48ch] font-body"
               >
                 Greeting cards that speak from the heart. Order via WhatsApp — personal, warm, and delivered across Sri Lanka with care.
               </motion.p>
@@ -162,18 +162,18 @@ export default function HomePage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
-                className="mt-12 flex items-center gap-6 text-xs text-ink-400"
+                className="mt-12 flex items-center gap-6 text-xs text-gray-500"
               >
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-peacock-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-cyan-400" />
                   1,200+ orders delivered
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-ruby-400" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-greeting-magenta-400" />
                   65+ unique designs
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-ink-300" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-gray-500" />
                   4.9 rating
                 </span>
               </motion.div>
@@ -188,7 +188,7 @@ export default function HomePage() {
                 className="absolute top-2 right-2 w-[260px] h-[340px] z-20"
                 title="With Love"
                 subtitle="For someone special"
-                accent="ruby"
+                accent="magenta"
                 delay={0}
               />
               <FloatingLetterpressCard
@@ -198,7 +198,7 @@ export default function HomePage() {
                 className="absolute bottom-4 right-36 w-[240px] h-[310px] z-10"
                 title="Happy Birthday"
                 subtitle="Celebrate in style"
-                accent="peacock"
+                accent="cyan"
                 delay={1}
               />
               <FloatingLetterpressCard
@@ -208,7 +208,7 @@ export default function HomePage() {
                 className="absolute top-24 right-56 w-[220px] h-[280px] z-0"
                 title="Joy & Peace"
                 subtitle="Warm wishes"
-                accent="ruby"
+                accent="magenta"
                 delay={2}
               />
             </div>
@@ -217,7 +217,7 @@ export default function HomePage() {
       </section>
 
       {/* Categories Bento Grid */}
-      <section className="bg-white">
+      <section className="bg-greeting-bg-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="flex items-end justify-between mb-10">
             <div>
@@ -226,7 +226,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-ruby-700 hover:text-ruby-800 transition-colors font-body"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-greeting-magenta-400 hover:text-greeting-magenta-300 transition-colors font-body"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -245,22 +245,20 @@ export default function HomePage() {
                   to={`/shop?category=${cat.key}`}
                   className={`flex flex-col items-start gap-4 p-5 rounded-2xl border transition-all duration-300 active:scale-[0.97] ${
                     cat.key === 'birthday'
-                      ? `${cat.bg} ${cat.color} border-sand-200 hover:shadow-paper-md`
-                      : 'bg-paper-50 border-sand-200 hover:bg-paper-100 hover:shadow-paper-md'
+                      ? `${cat.bg} ${cat.color} border-greeting-purple-700 hover:shadow-lg`
+                      : 'bg-greeting-bg-400 border-greeting-purple-700 hover:bg-greeting-bg-500 hover:shadow-lg'
                   }`}
                 >
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${
-                    cat.key === 'birthday' ? 'bg-white/70' : 'bg-white'
-                  }`}>
-                    <cat.icon size={22} className={cat.key === 'birthday' ? cat.color : 'text-ink-400'} />
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-greeting-bg-500/50`}>
+                    <cat.icon size={22} className={cat.key === 'birthday' ? cat.color : 'text-gray-400'} />
                   </div>
                   <div>
                     <h3 className={`font-semibold text-sm ${
-                      cat.key === 'birthday' ? cat.color : 'text-ink-800'
+                      cat.key === 'birthday' ? cat.color : 'text-gray-300'
                     }`}>
                       {cat.label}
                     </h3>
-                    <p className="text-xs text-ink-400 mt-0.5">Browse cards</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Browse cards</p>
                   </div>
                 </Link>
               </motion.div>
@@ -268,7 +266,7 @@ export default function HomePage() {
           </motion.div>
 
           <div className="mt-6 sm:hidden text-center">
-            <Link to="/shop" className="text-sm font-semibold text-ruby-700 hover:text-ruby-800 transition-colors inline-flex items-center gap-1 font-body">
+            <Link to="/shop" className="text-sm font-semibold text-greeting-magenta-400 hover:text-greeting-magenta-300 transition-colors inline-flex items-center gap-1 font-body">
               View all categories <ArrowRight size={14} />
             </Link>
           </div>
@@ -276,7 +274,7 @@ export default function HomePage() {
       </section>
 
       {/* Featured Products */}
-      <section className="bg-paper-50">
+      <section className="bg-greeting-bg-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="flex items-end justify-between mb-10">
             <div>
@@ -288,7 +286,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-ruby-700 hover:text-ruby-800 transition-colors font-body"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-greeting-magenta-400 hover:text-greeting-magenta-300 transition-colors font-body"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -297,7 +295,7 @@ export default function HomePage() {
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="paper-card overflow-hidden">
+                <div key={i} className="card overflow-hidden">
                   <div className="skeleton-card-image" />
                   <div className="p-4 space-y-3">
                     <div className="h-3 skeleton-shimmer w-16" />
@@ -348,7 +346,7 @@ export default function HomePage() {
       </section>
 
       {/* About + Stats Split */}
-      <section className="bg-white">
+      <section className="bg-greeting-bg-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
@@ -356,10 +354,10 @@ export default function HomePage() {
               <h2 className="section-heading mt-2">
                 Bringing joy, one card at a time
               </h2>
-              <p className="mt-5 text-base text-ink-500 leading-relaxed font-body">
+              <p className="mt-5 text-base text-gray-400 leading-relaxed font-body">
                 At TwinkleHearts, we believe every occasion deserves to be celebrated with something special. Our beautifully crafted greeting cards are designed to make your loved ones smile.
               </p>
-              <p className="mt-4 text-base text-ink-500 leading-relaxed font-body">
+              <p className="mt-4 text-base text-gray-400 leading-relaxed font-body">
                 Based in Colombo, Sri Lanka, we offer a personal touch with easy ordering via WhatsApp. Browse our collection, choose your favorite cards, and we will handle the rest.
               </p>
 
@@ -381,7 +379,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA — Dark ink section */}
-      <section className="bg-ink-900 text-white relative overflow-hidden">
+      <section className="bg-greeting-dark-purple-500 text-gray-100 relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundRepeat: 'repeat',
@@ -391,13 +389,13 @@ export default function HomePage() {
           <h2 className="text-3xl sm:text-4xl font-display font-semibold tracking-tight mb-4">
             Ready to make someone smile?
           </h2>
-          <p className="text-base text-ink-300 mb-10 max-w-lg mx-auto leading-relaxed font-body">
+          <p className="text-base text-gray-400 mb-10 max-w-lg mx-auto leading-relaxed font-body">
             Browse our collection of greeting cards and find the perfect message for your loved ones.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/shop"
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-[10px] bg-white text-ink-900 hover:bg-paper-100 font-semibold text-sm transition-all active:scale-[0.98] shadow-paper"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-[10px] bg-greeting-magenta-500 text-gray-100 hover:bg-greeting-magenta-600 font-semibold text-sm transition-all active:scale-[0.98] shadow-lg"
             >
               Shop All Cards
             </Link>
@@ -405,7 +403,7 @@ export default function HomePage() {
               href="https://wa.me/947XXXXXXXX"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-[10px] bg-ink-800 hover:bg-ink-700 text-white font-medium text-sm transition-all active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-[10px] bg-greeting-bg-500 hover:bg-greeting-bg-400 text-gray-100 font-medium text-sm transition-all active:scale-[0.98]"
             >
               <WhatsappLogo size={18} />
               Chat on WhatsApp
@@ -438,13 +436,13 @@ function FloatingLetterpressCard({
   className: string;
   title: string;
   subtitle: string;
-  accent: 'ruby' | 'peacock';
+  accent: 'magenta' | 'cyan';
   delay: number;
 }) {
-  const accentBorder = accent === 'ruby' ? 'border-ruby-200' : 'border-peacock-200';
-  const accentBg = accent === 'ruby' ? 'bg-ruby-50' : 'bg-peacock-50';
-  const accentText = accent === 'ruby' ? 'text-ruby-700' : 'text-peacock-700';
-  const accentLight = accent === 'ruby' ? 'bg-ruby-100' : 'bg-peacock-100';
+  const accentBorder = accent === 'magenta' ? 'border-greeting-magenta-500/30' : 'border-greeting-cyan-500/30';
+  const accentBg = accent === 'magenta' ? 'bg-greeting-magenta-500/20' : 'bg-greeting-cyan-500/20';
+  const accentText = accent === 'magenta' ? 'text-greeting-magenta-400' : 'text-greeting-cyan-400';
+  const accentLight = accent === 'magenta' ? 'bg-greeting-magenta-500/30' : 'bg-greeting-cyan-500/30';
 
   return (
     <motion.div
@@ -466,7 +464,7 @@ function FloatingLetterpressCard({
       }}
       className={className}
     >
-      <div className={`w-full h-full rounded-[2rem] ${accentBg} border ${accentBorder} shadow-paper-md flex flex-col overflow-hidden`}>
+      <div className={`w-full h-full rounded-[2rem] ${accentBg} border ${accentBorder} shadow-lg flex flex-col overflow-hidden`}>
         {/* Card face — decorative top */}
         <div className="flex-1 flex flex-col items-center justify-center px-8">
           <div className={`w-14 h-14 rounded-full ${accentLight} flex items-center justify-center mb-5`}>
@@ -475,12 +473,12 @@ function FloatingLetterpressCard({
           <p className={`text-center font-display font-semibold text-lg ${accentText} leading-tight`}>
             {title}
           </p>
-          <p className="text-center text-sm text-ink-400 mt-1.5 font-body">
+          <p className="text-center text-sm text-gray-500 mt-1.5 font-body">
             {subtitle}
           </p>
         </div>
         {/* Card footer — decorative stripe */}
-        <div className={`h-1.5 ${accent === 'ruby' ? 'bg-ruby-700/20' : 'bg-peacock-700/20'}`} />
+        <div className={`h-1.5 ${accent === 'magenta' ? 'bg-greeting-magenta-500/20' : 'bg-greeting-cyan-500/20'}`} />
       </div>
     </motion.div>
   );
@@ -524,8 +522,8 @@ function MagneticButton({ to, label, dark }: { to: string; label: string; dark?:
       style={{ x, y }}
       className={`inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-[10px] font-semibold text-sm transition-all active:scale-[0.98] ${
         dark
-          ? 'bg-white text-ink-900 hover:bg-paper-100'
-          : 'bg-ruby-700 hover:bg-ruby-800 text-white shadow-paper'
+          ? 'bg-white text-gray-100 hover:bg-gray-100'
+          : 'bg-greeting-magenta-500 hover:bg-greeting-magenta-600 text-gray-100 shadow-lg'
       }`}
     >
       {label}
@@ -572,28 +570,28 @@ function ProductCard({ product }: { product: Product }) {
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-paper-200">
-              <div className="w-12 h-12 rounded-2xl bg-paper-100 flex items-center justify-center mb-2">
-                <Heart size={22} weight="fill" className="text-ink-400" />
+            <div className="w-full h-full flex flex-col items-center justify-center bg-greeting-bg-400">
+              <div className="w-12 h-12 rounded-2xl bg-greeting-bg-500 flex items-center justify-center mb-2">
+                <Heart size={22} weight="fill" className="text-gray-500" />
               </div>
-              <span className="text-xs font-medium text-ink-400">No preview</span>
+              <span className="text-xs font-medium text-gray-500">No preview</span>
             </div>
           )}
           <div className="absolute top-3 left-3">
-            <span className="badge badge-ruby">{getCategoryBadge(product.category)}</span>
+            <span className="badge badge-magenta">{getCategoryBadge(product.category)}</span>
           </div>
         </div>
       </Link>
 
       <div className="product-card-body">
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-sm font-semibold text-ink-900 line-clamp-2 hover:text-ruby-700 transition-colors leading-snug">
+          <h3 className="font-display text-sm font-semibold text-gray-100 line-clamp-2 hover:text-greeting-magenta-400 transition-colors leading-snug">
             {product.name}
           </h3>
         </Link>
 
         <div className="flex items-center justify-between mt-3">
-          <span className="font-mono text-base font-semibold text-ruby-700 tracking-tight">
+          <span className="font-mono text-base font-semibold text-greeting-magenta-400 tracking-tight">
             {formatPrice(product.price)}
           </span>
 
@@ -601,18 +599,18 @@ function ProductCard({ product }: { product: Product }) {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.92 }}
-              className="p-2 rounded-xl bg-paper-100 text-ink-500 hover:bg-ruby-700 hover:text-white transition-colors duration-200"
+              className="p-2 rounded-xl bg-greeting-bg-400 text-gray-400 hover:bg-greeting-magenta-500 hover:text-gray-100 transition-colors duration-200"
               aria-label="Add to cart"
             >
               <ShoppingCart size={15} weight="bold" />
             </motion.button>
           ) : (
-            <span className="text-xs text-ink-400 font-medium">Sold out</span>
+            <span className="text-xs text-gray-500 font-medium">Sold out</span>
           )}
         </div>
 
         {product.stock > 0 && product.stock <= 3 && (
-          <p className="text-xs text-ruby-600 mt-2.5 font-medium">
+          <p className="text-xs text-greeting-magenta-400 mt-2.5 font-medium">
             Only {product.stock} remaining
           </p>
         )}
@@ -630,12 +628,12 @@ function FeatureItem({ icon: Icon, title, description }: {
 }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-10 h-10 rounded-xl bg-ruby-50 flex items-center justify-center flex-shrink-0">
-        <Icon size={18} className="text-ruby-600" />
+      <div className="w-10 h-10 rounded-xl bg-greeting-magenta-500/20 flex items-center justify-center flex-shrink-0">
+        <Icon size={18} className="text-greeting-magenta-400" />
       </div>
       <div>
-        <h4 className="font-semibold text-sm text-ink-900">{title}</h4>
-        <p className="text-sm text-ink-500">{description}</p>
+        <h4 className="font-semibold text-sm text-gray-100">{title}</h4>
+        <p className="text-sm text-gray-400">{description}</p>
       </div>
     </div>
   );
@@ -646,10 +644,10 @@ function FeatureItem({ icon: Icon, title, description }: {
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
     <div className="stat-card">
-      <div className="font-mono text-2xl sm:text-3xl font-bold text-ruby-700 mb-0.5 tracking-tight">
+      <div className="font-mono text-2xl sm:text-3xl font-bold text-greeting-magenta-400 mb-0.5 tracking-tight">
         {value}
       </div>
-      <div className="text-sm text-ink-500">{label}</div>
+      <div className="text-sm text-gray-400">{label}</div>
     </div>
   );
 }

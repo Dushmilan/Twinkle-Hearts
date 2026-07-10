@@ -91,8 +91,8 @@ export default function WishlistPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="font-display text-3xl font-bold text-ink-900 mb-1">My Wishlist</h1>
-      <p className="text-ink-500 mb-8">Cards you love — save them for later</p>
+      <h1 className="font-display text-3xl font-bold text-gray-100 mb-1">My Wishlist</h1>
+      <p className="text-gray-400 mb-8">Cards you love — save them for later</p>
 
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -101,7 +101,7 @@ export default function WishlistPage() {
           ))}
         </div>
       ) : wishlist.length === 0 ? (
-        <div className="paper-card">
+        <div className="card">
           <div className="empty-state py-12">
             <div className="empty-state-icon">
               <svg className="w-full h-full text-rose-400" fill="currentColor" viewBox="0 0 20 20">
@@ -121,7 +121,7 @@ export default function WishlistPage() {
             <div key={item.id} className="product-card group">
               <div className="relative">
                 <Link to={`/product/${item.product.id}`} className="block">
-                  <div className="aspect-[3/4] bg-paper-100 overflow-hidden">
+                  <div className="aspect-[3/4] bg-greeting-bg-400 overflow-hidden">
                     <img
                       src={item.product.images?.[0] || '/placeholder.jpg'}
                       alt={item.product.name}
@@ -131,7 +131,7 @@ export default function WishlistPage() {
                 </Link>
                 <button
                   onClick={() => removeFromWishlist(item.productId)}
-                  className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-paper hover:bg-red-50 transition-colors"
+                  className="absolute top-2 right-2 p-1.5 bg-greeting-bg-400 rounded-full shadow-lg hover:bg-greeting-magenta-500/20 transition-colors"
                   title="Remove from wishlist"
                 >
                   <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
@@ -140,25 +140,25 @@ export default function WishlistPage() {
                 </button>
               </div>
               <div className="p-4">
-                <p className="text-xs text-ink-500 mb-1 capitalize">{item.product.category}</p>
+                <p className="text-xs text-gray-500 mb-1 capitalize">{item.product.category}</p>
                 <Link to={`/product/${item.product.id}`}>
-                  <h3 className="font-display text-sm font-semibold text-ink-900 mb-2 line-clamp-2 hover:text-ruby-600 transition-colors">
+                  <h3 className="font-display text-sm font-semibold text-gray-100 mb-2 line-clamp-2 hover:text-greeting-magenta-400 transition-colors">
                     {item.product.name}
                   </h3>
                 </Link>
-                <p className="font-body text-base font-bold text-ruby-600 mb-3">
+                <p className="font-body text-base font-bold text-greeting-magenta-400 mb-3">
                   {formatCurrency(item.product.price)}
                 </p>
                 <div className="flex gap-2">
                   <Link
                     to={`/product/${item.product.id}`}
-                    className="flex-1 text-center px-3 py-2 border border-sand-200 text-ink-700 rounded-pill text-sm font-medium hover:bg-sand-50 hover:border-sand-300 transition-all"
+                    className="flex-1 text-center px-3 py-2 border border-greeting-purple-700 text-gray-300 rounded-pill text-sm font-medium hover:bg-greeting-purple-700 hover:border-greeting-magenta-400 transition-all"
                   >
                     View
                   </Link>
                   <Link
                     to={`/cart?add=${item.product.id}`}
-                    className="flex-1 text-center px-3 py-2 bg-ruby-500 text-white rounded-pill text-sm font-medium hover:bg-ruby-600 transition-colors"
+                    className="flex-1 text-center px-3 py-2 bg-greeting-magenta-500 text-gray-100 rounded-pill text-sm font-medium hover:bg-greeting-magenta-600 transition-colors"
                   >
                     Add
                   </Link>

@@ -17,8 +17,8 @@
 
   body {
     font-family: theme('fontFamily.body');
-    background-color: theme('colors.paper.50');
-    color: theme('colors.ink.700');
+    background-color: theme('colors.greeting-bg.400');
+    color: theme('colors.gray.100');
     line-height: 1.6;
     margin: 0;
     padding: 0;
@@ -28,7 +28,7 @@
     font-family: theme('fontFamily.display');
     font-weight: 600;
     line-height: 1.1;
-    color: theme('colors.ink.900');
+    color: theme('colors.gray.100');
     letter-spacing: -0.02em;
     font-variation-settings: 'opsz' 72, 'SOFT' 50;
   }
@@ -40,12 +40,12 @@
   }
 
   ::selection {
-    background-color: theme('colors.ruby.100');
-    color: theme('colors.ruby.800');
+    background-color: theme('colors.greeting-magenta.400');
+    color: theme('colors.greeting-dark-purple.900');
   }
 
   :focus-visible {
-    outline: 2px solid theme('colors.ruby.500');
+    outline: 2px solid theme('colors.greeting-magenta.400');
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -61,94 +61,48 @@
 
 @layer components {
   /* ============================================
-     PAPER CARD — warm, tactile surfaces
+     GLASS CARD — dark glassmorphism
      ============================================ */
-  .paper-card {
-    background: theme('colors.paper.200');
-    border: 1px solid theme('colors.sand.200');
+  .card {
+    background: theme('colors.greeting-dark-purple.700');
+    border: 1px solid theme('colors.greeting-purple.700');
     border-radius: theme('borderRadius.card');
+    backdrop-filter: blur(8px);
     box-shadow: theme('boxShadow.paper');
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .paper-card:hover {
+  .card:hover {
     box-shadow: theme('boxShadow.paper-md');
-    border-color: theme('colors.sand.300');
+    border-color: theme('colors.greeting-purple.600');
   }
 
-  .paper-card-white {
-    background: #ffffff;
-    border: 1px solid theme('colors.sand.100');
+  .card-white {
+    background: theme('colors.greeting-bg.500');
+    border: 1px solid theme('colors.greeting-purple.700');
     border-radius: theme('borderRadius.card');
     box-shadow: theme('boxShadow.paper');
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .paper-card-white:hover {
+  .card-white:hover {
     box-shadow: theme('boxShadow.paper-md');
   }
 
   /* ============================================
-     PAPER SHEET — section background surfaces
+     SHEET — page section backgrounds
      ============================================ */
-  .paper-sheet {
-    background: theme('colors.paper.100');
-    border: 1px solid theme('colors.sand.100');
+  .sheet {
+    background: theme('colors.greeting-bg.600');
+    border: 1px solid theme('colors.greeting-purple.800');
     border-radius: theme('borderRadius.container');
   }
 
   /* ============================================
-     LETTERPRESS — pressed type effect
+     MAINTENANCE — REMOVED paper-based effects (not tech aesthetic)
      ============================================ */
-  .letterpress-text {
-    text-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.15),
-      inset 0 1px 2px rgba(26, 23, 20, 0.08);
-  }
-
-  .letterpress-surface {
-    background: theme('colors.paper.200');
-    box-shadow:
-      inset 0 1px 2px rgba(26, 23, 20, 0.06),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.12);
-    border-radius: theme('borderRadius.card');
-  }
-
-  /* ============================================
-     DECKLE EDGE — torn-paper border treatment
-     ============================================ */
-  .deckle-edge {
-    border: none;
-    position: relative;
-  }
-
-  .deckle-edge::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 1px solid theme('colors.sand.200');
-    border-radius: theme('borderRadius.card');
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 400 600'%3E%3Crect width='400' height='600' fill='black' rx='12' /%3E%3C/svg%3E");
-    mask-size: 100% 100%;
-    -webkit-mask-size: 100% 100%;
-    pointer-events: none;
-  }
-
-  /* ============================================
-     RUBY SEAL — circular accent mark
-     ============================================ */
-  .ruby-seal {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: theme('borderRadius.seal');
-    background: theme('colors.ruby.700');
-    color: white;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.15),
-      0 1px 3px rgba(26, 23, 20, 0.1);
+  .letterpress-text, .letterpress-surface, .deckle-edge, .ruby-seal {
+    /* Removed paper/book textures for tech aesthetic */
   }
 
   /* ============================================
@@ -156,49 +110,49 @@
      ============================================ */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2.5
-           bg-ruby-700 hover:bg-ruby-800 active:bg-ruby-900
+           bg-greeting-magenta-500 hover:bg-greeting-magenta-400 active:bg-greeting-pink-400
            text-white font-body font-semibold
            py-3 px-7 rounded-[10px]
            transition-all duration-300 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-ruby-300 focus-visible:ring-offset-2
+           focus-visible:ring-2 focus-visible:ring-greeting-magenta-300 focus-visible:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:scale-100
            shadow-paper;
   }
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2
-           bg-transparent hover:bg-ruby-50 active:bg-ruby-100
-           text-ruby-700 hover:text-ruby-800
+           bg-transparent hover:bg-greeting-magenta-900 active:bg-greeting-magenta-800
+           text-greeting-magenta-400 hover:text-greeting-magenta-300
            font-body font-medium
            py-2.5 px-5 rounded-[10px]
            transition-all duration-300 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-ruby-300;
+           focus-visible:ring-2 focus-visible:ring-greeting-magenta-300;
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2
-           bg-white hover:bg-sand-50 active:bg-sand-100
-           text-ink-700 hover:text-ink-900
+           bg-greeting-cyan-500 hover:bg-greeting-cyan-600 active:bg-greeting-cyan-700
+           text-greeting-dark-purple-900 hover:text-white
            font-body font-semibold
            py-2.5 px-6 rounded-[10px]
-           border border-sand-200 hover:border-sand-300
+           border border-greeting-cyan-700 hover:border-greeting-cyan-600
            transition-all duration-300 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-ruby-300 focus-visible:ring-offset-2;
+           focus-visible:ring-2 focus-visible:ring-greeting-cyan-300 focus-visible:ring-offset-2;
   }
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2
-           bg-white hover:bg-sand-50 active:bg-sand-100
-           text-ink-700 hover:text-ink-900
+           bg-transparent hover:bg-greeting-purple-900 active:bg-greeting-purple-800
+           text-greeting-cyan-400 hover:text-greeting-cyan-300
            font-body font-semibold
            py-2.5 px-6 rounded-[10px]
-           border border-sand-200 hover:border-sand-300
+           border border-greeting-purple-700 hover:border-greeting-purple-600
            transition-all duration-300 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-ruby-300 focus-visible:ring-offset-2;
+           focus-visible:ring-2 focus-visible:ring-greeting-cyan-300 focus-visible:ring-offset-2;
   }
 
   .btn-whatsapp {
@@ -215,12 +169,12 @@
 
   .btn-dark {
     @apply inline-flex items-center justify-center gap-2
-           bg-ink-900 hover:bg-ink-800 active:bg-ink-950
+           bg-gray-900 hover:bg-gray-800 active:bg-gray-950
            text-white font-body font-semibold
            py-3 px-7 rounded-[10px]
            transition-all duration-300 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-ink-300 focus-visible:ring-offset-2;
+           focus-visible:ring-2 focus-visible:ring-gray-300 focus-visible:ring-offset-2;
   }
 
   /* ============================================
@@ -228,29 +182,29 @@
      ============================================ */
   .input-field {
     @apply w-full px-4 py-3
-           bg-white border border-sand-200 rounded-[10px]
-           font-body text-ink-800 text-sm
-           placeholder:text-ink-300
-           focus:border-ruby-400 focus:ring-2 focus:ring-ruby-100
-           hover:border-sand-300
+           bg-greeting-bg-600 border border-greeting-purple-800 rounded-[10px]
+           font-body text-gray-100 text-sm
+           placeholder:text-gray-500
+           focus:border-greeting-magenta-400 focus:ring-2 focus:ring-greeting-magenta-900
+           hover:border-greeting-purple-700
            outline-none
            transition-all duration-200 ease-spring;
   }
 
   .input-field-error {
-    @apply border-ruby-300 focus:border-ruby-400 focus:ring-ruby-100;
+    @apply border-greeting-pink-400 focus:border-greeting-magenta-400 focus:ring-greeting-magenta-900;
   }
 
   .label-text {
-    @apply block text-sm font-body font-semibold text-ink-700 mb-1.5;
+    @apply block text-sm font-body font-semibold text-gray-100 mb-1.5;
   }
 
   .helper-text {
-    @apply block text-xs font-body text-ink-400 mt-1;
+    @apply block text-xs font-body text-gray-400 mt-1;
   }
 
   .error-text {
-    @apply block text-xs font-body text-ruby-600 mt-1;
+    @apply block text-xs font-body text-greeting-magenta-400 mt-1;
   }
 
   /* ============================================
@@ -264,20 +218,20 @@
            tracking-wider uppercase;
   }
 
-  .badge-ruby {
-    @apply bg-ruby-100 text-ruby-700;
+  .badge-magenta {
+    @apply bg-greeting-magenta-900 text-greeting-magenta-300;
   }
 
-  .badge-ink {
-    @apply bg-ink-100 text-ink-700;
+  .badge-gray {
+    @apply bg-gray-800 text-gray-300;
   }
 
-  .badge-peacock {
-    @apply bg-peacock-100 text-peacock-700;
+  .badge-cyan {
+    @apply bg-greeting-cyan-900 text-greeting-cyan-300;
   }
 
-  .badge-sand {
-    @apply bg-sand-200 text-ink-600;
+  .badge-purple {
+    @apply bg-greeting-purple-800 text-greeting-purple-200;
   }
 
   /* ============================================
@@ -287,29 +241,29 @@
     @apply inline-flex items-center gap-2
            px-4 py-2.5 rounded-[10px]
            font-body text-sm font-medium
-           bg-white border border-sand-200
-           text-ink-600
-           hover:border-ruby-300 hover:text-ruby-700 hover:bg-ruby-50
-           active:bg-ruby-100 active:translate-y-[1px]
+           bg-greeting-bg-600 border border-greeting-purple-800
+           text-gray-300
+           hover:border-greeting-magenta-500 hover:text-greeting-magenta-400 hover:bg-greeting-magenta-900
+           active:bg-greeting-magenta-800 active:translate-y-[1px]
            transition-all duration-200 ease-spring
            cursor-pointer select-none
            whitespace-nowrap;
   }
 
   .category-pill-active {
-    @apply bg-ruby-700 text-white border-ruby-700 shadow-paper
-           hover:bg-ruby-800 hover:text-white hover:border-ruby-800;
+    @apply bg-greeting-magenta-500 text-white border-greeting-magenta-500 shadow-paper
+           hover:bg-greeting-magenta-400 hover:text-white hover:border-greeting-magenta-400;
   }
 
   /* ============================================
      PRODUCT CARD
      ============================================ */
   .product-card {
-    @apply paper-card overflow-hidden;
+    @apply card overflow-hidden;
   }
 
   .product-card-image {
-    @apply aspect-[3/4] bg-paper-200 overflow-hidden;
+    @apply aspect-[3/4] bg-greeting-dark-purple-800 overflow-hidden;
   }
 
   .product-card-body {
@@ -317,7 +271,7 @@
   }
 
   .product-card-outline {
-    @apply paper-card-white overflow-hidden;
+    @apply card-white overflow-hidden;
   }
 
   /* ============================================
@@ -326,9 +280,9 @@
   .skeleton-shimmer {
     background: linear-gradient(
       90deg,
-      theme('colors.paper.200') 25%,
-      theme('colors.paper.100') 37%,
-      theme('colors.paper.200') 63%
+      theme('colors.greeting-dark-purple.800') 25%,
+      theme('colors.greeting-purple.900') 37%,
+      theme('colors.greeting-dark-purple.800') 63%
     );
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
@@ -353,16 +307,16 @@
   }
 
   .empty-state-icon {
-    @apply w-14 h-14 rounded-full bg-sand-100 flex items-center justify-center mb-4
-           text-ink-400;
+    @apply w-14 h-14 rounded-full bg-greeting-purple-900 flex items-center justify-center mb-4
+           text-greeting-cyan-500;
   }
 
   .empty-state-title {
-    @apply text-lg font-semibold text-ink-800 mb-1;
+    @apply text-lg font-semibold text-gray-100 mb-1;
   }
 
   .empty-state-text {
-    @apply text-sm text-ink-500 max-w-[40ch] leading-relaxed;
+    @apply text-sm text-gray-400 max-w-[40ch] leading-relaxed;
   }
 
   /* ============================================
@@ -371,30 +325,30 @@
   .section-eyebrow {
     @apply inline-flex items-center gap-2
            px-3 py-1.5 rounded-full
-           bg-ruby-50 text-ruby-700
+           bg-greeting-magenta-900 text-greeting-magenta-300
            text-xs font-body font-semibold uppercase tracking-wider;
   }
 
-  .section-eyebrow-ink {
+  .section-eyebrow-gray {
     @apply inline-flex items-center gap-2
            px-3 py-1.5 rounded-full
-           bg-ink-100 text-ink-700
+           bg-gray-800 text-gray-300
            text-xs font-body font-semibold uppercase tracking-wider;
   }
 
-  .section-eyebrow-peacock {
+  .section-eyebrow-cyan {
     @apply inline-flex items-center gap-2
            px-3 py-1.5 rounded-full
-           bg-peacock-100 text-peacock-700
+           bg-greeting-cyan-900 text-greeting-cyan-300
            text-xs font-body font-semibold uppercase tracking-wider;
   }
 
   .section-heading {
-    @apply text-3xl sm:text-4xl lg:text-5xl font-display font-semibold tracking-tight-display text-ink-900;
+    @apply text-3xl sm:text-4xl lg:text-5xl font-display font-semibold tracking-tight-display text-gray-100;
   }
 
   .section-subheading {
-    @apply font-body text-base text-ink-500 leading-relaxed max-w-[52ch];
+    @apply font-body text-base text-gray-400 leading-relaxed max-w-[52ch];
   }
 
   /* ============================================
@@ -405,16 +359,16 @@
   }
 
   .admin-table th {
-    @apply px-4 py-3 text-xs font-body font-semibold text-ink-500 uppercase tracking-wider
-           border-b border-sand-200;
+    @apply px-4 py-3 text-xs font-body font-semibold text-gray-400 uppercase tracking-wider
+           border-b border-greeting-purple-800;
   }
 
   .admin-table td {
-    @apply px-4 py-3.5 text-sm text-ink-700 border-b border-sand-100;
+    @apply px-4 py-3.5 text-sm text-gray-300 border-b border-greeting-purple-900;
   }
 
   .admin-table tr {
-    @apply transition-colors duration-150 hover:bg-paper-100;
+    @apply transition-colors duration-150 hover:bg-greeting-dark-purple-800;
   }
 
   /* ============================================
@@ -425,58 +379,58 @@
   }
 
   .trilingual-line-en {
-    @apply font-display text-ink-900;
+    @apply font-display text-gray-100;
   }
 
   .trilingual-line-ta {
     font-family: 'Noto Serif Tamil', serif;
-    @apply text-ink-800;
+    @apply text-greeting-purple-200;
   }
 
   .trilingual-line-si {
     font-family: 'Noto Serif Sinhala', serif;
-    @apply text-ink-800;
+    @apply text-greeting-purple-200;
   }
 
   /* ============================================
      STAT CARD
      ============================================ */
   .stat-card {
-    @apply bg-paper-100 rounded-2xl p-6 border border-sand-200;
+    @apply bg-greeting-dark-purple-700 rounded-2xl p-6 border border-greeting-purple-800;
   }
 
   .stat-value {
-    @apply font-mono text-2xl sm:text-3xl font-bold text-ruby-700 mb-0.5 tracking-tight;
+    @apply font-mono text-2xl sm:text-3xl font-bold text-greeting-magenta-400 mb-0.5 tracking-tight;
   }
 
   .stat-label {
-    @apply text-sm text-ink-500;
+    @apply text-sm text-gray-400;
   }
 
   /* ============================================
      FEATURE ITEM
      ============================================ */
   .feature-icon {
-    @apply w-10 h-10 rounded-xl bg-ruby-50 flex items-center justify-center flex-shrink-0;
+    @apply w-10 h-10 rounded-xl bg-greeting-magenta-900 flex items-center justify-center flex-shrink-0;
   }
 
   .feature-icon-inner {
-    @apply text-ruby-600;
+    @apply text-greeting-magenta-400;
   }
 
   .feature-title {
-    @apply font-semibold text-sm text-ink-900;
+    @apply font-semibold text-sm text-gray-100;
   }
 
   .feature-description {
-    @apply text-sm text-ink-500;
+    @apply text-sm text-gray-400;
   }
 
   /* ============================================
      CTA SECTION
      ============================================ */
   .cta-section {
-    @apply bg-ink-900 text-white;
+    @apply bg-greeting-dark-purple-900 text-white;
   }
 
   .cta-heading {
@@ -484,7 +438,7 @@
   }
 
   .cta-text {
-    @apply text-base text-ink-300 mb-10 max-w-lg mx-auto leading-relaxed;
+    @apply text-base text-gray-400 mb-10 max-w-lg mx-auto leading-relaxed;
   }
 }
 
@@ -525,8 +479,8 @@
     background: linear-gradient(
       to right,
       transparent,
-      theme('colors.sand.300'),
-      theme('colors.sand.300'),
+      theme('colors.greeting-purple.700'),
+      theme('colors.greeting-purple.700'),
       transparent
     );
     border: none;

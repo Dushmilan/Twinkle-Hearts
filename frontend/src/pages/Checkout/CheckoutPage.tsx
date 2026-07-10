@@ -106,10 +106,10 @@ export default function CheckoutPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-display text-3xl font-bold text-ink-900 mb-1">
+        <h1 className="font-display text-3xl font-bold text-gray-100 mb-1">
           Checkout
         </h1>
-        <p className="text-ink-500">
+        <p className="text-gray-400">
           Just a few more steps to send your cards with love
         </p>
       </div>
@@ -118,9 +118,9 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Contact Form */}
           <div className="lg:col-span-3">
-            <div className="paper-card p-6">
-              <h2 className="font-display text-xl font-semibold text-ink-900 mb-6 flex items-center gap-2">
-                <HeartIcon className="w-5 h-5 text-ruby-400" />
+            <div className="card p-6">
+              <h2 className="font-display text-xl font-semibold text-gray-100 mb-6 flex items-center gap-2">
+                <HeartIcon className="w-5 h-5 text-greeting-magenta-400" />
                 Your Details
               </h2>
 
@@ -162,7 +162,7 @@ export default function CheckoutPage() {
                 <div>
                   <label className="label-text">WhatsApp Number *</label>
                   <div className="flex">
-                    <span className="inline-flex items-center px-4 bg-sand-100 border border-r-0 border-sand-200 rounded-l-lg font-medium text-ink-700 text-sm">
+                    <span className="inline-flex items-center px-4 bg-greeting-bg-400 border border-r-0 border-greeting-purple-700 rounded-l-lg font-medium text-gray-300 text-sm">
                       {formData.countryCode}
                     </span>
                     <input
@@ -177,7 +177,7 @@ export default function CheckoutPage() {
                       pattern="[0-9\s]+"
                     />
                   </div>
-                  <p className="text-xs text-ink-400 mt-2">
+                  <p className="text-xs text-gray-500 mt-2">
                     We'll send your order confirmation to this number via WhatsApp
                   </p>
                 </div>
@@ -187,10 +187,10 @@ export default function CheckoutPage() {
 
           {/* Order Summary — Gift Receipt */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-card border-2 border-dashed border-sand-200 p-6 sticky top-24 shadow-paper">
-              <div className="text-center mb-6 pb-4 border-b border-sand-100">
-                <HeartIcon className="w-8 h-8 text-ruby-400 mx-auto mb-2" />
-                <h2 className="font-display text-xl font-semibold text-ink-900">
+            <div className="card rounded-xl border-2 border-dashed border-greeting-purple-700 p-6 sticky top-24 shadow-lg">
+              <div className="text-center mb-6 pb-4 border-b border-greeting-purple-700">
+                <HeartIcon className="w-8 h-8 text-greeting-magenta-400 mx-auto mb-2" />
+                <h2 className="font-display text-xl font-semibold text-gray-100">
                   Your Cards
                 </h2>
               </div>
@@ -199,10 +199,10 @@ export default function CheckoutPage() {
               <div className="space-y-3 mb-4 max-h-48 overflow-y-auto">
                 {items.map((item) => (
                   <div key={item.productId} className="flex justify-between text-sm">
-                    <span className="text-ink-600 truncate pr-2">
-                      {item.productName} <span className="text-ink-400">× {item.quantity}</span>
+                    <span className="text-gray-300 truncate pr-2">
+                      {item.productName} <span className="text-gray-500">× {item.quantity}</span>
                     </span>
-                    <span className="font-medium text-ink-900 whitespace-nowrap">
+                    <span className="font-medium text-gray-100 whitespace-nowrap">
                       {formatPrice(item.price * item.quantity)}
                     </span>
                   </div>
@@ -210,18 +210,18 @@ export default function CheckoutPage() {
               </div>
 
               {/* Totals */}
-              <div className="border-t border-sand-200 pt-4 space-y-2 mb-6">
+              <div className="border-t border-greeting-purple-900 pt-4 space-y-2 mb-6">
                 <div className="flex justify-between text-sm">
-                  <span className="text-ink-500">Subtotal</span>
+                  <span className="text-gray-400">Subtotal</span>
                   <span className="font-medium">{formatPrice(total)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-ink-500">Tax (18%)</span>
+                  <span className="text-gray-400">Tax (18%)</span>
                   <span className="font-medium">{formatPrice(tax)}</span>
                 </div>
-                <div className="flex justify-between text-lg font-bold pt-2 border-t border-sand-100">
+                <div className="flex justify-between text-lg font-bold pt-2 border-t border-greeting-purple-900">
                   <span>Total</span>
-                  <span className="text-ruby-600">{formatPrice(finalTotal)}</span>
+                  <span className="text-greeting-magenta-400">{formatPrice(finalTotal)}</span>
                 </div>
               </div>
 
@@ -247,7 +247,7 @@ export default function CheckoutPage() {
                 )}
               </button>
 
-              <p className="text-xs text-ink-400 text-center mt-3 leading-relaxed">
+              <p className="text-xs text-gray-500 text-center mt-3 leading-relaxed">
                 You'll be redirected to WhatsApp with a pre-filled order message
               </p>
             </div>
@@ -256,7 +256,7 @@ export default function CheckoutPage() {
 
         {/* Error Message */}
         {error && (
-          <div className="mt-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-card">
+          <div className="mt-6 bg-red-900/20 border border-red-500 text-red-400 px-5 py-4 rounded-xl">
             <div className="flex items-start gap-3">
               <svg className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />

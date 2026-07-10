@@ -72,7 +72,7 @@ function AdminUsers() {
             </div>
             <Link
               to="/admin"
-              className="text-ruby-600 hover:text-ruby-700 font-medium"
+              className="text-greeting-magenta-400 hover:text-greeting-magenta-300 font-medium"
             >
               Back to Dashboard
             </Link>

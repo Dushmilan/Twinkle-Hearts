@@ -111,31 +111,31 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-paper-50 to-white px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-greeting-bg-500 px-4 py-12">
       {/* Decorative sparkles */}
-      <div className="absolute top-24 right-20 w-2 h-2 bg-rose-300 rounded-full animate-float opacity-40 hidden lg:block" />
-      <div className="absolute bottom-32 left-16 w-1.5 h-1.5 bg-amber-300 rounded-full animate-float-slow opacity-30 hidden lg:block" />
+      <div className="absolute top-24 right-20 w-2 h-2 bg-greeting-pink-500 rounded-full animate-float opacity-40 hidden lg:block" />
+      <div className="absolute bottom-32 left-16 w-1.5 h-1.5 bg-greeting-cyan-500 rounded-full animate-float-slow opacity-30 hidden lg:block" />
 
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
-            <HeartIcon className="w-10 h-10 text-ruby-500" />
-            <span className="text-2xl font-display font-semibold text-ink-900">
-              Twinkle<span className="text-ruby-500">Hearts</span>
+            <HeartIcon className="w-10 h-10 text-greeting-magenta-400" />
+            <span className="text-2xl font-display font-semibold text-gray-100">
+              Twinkle<span className="text-greeting-magenta-400">Hearts</span>
             </span>
           </Link>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-paper-md p-8">
+        <div className="card rounded-2xl p-8">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 bg-ruby-100 rounded-full mb-4">
-              <svg className="w-7 h-7 text-ruby-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-greeting-magenta-500/20 rounded-full mb-4">
+              <svg className="w-7 h-7 text-greeting-magenta-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
               </svg>
             </div>
-            <h1 className="font-display text-2xl font-bold text-ink-900">Create Account</h1>
-            <p className="text-ink-500 mt-1">Join TwinkleHearts today</p>
+            <h1 className="font-display text-2xl font-bold text-gray-100">Create Account</h1>
+            <p className="text-gray-400 mt-1">Join TwinkleHearts today</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -172,7 +172,7 @@ export default function RegisterPage() {
             <div>
               <label htmlFor="phone" className="label-text">Phone Number</label>
               <div className="flex gap-2">
-                <div className="input-field bg-gray-50 text-ink-600 w-20 text-center font-medium" aria-label="Country code">
+                <div className="input-field text-gray-300 w-20 text-center font-medium" aria-label="Country code">
                   {COUNTRY_CODE}
                 </div>
                 <input
@@ -204,13 +204,13 @@ export default function RegisterPage() {
               {formData.password && (
                 <div className="mt-2">
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1.5 bg-paper-200 rounded-full overflow-hidden">
+                    <div className="flex-1 h-1.5 bg-greeting-bg-400 rounded-full overflow-hidden">
                       <div
                         className={`h-full transition-all duration-300 ${getPasswordStrengthColor()}`}
                         style={{ width: `${(passwordStrength / 5) * 100}%` }}
                       />
                     </div>
-                    <span className="text-xs text-ink-500">{getPasswordStrengthLabel()}</span>
+                    <span className="text-xs text-gray-400">{getPasswordStrengthLabel()}</span>
                   </div>
                 </div>
               )}
@@ -253,9 +253,9 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-ink-500">
+          <p className="mt-8 text-center text-sm text-gray-400">
             Already have an account?{' '}
-            <Link to="/login" className="font-medium text-ruby-600 hover:text-ruby-700">
+            <Link to="/login" className="font-medium text-greeting-magenta-400 hover:text-greeting-magenta-300">
               Sign in
             </Link>
           </p>
