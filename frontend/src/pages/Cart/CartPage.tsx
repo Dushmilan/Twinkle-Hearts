@@ -1,7 +1,19 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { useCartStore } from '../../store/cartStore';
 import { HeartIcon, WhatsAppIcon, formatPrice } from '../../components/UI/Icons';
 import { getImageSrc } from '../../utils/images';
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, x: -20, scale: 0.95 },
+  visible: { opacity: 1, x: 0, scale: 1, transition: { type: 'spring' as const, stiffness: 200, damping: 20 } },
+  exit: { opacity: 0, x: 20, scale: 0.95, transition: { duration: 0.2 } },
+};
+
+const summaryVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.4, ease: 'easeOut' as const } },
+};
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -17,7 +29,11 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-twinkle-canvas min-h-screen">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-twinkle-canvas min-h-screen"
+      >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="empty-state">
             <div className="empty-state-icon">
@@ -35,49 +51,77 @@ export default function CartPage() {
             </Link>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="bg-twinkle-canvas min-h-screen">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="bg-twinkle-canvas min-h-screen"
+    >
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
-      <div className="mb-8">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
         <h1 className="font-display text-3xl font-bold text-twinkle-ink mb-1">
           Your Selection
         </h1>
         <p className="text-twinkle-ink/70">
           {items.length} item{items.length !== 1 ? 's' : ''} — pick the perfect cards
         </p>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Cart Items */}
         <div className="lg:col-span-3 space-y-4">
-          {items.map((item) => (
-            <CartItem
-              key={item.productId}
-              item={item}
-              onUpdateQuantity={updateQuantity}
-              onRemove={removeItem}
-              formatPrice={formatPrice}
-            />
-          ))}
+          <AnimatePresence mode="popLayout">
+            {items.map((item) => (
+              <motion.div
+                key={item.productId}
+                layout
+                variants={itemVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <CartItem
+                  item={item}
+                  onUpdateQuantity={updateQuantity}
+                  onRemove={removeItem}
+                  formatPrice={formatPrice}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
 
           {/* Clear Cart */}
-          <div className="flex justify-end pt-2">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="flex justify-end pt-2"
+          >
             <button
               onClick={clearCart}
               className="text-sm text-twinkle-ink/50 hover:text-twinkle-rose transition-colors font-medium"
             >
               Clear all items
             </button>
-          </div>
+          </motion.div>
         </div>
 
         {/* Order Summary — Gift Receipt Style */}
-        <div className="lg:col-span-2">
+        <motion.div
+          variants={summaryVariants}
+          initial="hidden"
+          animate="visible"
+          className="lg:col-span-2"
+        >
           <div className="card rounded-xl border-2 border-dashed border-twinkle-mist p-6 sticky top-24 shadow-lg">
             {/* Gift Receipt Header */}
             <div className="text-center mb-6 pb-4 border-b border-twinkle-mist">
@@ -127,10 +171,12 @@ export default function CartPage() {
             {/* Checkout Button */}
             <button
               onClick={handleCheckout}
-              className="btn-whatsapp w-full text-base py-3.5"
+              className="btn-whatsapp w-full text-base py-3.5 relative overflow-hidden group"
             >
-              <WhatsAppIcon className="w-5 h-5" />
-              Send Order via WhatsApp
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                <WhatsAppIcon className="w-5 h-5" />
+                Send Order via WhatsApp
+              </span>
             </button>
 
             <p className="text-xs text-twinkle-ink/40 text-center mt-3 leading-relaxed">
@@ -144,10 +190,10 @@ export default function CartPage() {
               ← Continue Shopping
             </Link>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -200,21 +246,28 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
           <div className="flex items-center gap-1 bg-twinkle-mist/20 rounded-lg">
             <button
               onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)}
-              className="w-8 h-8 flex items-center justify-center text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30 rounded-l-lg transition-colors font-medium"
+              className="w-8 h-8 flex items-center justify-center text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30 rounded-l-lg transition-colors font-medium active:scale-90"
             >
               −
             </button>
-            <span className="w-8 text-center text-sm font-semibold">{item.quantity}</span>
+            <motion.span
+              key={item.quantity}
+              initial={{ scale: 1.3, color: '#d48a7a' }}
+              animate={{ scale: 1, color: '#1a202c' }}
+              className="w-8 text-center text-sm font-semibold"
+            >
+              {item.quantity}
+            </motion.span>
             <button
               onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
-              className="w-8 h-8 flex items-center justify-center text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30 rounded-r-lg transition-colors font-medium"
+              className="w-8 h-8 flex items-center justify-center text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30 rounded-r-lg transition-colors font-medium active:scale-90"
             >
               +
             </button>
           </div>
           <button
             onClick={() => onRemove(item.productId)}
-            className="ml-auto text-twinkle-ink/40 hover:text-twinkle-rose transition-colors p-1"
+            className="ml-auto text-twinkle-ink/40 hover:text-twinkle-rose transition-colors p-1 hover:scale-110 transition-all duration-200"
             title="Remove item"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -225,11 +278,16 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
       </div>
 
       {/* Item Total */}
-      <div className="text-right hidden sm:block">
+      <motion.div
+        key={item.quantity}
+        initial={{ scale: 1.1 }}
+        animate={{ scale: 1 }}
+        className="text-right hidden sm:block"
+      >
         <p className="font-bold text-twinkle-ink text-lg">
           {formatPrice(item.price * item.quantity)}
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

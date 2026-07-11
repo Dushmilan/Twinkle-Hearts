@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
 import { useAuth } from '../../context/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -49,7 +49,15 @@ export default function Layout({ children }: LayoutProps) {
   const { isAuthenticated, user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -62,7 +70,7 @@ export default function Layout({ children }: LayoutProps) {
     <div className="min-h-[100dvh] bg-twinkle-canvas flex flex-col">
       <OfflineBanner />
 
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-twinkle-mist/40">
+      <header className={`sticky top-0 z-50 transition-all duration-300 backdrop-blur-md border-b ${scrolled ? 'bg-white/95 shadow-sm border-twinkle-mist/60' : 'bg-white/70 border-twinkle-mist/20'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center gap-2.5 group">

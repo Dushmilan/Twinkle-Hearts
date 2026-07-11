@@ -11,6 +11,8 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import ProductCard from '../../components/UI/ProductCard';
+import { TextGenerateEffect } from '../../components/UI/text-generate-effect';
+import { SparklesCore } from '../../components/UI/sparkles';
 function WhatsappLogo({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -70,6 +72,13 @@ export default function HomePage() {
     <div className="relative">
       {/* Trilingual Asymmetric Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-white via-twinkle-canvas to-twinkle-sage/20">
+        <SparklesCore
+          className="absolute inset-0 z-0"
+          particleColor="#d48a7a"
+          particleDensity={30}
+          minSize={0.5}
+          maxSize={1.5}
+        />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center min-h-[70dvh]">
             {/* Left: Trilingual hero stack (7 cols) */}
@@ -127,14 +136,12 @@ export default function HomePage() {
                 <span className="text-twinkle-rose">beautiful card</span>
               </motion.p>
 
-              <motion.p
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.35 }}
-                className="mt-6 text-base sm:text-lg text-twinkle-ink/50 leading-relaxed max-w-[48ch] font-body"
-              >
-                Greeting cards that speak from the heart. Order via WhatsApp — personal, warm, and delivered across Sri Lanka with care.
-              </motion.p>
+              <TextGenerateEffect
+                words="Greeting cards that speak from the heart. Order via WhatsApp — personal, warm, and delivered across Sri Lanka with care."
+                className="mt-6 font-body"
+                duration={0.4}
+                filter={false}
+              />
 
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
@@ -376,6 +383,13 @@ export default function HomePage() {
 
       {/* CTA — Warm paper bridge */}
       <section className="bg-twinkle-sage/30 text-twinkle-ink relative overflow-hidden">
+        <SparklesCore
+          className="absolute inset-0 z-0"
+          particleColor="#d48a7a"
+          particleDensity={20}
+          minSize={0.5}
+          maxSize={1.5}
+        />
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundRepeat: 'repeat',
