@@ -53,7 +53,7 @@ function AdminOrderDetail() {
   if (loading) {
     return (
       <div className="min-h-screen bg-twinkle-canvas flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-blush"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-rose"></div>
       </div>
     );
   }
@@ -69,7 +69,7 @@ function AdminOrderDetail() {
           <div className="flex justify-between items-center">
             <div>
               <div className="flex items-center gap-3">
-                <Link to="/admin/orders" className="text-twinkle-ink/50 hover:text-twinkle-blush transition-colors">
+                <Link to="/admin/orders" className="text-twinkle-ink/50 hover:text-twinkle-rose transition-colors">
                   &larr; Orders
                 </Link>
                 <h1 className="text-3xl font-bold text-twinkle-ink">
@@ -94,7 +94,7 @@ function AdminOrderDetail() {
               {order.items.map((item: any) => (
                 <div key={item.id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
                   <div>
-                    <Link to={`/product/${item.productId}`} className="font-medium text-twinkle-ink hover:text-twinkle-blush transition-colors">
+                    <Link to={`/product/${item.productId}`} className="font-medium text-twinkle-ink hover:text-twinkle-rose transition-colors">
                       {item.productName}
                     </Link>
                     <p className="text-sm text-twinkle-ink/50">Qty: {item.quantity} &times; {formatPrice(item.price)}</p>
@@ -139,7 +139,7 @@ function AdminOrderDetail() {
               </div>
               <div className="border-t border-twinkle-mist/50 pt-3 flex justify-between">
                 <dt className="font-semibold text-twinkle-ink">Total</dt>
-                <dd className="font-bold text-lg text-twinkle-blush">{formatPrice(order.total)}</dd>
+                <dd className="font-bold text-lg text-twinkle-rose">{formatPrice(order.total)}</dd>
               </div>
             </dl>
           </div>
@@ -158,7 +158,7 @@ function AdminOrderDetail() {
                     className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all ${
                       isCurrent
                         ? 'bg-twinkle-ink text-white cursor-default'
-                        : 'bg-twinkle-mist/20 text-twinkle-ink/70 hover:bg-twinkle-blush/20 hover:text-twinkle-blush'
+                        : 'bg-twinkle-mist/20 text-twinkle-ink/70 hover:bg-twinkle-rose/20 hover:text-twinkle-rose'
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     {option.label}
@@ -168,7 +168,7 @@ function AdminOrderDetail() {
             </div>
             {updating && (
               <div className="flex items-center gap-2 mt-3 text-sm text-twinkle-ink/50">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-twinkle-blush"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-twinkle-rose"></div>
                 Updating...
               </div>
             )}

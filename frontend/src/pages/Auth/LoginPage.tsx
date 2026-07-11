@@ -71,24 +71,24 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-twinkle-canvas px-4 py-12">
       {/* Decorative sparkles */}
-      <div className="absolute top-20 left-16 w-2 h-2 bg-twinkle-sky rounded-full animate-float opacity-40 hidden lg:block" />
-      <div className="absolute bottom-20 right-20 w-1.5 h-1.5 bg-twinkle-blush rounded-full animate-float-slow opacity-30 hidden lg:block" />
+      <div className="absolute top-20 left-16 w-2 h-2 bg-twinkle-sage rounded-full animate-float opacity-40 hidden lg:block" />
+      <div className="absolute bottom-20 right-20 w-1.5 h-1.5 bg-twinkle-rose rounded-full animate-float-slow opacity-30 hidden lg:block" />
 
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
-            <HeartIcon className="w-10 h-10 text-twinkle-blush" />
+            <HeartIcon className="w-10 h-10 text-twinkle-rose" />
             <span className="text-2xl font-display font-semibold text-twinkle-ink">
-              Twinkle<span className="text-twinkle-blush">Hearts</span>
+              Twinkle<span className="text-twinkle-rose">Hearts</span>
             </span>
           </Link>
         </div>
 
         <div className="card rounded-2xl p-8">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 bg-twinkle-blush/20 rounded-full mb-4">
-              <svg className="w-7 h-7 text-twinkle-blush" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-twinkle-rose/20 rounded-full mb-4">
+              <svg className="w-7 h-7 text-twinkle-rose" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
@@ -149,11 +149,11 @@ export default function LoginPage() {
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-twinkle-blush border-twinkle-mist rounded focus:ring-twinkle-blush"
+                  className="w-4 h-4 text-twinkle-rose border-twinkle-mist rounded focus:ring-twinkle-rose"
                 />
                 <span className="text-sm text-twinkle-ink/70">Remember me</span>
               </label>
-              <Link to="/forgot-password" className="text-sm text-twinkle-ink hover:text-twinkle-blush font-medium">
+              <Link to="/forgot-password" className="text-sm text-twinkle-ink hover:text-twinkle-rose font-medium">
                 Forgot password?
               </Link>
             </div>
@@ -207,7 +207,7 @@ export default function LoginPage() {
 
           <p className="mt-8 text-center text-sm text-twinkle-ink/50">
             Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-twinkle-ink hover:text-twinkle-blush">
+            <Link to="/register" className="font-medium text-twinkle-ink hover:text-twinkle-rose">
               Sign up now
             </Link>
           </p>

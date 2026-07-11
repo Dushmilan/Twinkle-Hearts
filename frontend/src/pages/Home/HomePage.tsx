@@ -22,11 +22,11 @@ import { api } from '../../api';
 import type { ProductListItem } from '@twinkle-hearts/shared';
 
 const CATEGORIES = [
-    { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-twinkle-blush', bg: 'bg-twinkle-blush/20' },
-  { key: 'love', label: 'Love', icon: Heart, color: 'text-twinkle-blush', bg: 'bg-twinkle-blush/20' },
-  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-twinkle-sky', bg: 'bg-twinkle-sky/20' },
+    { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
+  { key: 'love', label: 'Love', icon: Heart, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
+  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-twinkle-sage', bg: 'bg-twinkle-sage/20' },
   { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-twinkle-ink/50', bg: 'bg-twinkle-ink/10' },
-  { key: 'festival', label: 'Festival', icon: Star, color: 'text-twinkle-blush', bg: 'bg-twinkle-blush/20' },
+  { key: 'festival', label: 'Festival', icon: Star, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
   { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-twinkle-mist', bg: 'bg-twinkle-mist/20' },
 ] as const;
 
@@ -69,7 +69,7 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* Trilingual Asymmetric Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-white via-twinkle-canvas to-twinkle-sky/20">
+      <section className="relative overflow-hidden bg-gradient-to-br from-white via-twinkle-canvas to-twinkle-sage/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center min-h-[70dvh]">
             {/* Left: Trilingual hero stack (7 cols) */}
@@ -103,7 +103,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="trilingual-line-ta text-2xl sm:text-3xl lg:text-4xl mt-2 leading-snug"
               >
-                <span className="text-twinkle-blush">ஒரு அழகான</span> அட்டையுடன்
+                <span className="text-twinkle-rose">ஒரு அழகான</span> அட்டையுடன்
               </motion.p>
 
               {/* SI line */}
@@ -114,7 +114,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="trilingual-line-si text-2xl sm:text-3xl lg:text-4xl mt-1 leading-snug"
               >
-                <span className="text-twinkle-blush">ලස්සන කාඩ්</span> එකකින් කියන්න
+                <span className="text-twinkle-rose">ලස්සන කාඩ්</span> එකකින් කියන්න
               </motion.p>
 
               {/* EN finish */}
@@ -124,7 +124,7 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="trilingual-line-en text-5xl sm:text-6xl lg:text-7xl font-display font-semibold tracking-tight-display leading-[1.05] mt-1"
               >
-                <span className="text-twinkle-blush">beautiful card</span>
+                <span className="text-twinkle-rose">beautiful card</span>
               </motion.p>
 
               <motion.p
@@ -184,7 +184,7 @@ export default function HomePage() {
                 className="absolute top-2 right-2 w-[260px] h-[340px] z-20"
                 title="With Love"
                 subtitle="For someone special"
-                textColor="text-twinkle-blush"
+                textColor="text-twinkle-rose"
                 delay={0}
               />
               <FloatingLetterpressCard
@@ -204,7 +204,7 @@ export default function HomePage() {
                 className="absolute top-24 right-56 w-[220px] h-[280px] z-0"
                 title="Joy & Peace"
                 subtitle="Warm wishes"
-                textColor="text-twinkle-sky"
+                textColor="text-twinkle-sage"
                 delay={2}
               />
             </div>
@@ -222,7 +222,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-twinkle-ink hover:text-twinkle-blush transition-colors font-body"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors font-body"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -242,7 +242,7 @@ export default function HomePage() {
                   className={`flex flex-col items-start gap-4 p-5 rounded-2xl border transition-all duration-300 active:scale-[0.97] ${
                     cat.key === 'birthday'
                       ? `${cat.bg} ${cat.color} border-twinkle-mist hover:shadow-lg`
-                      : 'bg-white border-twinkle-mist hover:bg-twinkle-sky/20 hover:shadow-lg'
+                      : 'bg-white border-twinkle-mist hover:bg-twinkle-sage/20 hover:shadow-lg'
                   }`}
                 >
                   <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-twinkle-mist/20`}>
@@ -262,7 +262,7 @@ export default function HomePage() {
           </motion.div>
 
           <div className="mt-6 sm:hidden text-center">
-            <Link to="/shop" className="text-sm font-semibold text-twinkle-ink hover:text-twinkle-blush transition-colors inline-flex items-center gap-1 font-body">
+            <Link to="/shop" className="text-sm font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors inline-flex items-center gap-1 font-body">
               View all categories <ArrowRight size={14} />
             </Link>
           </div>
@@ -282,7 +282,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-twinkle-ink hover:text-twinkle-blush transition-colors font-body"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors font-body"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -375,17 +375,17 @@ export default function HomePage() {
       </section>
 
       {/* CTA — Warm paper bridge */}
-      <section className="bg-twinkle-sky/30 text-twinkle-ink relative overflow-hidden">
+      <section className="bg-twinkle-sage/30 text-twinkle-ink relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundRepeat: 'repeat',
           backgroundSize: '128px 128px',
         }} />
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(214,54,142,0.06), transparent)',
+          background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(157,62,10,0.08), transparent)',
         }} />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center relative z-10">
-          <p className="text-xs font-body font-medium tracking-[0.2em] uppercase text-twinkle-blush mb-5">
+          <p className="text-xs font-body font-medium tracking-[0.2em] uppercase text-twinkle-rose mb-5">
             Handwritten with care
           </p>
           <h2 className="text-3xl sm:text-4xl font-display font-semibold tracking-tight mb-4 text-twinkle-ink">
@@ -423,9 +423,9 @@ export default function HomePage() {
 /* ---- Floating Letterpress Card (3D paper card mockup) ---- */
 
 const cardAccentMap: Record<string, { iconBg: string; footerBg: string }> = {
-  'text-twinkle-blush': { iconBg: 'bg-twinkle-blush/20', footerBg: 'bg-twinkle-blush/15' },
+  'text-twinkle-rose': { iconBg: 'bg-twinkle-rose/20', footerBg: 'bg-twinkle-rose/15' },
   'text-twinkle-mist': { iconBg: 'bg-twinkle-mist/20', footerBg: 'bg-twinkle-mist/15' },
-  'text-twinkle-sky': { iconBg: 'bg-twinkle-sky/20', footerBg: 'bg-twinkle-sky/15' },
+  'text-twinkle-sage': { iconBg: 'bg-twinkle-sage/20', footerBg: 'bg-twinkle-sage/15' },
 };
 
 function FloatingLetterpressCard({
@@ -447,7 +447,7 @@ function FloatingLetterpressCard({
   textColor: string;
   delay: number;
 }) {
-  const accent = cardAccentMap[textColor] ?? { iconBg: 'bg-twinkle-blush/20', footerBg: 'bg-twinkle-blush/15' };
+  const accent = cardAccentMap[textColor] ?? { iconBg: 'bg-twinkle-rose/20', footerBg: 'bg-twinkle-rose/15' };
 
   return (
     <motion.div
@@ -469,7 +469,7 @@ function FloatingLetterpressCard({
       }}
       className={className}
     >
-      <div className="w-full h-full rounded-[2rem] bg-white border border-twinkle-mist shadow-[0_20px_50px_-12px_rgba(229,225,244,0.3)] flex flex-col overflow-hidden">
+      <div className="w-full h-full rounded-[2rem] bg-white border border-twinkle-mist shadow-[0_20px_50px_-12px_rgba(226,232,240,0.3)] flex flex-col overflow-hidden">
         {/* Card face — decorative top */}
         <div className="flex-1 flex flex-col items-center justify-center px-8">
           <div className={`w-14 h-14 rounded-full ${accent.iconBg} flex items-center justify-center mb-5`}>
@@ -545,8 +545,8 @@ function FeatureItem({ icon: Icon, title, description }: {
 }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-10 h-10 rounded-xl bg-twinkle-blush/20 flex items-center justify-center flex-shrink-0">
-        <Icon size={18} className="text-twinkle-blush" />
+      <div className="w-10 h-10 rounded-xl bg-twinkle-rose/20 flex items-center justify-center flex-shrink-0">
+        <Icon size={18} className="text-twinkle-rose" />
       </div>
       <div>
         <h4 className="font-semibold text-sm text-twinkle-ink">{title}</h4>

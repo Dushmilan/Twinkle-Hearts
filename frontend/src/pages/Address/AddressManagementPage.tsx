@@ -254,7 +254,7 @@ export default function AddressManagementPage() {
                 id="isDefault"
                 checked={formData.isDefault}
                 onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-                className="w-4 h-4 text-twinkle-blush border-twinkle-mist rounded focus:ring-twinkle-blush"
+                className="w-4 h-4 text-twinkle-rose border-twinkle-mist rounded focus:ring-twinkle-rose"
               />
               <label htmlFor="isDefault" className="text-sm text-twinkle-ink/70">
                 Set as default address
@@ -297,7 +297,7 @@ export default function AddressManagementPage() {
             <div
               key={address.id}
               className={`card p-6 relative ${
-                address.isDefault ? 'ring-2 ring-twinkle-blush shadow-lg' : ''
+                address.isDefault ? 'ring-2 ring-twinkle-rose shadow-lg' : ''
               }`}
             >
               {address.isDefault && (
@@ -314,7 +314,7 @@ export default function AddressManagementPage() {
               <div className="flex gap-3 mt-4">
                 <button
                   onClick={() => handleEdit(address)}
-                  className="text-sm text-twinkle-ink hover:text-twinkle-blush font-medium transition-colors"
+                  className="text-sm text-twinkle-ink hover:text-twinkle-rose font-medium transition-colors"
                 >
                   Edit
                 </button>

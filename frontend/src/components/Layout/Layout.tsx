@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useI18n } from '../../context/i18n';
 import {
   Heart,
   ShoppingCart,
@@ -70,16 +69,16 @@ export default function Layout({ children }: LayoutProps) {
               <div className="relative">
                 <Heart
                   size={20}
-                  className="text-twinkle-blush group-hover:scale-110 transition-transform duration-300"
+                  className="text-twinkle-rose group-hover:scale-110 transition-transform duration-300"
                 />
                 <motion.span
-                  className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-twinkle-blush"
+                  className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-twinkle-rose"
                   animate={{ opacity: [0.4, 1, 0.4] }}
                   transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
                 />
               </div>
               <span className="text-xl font-display font-semibold text-twinkle-ink tracking-tight">
-                Twinkle<span className="text-twinkle-blush">Hearts</span>
+                Twinkle<span className="text-twinkle-rose">Hearts</span>
               </span>
             </Link>
 
@@ -104,7 +103,7 @@ export default function Layout({ children }: LayoutProps) {
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                      className="absolute -top-0.5 -right-0.5 bg-twinkle-blush text-white text-[11px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center"
+                      className="absolute -top-0.5 -right-0.5 bg-twinkle-rose text-white text-[11px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center"
                     >
                       {itemCount > 9 ? '9+' : itemCount}
                     </motion.span>
@@ -119,7 +118,7 @@ export default function Layout({ children }: LayoutProps) {
                     className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-twinkle-mist/30 transition-colors"
                   >
                     <div className="w-8 h-8 bg-twinkle-ink/10 rounded-full flex items-center justify-center">
-                      <User size={15} className="text-twinkle-blush" />
+                      <User size={15} className="text-twinkle-rose" />
                     </div>
                     <ChevronDown
                       size={10}
@@ -167,7 +166,7 @@ export default function Layout({ children }: LayoutProps) {
                           <div className="border-t border-twinkle-mist/40 py-1.5">
                             <button
                               onClick={handleLogout}
-                              className="flex items-center gap-3 w-full text-left px-4 py-2 text-sm text-twinkle-blush hover:bg-twinkle-blush/20 transition-colors"
+                              className="flex items-center gap-3 w-full text-left px-4 py-2 text-sm text-twinkle-rose hover:bg-twinkle-rose/20 transition-colors"
                             >
                               <LogOut size={15} />
                               Logout
@@ -188,8 +187,6 @@ export default function Layout({ children }: LayoutProps) {
                   </Link>
                 </div>
               )}
-
-              <LanguageSwitcher />
 
               <button
                 className="md:hidden p-3 rounded-xl text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30 transition-colors"
@@ -234,7 +231,7 @@ export default function Layout({ children }: LayoutProps) {
                     )}
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-3 py-3 text-sm text-twinkle-blush hover:bg-twinkle-blush/20 rounded-lg transition-colors min-h-[44px]"
+                      className="w-full text-left px-3 py-3 text-sm text-twinkle-rose hover:bg-twinkle-rose/20 rounded-lg transition-colors min-h-[44px]"
                     >
                       Logout
                     </button>
@@ -259,14 +256,14 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
 
-      <footer className="bg-twinkle-sky/30 border-t border-twinkle-sky/60 mt-auto">
+      <footer className="bg-twinkle-sage/30 border-t border-twinkle-sage/60 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-2 mb-3">
-                <Heart size={18} className="text-twinkle-blush" />
+                <Heart size={18} className="text-twinkle-rose" />
                 <span className="text-lg font-display font-semibold text-twinkle-ink tracking-tight">
-                  Twinkle<span className="text-twinkle-blush">Hearts</span>
+                  Twinkle<span className="text-twinkle-rose">Hearts</span>
                 </span>
               </div>
               <p className="text-sm text-twinkle-ink/60 leading-relaxed max-w-[48ch] font-body">
@@ -305,12 +302,12 @@ export default function Layout({ children }: LayoutProps) {
               <h3 className="text-xs font-semibold text-twinkle-ink mb-4 uppercase tracking-widest">Contact</h3>
               <ul className="space-y-2.5 text-sm text-twinkle-ink/60">
                 <li>
-                  <a href="https://wa.me/947XXXXXXXX" target="_blank" rel="noopener noreferrer" className="hover:text-twinkle-blush transition-colors">
+                  <a href="https://wa.me/947XXXXXXXX" target="_blank" rel="noopener noreferrer" className="hover:text-twinkle-rose transition-colors">
                     WhatsApp
                   </a>
                 </li>
                 <li>
-                  <a href="mailto:hello@twinklehearts.lk" className="hover:text-twinkle-blush transition-colors">
+                  <a href="mailto:hello@twinklehearts.lk" className="hover:text-twinkle-rose transition-colors">
                     hello@twinklehearts.lk
                   </a>
                 </li>
@@ -343,11 +340,11 @@ function NavLink({ to, active, children }: { to: string; active: boolean; childr
       {active && (
         <motion.div
           layoutId="nav-indicator"
-          className="absolute inset-0 bg-twinkle-blush/20 rounded-lg -z-10"
+          className="absolute inset-0 bg-twinkle-rose/20 rounded-lg -z-10"
           transition={{ type: 'spring', stiffness: 350, damping: 25 }}
         />
       )}
-      <span className={`relative z-10 ${active ? 'text-twinkle-blush' : 'text-twinkle-ink/70 hover:text-twinkle-ink'}`}>
+      <span className={`relative z-10 ${active ? 'text-twinkle-rose' : 'text-twinkle-ink/70 hover:text-twinkle-ink'}`}>
         {children}
       </span>
     </Link>
@@ -369,9 +366,9 @@ function MobileNavItem({ to, label, location, highlight, onClick }: {
         onClick={onClick}
         className={`block px-3 py-3 text-sm font-medium rounded-lg transition-colors min-h-[44px] ${
           highlight
-            ? 'text-twinkle-blush bg-twinkle-blush/20'
+            ? 'text-twinkle-rose bg-twinkle-rose/20'
             : active
-            ? 'text-twinkle-blush bg-twinkle-blush/20'
+            ? 'text-twinkle-rose bg-twinkle-rose/20'
             : 'text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30'
         }`}
       >
@@ -394,7 +391,7 @@ function DropdownLink({ to, icon: Icon, onClick, highlight, children }: {
       onClick={onClick}
       className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
         highlight
-          ? 'text-twinkle-blush hover:bg-twinkle-blush/20 font-medium'
+          ? 'text-twinkle-rose hover:bg-twinkle-rose/20 font-medium'
           : 'text-twinkle-ink/70 hover:bg-twinkle-mist/30'
       }`}
     >
@@ -404,33 +401,10 @@ function DropdownLink({ to, icon: Icon, onClick, highlight, children }: {
   );
 }
 
-function LanguageSwitcher() {
-  const { locale, setLocale } = useI18n();
-
-  return (
-    <div className="flex items-center gap-0.5 border border-twinkle-mist/50 rounded-lg overflow-hidden">
-      {(['en', 'si', 'ta'] as const).map((l) => (
-        <button
-          key={l}
-          onClick={() => setLocale(l)}
-          className={`px-2 py-1.5 text-xs font-medium transition-colors min-h-[32px] ${
-            locale === l
-              ? 'bg-twinkle-ink text-white'
-              : 'text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/20'
-          }`}
-          aria-label={`Switch to ${l === 'en' ? 'English' : l === 'si' ? 'Sinhala' : 'Tamil'}`}
-        >
-          {l.toUpperCase()}
-        </button>
-      ))}
-    </div>
-  );
-}
-
 function FooterLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <li>
-      <Link to={to} className="text-sm text-twinkle-ink/50 hover:text-twinkle-blush transition-colors">
+      <Link to={to} className="text-sm text-twinkle-ink/50 hover:text-twinkle-rose transition-colors">
         {children}
       </Link>
     </li>

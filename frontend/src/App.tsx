@@ -3,7 +3,6 @@ import { useEffect, lazy, Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { ErrorBoundary } from './components/UI/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
-import { I18nProvider } from './context/i18n';
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
 import Layout from './components/Layout/Layout';
 import { MotionConfig } from 'framer-motion';
@@ -101,7 +100,7 @@ function AppRoutes() {
           path="/admin"
           element={
             <AdminRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-blush" /></div>}>
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-rose" /></div>}>
                 <AdminDashboardPage />
               </Suspense>
             </AdminRoute>
@@ -111,7 +110,7 @@ function AppRoutes() {
           path="/admin/orders"
           element={
             <AdminRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-blush" /></div>}>
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-rose" /></div>}>
                 <AdminOrdersPage />
               </Suspense>
             </AdminRoute>
@@ -121,7 +120,7 @@ function AppRoutes() {
           path="/admin/orders/:id"
           element={
             <AdminRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-blush" /></div>}>
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-rose" /></div>}>
                 <AdminOrderDetailPage />
               </Suspense>
             </AdminRoute>
@@ -131,7 +130,7 @@ function AppRoutes() {
           path="/admin/products"
           element={
             <AdminRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-blush" /></div>}>
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-rose" /></div>}>
                 <AdminProductsPage />
               </Suspense>
             </AdminRoute>
@@ -141,7 +140,7 @@ function AppRoutes() {
           path="/admin/users"
           element={
             <AdminRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-blush" /></div>}>
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-rose" /></div>}>
                 <AdminUsersPage />
               </Suspense>
             </AdminRoute>
@@ -159,40 +158,38 @@ function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        <I18nProvider>
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-twinkle-ink focus:text-white focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-twinkle-blush"
-          >
-            Skip to main content
-          </a>
-          <MotionConfig reducedMotion="user">
-            <AppRoutes />
-          </MotionConfig>
-          <Toaster
-            position="top-right"
-            containerClassName="aria-live-polite"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: '#363636',
-                color: '#fff',
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-twinkle-ink focus:text-white focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-twinkle-rose"
+        >
+          Skip to main content
+        </a>
+        <MotionConfig reducedMotion="user">
+          <AppRoutes />
+        </MotionConfig>
+        <Toaster
+          position="top-right"
+          containerClassName="aria-live-polite"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: '#363636',
+              color: '#fff',
+            },
+            success: {
+              iconTheme: {
+                primary: '#d48a7a',
+                secondary: '#fff',
               },
-              success: {
-                iconTheme: {
-                  primary: '#8B2E85',
-                  secondary: '#fff',
-                },
+            },
+            error: {
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#fff',
               },
-              error: {
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#fff',
-                },
-              },
-            }}
-          />
-        </I18nProvider>
+            },
+          }}
+        />
       </AuthProvider>
     </ErrorBoundary>
   );

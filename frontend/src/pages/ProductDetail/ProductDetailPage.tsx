@@ -106,7 +106,7 @@ export default function ProductDetailPage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-twinkle-ink/70 mb-8">
-        <Link to="/" className="hover:text-twinkle-blush transition-colors">Shop</Link>
+        <Link to="/" className="hover:text-twinkle-rose transition-colors">Shop</Link>
         <svg className="w-4 h-4 text-twinkle-ink/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
@@ -144,7 +144,7 @@ export default function ProductDetailPage() {
                   onClick={() => setActiveImage(idx)}
                   className={`w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all duration-200 ${
                     activeImage === idx
-                      ? 'border-twinkle-blush shadow-lg'
+                      ? 'border-twinkle-rose shadow-lg'
                       : 'border-transparent hover:border-twinkle-mist'
                   }`}
                 >
@@ -173,7 +173,7 @@ export default function ProductDetailPage() {
 
           {/* Price */}
           <div className="flex items-baseline gap-2 mb-6">
-            <span className="font-body text-3xl font-bold text-twinkle-blush">
+            <span className="font-body text-3xl font-bold text-twinkle-rose">
               {formatPrice(product.price)}
             </span>
             <span className="text-sm text-twinkle-ink/50">incl. tax</span>
@@ -203,14 +203,14 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-lg border border-twinkle-mist flex items-center justify-center hover:bg-twinkle-mist/30 hover:border-twinkle-blush transition-all text-twinkle-ink/50 font-medium"
+                  className="w-10 h-10 rounded-lg border border-twinkle-mist flex items-center justify-center hover:bg-twinkle-mist/30 hover:border-twinkle-rose transition-all text-twinkle-ink/50 font-medium"
                 >
                   −
                 </button>
                 <span className="w-12 text-center font-body text-lg font-semibold">{quantity}</span>
                 <button
                   onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  className="w-10 h-10 rounded-lg border border-twinkle-mist flex items-center justify-center hover:bg-twinkle-mist/30 hover:border-twinkle-blush transition-all text-twinkle-ink/50 font-medium"
+                  className="w-10 h-10 rounded-lg border border-twinkle-mist flex items-center justify-center hover:bg-twinkle-mist/30 hover:border-twinkle-rose transition-all text-twinkle-ink/50 font-medium"
                 >
                   +
                 </button>

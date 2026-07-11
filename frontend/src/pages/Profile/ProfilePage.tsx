@@ -52,8 +52,8 @@ export default function ProfilePage() {
       <div className="card p-6">
         {/* Avatar & Name */}
         <div className="flex items-center gap-5 mb-8 pb-6 border-b border-twinkle-mist">
-          <div className="w-20 h-20 bg-twinkle-blush/20 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-2xl font-display font-bold text-twinkle-blush">
+          <div className="w-20 h-20 bg-twinkle-rose/20 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-2xl font-display font-bold text-twinkle-rose">
               {user?.name?.charAt(0).toUpperCase() || 'U'}
             </span>
           </div>

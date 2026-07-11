@@ -120,7 +120,7 @@ export default function CheckoutPage() {
           <div className="lg:col-span-3">
             <div className="card p-6">
               <h2 className="font-display text-xl font-semibold text-twinkle-ink mb-6 flex items-center gap-2">
-                <HeartIcon className="w-5 h-5 text-twinkle-blush" />
+                <HeartIcon className="w-5 h-5 text-twinkle-rose" />
                 Your Details
               </h2>
 
@@ -189,7 +189,7 @@ export default function CheckoutPage() {
           <div className="lg:col-span-2">
             <div className="card rounded-xl border-2 border-dashed border-twinkle-mist p-6 sticky top-24 shadow-lg">
               <div className="text-center mb-6 pb-4 border-b border-twinkle-mist">
-                <HeartIcon className="w-8 h-8 text-twinkle-blush mx-auto mb-2" />
+                <HeartIcon className="w-8 h-8 text-twinkle-rose mx-auto mb-2" />
                 <h2 className="font-display text-xl font-semibold text-twinkle-ink">
                   Your Cards
                 </h2>
@@ -221,7 +221,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between text-lg font-bold pt-2 border-t border-twinkle-mist">
                   <span>Total</span>
-                  <span className="text-twinkle-blush">{formatPrice(finalTotal)}</span>
+                  <span className="text-twinkle-rose">{formatPrice(finalTotal)}</span>
                 </div>
               </div>
 

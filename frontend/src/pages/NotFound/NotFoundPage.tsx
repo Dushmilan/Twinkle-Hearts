@@ -5,8 +5,8 @@ export default function NotFoundPage() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="text-center max-w-md">
-        <div className="w-20 h-20 rounded-full bg-twinkle-blush/20 flex items-center justify-center mx-auto mb-6">
-          <HeartSparkle className="w-10 h-10 text-twinkle-blush" />
+        <div className="w-20 h-20 rounded-full bg-twinkle-rose/20 flex items-center justify-center mx-auto mb-6">
+          <HeartSparkle className="w-10 h-10 text-twinkle-rose" />
         </div>
         <h1 className="text-6xl font-display font-bold text-twinkle-ink mb-2">404</h1>
         <p className="text-lg font-display text-twinkle-ink/60 mb-2">Page not found</p>

@@ -117,14 +117,14 @@ function AdminDashboard() {
         {stats && stats.pendingOrders > 0 && (
           <div className="bg-white border border-twinkle-mist shadow-sm rounded-xl p-5 mb-8">
             <div className="flex items-center gap-3">
-              <svg className="w-6 h-6 text-twinkle-sky flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6 text-twinkle-sage flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <div>
                 <p className="text-twinkle-ink font-medium">
                   {stats.pendingOrders} order{stats.pendingOrders > 1 ? 's' : ''} pending WhatsApp confirmation
                 </p>
-                <Link to="/admin/orders" className="text-twinkle-sky hover:text-twinkle-sky/80 underline text-sm">
+                <Link to="/admin/orders" className="text-twinkle-sage hover:text-twinkle-sage/80 underline text-sm">
                   View all pending orders →
                 </Link>
               </div>
@@ -140,8 +140,8 @@ function AdminDashboard() {
             className="card p-5 hover:shadow-lg transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-twinkle-blush/20 rounded-xl flex items-center justify-center group-hover:bg-twinkle-blush/30 transition-colors">
-                <svg className="w-6 h-6 text-twinkle-blush" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 bg-twinkle-rose/20 rounded-xl flex items-center justify-center group-hover:bg-twinkle-rose/30 transition-colors">
+                <svg className="w-6 h-6 text-twinkle-rose" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </div>
@@ -156,8 +156,8 @@ function AdminDashboard() {
             className="card p-5 hover:shadow-lg transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-twinkle-sky/20 rounded-xl flex items-center justify-center group-hover:bg-twinkle-sky/30 transition-colors">
-                <svg className="w-6 h-6 text-twinkle-sky" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 bg-twinkle-sage/20 rounded-xl flex items-center justify-center group-hover:bg-twinkle-sage/30 transition-colors">
+                <svg className="w-6 h-6 text-twinkle-sage" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
@@ -189,13 +189,13 @@ function AdminDashboard() {
         <div className="card p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="font-display text-xl font-semibold text-twinkle-ink">Recent Orders</h2>
-            <Link to="/admin/orders" className="text-sm text-twinkle-ink hover:text-twinkle-blush font-medium">
+            <Link to="/admin/orders" className="text-sm text-twinkle-ink hover:text-twinkle-rose font-medium">
               View All →
             </Link>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-700">
-              <thead className="bg-twinkle-sky/30">
+              <thead className="bg-twinkle-sage/30">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
                     Order ID
@@ -216,7 +216,7 @@ function AdminDashboard() {
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {stats?.recentOrders?.map((order: any) => (
-                  <tr key={order.id} className="hover:bg-twinkle-sky/20 transition-colors">
+                  <tr key={order.id} className="hover:bg-twinkle-sage/20 transition-colors">
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-mono text-twinkle-ink">
                       #{order.id.slice(0, 8).toUpperCase()}
                     </td>

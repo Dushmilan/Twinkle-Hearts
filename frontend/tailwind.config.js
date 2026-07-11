@@ -8,11 +8,12 @@ export default {
     extend: {
       colors: {
         twinkle: {
-          canvas: '#F5F7F6',
-          sky: '#DDE7EE',
-          mist: '#E5E1F4',
-          blush: '#F3C5C1',
-          ink: '#1A2844',
+          canvas: '#fff8f1',
+          sage: '#44664b',
+          mist: '#ddc0b6',
+          rose: '#9d3e0a',
+          ink: '#1f1b12',
+          'ink-variant': '#56423a',
         },
         gray: {
           50: '#F9FAFB',
@@ -29,23 +30,23 @@ export default {
       },
       fontFamily: {
         display: ['Playfair Display', 'Noto Serif Sinhala', 'Noto Serif Tamil', 'serif'],
-        body: ['Inter', 'system-ui', 'sans-serif'],
+        body: ['Public Sans', 'system-ui', 'sans-serif'],
         mono: ['Geist Mono', 'monospace'],
         tamil: ['Noto Serif Tamil', 'serif'],
         sinhala: ['Noto Serif Sinhala', 'serif'],
         serif: ['Geist Mono', 'monospace'],
       },
       boxShadow: {
-        'paper': '0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)',
-        'paper-md': '0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06)',
-        'paper-lg': '0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06)',
-        'press': 'inset 0 1px 2px rgba(0, 0, 0, 0.08), inset 0 -1px 0 rgba(255, 255, 255, 0.6)',
-        'letterpress': 'inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 2px rgba(0, 0, 0, 0.08)',
-        'blush': '0 4px 12px rgba(243, 197, 193, 0.25), 0 1px 3px rgba(243, 197, 193, 0.15)',
+        'paper': '0 1px 3px rgba(139, 111, 92, 0.10), 0 1px 2px rgba(139, 111, 92, 0.06)',
+        'paper-md': '0 4px 12px rgba(139, 111, 92, 0.12), 0 1px 3px rgba(139, 111, 92, 0.08)',
+        'paper-lg': '0 8px 24px rgba(139, 111, 92, 0.15), 0 2px 8px rgba(139, 111, 92, 0.08)',
+        'press': 'inset 0 1px 2px rgba(139, 111, 92, 0.10), inset 0 -1px 0 rgba(255, 248, 241, 0.6)',
+        'letterpress': 'inset 0 1px 0 rgba(255, 248, 241, 0.6), 0 1px 2px rgba(139, 111, 92, 0.10)',
+        'rose': '0 4px 12px rgba(157, 62, 10, 0.25), 0 1px 3px rgba(157, 62, 10, 0.15)',
       },
       borderRadius: {
-        'card': '12px',
-        'container': '2rem',
+        'card': '1rem',
+        'container': '1.5rem',
         'seal': '50%',
       },
       letterSpacing: {

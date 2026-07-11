@@ -124,7 +124,7 @@ export default function OrderHistoryPage() {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm text-twinkle-ink/50">
-                    Total: <span className="text-lg font-bold text-twinkle-blush">{formatCurrency(order.total)}</span>
+                    Total: <span className="text-lg font-bold text-twinkle-rose">{formatCurrency(order.total)}</span>
                   </p>
                 </div>
                 <Link

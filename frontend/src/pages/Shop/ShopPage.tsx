@@ -71,7 +71,7 @@ export default function ShopPage() {
   return (
     <div className="bg-twinkle-canvas min-h-screen">
       {/* Page Header */}
-      <section className="bg-twinkle-sky/40 border-b border-twinkle-mist/50">
+      <section className="bg-twinkle-sage/40 border-b border-twinkle-mist/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <h1 className="font-display text-4xl sm:text-5xl font-bold text-twinkle-ink mb-4">

@@ -40,12 +40,12 @@
   }
 
   ::selection {
-    background-color: theme('colors.twinkle.blush');
+    background-color: theme('colors.twinkle.rose');
     color: theme('colors.twinkle.ink');
   }
 
   :focus-visible {
-    outline: 2px solid theme('colors.twinkle.blush');
+    outline: 2px solid theme('colors.twinkle.rose');
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -67,20 +67,20 @@
     background: #ffffff;
     border: 1px solid theme('colors.twinkle.mist');
     border-radius: theme('borderRadius.card');
-    box-shadow: theme('boxShadow.blush');
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .card:hover {
-    box-shadow: theme('boxShadow.paper-md');
-    border-color: theme('colors.twinkle.blush');
+    box-shadow: 0 12px 32px rgba(157, 62, 10, 0.12), 0 4px 8px rgba(0, 0, 0, 0.04);
+    border-color: rgba(157, 62, 10, 0.3);
   }
 
   /* ============================================
      CARD DARK — Brand/marketing cards
      ============================================ */
   .card-dark {
-    background: theme('colors.twinkle.sky');
+    background: theme('colors.twinkle.sage');
     border: 1px solid theme('colors.twinkle.mist');
     border-radius: theme('borderRadius.card');
     box-shadow: theme('boxShadow.paper');
@@ -89,7 +89,7 @@
 
   .card-dark:hover {
     box-shadow: theme('boxShadow.paper-md');
-    border-color: theme('colors.twinkle.blush');
+    border-color: theme('colors.twinkle.rose');
   }
 
   /* ============================================
@@ -116,36 +116,37 @@
            bg-twinkle-ink hover:bg-twinkle-ink/90 active:bg-twinkle-ink/80
            text-white font-body font-semibold
            py-3 px-6 rounded-full
-           transition-all duration-150 ease-spring
+           transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-twinkle-blush focus-visible:ring-offset-2
+           focus-visible:ring-2 focus-visible:ring-twinkle-rose focus-visible:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:scale-100
-           shadow-paper
+           shadow-[0_2px_8px_rgba(26,32,44,0.15)]
+           hover:shadow-[0_4px_16px_rgba(26,32,44,0.2)]
            min-h-[44px];
   }
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2
-           bg-transparent hover:bg-twinkle-blush/20 active:bg-twinkle-blush/20
-           text-twinkle-ink hover:text-twinkle-blush
+           bg-transparent hover:bg-twinkle-rose/10 active:bg-twinkle-rose/10
+           text-twinkle-ink hover:text-twinkle-rose
            font-body font-medium
            py-2.5 px-5 rounded-full
-           transition-all duration-150 ease-spring
+           transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-twinkle-blush
+           focus-visible:ring-2 focus-visible:ring-twinkle-rose
            min-h-[44px];
   }
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2
-           bg-transparent hover:bg-twinkle-sky/30 active:bg-twinkle-sky/30
+           bg-transparent hover:bg-twinkle-sage/10 active:bg-twinkle-sage/10
            text-twinkle-ink hover:text-twinkle-ink
            font-body font-semibold
            py-2.5 px-6 rounded-full
-           border border-twinkle-mist hover:border-twinkle-blush
-           transition-all duration-150 ease-spring
+           border border-twinkle-mist hover:border-twinkle-rose
+           transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-twinkle-blush focus-visible:ring-offset-2
+           focus-visible:ring-2 focus-visible:ring-twinkle-rose focus-visible:ring-offset-2
            min-h-[44px];
   }
 
@@ -169,7 +170,7 @@
            py-3 px-7 rounded-full
            transition-all duration-150 ease-spring
            active:translate-y-[1px] active:scale-[0.98]
-           focus-visible:ring-2 focus-visible:ring-twinkle-blush focus-visible:ring-offset-2
+           focus-visible:ring-2 focus-visible:ring-twinkle-rose focus-visible:ring-offset-2
            min-h-[44px];
   }
 
@@ -178,17 +179,17 @@
      ============================================ */
   .input-field {
     @apply w-full px-4 py-3
-           bg-white border border-twinkle-mist rounded-[10px]
+           bg-white border border-twinkle-mist rounded-[12px]
            font-body text-twinkle-ink text-sm
            placeholder:text-twinkle-ink/40
-           focus:border-twinkle-blush focus:ring-2 focus:ring-twinkle-blush/20 focus:ring-offset-2 focus:ring-offset-white
-           hover:border-twinkle-blush/50
+           focus:border-twinkle-rose focus:ring-2 focus:ring-twinkle-rose/15 focus:ring-offset-2 focus:ring-offset-white
+           hover:border-twinkle-mist
            outline-none
-           transition-all duration-200 ease-spring;
+           transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)];
   }
 
   .input-field-error {
-    @apply border-twinkle-blush focus:border-twinkle-blush focus:ring-twinkle-blush/20;
+    @apply border-twinkle-rose focus:border-twinkle-rose focus:ring-twinkle-rose/20;
   }
 
   .label-text {
@@ -200,7 +201,7 @@
   }
 
   .error-text {
-    @apply block text-xs font-body text-twinkle-blush mt-1;
+    @apply block text-xs font-body text-twinkle-rose mt-1;
   }
 
   /* ============================================
@@ -208,30 +209,30 @@
      ============================================ */
   .badge {
     @apply inline-flex items-center justify-center
-           px-1.5 py-1 rounded-md
+           px-2 py-1 rounded-full
            text-[10px] font-body font-semibold
            whitespace-nowrap
            tracking-wider uppercase;
   }
 
   .badge-plum {
-    @apply bg-twinkle-blush/20 text-twinkle-blush;
+    @apply bg-twinkle-rose/15 text-twinkle-rose;
   }
 
   .badge-lilac {
-    @apply bg-twinkle-mist/30 text-twinkle-mist;
+    @apply bg-twinkle-mist/40 text-twinkle-ink/60;
   }
 
   .badge-bronze {
-    @apply bg-twinkle-sky/40 text-twinkle-ink/70;
+    @apply bg-twinkle-sage/15 text-twinkle-sage;
   }
 
   .badge-teal {
-    @apply bg-twinkle-sky/40 text-twinkle-sky;
+    @apply bg-twinkle-sage/15 text-twinkle-sage;
   }
 
   .badge-gray {
-    @apply bg-gray-200 text-gray-600;
+    @apply bg-gray-100 text-gray-600;
   }
 
   /* ============================================
@@ -239,19 +240,19 @@
      ============================================ */
   .category-pill {
     @apply inline-flex items-center gap-2
-           px-4 py-2.5 rounded-[10px]
+           px-4 py-2.5 rounded-full
            font-body text-sm font-medium
-           bg-white border border-twinkle-mist
+           bg-white border border-twinkle-mist/60
            text-twinkle-ink/70
-           hover:border-twinkle-blush hover:text-twinkle-blush
+           hover:border-twinkle-rose/50 hover:text-twinkle-rose hover:bg-twinkle-rose/5
            active:bg-twinkle-ink active:text-white active:border-twinkle-ink
-           transition-all duration-200 ease-spring
+           transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]
            cursor-pointer select-none
            whitespace-nowrap;
   }
 
   .category-pill-active {
-    @apply bg-twinkle-ink text-white border-twinkle-ink shadow-paper
+    @apply bg-twinkle-ink text-white border-twinkle-ink
            hover:bg-twinkle-ink/90 hover:text-white hover:border-twinkle-ink/90;
   }
 
@@ -314,13 +315,13 @@
   .skeleton-shimmer {
     background: linear-gradient(
       90deg,
-      theme('colors.twinkle.mist') 25%,
-      theme('colors.twinkle.sky') 37%,
-      theme('colors.twinkle.mist') 63%
+      theme('colors.twinkle.canvas') 25%,
+      #f5f0ea 37%,
+      theme('colors.twinkle.canvas') 63%
     );
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
-    border-radius: 6px;
+    border-radius: 8px;
   }
 
   @keyframes shimmer {
@@ -341,8 +342,8 @@
   }
 
   .empty-state-icon {
-    @apply w-14 h-14 rounded-full bg-twinkle-sky/30 flex items-center justify-center mb-4
-           text-twinkle-sky;
+    @apply w-14 h-14 rounded-full bg-twinkle-sage/15 flex items-center justify-center mb-4
+           text-twinkle-sage;
   }
 
   .empty-state-title {
@@ -359,14 +360,14 @@
   .section-eyebrow {
     @apply inline-flex items-center gap-2
            px-3 py-1.5 rounded-full
-           bg-twinkle-blush/20 text-twinkle-blush
+           bg-twinkle-rose/10 text-twinkle-rose
            text-xs font-body font-semibold uppercase tracking-wider;
   }
 
   .section-eyebrow-gray {
     @apply inline-flex items-center gap-2
            px-3 py-1.5 rounded-full
-           bg-twinkle-mist/30 text-twinkle-ink/60
+           bg-twinkle-mist/40 text-twinkle-ink/60
            text-xs font-body font-semibold uppercase tracking-wider;
   }
 
@@ -395,7 +396,7 @@
   }
 
   .admin-table tr {
-    @apply transition-colors duration-150 hover:bg-twinkle-sky/20;
+    @apply transition-colors duration-150 hover:bg-twinkle-sage/20;
   }
 
   /* ============================================
@@ -435,7 +436,7 @@
   }
 
   .stat-value {
-    @apply font-mono text-2xl sm:text-3xl font-bold text-twinkle-blush mb-0.5 tracking-tight;
+    @apply font-mono text-2xl sm:text-3xl font-bold text-twinkle-rose mb-0.5 tracking-tight;
   }
 
   .stat-label {
@@ -446,11 +447,11 @@
      FEATURE ITEM
      ============================================ */
   .feature-icon {
-    @apply w-10 h-10 rounded-xl bg-twinkle-blush/20 flex items-center justify-center flex-shrink-0;
+    @apply w-10 h-10 rounded-xl bg-twinkle-rose/10 flex items-center justify-center flex-shrink-0;
   }
 
   .feature-icon-inner {
-    @apply text-twinkle-blush;
+    @apply text-twinkle-rose;
   }
 
   .feature-title {
@@ -465,7 +466,7 @@
      CTA SECTION
      ============================================ */
   .cta-section {
-    @apply bg-twinkle-sky/30 text-twinkle-ink;
+    @apply bg-gradient-to-b from-twinkle-sage/10 to-transparent text-twinkle-ink;
     border-top: 1px solid theme('colors.twinkle.mist');
   }
 

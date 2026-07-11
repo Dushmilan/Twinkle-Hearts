@@ -63,7 +63,7 @@ export default function OrderSuccessPage() {
         <div className="card p-6 mb-8">
           {/* Receipt Header */}
           <div className="text-center mb-6 pb-4 border-b border-twinkle-mist">
-            <HeartIcon className="w-8 h-8 text-twinkle-blush mx-auto mb-2" />
+            <HeartIcon className="w-8 h-8 text-twinkle-rose mx-auto mb-2" />
             <h2 className="font-display text-xl font-semibold text-twinkle-ink">
               Order Summary
             </h2>
@@ -83,14 +83,14 @@ export default function OrderSuccessPage() {
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-twinkle-ink/50">Total</span>
-              <span className="font-bold text-lg text-twinkle-blush">{formatPrice(order.total)}</span>
+              <span className="font-bold text-lg text-twinkle-rose">{formatPrice(order.total)}</span>
             </div>
           </div>
 
           {/* Next Steps */}
-          <div className="bg-twinkle-sky/20 border border-twinkle-mist rounded-xl p-5">
+          <div className="bg-twinkle-sage/20 border border-twinkle-mist rounded-xl p-5">
             <div className="flex items-start gap-3">
-              <svg className="w-6 h-6 text-twinkle-sky mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6 text-twinkle-sage mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>

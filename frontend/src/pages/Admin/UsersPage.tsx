@@ -72,7 +72,7 @@ function AdminUsers() {
             </div>
             <Link
               to="/admin"
-              className="text-twinkle-ink hover:text-twinkle-blush font-medium"
+              className="text-twinkle-ink hover:text-twinkle-rose font-medium"
             >
               Back to Dashboard
             </Link>
@@ -89,7 +89,7 @@ function AdminUsers() {
             placeholder="Search by name or email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
+            className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-rose focus:border-transparent"
           />
         </div>
 
@@ -97,7 +97,7 @@ function AdminUsers() {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-twinkle-sky/30">
+              <thead className="bg-twinkle-sage/30">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
                     User
@@ -124,7 +124,7 @@ function AdminUsers() {
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center">
                       <div className="flex justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ruby-600"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose"></div>
                       </div>
                     </td>
                   </tr>
@@ -136,7 +136,7 @@ function AdminUsers() {
                   </tr>
                 ) : (
                   users.map((user) => (
-                    <tr key={user.id} className="hover:bg-twinkle-sky/20">
+                    <tr key={user.id} className="hover:bg-twinkle-sage/20">
                       <td className="px-6 py-4">
                         <div>
                           <div className="text-sm font-medium text-gray-900">{user.name}</div>
@@ -150,7 +150,7 @@ function AdminUsers() {
                         <select
                           value={user.role}
                           onChange={(e) => updateUserRole(user.id, e.target.value)}
-                          className={`px-2 py-1 text-xs font-medium rounded-full border-0 focus:ring-2 focus:ring-twinkle-blush ${
+                          className={`px-2 py-1 text-xs font-medium rounded-full border-0 focus:ring-2 focus:ring-twinkle-rose ${
                             user.role === 'ADMIN'
                               ? 'bg-purple-100 text-purple-700'
                               : 'bg-gray-100 text-gray-700'
@@ -191,14 +191,14 @@ function AdminUsers() {
                 <button
                   onClick={() => setPage(page - 1)}
                   disabled={page === 1}
-                  className="px-4 py-2 border border-twinkle-mist rounded-lg text-sm font-medium text-twinkle-ink/70 hover:bg-twinkle-sky/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 border border-twinkle-mist rounded-lg text-sm font-medium text-twinkle-ink/70 hover:bg-twinkle-sage/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Previous
                 </button>
                 <button
                   onClick={() => setPage(page + 1)}
                   disabled={page === pagination.totalPages}
-                  className="px-4 py-2 border border-twinkle-mist rounded-lg text-sm font-medium text-twinkle-ink/70 hover:bg-twinkle-sky/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 border border-twinkle-mist rounded-lg text-sm font-medium text-twinkle-ink/70 hover:bg-twinkle-sage/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Next
                 </button>

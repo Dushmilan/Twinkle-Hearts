@@ -69,7 +69,7 @@ export default function CartPage() {
           <div className="flex justify-end pt-2">
             <button
               onClick={clearCart}
-              className="text-sm text-twinkle-ink/50 hover:text-twinkle-blush transition-colors font-medium"
+              className="text-sm text-twinkle-ink/50 hover:text-twinkle-rose transition-colors font-medium"
             >
               Clear all items
             </button>
@@ -81,7 +81,7 @@ export default function CartPage() {
           <div className="card rounded-xl border-2 border-dashed border-twinkle-mist p-6 sticky top-24 shadow-lg">
             {/* Gift Receipt Header */}
             <div className="text-center mb-6 pb-4 border-b border-twinkle-mist">
-              <HeartIcon className="w-8 h-8 text-twinkle-blush mx-auto mb-2" />
+              <HeartIcon className="w-8 h-8 text-twinkle-rose mx-auto mb-2" />
               <h2 className="font-display text-xl font-semibold text-twinkle-ink">
                 Order Summary
               </h2>
@@ -120,7 +120,7 @@ export default function CartPage() {
               </div>
               <div className="flex justify-between text-lg font-bold pt-2 border-t border-twinkle-mist">
                 <span className="text-twinkle-ink">Total</span>
-                <span className="text-twinkle-blush">{formatPrice(finalTotal)}</span>
+                <span className="text-twinkle-rose">{formatPrice(finalTotal)}</span>
               </div>
             </div>
 
@@ -139,7 +139,7 @@ export default function CartPage() {
 
             <Link
               to="/"
-              className="block text-center text-sm text-twinkle-ink hover:text-twinkle-blush font-medium mt-4 transition-colors"
+              className="block text-center text-sm text-twinkle-ink hover:text-twinkle-rose font-medium mt-4 transition-colors"
             >
               ← Continue Shopping
             </Link>
@@ -187,11 +187,11 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
       <div className="flex-1 min-w-0">
         <Link
           to={`/product/${item.productId}`}
-          className="font-display text-base font-semibold text-twinkle-ink hover:text-twinkle-blush transition-colors truncate block"
+          className="font-display text-base font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors truncate block"
         >
           {item.productName || 'Greeting Card'}
         </Link>
-        <p className="text-twinkle-blush font-bold mt-1">
+        <p className="text-twinkle-rose font-bold mt-1">
           {formatPrice(item.price)}
         </p>
 
@@ -214,7 +214,7 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
           </div>
           <button
             onClick={() => onRemove(item.productId)}
-            className="ml-auto text-twinkle-ink/40 hover:text-twinkle-blush transition-colors p-1"
+            className="ml-auto text-twinkle-ink/40 hover:text-twinkle-rose transition-colors p-1"
             title="Remove item"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

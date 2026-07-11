@@ -193,7 +193,7 @@ function AdminProducts() {
               <p className="text-gray-600 mt-1">Create and manage products</p>
             </div>
             <div className="flex gap-4">
-              <Link to="/admin" className="text-twinkle-ink hover:text-twinkle-blush font-medium">
+              <Link to="/admin" className="text-twinkle-ink hover:text-twinkle-rose font-medium">
                 Back to Dashboard
               </Link>
               <button
@@ -235,7 +235,7 @@ function AdminProducts() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
+                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-rose focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
@@ -251,7 +251,7 @@ function AdminProducts() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
-                  className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
+                  className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-rose focus:border-transparent"
                   disabled={isUploadingImages}
                 />
               </div>
@@ -268,7 +268,7 @@ function AdminProducts() {
                     step="0.01"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
+                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-rose focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
@@ -282,7 +282,7 @@ function AdminProducts() {
                     min="0"
                     value={formData.stock}
                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
+                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-rose focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
@@ -295,7 +295,7 @@ function AdminProducts() {
                     required
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
+                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-rose focus:border-transparent"
                     disabled={isUploadingImages}
                   />
                 </div>
@@ -318,7 +318,7 @@ function AdminProducts() {
                   id="isActive"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-4 h-4 text-twinkle-blush border-twinkle-mist rounded focus:ring-twinkle-blush"
+                  className="w-4 h-4 text-twinkle-rose border-twinkle-mist rounded focus:ring-twinkle-rose"
                   disabled={isUploadingImages}
                 />
                 <label htmlFor="isActive" className="ml-2 text-sm text-twinkle-ink/70">
@@ -362,7 +362,7 @@ function AdminProducts() {
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-blush focus:border-transparent"
+              className="flex-1 px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-rose focus:border-transparent"
             />
             <button
               onClick={fetchProducts}
@@ -377,7 +377,7 @@ function AdminProducts() {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-twinkle-sky/30">
+              <thead className="bg-twinkle-sage/30">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
                     Product
@@ -404,7 +404,7 @@ function AdminProducts() {
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center">
                       <div className="flex justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ruby-600"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose"></div>
                       </div>
                     </td>
                   </tr>
@@ -416,7 +416,7 @@ function AdminProducts() {
                   </tr>
                 ) : (
                   products.map((product) => (
-                    <tr key={product.id} className="hover:bg-twinkle-sky/20">
+                    <tr key={product.id} className="hover:bg-twinkle-sage/20">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           {product.images[0] && (
@@ -450,7 +450,7 @@ function AdminProducts() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button
                           onClick={() => handleEdit(product)}
-                          className="text-twinkle-ink hover:text-twinkle-blush font-medium mr-4"
+                          className="text-twinkle-ink hover:text-twinkle-rose font-medium mr-4"
                         >
                           Edit
                         </button>
