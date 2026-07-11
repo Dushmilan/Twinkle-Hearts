@@ -69,6 +69,35 @@ export interface AdminUsersResponse {
   };
 }
 
+export interface AdminOrderDetailResponse {
+  success: boolean;
+  data: {
+    id: string;
+    customerName: string;
+    customerPhone: string;
+    subtotal: number;
+    tax: number;
+    total: number;
+    status: string;
+    priceSnapshot: string;
+    createdAt: string;
+    updatedAt: string;
+    items: Array<{
+      id: string;
+      productId: string;
+      productName: string;
+      quantity: number;
+      price: number;
+    }>;
+    user: {
+      id: string;
+      name: string | null;
+      email: string;
+      phone: string | null;
+    };
+  };
+}
+
 export interface UploadResponse {
   success: boolean;
   data: {

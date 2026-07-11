@@ -13,6 +13,7 @@ import type {
   ApiEnvelope,
   AdminStats,
   AdminOrdersResponse,
+  AdminOrderDetailResponse,
   AdminProductsResponse,
   AdminUsersResponse,
   UploadResponse,
@@ -99,7 +100,9 @@ type Api = {
   };
   admin: {
     stats: () => Promise<ApiEnvelope<AdminStats>>;
-    orders: (page?: number, limit?: number) => Promise<AdminOrdersResponse>;
+    orders: (page?: number, limit?: number, status?: string) => Promise<AdminOrdersResponse>;
+    orderDetail: (id: string) => Promise<AdminOrderDetailResponse>;
+    updateOrderStatus: (id: string, status: string) => Promise<AdminOrderDetailResponse>;
     products: {
       list: (params?: { page?: number; limit?: number; search?: string; category?: string }) => Promise<AdminProductsResponse>;
       create: (product: {
@@ -179,7 +182,15 @@ export const api: Api = {
 
   admin: {
     stats: () => request('/api/admin/stats', { authenticated: true }),
-    orders: (page = 1, limit = 20) => request(`/api/admin/orders?page=${page}&limit=${limit}`, { authenticated: true }),
+    orders: (page = 1, limit = 20, status?: string) => {
+      const query = new URLSearchParams();
+      query.set('page', String(page));
+      query.set('limit', String(limit));
+      if (status && status !== 'all') query.set('status', status);
+      return request(`/api/admin/orders?${query.toString()}`, { authenticated: true });
+    },
+    orderDetail: (id) => request(`/api/admin/orders/${id}`, { authenticated: true }),
+    updateOrderStatus: (id, status) => request(`/api/admin/orders/${id}/status`, { method: 'PUT', body: { status }, authenticated: true }),
     products: {
       list: (params) => {
         const query = new URLSearchParams();

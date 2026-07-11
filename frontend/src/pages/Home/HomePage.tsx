@@ -10,7 +10,7 @@ import {
   ShoppingCart,
   ArrowRight,
 } from 'lucide-react';
-
+import ProductCard from '../../components/UI/ProductCard';
 function WhatsappLogo({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -19,7 +19,6 @@ function WhatsappLogo({ size = 24 }: { size?: number }) {
   );
 }
 import { api } from '../../api';
-import { getImageSrc } from '../../utils/images';
 import type { ProductListItem } from '@twinkle-hearts/shared';
 
 const CATEGORIES = [
@@ -534,94 +533,6 @@ function MagneticButton({ to, label, dark }: { to: string; label: string; dark?:
     >
       {label}
     </motion.a>
-  );
-}
-
-/* ---- Product Card ---- */
-
-function ProductCard({ product }: { product: ProductListItem }) {
-  const [imgError, setImgError] = useState(false);
-
-  const formatPrice = (price: number) => {
-    return `Rs. ${price.toLocaleString('en-IN')}`;
-  };
-
-  const getCategoryBadge = (category?: string) => {
-    const catMap: Record<string, string> = {
-      birthday: 'Birthday',
-      love: 'Love',
-      anniversary: 'Anniversary',
-      friendship: 'Friendship',
-      festival: 'Festival',
-      sympathy: 'Sympathy',
-    };
-    const key = category?.toLowerCase() || '';
-    return catMap[key] || category || 'General';
-  };
-
-  return (
-    <motion.div
-      className="product-card group"
-      whileHover={{ y: -4 }}
-      transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-    >
-      <Link to={`/product/${product.id}`} className="block">
-        <div className="product-card-image relative">
-          {!imgError && product.images[0] ? (
-            <img
-              src={getImageSrc(product.images[0])}
-              alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-              loading="lazy"
-              onError={() => setImgError(true)}
-            />
-          ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-twinkle-mist/20">
-              <div className="w-12 h-12 rounded-2xl bg-twinkle-mist/30 flex items-center justify-center mb-2">
-                <Heart size={22} className="text-twinkle-ink/40" />
-              </div>
-              <span className="text-xs font-medium text-twinkle-ink/40">No preview</span>
-            </div>
-          )}
-          <div className="absolute top-3 left-3">
-            <span className="badge badge-plum">{getCategoryBadge(product.category)}</span>
-          </div>
-        </div>
-      </Link>
-
-      <div className="product-card-body">
-        <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-sm font-semibold text-twinkle-ink line-clamp-2 hover:text-twinkle-blush transition-colors leading-snug">
-            {product.name}
-          </h3>
-        </Link>
-
-        <div className="flex items-center justify-between mt-3">
-          <span className="font-mono text-base font-semibold text-twinkle-blush tracking-tight">
-            {formatPrice(product.price)}
-          </span>
-
-          {product.stock > 0 ? (
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.92 }}
-              className="p-2 rounded-xl bg-twinkle-mist/20 text-twinkle-ink/50 hover:bg-twinkle-blush hover:text-white transition-colors duration-200"
-              aria-label="Add to cart"
-            >
-              <ShoppingCart size={15} />
-            </motion.button>
-          ) : (
-            <span className="text-xs text-twinkle-ink/40 font-medium">Sold out</span>
-          )}
-        </div>
-
-        {product.stock > 0 && product.stock <= 3 && (
-          <p className="text-xs text-twinkle-blush mt-2.5 font-medium">
-            Only {product.stock} remaining
-          </p>
-        )}
-      </div>
-    </motion.div>
   );
 }
 

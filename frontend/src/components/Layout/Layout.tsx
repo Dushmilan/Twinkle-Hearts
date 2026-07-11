@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useI18n } from '../../context/i18n';
 import {
   Heart,
   ShoppingCart,
@@ -188,8 +189,10 @@ export default function Layout({ children }: LayoutProps) {
                 </div>
               )}
 
+              <LanguageSwitcher />
+
               <button
-                className="md:hidden p-2 rounded-xl text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30 transition-colors"
+                className="md:hidden p-3 rounded-xl text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30 transition-colors"
                 onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
                 aria-label="Toggle navigation"
               >
@@ -231,14 +234,14 @@ export default function Layout({ children }: LayoutProps) {
                     )}
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-3 py-2.5 text-sm text-twinkle-blush hover:bg-twinkle-blush/20 rounded-lg transition-colors"
+                      className="w-full text-left px-3 py-3 text-sm text-twinkle-blush hover:bg-twinkle-blush/20 rounded-lg transition-colors min-h-[44px]"
                     >
                       Logout
                     </button>
                   </>
                 ) : (
                   <div className="px-3 space-y-2 pt-1">
-                    <Link to="/login" className="block w-full text-center py-2.5 text-sm font-medium text-twinkle-ink/70 hover:bg-twinkle-mist/30 rounded-lg transition-colors" onClick={() => setIsMobileNavOpen(false)}>
+                    <Link to="/login" className="block w-full text-center py-3 text-sm font-medium text-twinkle-ink/70 hover:bg-twinkle-mist/30 rounded-lg transition-colors min-h-[44px] flex items-center justify-center" onClick={() => setIsMobileNavOpen(false)}>
                       Sign In
                     </Link>
                     <Link to="/register" className="btn-primary w-full justify-center text-sm" onClick={() => setIsMobileNavOpen(false)}>
@@ -252,7 +255,7 @@ export default function Layout({ children }: LayoutProps) {
         </AnimatePresence>
       </header>
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {children}
       </main>
 
@@ -364,7 +367,7 @@ function MobileNavItem({ to, label, location, highlight, onClick }: {
       <Link
         to={to}
         onClick={onClick}
-        className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+        className={`block px-3 py-3 text-sm font-medium rounded-lg transition-colors min-h-[44px] ${
           highlight
             ? 'text-twinkle-blush bg-twinkle-blush/20'
             : active
@@ -398,6 +401,29 @@ function DropdownLink({ to, icon: Icon, onClick, highlight, children }: {
       <Icon size={15} className="text-twinkle-ink/50" />
       {children}
     </Link>
+  );
+}
+
+function LanguageSwitcher() {
+  const { locale, setLocale } = useI18n();
+
+  return (
+    <div className="flex items-center gap-0.5 border border-twinkle-mist/50 rounded-lg overflow-hidden">
+      {(['en', 'si', 'ta'] as const).map((l) => (
+        <button
+          key={l}
+          onClick={() => setLocale(l)}
+          className={`px-2 py-1.5 text-xs font-medium transition-colors min-h-[32px] ${
+            locale === l
+              ? 'bg-twinkle-ink text-white'
+              : 'text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/20'
+          }`}
+          aria-label={`Switch to ${l === 'en' ? 'English' : l === 'si' ? 'Sinhala' : 'Tamil'}`}
+        >
+          {l.toUpperCase()}
+        </button>
+      ))}
+    </div>
   );
 }
 

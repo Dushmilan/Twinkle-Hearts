@@ -54,19 +54,67 @@ router.get('/stats', async (c) => {
   return c.json({ success: true, data: stats });
 });
 
+router.get('/orders/:id', async (c) => {
+  const id = c.req.param('id');
+  const prisma = getPrismaRepository(c.env.DB);
+
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: {
+      items: true,
+      user: { select: { id: true, name: true, email: true, phone: true } },
+    },
+  });
+
+  if (!order) {
+    return c.json({ success: false, error: 'Order not found' }, 404);
+  }
+
+  return c.json({ success: true, data: order });
+});
+
+router.put('/orders/:id/status', async (c) => {
+  const id = c.req.param('id');
+  const { status } = await c.req.json() as { status: string };
+  const validStatuses = ['PENDING_WHATSAPP_CONFIRMATION', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+
+  if (!validStatuses.includes(status)) {
+    return c.json({ success: false, error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` }, 400);
+  }
+
+  const prisma = getPrismaRepository(c.env.DB);
+
+  const existing = await prisma.order.findUnique({ where: { id } });
+  if (!existing) {
+    return c.json({ success: false, error: 'Order not found' }, 404);
+  }
+
+  const order = await prisma.order.update({
+    where: { id },
+    data: { status },
+    include: { items: true, user: { select: { name: true, email: true } } },
+  });
+
+  return c.json({ success: true, data: order });
+});
+
 router.get('/orders', async (c) => {
   const page = parseInt(c.req.query('page') || '1');
   const limit = parseInt(c.req.query('limit') || '20');
+  const status = c.req.query('status');
   const prisma = getPrismaRepository(c.env.DB);
+
+  const where = status ? { status } : {};
 
   const [orders, total] = await Promise.all([
     prisma.order.findMany({
+      where,
       skip: (page - 1) * limit,
       take: limit,
       orderBy: { createdAt: 'desc' },
       include: { user: { select: { name: true, email: true } } },
     }),
-    prisma.order.count(),
+    prisma.order.count({ where }),
   ]);
 
   return c.json({

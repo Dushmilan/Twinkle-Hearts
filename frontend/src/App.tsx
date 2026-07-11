@@ -1,10 +1,12 @@
 import { Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { ErrorBoundary } from './components/UI/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
+import { I18nProvider } from './context/i18n';
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
 import Layout from './components/Layout/Layout';
+import { MotionConfig } from 'framer-motion';
 import HomePage from './pages/Home/HomePage';
 import ShopPage from './pages/Shop/ShopPage';
 import ProductDetailPage from './pages/ProductDetail/ProductDetailPage';
@@ -17,10 +19,12 @@ import ProfilePage from './pages/Profile/ProfilePage';
 import OrderHistoryPage from './pages/Orders/OrderHistoryPage';
 import AddressManagementPage from './pages/Address/AddressManagementPage';
 import WishlistPage from './pages/Wishlist/WishlistPage';
-import AdminDashboardPage from './pages/Admin/DashboardPage';
-import AdminOrdersPage from './pages/Admin/OrdersPage';
-import AdminProductsPage from './pages/Admin/ProductsPage';
-import AdminUsersPage from './pages/Admin/UsersPage';
+import NotFoundPage from './pages/NotFound/NotFoundPage';
+const AdminDashboardPage = lazy(() => import('./pages/Admin/DashboardPage'));
+const AdminOrdersPage = lazy(() => import('./pages/Admin/OrdersPage'));
+const AdminOrderDetailPage = lazy(() => import('./pages/Admin/OrderDetailPage'));
+const AdminProductsPage = lazy(() => import('./pages/Admin/ProductsPage'));
+const AdminUsersPage = lazy(() => import('./pages/Admin/UsersPage'));
 import { useCartStore } from './store/cartStore';
 
 function AppRoutes() {
@@ -97,7 +101,9 @@ function AppRoutes() {
           path="/admin"
           element={
             <AdminRoute>
-              <AdminDashboardPage />
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-blush" /></div>}>
+                <AdminDashboardPage />
+              </Suspense>
             </AdminRoute>
           }
         />
@@ -105,7 +111,19 @@ function AppRoutes() {
           path="/admin/orders"
           element={
             <AdminRoute>
-              <AdminOrdersPage />
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-blush" /></div>}>
+                <AdminOrdersPage />
+              </Suspense>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/orders/:id"
+          element={
+            <AdminRoute>
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-blush" /></div>}>
+                <AdminOrderDetailPage />
+              </Suspense>
             </AdminRoute>
           }
         />
@@ -113,7 +131,9 @@ function AppRoutes() {
           path="/admin/products"
           element={
             <AdminRoute>
-              <AdminProductsPage />
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-blush" /></div>}>
+                <AdminProductsPage />
+              </Suspense>
             </AdminRoute>
           }
         />
@@ -121,10 +141,15 @@ function AppRoutes() {
           path="/admin/users"
           element={
             <AdminRoute>
-              <AdminUsersPage />
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-twinkle-blush" /></div>}>
+                <AdminUsersPage />
+              </Suspense>
             </AdminRoute>
           }
         />
+
+        {/* 404 Fallback */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Layout>
   );
@@ -134,29 +159,40 @@ function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        <AppRoutes />
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#363636',
-              color: '#fff',
-            },
-            success: {
-              iconTheme: {
-                primary: '#8B2E85',
-                secondary: '#fff',
+        <I18nProvider>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-twinkle-ink focus:text-white focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-twinkle-blush"
+          >
+            Skip to main content
+          </a>
+          <MotionConfig reducedMotion="user">
+            <AppRoutes />
+          </MotionConfig>
+          <Toaster
+            position="top-right"
+            containerClassName="aria-live-polite"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#363636',
+                color: '#fff',
               },
-            },
-            error: {
-              iconTheme: {
-                primary: '#ef4444',
-                secondary: '#fff',
+              success: {
+                iconTheme: {
+                  primary: '#8B2E85',
+                  secondary: '#fff',
+                },
               },
-            },
-          }}
-        />
+              error: {
+                iconTheme: {
+                  primary: '#ef4444',
+                  secondary: '#fff',
+                },
+              },
+            }}
+          />
+        </I18nProvider>
       </AuthProvider>
     </ErrorBoundary>
   );

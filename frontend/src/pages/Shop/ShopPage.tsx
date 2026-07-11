@@ -1,18 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
 import { api } from '../../api.js';
-import { getImageSrc } from '../../utils/images';
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  images: string[];
-  category?: string;
-}
+import ProductCard from '../../components/UI/ProductCard';
+import type { ProductListItem as Product } from '@twinkle-hearts/shared';
 
 const CATEGORIES = [
   { key: 'all', label: 'All Cards', emoji: '✨' },
@@ -188,114 +179,6 @@ export default function ShopPage() {
         </div>
       </section>
     </div>
-  );
-}
-
-// ---- Product Card sub-component ----
-
-interface ProductCardProps {
-  product: Product;
-  onAddToCart: (product: Product) => void;
-}
-
-function ProductCard({ product, onAddToCart }: ProductCardProps) {
-  const formatPrice = (price: number) => {
-    return `Rs. ${price.toLocaleString('en-IN')}`;
-  };
-
-  const getCategoryBadge = (category?: string) => {
-    const catMap: Record<string, { label: string; variant: string }> = {
-      birthday: { label: '🎂 Birthday', variant: 'badge-plum' },
-      love: { label: '💕 Love', variant: 'badge-bronze' },
-      anniversary: { label: '🥂 Anniversary', variant: 'badge-teal' },
-      friendship: { label: '🤝 Friendship', variant: 'badge-bronze' },
-      festival: { label: '🎊 Festival', variant: 'badge-plum' },
-      sympathy: { label: '🕊️ Sympathy', variant: 'badge-teal' },
-    };
-    const key = category?.toLowerCase() || '';
-    const cat = catMap[key] || { label: category || 'General', variant: 'badge-plum' };
-    return <span className={`badge ${cat.variant}`}>{cat.label}</span>;
-  };
-
-  return (
-    <div className="product-card group">
-      {/* Product Image */}
-      <Link to={`/product/${product.id}`} className="block">
-        <div className="product-card-image">
-          {product.images[0] ? (
-            <img
-              src={getImageSrc(product.images[0])}
-              alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22 viewBox=%220 0 300 400%22%3E%3Crect fill=%22%23F5E0D3%22 width=%22300%22 height=%22400%22/%3E%3Ctext fill=%22%239BB89B%22 font-family=%22serif%22 font-size=%2218%22 x=%2250%25%22 y=%2245%25%22 text-anchor=%22middle%22%3E💌%3C/text%3E%3Ctext fill=%22%23B04628%22 font-family=%22serif%22 font-size=%2214%22 x=%2250%25%22 y=%2255%25%22 text-anchor=%22middle%22%3ECard Preview%3C/text%3E%3C/svg%3E';
-              }}
-            />
-          ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-twinkle-mist/20 text-twinkle-ink/40">
-              <span className="text-3xl mb-2">💌</span>
-              <span className="text-sm font-display">Card Preview</span>
-            </div>
-          )}
-        </div>
-      </Link>
-
-      {/* Product Info */}
-      <div className="product-card-body">
-        {/* Category Badge */}
-        <div className="mb-2">
-          {getCategoryBadge(product.category)}
-        </div>
-
-        {/* Title */}
-        <Link to={`/product/${product.id}`}>
-          <h3 className="font-display text-base font-semibold text-twinkle-ink mb-2 line-clamp-2 hover:text-twinkle-blush transition-colors">
-            {product.name}
-          </h3>
-        </Link>
-
-        {/* Price & Add to Cart */}
-        <div className="flex items-center justify-between mt-3">
-          <span className="font-body text-lg font-bold text-twinkle-blush">
-            {formatPrice(product.price)}
-          </span>
-          <button
-            onClick={() => onAddToCart(product)}
-            disabled={product.stock === 0}
-            className={`inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 ${
-              product.stock === 0
-                ? 'opacity-40 cursor-not-allowed bg-twinkle-mist/20'
-                : 'bg-twinkle-blush hover:bg-twinkle-blush/90 active:scale-90 text-white shadow-lg hover:shadow-twinkle-blush/30'
-            }`}
-            title={product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-          >
-            <HeartIcon className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Stock indicator */}
-        {product.stock > 0 && product.stock <= 5 && (
-          <p className="text-xs text-amber-600 mt-2 font-medium">
-            Only {product.stock} left
-          </p>
-        )}
-        {product.stock === 0 && (
-          <p className="text-xs text-red-500 mt-2 font-medium">
-            Out of stock
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ---- Icons ----
-
-function HeartIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-    </svg>
   );
 }
 

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
-import { HeartIcon, WhatsAppIcon } from '../../components/UI/Icons';
+import { HeartIcon, WhatsAppIcon, formatPrice } from '../../components/UI/Icons';
 import { getImageSrc } from '../../utils/images';
 
 export default function CartPage() {
@@ -10,10 +10,6 @@ export default function CartPage() {
   const total = getTotal();
   const tax = total * 0.18;
   const finalTotal = total + tax;
-
-  const formatPrice = (price: number) => {
-    return `Rs. ${price.toLocaleString('en-IN')}`;
-  };
 
   const handleCheckout = () => {
     navigate('/checkout');

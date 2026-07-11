@@ -179,7 +179,7 @@ function AdminProducts() {
 
   const formatCurrency = (amount: any) => {
     const num = Number(amount);
-    return `₹${isNaN(num) ? '0.00' : num.toFixed(2)}`;
+    return `Rs. ${isNaN(num) ? '0.00' : num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   return (
@@ -259,7 +259,7 @@ function AdminProducts() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-twinkle-ink/70 mb-2">
-                    Price (₹)
+                    Price (Rs.)
                   </label>
                   <input
                     type="number"

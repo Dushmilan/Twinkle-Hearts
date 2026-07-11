@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
 import { api } from '../../api.js';
-import { HeartIcon, WhatsAppIcon } from '../../components/UI/Icons';
+import { HeartIcon, WhatsAppIcon, formatPrice } from '../../components/UI/Icons';
 
 // Country codes for phone input
 const COUNTRY_CODES = [
@@ -32,10 +32,6 @@ export default function CheckoutPage() {
   const taxRate = parseFloat(import.meta.env.VITE_TAX_RATE || '0.18');
   const tax = total * taxRate;
   const finalTotal = total + tax;
-
-  const formatPrice = (price: number) => {
-    return `Rs. ${price.toLocaleString('en-IN')}`;
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

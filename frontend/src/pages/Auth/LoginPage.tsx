@@ -2,6 +2,7 @@ import { useState, FormEvent } from 'react';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useAuthStore } from '../../store/authStore';
+import { HeartIcon } from '../../components/UI/Icons';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -152,9 +153,9 @@ export default function LoginPage() {
                 />
                 <span className="text-sm text-twinkle-ink/70">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-twinkle-ink hover:text-twinkle-blush font-medium">
+              <Link to="/forgot-password" className="text-sm text-twinkle-ink hover:text-twinkle-blush font-medium">
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             <button
@@ -189,7 +190,9 @@ export default function LoginPage() {
 
             <button
               type="button"
-              className="mt-4 w-full flex items-center justify-center gap-3 card border border-gray-200 text-twinkle-ink/70 py-3 rounded-lg font-medium hover:bg-twinkle-mist/30 hover:border-twinkle-blush transition-all"
+              disabled
+              className="mt-4 w-full flex items-center justify-center gap-3 card border border-gray-200 text-twinkle-ink/40 py-3 rounded-lg font-medium cursor-not-allowed opacity-60"
+              title="Google sign-in coming soon"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -198,6 +201,7 @@ export default function LoginPage() {
                 <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
               Sign in with Google
+              <span className="text-[10px] text-twinkle-ink/30 uppercase tracking-wider">(Coming Soon)</span>
             </button>
           </div>
 
@@ -213,10 +217,4 @@ export default function LoginPage() {
   );
 }
 
-function HeartIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-    </svg>
-  );
-}
+
