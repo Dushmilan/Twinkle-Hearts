@@ -72,8 +72,8 @@
   }
 
   .card:hover {
-    box-shadow: 0 12px 32px rgba(157, 62, 10, 0.12), 0 4px 8px rgba(0, 0, 0, 0.04);
-    border-color: rgba(157, 62, 10, 0.3);
+    box-shadow: 0 12px 32px rgba(166, 56, 30, 0.12), 0 4px 8px rgba(0, 0, 0, 0.04);
+    border-color: rgba(166, 56, 30, 0.3);
   }
 
   /* ============================================
@@ -248,7 +248,8 @@
            active:bg-twinkle-ink active:text-white active:border-twinkle-ink
            transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]
            cursor-pointer select-none
-           whitespace-nowrap;
+           whitespace-nowrap
+           min-h-[44px];
   }
 
   .category-pill-active {
@@ -476,6 +477,218 @@
 
   .cta-text {
     @apply text-base text-twinkle-ink/60 mb-10 max-w-lg mx-auto leading-relaxed;
+  }
+
+  /* ============================================
+     FILTER BADGE — Active filter pills
+     ============================================ */
+  .filter-badge {
+    @apply inline-flex items-center gap-1.5
+           px-3 py-1.5 rounded-full
+           bg-twinkle-ink/10 text-twinkle-ink/80
+           text-xs font-body font-medium
+           transition-all duration-200;
+  }
+
+  .filter-badge-remove {
+    @apply w-4 h-4 rounded-full bg-twinkle-ink/20 hover:bg-twinkle-rose/30 hover:text-twinkle-rose
+           flex items-center justify-center transition-colors cursor-pointer
+           text-[10px] leading-none;
+  }
+
+  /* ============================================
+     SEARCH INPUT — Shop search bar
+     ============================================ */
+  .search-input {
+    @apply w-full pl-11 pr-4 py-3
+           bg-white border border-twinkle-mist rounded-full
+           font-body text-twinkle-ink text-sm
+           placeholder:text-twinkle-ink/40
+           focus:border-twinkle-rose focus:ring-2 focus:ring-twinkle-rose/15 focus:ring-offset-2 focus:ring-offset-white
+           hover:border-twinkle-mist
+           outline-none
+           transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]
+           min-h-[44px];
+  }
+
+  /* ============================================
+     DELIVERY OPTION — Radio card
+     ============================================ */
+  .delivery-option {
+    @apply flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200
+           border-twinkle-mist hover:border-twinkle-rose/40;
+  }
+
+  .delivery-option-selected {
+    @apply border-twinkle-rose bg-twinkle-rose/5;
+  }
+
+  /* ============================================
+     PROGRESS STEP — Checkout progress
+     ============================================ */
+  .progress-step {
+    @apply flex items-center gap-2 text-sm font-medium transition-colors duration-200;
+  }
+
+  .progress-step-active {
+    @apply text-twinkle-rose;
+  }
+
+  .progress-step-inactive {
+    @apply text-twinkle-ink/40;
+  }
+
+  .progress-step-complete {
+    @apply text-twinkle-sage;
+  }
+
+  .progress-step-dot {
+    @apply w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold
+           transition-all duration-300;
+  }
+
+  .progress-step-dot-active {
+    @apply bg-twinkle-rose text-white;
+  }
+
+  .progress-step-dot-inactive {
+    @apply bg-twinkle-mist/40 text-twinkle-ink/40;
+  }
+
+  .progress-step-dot-complete {
+    @apply bg-twinkle-sage text-white;
+  }
+
+  .progress-step-line {
+    @apply flex-1 h-0.5 bg-twinkle-mist/40 transition-colors duration-300;
+  }
+
+  .progress-step-line-complete {
+    @apply bg-twinkle-sage;
+  }
+
+  /* ============================================
+     TIMELINE STEP — Order history timeline
+     ============================================ */
+  .timeline-step {
+    @apply flex gap-4;
+  }
+
+  .timeline-step-dot {
+    @apply w-3 h-3 rounded-full flex-shrink-0 mt-1.5;
+  }
+
+  .timeline-step-line {
+    @apply w-0.5 bg-twinkle-mist/40 flex-shrink-0;
+  }
+
+  .timeline-step-content {
+    @apply pb-8;
+  }
+
+  .timeline-step-active .timeline-step-dot {
+    @apply bg-twinkle-rose ring-4 ring-twinkle-rose/20;
+  }
+
+  .timeline-step-complete .timeline-step-dot {
+    @apply bg-twinkle-sage;
+  }
+
+  .timeline-step-inactive .timeline-step-dot {
+    @apply bg-twinkle-mist/40;
+  }
+
+  /* ============================================
+     REVIEW CARD
+     ============================================ */
+  .review-card {
+    @apply card p-5;
+  }
+
+  .review-stars {
+    @apply flex items-center gap-0.5;
+  }
+
+  .review-star {
+    @apply w-4 h-4 text-twinkle-rose;
+  }
+
+  .review-star-empty {
+    @apply text-twinkle-mist/40;
+  }
+
+  /* ============================================
+     IMAGE ZOOM — Product detail hover zoom
+     ============================================ */
+  .image-zoom-container {
+    @apply overflow-hidden rounded-xl;
+  }
+
+  .image-zoom-container img {
+    @apply transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)];
+  }
+
+  .image-zoom-container:hover img {
+    @apply scale-110;
+  }
+
+  /* ============================================
+     PASSWORD STRENGTH — Registration form
+     ============================================ */
+  .password-strength-bar {
+    @apply h-1.5 bg-twinkle-mist/20 rounded-full overflow-hidden;
+  }
+
+  .password-strength-fill {
+    @apply h-full transition-all duration-300;
+  }
+
+  .password-strength-weak {
+    @apply bg-red-400;
+  }
+
+  .password-strength-fair {
+    @apply bg-amber-400;
+  }
+
+  .password-strength-strong {
+    @apply bg-emerald-500;
+  }
+
+  /* ============================================
+     SECTION WARM — Consistent section padding
+     ============================================ */
+  .section-warm {
+    @apply py-16 sm:py-20 lg:py-24;
+  }
+
+  /* ============================================
+     LOAD MORE BUTTON
+     ============================================ */
+  .load-more-btn {
+    @apply inline-flex items-center justify-center gap-2
+           px-8 py-3 rounded-full
+           border-2 border-dashed border-twinkle-mist
+           text-twinkle-ink/70 font-body font-medium text-sm
+           hover:border-twinkle-rose hover:text-twinkle-rose hover:bg-twinkle-rose/5
+           transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]
+           active:scale-[0.98]
+           min-h-[44px];
+  }
+
+  /* ============================================
+     WHO IS THIS FOR — Product detail contextual
+     ============================================ */
+  .who-is-for {
+    @apply bg-twinkle-sage/10 border border-twinkle-sage/20 rounded-xl p-5;
+  }
+
+  .who-is-for-title {
+    @apply text-sm font-semibold text-twinkle-sage mb-2;
+  }
+
+  .who-is-for-list {
+    @apply text-sm text-twinkle-ink/60 space-y-1;
   }
 }
 

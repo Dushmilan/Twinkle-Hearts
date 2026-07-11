@@ -13,6 +13,9 @@ import {
 import ProductCard from '../../components/UI/ProductCard';
 import { TextGenerateEffect } from '../../components/UI/text-generate-effect';
 import { SparklesCore } from '../../components/UI/sparkles';
+import { api } from '../../api';
+import type { ProductListItem } from '@twinkle-hearts/shared';
+
 function WhatsappLogo({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -20,17 +23,39 @@ function WhatsappLogo({ size = 24 }: { size?: number }) {
     </svg>
   );
 }
-import { api } from '../../api';
-import type { ProductListItem } from '@twinkle-hearts/shared';
 
 const CATEGORIES = [
-    { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
+  { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
   { key: 'love', label: 'Love', icon: Heart, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
   { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-twinkle-sage', bg: 'bg-twinkle-sage/20' },
   { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-twinkle-ink/50', bg: 'bg-twinkle-ink/10' },
   { key: 'festival', label: 'Festival', icon: Star, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
   { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-twinkle-mist', bg: 'bg-twinkle-mist/20' },
 ] as const;
+
+const TESTIMONIALS = [
+  {
+    id: '1',
+    name: 'Nipun S.',
+    role: 'Sent to Mom',
+    quote: 'I sent this to my mom on her 60th birthday and she cried happy tears. The card was beautiful and the WhatsApp ordering made it so easy.',
+    rating: 5,
+  },
+  {
+    id: '2',
+    name: 'Amara K.',
+    role: 'Sent to best friend',
+    quote: 'Such a meaningful way to say "I miss you." My friend in Jaffna loved it. Thank you for making this possible!',
+    rating: 5,
+  },
+  {
+    id: '3',
+    name: 'David L.',
+    role: 'Anniversary surprise',
+    quote: 'Ordered three cards for my wife\'s birthday. Each one was more beautiful than the last. The personal touch really shows.',
+    rating: 5,
+  },
+];
 
 const containerVariants: Variants = {
   hidden: {},
@@ -94,7 +119,6 @@ export default function HomePage() {
                 </span>
               </motion.div>
 
-              {/* EN line */}
               <motion.h1
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -104,7 +128,6 @@ export default function HomePage() {
                 Say it with a
               </motion.h1>
 
-              {/* TA line */}
               <motion.p
                 lang="ta"
                 initial={{ opacity: 0, y: 24 }}
@@ -115,7 +138,6 @@ export default function HomePage() {
                 <span className="text-twinkle-rose">ஒரு அழகான</span> அட்டையுடன்
               </motion.p>
 
-              {/* SI line */}
               <motion.p
                 lang="si"
                 initial={{ opacity: 0, y: 24 }}
@@ -126,7 +148,6 @@ export default function HomePage() {
                 <span className="text-twinkle-rose">ලස්සන කාඩ්</span> එකකින් කියන්න
               </motion.p>
 
-              {/* EN finish */}
               <motion.p
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -149,12 +170,12 @@ export default function HomePage() {
                 transition={{ duration: 0.5, delay: 0.45 }}
                 className="mt-8 flex flex-col sm:flex-row items-start gap-3"
               >
-                <MagneticButton to="/shop" label="Browse All Cards" />
+                <MagneticButton to="/shop" label="Find Your Card" />
                 <a
                   href="https://wa.me/947XXXXXXXX"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-full border border-twinkle-mist bg-transparent hover:bg-twinkle-mist/20 text-twinkle-ink/70 font-semibold text-sm transition-all active:scale-[0.98]"
+                  className="inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-full border border-twinkle-mist bg-transparent hover:bg-twinkle-mist/20 text-twinkle-ink/70 font-semibold text-sm transition-all active:scale-[0.98] min-h-[44px]"
                 >
                   <WhatsappLogo size={18} />
                   Chat with us
@@ -229,7 +250,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors font-body"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors font-body min-h-[44px]"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -246,7 +267,7 @@ export default function HomePage() {
               <motion.div key={cat.key} variants={itemVariants} className="col-span-1">
                 <Link
                   to={`/shop?category=${cat.key}`}
-                  className={`flex flex-col items-start gap-4 p-5 rounded-2xl border transition-all duration-300 active:scale-[0.97] ${
+                  className={`flex flex-col items-start gap-4 p-5 rounded-2xl border transition-all duration-300 active:scale-[0.97] min-h-[44px] ${
                     cat.key === 'birthday'
                       ? `${cat.bg} ${cat.color} border-twinkle-mist hover:shadow-lg`
                       : 'bg-white border-twinkle-mist hover:bg-twinkle-sage/20 hover:shadow-lg'
@@ -269,7 +290,7 @@ export default function HomePage() {
           </motion.div>
 
           <div className="mt-6 sm:hidden text-center">
-            <Link to="/shop" className="text-sm font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors inline-flex items-center gap-1 font-body">
+            <Link to="/shop" className="text-sm font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors inline-flex items-center gap-1 font-body min-h-[44px]">
               View all categories <ArrowRight size={14} />
             </Link>
           </div>
@@ -289,7 +310,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors font-body"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors font-body min-h-[44px]"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -341,10 +362,54 @@ export default function HomePage() {
           )}
 
           <div className="mt-8 sm:hidden text-center">
-            <Link to="/shop" className="btn-ghost text-sm">
+            <Link to="/shop" className="btn-ghost text-sm min-h-[44px]">
               View All Cards
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="bg-twinkle-canvas">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+          <div className="text-center mb-12">
+            <span className="section-eyebrow mb-3">Stories</span>
+            <h2 className="section-heading mt-2">What our customers say</h2>
+          </div>
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          >
+            {TESTIMONIALS.map((testimonial) => (
+              <motion.div key={testimonial.id} variants={itemVariants} className="card p-6">
+                <div className="flex items-center gap-1 mb-3">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      size={14}
+                      className={star <= testimonial.rating ? 'text-twinkle-rose fill-twinkle-rose' : 'text-twinkle-mist/40'}
+                    />
+                  ))}
+                </div>
+                <p className="text-sm text-twinkle-ink/70 leading-relaxed mb-4 italic">
+                  "{testimonial.quote}"
+                </p>
+                <div className="flex items-center gap-3 pt-4 border-t border-twinkle-mist/40">
+                  <div className="w-10 h-10 rounded-full bg-twinkle-rose/15 flex items-center justify-center">
+                    <span className="text-sm font-bold text-twinkle-rose">{testimonial.name.charAt(0)}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-twinkle-ink">{testimonial.name}</p>
+                    <p className="text-xs text-twinkle-ink/50">{testimonial.role}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -365,9 +430,27 @@ export default function HomePage() {
               </p>
 
               <div className="mt-8 space-y-4">
-                <FeatureItem icon={Sparkle} title="Original designs" description="Handcrafted artwork for every occasion" />
-                <FeatureItem icon={WhatsappLogo} title="Order via WhatsApp" description="Convenient, personal, and human" />
-                <FeatureItem icon={ShoppingCart} title="Delivered with care" description="Fast and reliable delivery across Sri Lanka" />
+                <FeatureItem
+                  icon={Sparkle}
+                  title="Original designs"
+                  description="Handcrafted artwork for every occasion"
+                  iconColor="text-twinkle-sage"
+                  bgClass="bg-twinkle-sage/20"
+                />
+                <FeatureItem
+                  icon={WhatsappLogo}
+                  title="Order via WhatsApp"
+                  description="Convenient, personal, and human"
+                  iconColor="text-emerald-600"
+                  bgClass="bg-emerald-50"
+                />
+                <FeatureItem
+                  icon={ShoppingCart}
+                  title="Delivered with care"
+                  description="Fast and reliable delivery across Sri Lanka"
+                  iconColor="text-twinkle-rose"
+                  bgClass="bg-twinkle-rose/20"
+                />
               </div>
             </div>
 
@@ -382,7 +465,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA — Warm paper bridge */}
-      <section className="bg-twinkle-sage/30 text-twinkle-ink relative overflow-hidden">
+      <section className="bg-twinkle-canvas text-twinkle-ink relative overflow-hidden">
         <SparklesCore
           className="absolute inset-0 z-0"
           particleColor="#d48a7a"
@@ -396,7 +479,7 @@ export default function HomePage() {
           backgroundSize: '128px 128px',
         }} />
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(157,62,10,0.08), transparent)',
+          background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(166,56,30,0.08), transparent)',
         }} />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center relative z-10">
           <p className="text-xs font-body font-medium tracking-[0.2em] uppercase text-twinkle-rose mb-5">
@@ -411,15 +494,15 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/shop"
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-twinkle-ink text-white hover:bg-twinkle-ink/90 font-semibold text-sm transition-all active:scale-[0.98] shadow-lg shadow-twinkle-ink/10"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-twinkle-ink text-white hover:bg-twinkle-ink/90 font-semibold text-sm transition-all active:scale-[0.98] shadow-lg shadow-twinkle-ink/10 min-h-[44px]"
             >
-              Shop All Cards
+              Find Your Card
             </Link>
             <a
               href="https://wa.me/947XXXXXXXX"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-twinkle-mist/50 hover:border-twinkle-mist hover:bg-twinkle-mist/20 text-twinkle-ink/70 font-medium text-sm transition-all active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-twinkle-mist/50 hover:border-twinkle-mist hover:bg-twinkle-mist/20 text-twinkle-ink/70 font-medium text-sm transition-all active:scale-[0.98] min-h-[44px]"
             >
               <WhatsappLogo size={18} />
               Chat on WhatsApp
@@ -484,7 +567,6 @@ function FloatingLetterpressCard({
       className={className}
     >
       <div className="w-full h-full rounded-[2rem] bg-white border border-twinkle-mist shadow-[0_20px_50px_-12px_rgba(226,232,240,0.3)] flex flex-col overflow-hidden">
-        {/* Card face — decorative top */}
         <div className="flex-1 flex flex-col items-center justify-center px-8">
           <div className={`w-14 h-14 rounded-full ${accent.iconBg} flex items-center justify-center mb-5`}>
             <Heart size={22} className={textColor} />
@@ -496,7 +578,6 @@ function FloatingLetterpressCard({
             {subtitle}
           </p>
         </div>
-        {/* Card footer — decorative stripe */}
         <div className={`h-1.5 ${accent.footerBg}`} />
       </div>
     </motion.div>
@@ -539,7 +620,7 @@ function MagneticButton({ to, label, dark }: { to: string; label: string; dark?:
       onMouseMove={handleMouse}
       onMouseLeave={handleLeave}
       style={{ x, y }}
-      className={`inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-full font-semibold text-sm transition-all active:scale-[0.98] ${
+      className={`inline-flex items-center justify-center gap-2.5 px-8 py-3 rounded-full font-semibold text-sm transition-all active:scale-[0.98] min-h-[44px] ${
         dark
           ? 'bg-white text-gray-100 hover:bg-gray-100'
           : 'bg-twinkle-ink hover:bg-twinkle-ink/90 text-white shadow-lg shadow-twinkle-ink/10'
@@ -552,19 +633,21 @@ function MagneticButton({ to, label, dark }: { to: string; label: string; dark?:
 
 /* ---- Feature Item ---- */
 
-function FeatureItem({ icon: Icon, title, description }: {
+function FeatureItem({ icon: Icon, title, description, iconColor = 'text-twinkle-rose', bgClass = 'bg-twinkle-rose/20' }: {
   icon: React.ElementType;
   title: string;
   description: string;
+  iconColor?: string;
+  bgClass?: string;
 }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="w-10 h-10 rounded-xl bg-twinkle-rose/20 flex items-center justify-center flex-shrink-0">
-        <Icon size={18} className="text-twinkle-rose" />
+      <div className={`w-10 h-10 rounded-xl ${bgClass} flex items-center justify-center flex-shrink-0`}>
+        <Icon size={18} className={iconColor} />
       </div>
       <div>
         <h4 className="font-semibold text-sm text-twinkle-ink">{title}</h4>
-        <p className="text-sm text-twinkle-ink/50">{description}</p>
+        <p className="text-sm text-twinkle-ink/70">{description}</p>
       </div>
     </div>
   );
@@ -578,7 +661,7 @@ function StatCard({ value, label }: { value: string; label: string }) {
       <div className="font-mono text-2xl sm:text-3xl font-bold text-twinkle-ink mb-0.5 tracking-tight">
         {value}
       </div>
-      <div className="text-sm text-twinkle-ink/50">{label}</div>
+      <div className="text-sm text-twinkle-ink/70">{label}</div>
     </div>
   );
 }

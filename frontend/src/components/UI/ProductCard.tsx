@@ -6,6 +6,8 @@ import { getImageSrc } from '../../utils/images';
 import { formatPrice, CATEGORY_MAP } from './Icons';
 import type { ProductListItem } from '@twinkle-hearts/shared';
 import { CardContainer, CardBody, CardItem } from '../UI/3d-card';
+import { useAuthStore } from '../../store/authStore';
+import { api } from '../../api';
 
 interface ProductCardProps {
   product: ProductListItem;
@@ -15,6 +17,9 @@ interface ProductCardProps {
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [imgError, setImgError] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const categoryLabel = CATEGORY_MAP[product.category?.toLowerCase() ?? ''] || product.category || 'General';
 
@@ -25,9 +30,30 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     setTimeout(() => setAddedToCart(false), 1200);
   };
 
+  const handleWishlistToggle = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated || wishlistLoading) return;
+
+    setWishlistLoading(true);
+    try {
+      if (isWishlisted) {
+        await api.wishlist.remove(product.id);
+        setIsWishlisted(false);
+      } else {
+        await api.wishlist.add(product.id);
+        setIsWishlisted(true);
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
   return (
     <CardContainer containerClassName="py-0" className="w-full h-full">
-      <CardBody className="group relative bg-white rounded-[20px] border border-twinkle-mist shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] transition-shadow duration-300 hover:shadow-[0_12px_32px_rgba(157,62,10,0.12),0_4px_8px_rgba(0,0,0,0.04)] w-full h-full flex flex-col">
+      <CardBody className="group relative bg-white rounded-[20px] border border-twinkle-mist shadow-[0_1px_3px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.02)] transition-shadow duration-300 hover:shadow-[0_12px_32px_rgba(166,56,30,0.12),0_4px_8px_rgba(0,0,0,0.04)] w-full h-full flex flex-col">
         <Link to={`/product/${product.id}`} className="block">
           <div className="relative aspect-[3/4] overflow-hidden rounded-t-[20px]">
             {!imgError && product.images[0] ? (
@@ -53,6 +79,22 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
             <CardItem translateZ={40} className="absolute top-3 left-3 z-10">
               <span className="badge badge-plum">{categoryLabel}</span>
             </CardItem>
+
+            {/* Wishlist Heart — top right */}
+            {isAuthenticated && (
+              <button
+                onClick={handleWishlistToggle}
+                disabled={wishlistLoading}
+                className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white hover:shadow-md transition-all duration-200 active:scale-90"
+                aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+              >
+                <Heart
+                  size={16}
+                  className={`transition-colors duration-200 ${isWishlisted ? 'text-twinkle-rose fill-twinkle-rose' : 'text-twinkle-ink/40'}`}
+                />
+              </button>
+            )}
+
             <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
         </Link>
@@ -76,7 +118,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                 <div className="relative">
                   <button
                     onClick={handleAddToCart}
-                    className="w-10 h-10 rounded-full bg-twinkle-canvas border border-twinkle-mist/60 flex items-center justify-center text-twinkle-ink/50 hover:bg-twinkle-rose hover:text-white hover:border-twinkle-rose transition-all duration-200 active:scale-95"
+                    className="w-11 h-11 rounded-full bg-twinkle-canvas border border-twinkle-mist/60 flex items-center justify-center text-twinkle-ink/50 hover:bg-twinkle-rose hover:text-white hover:border-twinkle-rose transition-all duration-200 active:scale-95 min-w-[44px] min-h-[44px]"
                     aria-label="Add to cart"
                   >
                     <ShoppingCart size={16} />

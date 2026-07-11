@@ -166,7 +166,7 @@ describe('LoginPage', () => {
       </MemoryRouter>
     );
 
-    const registerLink = screen.getByText('Sign up now');
+    const registerLink = screen.getByText('Join our family');
     expect(registerLink).toBeInTheDocument();
     expect(registerLink.closest('a')).toHaveAttribute('href', '/register');
   });

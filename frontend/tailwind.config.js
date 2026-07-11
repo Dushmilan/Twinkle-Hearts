@@ -10,8 +10,8 @@ export default {
         twinkle: {
           canvas: '#fff8f1',
           sage: '#44664b',
-          mist: '#ddc0b6',
-          rose: '#9d3e0a',
+          mist: '#dfd3c8',
+          rose: '#a6381e',
           ink: '#1f1b12',
           'ink-variant': '#56423a',
         },

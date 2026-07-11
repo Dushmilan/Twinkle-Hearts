@@ -264,7 +264,7 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
 
-      <footer className="bg-twinkle-sage/30 border-t border-twinkle-sage/60 mt-auto">
+      <footer className="bg-twinkle-canvas border-t border-twinkle-mist/60 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             <div className="sm:col-span-2 lg:col-span-1">
