@@ -158,11 +158,11 @@ describe('api client', () => {
       setTokenGetter(() => 'token');
       mockFetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ id: 'wish-1', productId: 'prod-1', product: { id: 'prod-1', name: 'Test', price: 100, images: [], stock: 10 } }),
+        json: async () => ({ success: true, data: { id: 'wish-1', productId: 'prod-1', product: { id: 'prod-1', name: 'Test', price: 100, images: [], stock: 10 } } }),
       });
 
       const result = await api.wishlist.add('prod-1');
-      expect(result.productId).toBe('prod-1');
+      expect(result.data.productId).toBe('prod-1');
     });
 
     it('should remove from wishlist', async () => {

@@ -37,8 +37,8 @@ export default function WishlistPage() {
 
   const fetchWishlist = async () => {
     try {
-      const data = await api.wishlist.list();
-      setWishlist(data);
+      const res = await api.wishlist.list();
+      setWishlist(res.data);
     } catch (error) {
       toastService.error('Failed to load wishlist');
     } finally {
@@ -137,7 +137,7 @@ export default function WishlistPage() {
                 </Link>
                 <button
                   onClick={() => removeFromWishlist(item.productId)}
-                  className="absolute top-2 right-2 p-1.5 bg-white shadow-lg hover:bg-twinkle-blush/20 transition-colors"
+                  className="absolute top-2 right-2 p-1.5 bg-white shadow-lg hover:bg-twinkle-rose/20 transition-colors"
                   title="Remove from wishlist"
                 >
                   <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
@@ -148,17 +148,17 @@ export default function WishlistPage() {
               <div className="p-4">
                 <p className="text-xs text-twinkle-ink/40 mb-1 capitalize">{item.product.category}</p>
                 <Link to={`/product/${item.product.id}`}>
-                  <h3 className="font-display text-sm font-semibold text-twinkle-ink mb-2 line-clamp-2 hover:text-twinkle-blush transition-colors">
+                  <h3 className="font-display text-sm font-semibold text-twinkle-ink mb-2 line-clamp-2 hover:text-twinkle-rose transition-colors">
                     {item.product.name}
                   </h3>
                 </Link>
-                <p className="font-body text-base font-bold text-twinkle-blush mb-3">
+                <p className="font-body text-base font-bold text-twinkle-rose mb-3">
                   {formatCurrency(item.product.price)}
                 </p>
                 <div className="flex gap-2">
                   <Link
                     to={`/product/${item.product.id}`}
-                    className="flex-1 text-center px-3 py-2 border border-twinkle-mist text-twinkle-ink/70 rounded-pill text-sm font-medium hover:bg-twinkle-mist/30 hover:border-twinkle-blush transition-all"
+                    className="flex-1 text-center px-3 py-2 border border-twinkle-mist text-twinkle-ink/70 rounded-pill text-sm font-medium hover:bg-twinkle-mist/30 hover:border-twinkle-rose transition-all"
                   >
                     View
                   </Link>

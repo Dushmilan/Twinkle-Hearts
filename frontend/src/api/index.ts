@@ -94,8 +94,8 @@ type Api = {
     delete: (id: string) => Promise<void>;
   };
   wishlist: {
-    list: () => Promise<WishlistItem[]>;
-    add: (productId: string) => Promise<WishlistItem>;
+    list: () => Promise<ApiEnvelope<WishlistItem[]>>;
+    add: (productId: string) => Promise<ApiEnvelope<WishlistItem>>;
     remove: (productId: string) => Promise<void>;
   };
   admin: {
@@ -176,7 +176,7 @@ export const api: Api = {
 
   wishlist: {
     list: () => request('/api/users/wishlist', { authenticated: true }),
-    add: (productId) => request('/api/users/wishlist', { method: 'POST', body: { productId }, authenticated: true }),
+    add: (productId) => request(`/api/users/wishlist/${productId}`, { method: 'POST', authenticated: true }),
     remove: (productId) => request(`/api/users/wishlist/${productId}`, { method: 'DELETE', authenticated: true }),
   },
 
