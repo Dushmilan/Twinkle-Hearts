@@ -1,7 +1,7 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { Heart, Gift, Sparkle } from 'lucide-react';
+import gsap from 'gsap';
 import { useAuth } from '../../context/AuthContext';
 import { useAuthStore } from '../../store/authStore';
 
@@ -12,8 +12,23 @@ export default function LoginPage() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const from = (location.state as any)?.from?.pathname || '/';
+
+  useEffect(() => {
+    if (heroRef.current) {
+      gsap.fromTo(heroRef.current, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' });
+    }
+    if (formRef.current) {
+      gsap.fromTo(formRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', delay: 0.2 });
+    }
+    const floaters = heroRef.current?.querySelectorAll('.floating-card');
+    if (floaters) {
+      gsap.to(floaters, { y: -12, duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1, stagger: 1 });
+    }
+  }, []);
 
   if (isLoading) return null;
   if (isAuthenticated) {
@@ -59,37 +74,22 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex bg-twinkle-canvas">
-      {/* Left: Hero Panel — Desktop only */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-twinkle-sage/20 via-twinkle-canvas to-twinkle-rose/10 relative overflow-hidden items-center justify-center p-12">
-        {/* Decorative floating elements */}
-        <motion.div
-          animate={{ y: [0, -12, 0] }}
-          transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
-          className="absolute top-20 left-16 w-20 h-28 bg-white rounded-2xl border border-twinkle-mist shadow-lg flex flex-col items-center justify-center p-3 rotate-6"
-        >
+      <div ref={heroRef} className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-twinkle-sage/20 via-twinkle-canvas to-twinkle-rose/10 relative overflow-hidden items-center justify-center p-12">
+        <div className="floating-card absolute top-20 left-16 w-20 h-28 bg-white rounded-2xl border border-twinkle-mist shadow-lg flex flex-col items-center justify-center p-3 rotate-6">
           <Heart size={20} className="text-twinkle-rose mb-2" />
           <span className="text-[10px] font-display text-twinkle-ink/60 text-center leading-tight">With Love</span>
-        </motion.div>
+        </div>
 
-        <motion.div
-          animate={{ y: [0, 16, 0] }}
-          transition={{ repeat: Infinity, duration: 7, ease: 'easeInOut', delay: 1 }}
-          className="absolute bottom-32 right-20 w-18 h-24 bg-white rounded-2xl border border-twinkle-mist shadow-lg flex flex-col items-center justify-center p-3 -rotate-4"
-        >
+        <div className="floating-card absolute bottom-32 right-20 w-18 h-24 bg-white rounded-2xl border border-twinkle-mist shadow-lg flex flex-col items-center justify-center p-3 -rotate-4">
           <Gift size={18} className="text-twinkle-sage mb-2" />
           <span className="text-[10px] font-display text-twinkle-ink/60 text-center leading-tight">Happy Birthday</span>
-        </motion.div>
+        </div>
 
-        <motion.div
-          animate={{ y: [0, -8, 0] }}
-          transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut', delay: 2 }}
-          className="absolute top-40 right-32 w-16 h-22 bg-white rounded-2xl border border-twinkle-mist shadow-lg flex flex-col items-center justify-center p-2 rotate-12"
-        >
+        <div className="floating-card absolute top-40 right-32 w-16 h-22 bg-white rounded-2xl border border-twinkle-mist shadow-lg flex flex-col items-center justify-center p-2 rotate-12">
           <Sparkle size={16} className="text-twinkle-mist mb-1" />
           <span className="text-[9px] font-display text-twinkle-ink/60 text-center leading-tight">Joy</span>
-        </motion.div>
+        </div>
 
-        {/* Hero Content */}
         <div className="relative z-10 max-w-md text-center">
           <div className="w-16 h-16 rounded-full bg-twinkle-rose/15 flex items-center justify-center mx-auto mb-6">
             <Heart size={28} className="text-twinkle-rose" />
@@ -113,10 +113,8 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right: Login Form */}
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-md w-full">
-          {/* Mobile Logo */}
           <div className="text-center mb-8 lg:hidden">
             <Link to="/" className="inline-flex items-center gap-2">
               <Heart size={28} className="text-twinkle-rose" />
@@ -126,7 +124,7 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <div className="card rounded-2xl p-8">
+          <div ref={formRef} className="card rounded-2xl p-8">
             <div className="text-center mb-8">
               <h1 className="font-display text-2xl font-bold text-twinkle-ink">Welcome Back</h1>
               <p className="text-twinkle-ink/50 mt-1">Sign in to your account</p>
@@ -195,7 +193,6 @@ export default function LoginPage() {
               </button>
             </form>
 
-            {/* Divider */}
             <div className="mt-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">

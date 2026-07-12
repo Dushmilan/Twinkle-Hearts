@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { motion, stagger, useAnimate } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import { cn } from '../../lib/utils';
 
 export const TextGenerateEffect = ({
@@ -13,32 +13,37 @@ export const TextGenerateEffect = ({
   filter?: boolean;
   duration?: number;
 }) => {
-  const [scope, animate] = useAnimate();
+  const containerRef = useRef<HTMLDivElement>(null);
   const wordsArray = words.split(' ');
 
   useEffect(() => {
-    animate(
-      'span',
-      { opacity: 1, filter: filter ? 'blur(0px)' : 'none' },
-      { duration: duration ?? 1, delay: stagger(0.2) },
+    if (!containerRef.current) return;
+    const spans = containerRef.current.querySelectorAll('span');
+
+    gsap.fromTo(
+      spans,
+      { opacity: 0, filter: filter ? 'blur(10px)' : 'none' },
+      {
+        opacity: 1,
+        filter: 'blur(0px)',
+        duration: duration ?? 1,
+        stagger: 0.2,
+        ease: 'power2.out',
+      },
     );
-  }, [animate, scope.current]);
+  }, [duration, filter]);
 
   return (
     <div className={cn('font-bold', className)}>
       <div className="mt-4">
         <div className="text-2xl leading-snug tracking-wide">
-          <motion.div ref={scope}>
+          <div ref={containerRef}>
             {wordsArray.map((word, idx) => (
-              <motion.span
-                key={word + idx}
-                className="opacity-0"
-                style={{ filter: filter ? 'blur(10px)' : 'none' }}
-              >
+              <span key={word + idx} className="opacity-0" style={{ filter: filter ? 'blur(10px)' : 'none' }}>
                 {word}{' '}
-              </motion.span>
+              </span>
             ))}
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

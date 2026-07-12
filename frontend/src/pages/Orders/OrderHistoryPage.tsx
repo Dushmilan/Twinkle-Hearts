@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, type Variants } from 'framer-motion';
+import gsap from 'gsap';
 import { Package, CheckCircle, Truck, Clock, XCircle } from 'lucide-react';
 import { api } from '../../api.js';
 import { useAuthStore } from '../../store/authStore';
@@ -72,20 +72,11 @@ const STATUS_CONFIG: Record<string, {
   },
 };
 
-const containerVariants: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 120, damping: 18 } },
-};
-
 export default function OrderHistoryPage() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -94,6 +85,12 @@ export default function OrderHistoryPage() {
       setIsLoading(false);
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (!listRef.current || orders.length === 0) return;
+    const items = listRef.current.querySelectorAll('.order-card');
+    gsap.fromTo(items, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.12, ease: 'power3.out' });
+  }, [orders]);
 
   const fetchOrders = async () => {
     try {
@@ -157,20 +154,14 @@ export default function OrderHistoryPage() {
             </div>
           </div>
         ) : (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="space-y-4"
-          >
+          <div ref={listRef} className="space-y-4">
             {orders.map((order) => {
               const statusConfig = getStatusConfig(order.status);
               const StatusIcon = statusConfig.icon;
               const timelineSteps = getTimelineSteps(order.status || 'PENDING_WHATSAPP_CONFIRMATION');
 
               return (
-                <motion.div key={order.id} variants={itemVariants} className="card p-6">
-                  {/* Order Header */}
+                <div key={order.id} className="order-card card p-6">
                   <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
                     <div>
                       <h3 className="font-display text-lg font-semibold text-twinkle-ink">
@@ -188,14 +179,12 @@ export default function OrderHistoryPage() {
                     </div>
                   </div>
 
-                  {/* Warm Status Message */}
                   <div className={`${statusConfig.bgColor} rounded-xl p-4 mb-4`}>
                     <p className={`text-sm font-medium ${statusConfig.color}`}>
                       {statusConfig.message}
                     </p>
                   </div>
 
-                  {/* Timeline */}
                   {order.status !== 'CANCELLED' && order.status !== 'EXPIRED' && (
                     <div className="flex items-center gap-0 mb-4 px-2">
                       {timelineSteps.map((step, index) => {
@@ -226,7 +215,6 @@ export default function OrderHistoryPage() {
                     </div>
                   )}
 
-                  {/* Order Items */}
                   <div className="border-t border-b border-twinkle-mist py-4 my-4 space-y-3">
                     {order.items.map((item: any, index) => (
                       <div key={index} className="flex justify-between items-center">
@@ -241,7 +229,6 @@ export default function OrderHistoryPage() {
                     ))}
                   </div>
 
-                  {/* Order Footer */}
                   <div className="flex justify-between items-center">
                     <div>
                       <p className="text-sm text-twinkle-ink/50">
@@ -255,10 +242,10 @@ export default function OrderHistoryPage() {
                       View Details
                     </Link>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

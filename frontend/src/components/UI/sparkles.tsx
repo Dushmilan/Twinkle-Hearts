@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { useMemo, useRef, useEffect } from 'react';
+import gsap from 'gsap';
 import { cn } from '../../lib/utils';
 
 interface Sparkle {
@@ -24,6 +24,9 @@ export const SparklesCore = ({
   minSize?: number;
   maxSize?: number;
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sparkleRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   const sparkles = useMemo<Sparkle[]>(() => {
     const items: Sparkle[] = [];
     for (let i = 0; i < particleDensity; i++) {
@@ -39,11 +42,79 @@ export const SparklesCore = ({
     return items;
   }, [particleDensity, minSize, maxSize]);
 
+  useEffect(() => {
+    sparkleRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const s = sparkles[i];
+      gsap.fromTo(
+        el,
+        { opacity: 0, scale: 0 },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: s.duration * 0.3,
+          delay: s.delay,
+          ease: 'power2.out',
+        },
+      );
+      gsap.to(el, {
+        opacity: 0.3,
+        scale: 0.5,
+        duration: s.duration * 0.3,
+        delay: s.delay + s.duration * 0.3,
+        ease: 'power2.in',
+      });
+      gsap.to(el, {
+        opacity: 1,
+        scale: 1,
+        duration: s.duration * 0.2,
+        delay: s.delay + s.duration * 0.6,
+        ease: 'power2.out',
+      });
+      gsap.to(el, {
+        opacity: 0,
+        scale: 0,
+        duration: s.duration * 0.2,
+        delay: s.delay + s.duration * 0.8,
+        ease: 'power2.in',
+        onComplete: () => {
+          gsap.set(el, { opacity: 0, scale: 0 });
+          gsap.fromTo(
+            el,
+            { opacity: 0, scale: 0 },
+            {
+              opacity: 1,
+              scale: 1,
+              duration: s.duration * 0.25,
+              delay: 0,
+              ease: 'power2.out',
+              onComplete: () => {
+                const cycle = gsap.timeline({ repeat: -1 });
+                cycle
+                  .to(el, { opacity: 0.3, scale: 0.5, duration: s.duration * 0.3, ease: 'sine.inOut' })
+                  .to(el, { opacity: 1, scale: 1, duration: s.duration * 0.2, ease: 'sine.inOut' })
+                  .to(el, { opacity: 0, scale: 0, duration: s.duration * 0.2, ease: 'sine.inOut' })
+                  .to(el, { opacity: 0, scale: 0, duration: s.duration * 0.3 });
+              },
+            },
+          );
+        },
+      });
+    });
+
+    return () => {
+      sparkleRefs.current.forEach((el) => {
+        if (el) gsap.killTweensOf(el);
+      });
+    };
+  }, [sparkles]);
+
   return (
-    <div className={cn('absolute inset-0 overflow-hidden pointer-events-none', className)}>
-      {sparkles.map((s) => (
-        <motion.div
+    <div ref={containerRef} className={cn('absolute inset-0 overflow-hidden pointer-events-none', className)}>
+      {sparkles.map((s, i) => (
+        <div
           key={s.id}
+          ref={(el) => { sparkleRefs.current[i] = el; }}
           className="absolute rounded-full"
           style={{
             left: `${s.x}%`,
@@ -51,16 +122,8 @@ export const SparklesCore = ({
             width: s.size,
             height: s.size,
             backgroundColor: particleColor,
-          }}
-          animate={{
-            opacity: [0, 1, 0.3, 1, 0],
-            scale: [0, 1, 0.5, 1, 0],
-          }}
-          transition={{
-            duration: s.duration,
-            delay: s.delay,
-            repeat: Infinity,
-            ease: 'easeInOut',
+            opacity: 0,
+            transform: 'scale(0)',
           }}
         />
       ))}

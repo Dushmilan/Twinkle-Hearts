@@ -1,6 +1,6 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import gsap from 'gsap';
 import { User, Package, Heart, MapPin, LogOut } from 'lucide-react';
 import { api } from '../../api.js';
 import { useAuthStore } from '../../store/authStore';
@@ -20,6 +20,14 @@ export default function ProfilePage() {
     phone: user?.phone || '',
     avatar: user?.avatar || '',
   });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const items = containerRef.current.querySelectorAll('.profile-item');
+      gsap.fromTo(items, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.12, ease: 'power3.out' });
+    }
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -65,20 +73,13 @@ export default function ProfilePage() {
       <div className="max-w-3xl mx-auto px-4 py-8">
         <h1 className="font-display text-3xl font-bold text-twinkle-ink mb-8">My Profile</h1>
 
-        <div className="space-y-6">
-          {/* Profile Info Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="card p-6"
-          >
+        <div ref={containerRef} className="space-y-6">
+          <div className="profile-item card p-6">
             <div className="flex items-center gap-3 mb-6">
               <User size={18} className="text-twinkle-rose" />
               <h2 className="font-display text-lg font-semibold text-twinkle-ink">Personal Information</h2>
             </div>
 
-            {/* Avatar & Name Header */}
             <div className="flex items-center gap-5 mb-6 pb-6 border-b border-twinkle-mist">
               <div className="w-20 h-20 bg-twinkle-rose/15 rounded-full flex items-center justify-center flex-shrink-0">
                 <span className="text-2xl font-display font-bold text-twinkle-rose">
@@ -153,15 +154,10 @@ export default function ProfilePage() {
                 </button>
               </div>
             )}
-          </motion.div>
+          </div>
 
-          {/* Quick Links Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-            >
+            <div className="profile-item">
               <Link to="/orders" className="card p-5 flex items-center gap-4 hover:shadow-md transition-shadow block min-h-[44px]">
                 <div className="w-12 h-12 rounded-xl bg-twinkle-sage/15 flex items-center justify-center flex-shrink-0">
                   <Package size={20} className="text-twinkle-sage" />
@@ -171,13 +167,9 @@ export default function ProfilePage() {
                   <p className="text-xs text-twinkle-ink/50">Track your card orders</p>
                 </div>
               </Link>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.15 }}
-            >
+            <div className="profile-item">
               <Link to="/wishlist" className="card p-5 flex items-center gap-4 hover:shadow-md transition-shadow block min-h-[44px]">
                 <div className="w-12 h-12 rounded-xl bg-twinkle-rose/15 flex items-center justify-center flex-shrink-0">
                   <Heart size={20} className="text-twinkle-rose" />
@@ -187,13 +179,9 @@ export default function ProfilePage() {
                   <p className="text-xs text-twinkle-ink/50">Cards you love</p>
                 </div>
               </Link>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-            >
+            <div className="profile-item">
               <Link to="/addresses" className="card p-5 flex items-center gap-4 hover:shadow-md transition-shadow block min-h-[44px]">
                 <div className="w-12 h-12 rounded-xl bg-twinkle-mist/30 flex items-center justify-center flex-shrink-0">
                   <MapPin size={20} className="text-twinkle-ink/50" />
@@ -203,13 +191,9 @@ export default function ProfilePage() {
                   <p className="text-xs text-twinkle-ink/50">Manage delivery addresses</p>
                 </div>
               </Link>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.25 }}
-            >
+            <div className="profile-item">
               <button
                 onClick={handleLogout}
                 className="card p-5 flex items-center gap-4 hover:shadow-md transition-shadow w-full text-left min-h-[44px]"
@@ -222,7 +206,7 @@ export default function ProfilePage() {
                   <p className="text-xs text-twinkle-ink/50">Log out of your account</p>
                 </div>
               </button>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>

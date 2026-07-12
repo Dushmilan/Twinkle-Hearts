@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { motion, type Variants } from 'framer-motion';
+import gsap from 'gsap';
 import { Search, X, SlidersHorizontal } from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
 import { api } from '../../api.js';
@@ -19,23 +19,6 @@ const CATEGORIES = [
 
 const PRODUCTS_PER_PAGE = 12;
 
-const containerVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.06 },
-  },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { type: 'spring' as const, stiffness: 120, damping: 18 },
-  },
-};
-
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -52,8 +35,10 @@ export default function ShopPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const addItem = useCartStore((state) => state.addItem);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const filterRef = useRef<HTMLDivElement>(null);
 
-  // Debounce search input
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
@@ -65,7 +50,6 @@ export default function ShopPage() {
     };
   }, [searchQuery]);
 
-  // Sync category from URL
   useEffect(() => {
     const categoryFromUrl = searchParams.get('category');
     if (categoryFromUrl && categoryFromUrl !== activeCategory) {
@@ -73,10 +57,34 @@ export default function ShopPage() {
     }
   }, [searchParams]);
 
-  // Fetch products
   useEffect(() => {
     fetchProducts(true);
   }, [activeCategory, debouncedSearch]);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      gsap.fromTo(headerRef.current, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!gridRef.current || products.length === 0) return;
+    const items = gridRef.current.querySelectorAll('.product-grid-item');
+    gsap.fromTo(
+      items,
+      { opacity: 0, y: 20, scale: 0.95 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.12, ease: 'power3.out' },
+    );
+  }, [products.length, activeCategory, debouncedSearch, priceMin, priceMax]);
+
+  useEffect(() => {
+    if (!filterRef.current) return;
+    if (showFilters) {
+      gsap.fromTo(filterRef.current, { height: 0, opacity: 0 }, { height: 'auto', opacity: 1, duration: 0.25, ease: 'power2.out' });
+    } else {
+      gsap.to(filterRef.current, { height: 0, opacity: 0, duration: 0.2, ease: 'power2.in' });
+    }
+  }, [showFilters]);
 
   async function fetchProducts(reset = false) {
     setLoading(true);
@@ -87,7 +95,6 @@ export default function ShopPage() {
       const fetched = data.products || [];
       setAllProducts(fetched);
 
-      // Apply client-side price filter
       let filtered = fetched;
       if (priceMin) {
         filtered = filtered.filter((p) => p.price >= Number(priceMin));
@@ -106,7 +113,6 @@ export default function ShopPage() {
     }
   }
 
-  // Re-filter when price changes
   useEffect(() => {
     if (allProducts.length === 0) return;
     let filtered = allProducts;
@@ -164,26 +170,14 @@ export default function ShopPage() {
 
   return (
     <div className="bg-twinkle-canvas min-h-screen">
-      {/* Page Header with Search */}
       <section className="bg-gradient-to-br from-white via-twinkle-canvas to-twinkle-sage/20 border-b border-twinkle-mist/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-8"
-          >
+          <div ref={headerRef} className="text-center mb-8">
             <h1 className="section-heading">Browse Our Collection</h1>
             <p className="section-subheading mt-2 mx-auto">Find the perfect card for your moment</p>
-          </motion.div>
+          </div>
 
-          {/* Search Bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="max-w-xl mx-auto relative"
-          >
+          <div className="max-w-xl mx-auto relative">
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-twinkle-ink/40" />
             <input
               type="text"
@@ -202,9 +196,8 @@ export default function ShopPage() {
                 <X size={12} />
               </button>
             )}
-          </motion.div>
+          </div>
 
-          {/* Filter Toggle (mobile) */}
           <div className="mt-4 flex justify-center sm:hidden">
             <button
               onClick={() => setShowFilters(!showFilters)}
@@ -222,10 +215,8 @@ export default function ShopPage() {
         </div>
       </section>
 
-      {/* Category Pills + Filters */}
       <section className="bg-white border-b border-twinkle-mist/50 sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          {/* Desktop: Category pills + filter toggle */}
           <div className="hidden sm:flex items-center gap-4">
             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide flex-1">
               {CATEGORIES.map((cat) => (
@@ -255,7 +246,6 @@ export default function ShopPage() {
             </button>
           </div>
 
-          {/* Mobile: Category pills */}
           <div className="sm:hidden flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
             {CATEGORIES.map((cat) => (
               <button
@@ -271,15 +261,8 @@ export default function ShopPage() {
             ))}
           </div>
 
-          {/* Price Range Filter (expandable) */}
           {showFilters && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="mt-4 pt-4 border-t border-twinkle-mist/40"
-            >
+            <div ref={filterRef} className="mt-4 pt-4 border-t border-twinkle-mist/40 overflow-hidden" style={{ height: 0, opacity: 0 }}>
               <div className="flex items-center gap-4 flex-wrap">
                 <span className="text-sm font-medium text-twinkle-ink/70">Price range (LKR):</span>
                 <div className="flex items-center gap-2">
@@ -310,12 +293,11 @@ export default function ShopPage() {
                   </button>
                 )}
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
       </section>
 
-      {/* Active Filter Badges */}
       {activeFilterCount > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="flex items-center gap-2 flex-wrap">
@@ -362,10 +344,8 @@ export default function ShopPage() {
         </div>
       )}
 
-      {/* Products Grid */}
       <section>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-          {/* Section header */}
           <div className="flex items-end justify-between mb-8">
             <div>
               <h2 className="font-display text-2xl sm:text-3xl font-bold text-twinkle-ink">
@@ -412,33 +392,27 @@ export default function ShopPage() {
               <p className="empty-state-text">
                 Try a different search term, browse by category, or clear your filters.
               </p>
-              <button
-                onClick={clearAllFilters}
-                className="btn-primary mt-6"
-              >
+              <button onClick={clearAllFilters} className="btn-primary mt-6">
                 Clear All Filters
               </button>
             </div>
           ) : (
             <>
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
+              <div
+                ref={gridRef}
                 key={`${activeCategory}-${debouncedSearch}-${priceMin}-${priceMax}`}
                 className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
               >
                 {products.map((product) => (
-                  <motion.div key={product.id} variants={itemVariants}>
+                  <div key={product.id} className="product-grid-item">
                     <ProductCard
                       product={product}
                       onAddToCart={handleAddToCart}
                     />
-                  </motion.div>
+                  </div>
                 ))}
-              </motion.div>
+              </div>
 
-              {/* Load More */}
               {hasMore && (
                 <div className="mt-10 text-center">
                   <button

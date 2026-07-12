@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, type Variants } from 'framer-motion';
+import gsap from 'gsap';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { api } from '../../api.js';
 import { useAuthStore } from '../../store/authStore';
@@ -26,21 +26,12 @@ interface WishlistItem {
   product: Product;
 }
 
-const containerVariants: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.06 } },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 16, scale: 0.95 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring' as const, stiffness: 120, damping: 18 } },
-};
-
 export default function WishlistPage() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const addItem = useCartStore((state) => state.addItem);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -49,6 +40,12 @@ export default function WishlistPage() {
       setIsLoading(false);
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (!gridRef.current || wishlist.length === 0) return;
+    const items = gridRef.current.querySelectorAll('.wishlist-item');
+    gsap.fromTo(items, { opacity: 0, y: 16, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, stagger: 0.12, ease: 'power3.out' });
+  }, [wishlist]);
 
   const fetchWishlist = async () => {
     try {
@@ -163,14 +160,9 @@ export default function WishlistPage() {
             </div>
           </div>
         ) : (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
-          >
+          <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {wishlist.map((item) => (
-              <motion.div key={item.id} variants={itemVariants} className="product-card group">
+              <div key={item.id} className="wishlist-item product-card group">
                 <div className="relative">
                   <Link to={`/product/${item.product.id}`} className="block">
                     <div className="aspect-[3/4] bg-twinkle-mist/20 overflow-hidden">
@@ -219,9 +211,9 @@ export default function WishlistPage() {
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

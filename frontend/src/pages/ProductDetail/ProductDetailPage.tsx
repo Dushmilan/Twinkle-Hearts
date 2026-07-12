@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { motion, type Variants } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import { Heart, ShoppingCart, Star, MessageSquare } from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
 import { api } from '../../api.js';
@@ -25,16 +25,6 @@ const MOCK_REVIEWS = [
   { id: '3', name: 'David L.', rating: 4, comment: 'Lovely design and fast delivery. Would definitely order again.', date: '3 weeks ago' },
 ];
 
-const containerVariants: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.06 } },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 120, damping: 18 } },
-};
-
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
@@ -47,6 +37,10 @@ export default function ProductDetailPage() {
   const [reviewComment, setReviewComment] = useState('');
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const reviewsRef = useRef<HTMLDivElement>(null);
+  const relatedRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (id) {
@@ -54,12 +48,41 @@ export default function ProductDetailPage() {
     }
   }, [id]);
 
+  useEffect(() => {
+    if (!product) return;
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.fromTo(imageRef.current, { opacity: 0, scale: 0.98 }, { opacity: 1, scale: 1, duration: 0.5 });
+    const contentItems = contentRef.current?.querySelectorAll('.product-info-item');
+    if (contentItems) {
+      tl.fromTo(contentItems, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.12 }, '-=0.2');
+    }
+    gsap.fromTo('.detail-section', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, scrollTrigger: { trigger: '.detail-section', start: 'top 90%' } });
+  }, [product]);
+
+  useEffect(() => {
+    if (reviewsRef.current) {
+      gsap.fromTo(
+        reviewsRef.current.querySelectorAll('.review-card'),
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.45, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: reviewsRef.current, start: 'top 85%' } },
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (relatedProducts.length > 0 && relatedRef.current) {
+      gsap.fromTo(
+        relatedRef.current.querySelectorAll('.related-item'),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.45, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: relatedRef.current, start: 'top 85%' } },
+      );
+    }
+  }, [relatedProducts]);
+
   async function fetchProduct(productId: string) {
     try {
       const data = await api.products.get(productId);
       setProduct(data.product);
-
-      // Fetch related products (same category)
       if (data.product?.category) {
         try {
           const related = await api.products.list({ category: data.product.category, limit: 5 });
@@ -153,7 +176,6 @@ export default function ProductDetailPage() {
   return (
     <div className="bg-twinkle-canvas min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-twinkle-ink/70 mb-8" aria-label="Breadcrumb">
           <Link to="/shop" className="hover:text-twinkle-rose transition-colors">Shop</Link>
           <svg className="w-4 h-4 text-twinkle-ink/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -163,15 +185,8 @@ export default function ProductDetailPage() {
         </nav>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          {/* Product Images */}
-          <div>
-            {/* Main Image with Zoom */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4 }}
-              className="aspect-[4/5] bg-twinkle-mist/20 rounded-xl overflow-hidden shadow-lg mb-4 image-zoom-container"
-            >
+          <div ref={imageRef}>
+            <div className="aspect-[4/5] bg-twinkle-mist/20 rounded-xl overflow-hidden shadow-lg mb-4 image-zoom-container">
               {images[activeImage] ? (
                 <img
                   src={getImageSrc(images[activeImage])}
@@ -187,9 +202,8 @@ export default function ProductDetailPage() {
                   <span className="font-display text-lg">Card Preview</span>
                 </div>
               )}
-            </motion.div>
+            </div>
 
-            {/* Thumbnail Strip */}
             {images.length > 1 && (
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
                 {images.map((image, idx) => (
@@ -213,55 +227,29 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* Product Info */}
-          <div className="flex flex-col">
-            {/* Category Badge */}
-            <div className="mb-3">
+          <div ref={contentRef} className="flex flex-col">
+            <div className="product-info-item mb-3">
               {getCategoryBadge(product.category)}
             </div>
 
-            {/* Title */}
-            <motion.h1
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-              className="font-display text-3xl sm:text-4xl font-bold text-twinkle-ink mb-3"
-            >
+            <h1 className="product-info-item font-display text-3xl sm:text-4xl font-bold text-twinkle-ink mb-3">
               {product.name}
-            </motion.h1>
+            </h1>
 
-            {/* Price */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.15 }}
-              className="flex items-baseline gap-2 mb-6"
-            >
+            <div className="product-info-item flex items-baseline gap-2 mb-6">
               <span className="font-body text-3xl font-bold text-twinkle-rose">
                 {formatPrice(product.price)}
               </span>
               <span className="text-sm text-twinkle-ink/50">incl. tax</span>
-            </motion.div>
+            </div>
 
-            {/* Description */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              className="prose prose-sm max-w-none mb-6"
-            >
+            <div className="product-info-item prose prose-sm max-w-none mb-6">
               <p className="text-twinkle-ink/70 leading-relaxed">{product.description}</p>
-            </motion.div>
+            </div>
 
-            {/* Stock Status */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.25 }}
-              className={`flex items-center gap-2 mb-6 ${
-                product.stock > 0 ? 'text-emerald-600' : 'text-red-500'
-              }`}
-            >
+            <div className={`product-info-item flex items-center gap-2 mb-6 ${
+              product.stock > 0 ? 'text-emerald-600' : 'text-red-500'
+            }`}>
               <span className={`w-2 h-2 rounded-full ${product.stock > 0 ? 'bg-emerald-500' : 'bg-red-500'}`} />
               <span className="text-sm font-medium">
                 {product.stock > 0
@@ -270,15 +258,9 @@ export default function ProductDetailPage() {
                     : `In Stock — ${product.stock} available`
                   : 'Currently out of stock'}
               </span>
-            </motion.div>
+            </div>
 
-            {/* Who is this for? */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.3 }}
-              className="who-is-for mb-6"
-            >
+            <div className="product-info-item who-is-for mb-6">
               <p className="who-is-for-title">Perfect for:</p>
               <ul className="who-is-for-list">
                 {whoIsFor.map((item) => (
@@ -288,16 +270,10 @@ export default function ProductDetailPage() {
                   </li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
 
-            {/* Quantity Selector */}
             {product.stock > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.35 }}
-                className="mb-6"
-              >
+              <div className="product-info-item mb-6">
                 <label className="label-text">Quantity</label>
                 <div className="flex items-center gap-3">
                   <button
@@ -316,23 +292,16 @@ export default function ProductDetailPage() {
                     +
                   </button>
                 </div>
-              </motion.div>
+              </div>
             )}
 
-            {/* Add to Cart */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.4 }}
-            >
+            <div className="product-info-item">
               <button
                 onClick={handleAddToCart}
                 disabled={product.stock === 0}
                 className={`btn-primary w-full py-3.5 text-base ${
                   justAdded ? 'animate-heart-pop bg-emerald-500' : ''
-                } ${
-                  product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
+                } ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {justAdded ? (
                   <>
@@ -350,14 +319,9 @@ export default function ProductDetailPage() {
                   </>
                 )}
               </button>
-            </motion.div>
+            </div>
 
-            {/* WhatsApp CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.45 }}
-            >
+            <div className="product-info-item">
               <a
                 href="https://wa.me/947XXXXXXXX?text=Hi!%20I%20have%20a%20question%20about%20this%20card."
                 target="_blank"
@@ -367,15 +331,9 @@ export default function ProductDetailPage() {
                 <WhatsAppIcon className="w-4 h-4" />
                 Have a question? Chat with us
               </a>
-            </motion.div>
+            </div>
 
-            {/* Details */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.5 }}
-              className="mt-8 pt-8 border-t border-twinkle-mist"
-            >
+            <div className="detail-section mt-8 pt-8 border-t border-twinkle-mist">
               <dl className="space-y-4 text-sm">
                 <div className="flex justify-between">
                   <dt className="text-twinkle-ink/50">Category</dt>
@@ -386,18 +344,11 @@ export default function ProductDetailPage() {
                   <dd className="font-medium text-emerald-600">Free via WhatsApp delivery</dd>
                 </div>
               </dl>
-            </motion.div>
+            </div>
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-          className="mt-16 sm:mt-24"
-        >
+        <section ref={reviewsRef} className="mt-16 sm:mt-24">
           <div className="flex items-center gap-3 mb-8">
             <MessageSquare size={20} className="text-twinkle-rose" />
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-twinkle-ink">What others say</h2>
@@ -405,7 +356,7 @@ export default function ProductDetailPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {MOCK_REVIEWS.map((review) => (
-              <div key={review.id} className="review-card">
+              <div key={review.id} className="review-card card p-5">
                 <div className="flex items-center gap-1 mb-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
@@ -424,7 +375,6 @@ export default function ProductDetailPage() {
             ))}
           </div>
 
-          {/* Write a Review */}
           <div className="mt-8 card p-6">
             <h3 className="font-display text-lg font-semibold text-twinkle-ink mb-4">Tell us about this card</h3>
             {reviewSubmitted ? (
@@ -474,36 +424,23 @@ export default function ProductDetailPage() {
               </form>
             )}
           </div>
-        </motion.section>
+        </section>
 
-        {/* Related Products */}
         {relatedProducts.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.5 }}
-            className="mt-16 sm:mt-24"
-          >
+          <section ref={relatedRef} className="mt-16 sm:mt-24">
             <div className="flex items-center gap-3 mb-8">
               <Heart size={20} className="text-twinkle-rose" />
               <h2 className="font-display text-2xl sm:text-3xl font-bold text-twinkle-ink">Others also browsed</h2>
             </div>
 
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6"
-            >
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
               {relatedProducts.map((p) => (
-                <motion.div key={p.id} variants={itemVariants}>
+                <div key={p.id} className="related-item">
                   <ProductCard product={p} />
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
-          </motion.section>
+            </div>
+          </section>
         )}
       </div>
     </div>

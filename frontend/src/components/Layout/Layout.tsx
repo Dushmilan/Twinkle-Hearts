@@ -1,5 +1,4 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Heart,
   ShoppingCart,
@@ -15,33 +14,13 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
 import { useAuth } from '../../context/AuthContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from '../../utils/gsap-utils';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
-
-const menuItemVariants = {
-  hidden: { opacity: 0, x: -8 },
-  visible: (i: number) => ({
-    opacity: 1,
-    x: 0,
-    transition: {
-      type: 'spring' as const,
-      stiffness: 300,
-      damping: 25,
-      delay: i * 0.04,
-    },
-  }),
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.04 },
-  },
-};
 
 export default function Layout({ children }: LayoutProps) {
   const itemCount = useCartStore((s) => s.getItemCount());
@@ -51,6 +30,9 @@ export default function Layout({ children }: LayoutProps) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const headerRef = useRef<HTMLElement>(null);
+  const footerRef = useRef<HTMLElement>(null);
+  const mainRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -58,6 +40,39 @@ export default function Layout({ children }: LayoutProps) {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      gsap.set(headerRef.current, { y: -80, opacity: 0 });
+      gsap.to(headerRef.current, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.1 });
+    }
+    ScrollTrigger.refresh();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (footerRef.current) {
+      gsap.fromTo(
+        footerRef.current.children,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, stagger: 0.06, ease: 'power3.out', scrollTrigger: { trigger: footerRef.current, start: 'top 90%' } },
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const tl = gsap.timeline();
+    tl.fromTo('.dropdown-menu', { opacity: 0, y: -6, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: 'back.out(1.4)' });
+    return () => { tl.kill(); };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileNavOpen) return;
+    const tl = gsap.timeline();
+    tl.fromTo('.mobile-nav', { height: 0, opacity: 0 }, { height: 'auto', opacity: 1, duration: 0.3, ease: 'power2.out' })
+      .fromTo('.mobile-nav-item', { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: 0.25, stagger: 0.04, ease: 'power2.out' }, '-=0.1');
+    return () => { tl.kill(); };
+  }, [isMobileNavOpen]);
 
   const handleLogout = async () => {
     await logout();
@@ -70,7 +85,10 @@ export default function Layout({ children }: LayoutProps) {
     <div className="min-h-[100dvh] bg-twinkle-canvas flex flex-col">
       <OfflineBanner />
 
-      <header className={`sticky top-0 z-50 transition-all duration-300 backdrop-blur-md border-b ${scrolled ? 'bg-white/95 shadow-sm border-twinkle-mist/60' : 'bg-white/70 border-twinkle-mist/20'}`}>
+      <header
+        ref={headerRef}
+        className={`sticky top-0 z-50 transition-all duration-300 backdrop-blur-md border-b ${scrolled ? 'bg-white/95 shadow-sm border-twinkle-mist/60' : 'bg-white/70 border-twinkle-mist/20'}`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center gap-2.5 group">
@@ -79,10 +97,9 @@ export default function Layout({ children }: LayoutProps) {
                   size={20}
                   className="text-twinkle-rose group-hover:scale-110 transition-transform duration-300"
                 />
-                <motion.span
+                <span
                   className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-twinkle-rose"
-                  animate={{ opacity: [0.4, 1, 0.4] }}
-                  transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                  style={{ animation: 'pulseSoft 2s ease-in-out infinite' }}
                 />
               </div>
               <span className="text-xl font-display font-semibold text-twinkle-ink tracking-tight">
@@ -103,20 +120,14 @@ export default function Layout({ children }: LayoutProps) {
                 className="relative p-2.5 text-twinkle-ink/50 hover:text-twinkle-ink transition-colors rounded-xl hover:bg-twinkle-mist/30"
               >
                 <ShoppingCart size={20} />
-                <AnimatePresence>
-                  {itemCount > 0 && (
-                    <motion.span
-                      key="cart-badge"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                      className="absolute -top-0.5 -right-0.5 bg-twinkle-rose text-white text-[11px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center"
-                    >
-                      {itemCount > 9 ? '9+' : itemCount}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+                {itemCount > 0 && (
+                  <span
+                    className="cart-badge absolute -top-0.5 -right-0.5 bg-twinkle-rose text-white text-[11px] font-bold rounded-full w-[18px] h-[18px] flex items-center justify-center"
+                    style={{ animation: 'scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
+                  >
+                    {itemCount > 9 ? '9+' : itemCount}
+                  </span>
+                )}
               </Link>
 
               {isAuthenticated ? (
@@ -134,56 +145,51 @@ export default function Layout({ children }: LayoutProps) {
                     />
                   </button>
 
-                  <AnimatePresence>
-                    {isMenuOpen && (
-                      <>
-                        <div className="fixed inset-0 z-10" onClick={() => setIsMenuOpen(false)} />
-                        <motion.div
-                          initial={{ opacity: 0, y: -6, scale: 0.96 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: -6, scale: 0.96 }}
-                          transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                          className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-twinkle-mist z-20 overflow-hidden"
-                        >
-                          <div className="px-4 py-3 border-b border-twinkle-mist/40">
-                            <p className="text-sm font-semibold text-twinkle-ink">{user?.name}</p>
-                            <p className="text-xs text-twinkle-ink/50 truncate">{user?.email}</p>
-                          </div>
-                          <div className="py-1.5">
-                            <DropdownLink to="/profile" icon={User} onClick={() => setIsMenuOpen(false)}>
-                              Profile
-                            </DropdownLink>
-                            <DropdownLink to="/orders" icon={Package} onClick={() => setIsMenuOpen(false)}>
-                              Orders
-                            </DropdownLink>
-                            <DropdownLink to="/addresses" icon={MapPin} onClick={() => setIsMenuOpen(false)}>
-                              Addresses
-                            </DropdownLink>
-                            <DropdownLink to="/wishlist" icon={Heart} onClick={() => setIsMenuOpen(false)}>
-                              Wishlist
-                            </DropdownLink>
-                            {user?.role === 'ADMIN' && (
-                              <>
-                                <div className="my-1.5 border-t border-twinkle-mist/40" />
-                                <DropdownLink to="/admin" icon={HeartPulse} onClick={() => setIsMenuOpen(false)} highlight>
-                                  Admin Dashboard
-                                </DropdownLink>
-                              </>
-                            )}
-                          </div>
-                          <div className="border-t border-twinkle-mist/40 py-1.5">
-                            <button
-                              onClick={handleLogout}
-                              className="flex items-center gap-3 w-full text-left px-4 py-2 text-sm text-twinkle-rose hover:bg-twinkle-rose/20 transition-colors"
-                            >
-                              <LogOut size={15} />
-                              Logout
-                            </button>
-                          </div>
-                        </motion.div>
-                      </>
-                    )}
-                  </AnimatePresence>
+                  {isMenuOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setIsMenuOpen(false)} />
+                      <div
+                        className="dropdown-menu absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-twinkle-mist z-20 overflow-hidden"
+                        style={{ opacity: 0, transform: 'translateY(-6px) scale(0.96)' }}
+                      >
+                        <div className="px-4 py-3 border-b border-twinkle-mist/40">
+                          <p className="text-sm font-semibold text-twinkle-ink">{user?.name}</p>
+                          <p className="text-xs text-twinkle-ink/50 truncate">{user?.email}</p>
+                        </div>
+                        <div className="py-1.5">
+                          <DropdownLink to="/profile" icon={User} onClick={() => setIsMenuOpen(false)}>
+                            Profile
+                          </DropdownLink>
+                          <DropdownLink to="/orders" icon={Package} onClick={() => setIsMenuOpen(false)}>
+                            Orders
+                          </DropdownLink>
+                          <DropdownLink to="/addresses" icon={MapPin} onClick={() => setIsMenuOpen(false)}>
+                            Addresses
+                          </DropdownLink>
+                          <DropdownLink to="/wishlist" icon={Heart} onClick={() => setIsMenuOpen(false)}>
+                            Wishlist
+                          </DropdownLink>
+                          {user?.role === 'ADMIN' && (
+                            <>
+                              <div className="my-1.5 border-t border-twinkle-mist/40" />
+                              <DropdownLink to="/admin" icon={HeartPulse} onClick={() => setIsMenuOpen(false)} highlight>
+                                Admin Dashboard
+                              </DropdownLink>
+                            </>
+                          )}
+                        </div>
+                        <div className="border-t border-twinkle-mist/40 py-1.5">
+                          <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-3 w-full text-left px-4 py-2 text-sm text-twinkle-rose hover:bg-twinkle-rose/20 transition-colors"
+                          >
+                            <LogOut size={15} />
+                            Logout
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="hidden sm:flex items-center gap-2">
@@ -207,67 +213,54 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
 
-        <AnimatePresence>
-          {isMobileNavOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="md:hidden border-t border-twinkle-mist/40 overflow-hidden"
-            >
-              <motion.div
-                variants={staggerContainer}
-                initial="hidden"
-                animate="visible"
-                className="py-4 px-4 space-y-1"
-              >
-                <MobileNavItem to="/shop" label="Shop" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
+        {isMobileNavOpen && (
+          <div className="mobile-nav md:hidden border-t border-twinkle-mist/40 overflow-hidden" style={{ height: 0, opacity: 0 }}>
+            <div className="py-4 px-4 space-y-1">
+              <MobileNavItem to="/shop" label="Shop" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
 
-                <div className="pt-3 pb-2">
-                  <p className="text-[11px] font-semibold text-twinkle-ink/40 uppercase tracking-widest px-3">Account</p>
+              <div className="pt-3 pb-2">
+                <p className="text-[11px] font-semibold text-twinkle-ink/40 uppercase tracking-widest px-3">Account</p>
+              </div>
+
+              {isAuthenticated ? (
+                <>
+                  <MobileNavItem to="/profile" label="Profile" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
+                  <MobileNavItem to="/orders" label="Orders" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
+                  <MobileNavItem to="/addresses" label="Addresses" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
+                  <MobileNavItem to="/wishlist" label="Wishlist" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
+                  {user?.role === 'ADMIN' && (
+                    <MobileNavItem to="/admin" label="Admin Dashboard" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} highlight />
+                  )}
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-3 py-3 text-sm text-twinkle-rose hover:bg-twinkle-rose/20 rounded-lg transition-colors min-h-[44px]"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <div className="px-3 space-y-2 pt-1">
+                  <Link to="/login" className="block w-full text-center py-3 text-sm font-medium text-twinkle-ink/70 hover:bg-twinkle-mist/30 rounded-lg transition-colors min-h-[44px] flex items-center justify-center" onClick={() => setIsMobileNavOpen(false)}>
+                    Sign In
+                  </Link>
+                  <Link to="/register" className="btn-primary w-full justify-center text-sm" onClick={() => setIsMobileNavOpen(false)}>
+                    Sign Up
+                  </Link>
                 </div>
-
-                {isAuthenticated ? (
-                  <>
-                    <MobileNavItem to="/profile" label="Profile" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
-                    <MobileNavItem to="/orders" label="Orders" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
-                    <MobileNavItem to="/addresses" label="Addresses" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
-                    <MobileNavItem to="/wishlist" label="Wishlist" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
-                    {user?.role === 'ADMIN' && (
-                      <MobileNavItem to="/admin" label="Admin Dashboard" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} highlight />
-                    )}
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left px-3 py-3 text-sm text-twinkle-rose hover:bg-twinkle-rose/20 rounded-lg transition-colors min-h-[44px]"
-                    >
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <div className="px-3 space-y-2 pt-1">
-                    <Link to="/login" className="block w-full text-center py-3 text-sm font-medium text-twinkle-ink/70 hover:bg-twinkle-mist/30 rounded-lg transition-colors min-h-[44px] flex items-center justify-center" onClick={() => setIsMobileNavOpen(false)}>
-                      Sign In
-                    </Link>
-                    <Link to="/register" className="btn-primary w-full justify-center text-sm" onClick={() => setIsMobileNavOpen(false)}>
-                      Sign Up
-                    </Link>
-                  </div>
-                )}
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
-      <main id="main-content" className="flex-1">
+      <main ref={mainRef} id="main-content" className="flex-1">
         {children}
       </main>
 
-      <footer className="bg-twinkle-canvas border-t border-twinkle-mist/60 mt-auto">
+      <footer ref={footerRef} className="bg-twinkle-canvas border-t border-twinkle-mist/60 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-            <div className="sm:col-span-2 lg:col-span-1">
+            <div className="sm:col-span-2 lg:col-span-1 footer-column">
               <div className="flex items-center gap-2 mb-3">
                 <Heart size={18} className="text-twinkle-rose" />
                 <span className="text-lg font-display font-semibold text-twinkle-ink tracking-tight">
@@ -279,7 +272,7 @@ export default function Layout({ children }: LayoutProps) {
               </p>
             </div>
 
-            <div>
+            <div className="footer-column">
               <h3 className="text-xs font-semibold text-twinkle-ink mb-4 uppercase tracking-widest">Shop</h3>
               <ul className="space-y-2.5">
                 <FooterLink to="/shop">All Cards</FooterLink>
@@ -290,7 +283,7 @@ export default function Layout({ children }: LayoutProps) {
               </ul>
             </div>
 
-            <div>
+            <div className="footer-column">
               <h3 className="text-xs font-semibold text-twinkle-ink mb-4 uppercase tracking-widest">Account</h3>
               <ul className="space-y-2.5">
                 <FooterLink to="/cart">Cart</FooterLink>
@@ -306,7 +299,7 @@ export default function Layout({ children }: LayoutProps) {
               </ul>
             </div>
 
-            <div>
+            <div className="footer-column">
               <h3 className="text-xs font-semibold text-twinkle-ink mb-4 uppercase tracking-widest">Contact</h3>
               <ul className="space-y-2.5 text-sm text-twinkle-ink/60">
                 <li>
@@ -326,7 +319,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
           </div>
 
-          <div className="mt-10 pt-6 border-t border-twinkle-mist/40 text-center">
+          <div className="footer-column mt-10 pt-6 border-t border-twinkle-mist/40 text-center">
             <p className="text-xs text-twinkle-ink/40">
               &copy; 2026 TwinkleHearts. Made with care in Sri Lanka.
             </p>
@@ -346,11 +339,7 @@ function NavLink({ to, active, children }: { to: string; active: boolean; childr
       className="relative px-3 py-2 text-sm font-medium transition-colors flex items-center gap-1.5"
     >
       {active && (
-        <motion.div
-          layoutId="nav-indicator"
-          className="absolute inset-0 bg-twinkle-rose/20 rounded-lg -z-10"
-          transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-        />
+        <span className="absolute inset-0 bg-twinkle-rose/20 rounded-lg -z-10" />
       )}
       <span className={`relative z-10 ${active ? 'text-twinkle-rose' : 'text-twinkle-ink/70 hover:text-twinkle-ink'}`}>
         {children}
@@ -368,7 +357,7 @@ function MobileNavItem({ to, label, location, highlight, onClick }: {
 }) {
   const active = location === to || location.startsWith(to + '/');
   return (
-    <motion.div variants={menuItemVariants} custom={0}>
+    <div className="mobile-nav-item" style={{ opacity: 0 }}>
       <Link
         to={to}
         onClick={onClick}
@@ -382,7 +371,7 @@ function MobileNavItem({ to, label, location, highlight, onClick }: {
       >
         {label}
       </Link>
-    </motion.div>
+    </div>
   );
 }
 

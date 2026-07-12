@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
 import { Heart, Truck, Zap, CheckCircle } from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
 import { api } from '../../api.js';
@@ -31,6 +31,8 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const stepContentRef = useRef<HTMLDivElement>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
     customerName: '',
@@ -42,6 +44,32 @@ export default function CheckoutPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (stepContentRef.current) {
+      gsap.fromTo(stepContentRef.current, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
+    }
+  }, [currentStep]);
+
+  useEffect(() => {
+    if (sidebarRef.current) {
+      gsap.fromTo(sidebarRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out', delay: 0.2 });
+    }
+    const dots = document.querySelectorAll('.progress-step-dot');
+    if (dots.length) {
+      gsap.fromTo(dots, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, stagger: 0.12, ease: 'back.out(1.4)' });
+    }
+  }, []);
+
+  useEffect(() => {
+    const lines = document.querySelectorAll('.progress-step-line');
+    const stepIndex = steps.findIndex((s) => s.key === currentStep);
+    lines.forEach((line, i) => {
+      if (i < stepIndex) {
+        gsap.to(line, { backgroundColor: '#44664b', duration: 0.3 });
+      }
+    });
+  }, [currentStep]);
 
   const total = getTotal();
   const taxRate = parseFloat(import.meta.env.VITE_TAX_RATE || '0.18');
@@ -154,13 +182,11 @@ export default function CheckoutPage() {
   return (
     <div className="bg-twinkle-canvas min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="font-display text-3xl font-bold text-twinkle-ink mb-1">Checkout</h1>
           <p className="text-twinkle-ink/70">Just a few more steps to send your cards with love</p>
         </div>
 
-        {/* Progress Steps */}
         <div className="mb-10">
           <div className="flex items-center justify-center gap-0 max-w-lg mx-auto">
             {steps.map((step, index) => (
@@ -181,20 +207,16 @@ export default function CheckoutPage() {
                       step.number
                     )}
                   </div>
-                  <span
-                    className={`text-xs mt-2 font-medium ${
-                      index <= currentStepIndex ? 'text-twinkle-ink' : 'text-twinkle-ink/40'
-                    }`}
-                  >
+                  <span className={`text-xs mt-2 font-medium ${
+                    index <= currentStepIndex ? 'text-twinkle-ink' : 'text-twinkle-ink/40'
+                  }`}>
                     {step.label}
                   </span>
                 </div>
                 {index < steps.length - 1 && (
-                  <div
-                    className={`progress-step-line mx-2 ${
-                      index < currentStepIndex ? 'progress-step-line-complete' : ''
-                    }`}
-                  />
+                  <div className={`progress-step-line mx-2 ${
+                    index < currentStepIndex ? 'progress-step-line-complete' : ''
+                  }`} />
                 )}
               </div>
             ))}
@@ -203,17 +225,10 @@ export default function CheckoutPage() {
 
         <form onSubmit={handleShippingSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-            {/* Main Content Area */}
             <div className="lg:col-span-3">
-              <AnimatePresence mode="wait">
+              <div ref={stepContentRef}>
                 {currentStep === 'shipping' && (
-                  <motion.div
-                    key="shipping"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ duration: 0.3 }}
-                  >
+                  <div>
                     <div className="card p-6">
                       <h2 className="font-display text-xl font-semibold text-twinkle-ink mb-6 flex items-center gap-2">
                         <Heart size={18} className="text-twinkle-rose" />
@@ -221,7 +236,6 @@ export default function CheckoutPage() {
                       </h2>
 
                       <div className="space-y-5">
-                        {/* Full Name */}
                         <div>
                           <label htmlFor="customerName" className="label-text">Full Name *</label>
                           <input
@@ -239,7 +253,6 @@ export default function CheckoutPage() {
                           )}
                         </div>
 
-                        {/* Country */}
                         <div>
                           <label htmlFor="countryCode" className="label-text">Country *</label>
                           <select
@@ -256,7 +269,6 @@ export default function CheckoutPage() {
                           </select>
                         </div>
 
-                        {/* WhatsApp Number */}
                         <div>
                           <label htmlFor="customerPhone" className="label-text">WhatsApp Number *</label>
                           <div className="flex">
@@ -283,7 +295,6 @@ export default function CheckoutPage() {
                           </p>
                         </div>
 
-                        {/* Address (Optional) */}
                         <div>
                           <label htmlFor="address" className="label-text">Delivery Address (Optional)</label>
                           <textarea
@@ -295,7 +306,6 @@ export default function CheckoutPage() {
                           />
                         </div>
 
-                        {/* Delivery Speed */}
                         <div>
                           <label className="label-text">Delivery Speed</label>
                           <div className="space-y-3">
@@ -333,33 +343,22 @@ export default function CheckoutPage() {
                       </div>
                     </div>
 
-                    {/* Next Button */}
                     <div className="mt-6">
-                      <button
-                        type="submit"
-                        className="btn-primary w-full py-3.5 text-base"
-                      >
+                      <button type="submit" className="btn-primary w-full py-3.5 text-base">
                         Continue to Review
                       </button>
                     </div>
-                  </motion.div>
+                  </div>
                 )}
 
                 {currentStep === 'review' && (
-                  <motion.div
-                    key="review"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ duration: 0.3 }}
-                  >
+                  <div>
                     <div className="card p-6">
                       <h2 className="font-display text-xl font-semibold text-twinkle-ink mb-6 flex items-center gap-2">
                         <CheckCircle size={18} className="text-twinkle-sage" />
                         Review Your Order
                       </h2>
 
-                      {/* Shipping Info */}
                       <div className="mb-6 pb-6 border-b border-twinkle-mist">
                         <p className="text-xs text-twinkle-ink/50 uppercase tracking-wider mb-2">Shipping to</p>
                         <p className="font-medium text-twinkle-ink">{formData.customerName}</p>
@@ -379,7 +378,6 @@ export default function CheckoutPage() {
                         </button>
                       </div>
 
-                      {/* Items */}
                       <div className="space-y-3 mb-4">
                         {items.map((item) => (
                           <div key={item.productId} className="flex justify-between text-sm">
@@ -393,7 +391,6 @@ export default function CheckoutPage() {
                         ))}
                       </div>
 
-                      {/* Totals */}
                       <div className="border-t border-twinkle-mist pt-4 space-y-2">
                         <div className="flex justify-between text-sm">
                           <span className="text-twinkle-ink/50">Subtotal</span>
@@ -416,7 +413,6 @@ export default function CheckoutPage() {
                       </div>
                     </div>
 
-                    {/* Actions */}
                     <div className="mt-6 flex flex-col sm:flex-row gap-3">
                       <button
                         type="button"
@@ -447,36 +443,29 @@ export default function CheckoutPage() {
                         )}
                       </button>
                     </div>
-                  </motion.div>
+                  </div>
                 )}
-              </AnimatePresence>
+              </div>
 
-              {/* Error Message */}
               {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-xl"
-                >
+                <div className="mt-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-xl">
                   <div className="flex items-start gap-3">
                     <svg className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                     </svg>
                     <span>{error}</span>
                   </div>
-                </motion.div>
+                </div>
               )}
             </div>
 
-            {/* Order Summary Sidebar */}
-            <div className="lg:col-span-2">
+            <div ref={sidebarRef} className="lg:col-span-2">
               <div className="card rounded-xl border-2 border-dashed border-twinkle-mist p-6 sticky top-24 shadow-lg">
                 <div className="text-center mb-6 pb-4 border-b border-twinkle-mist">
                   <Heart size={20} className="text-twinkle-rose mx-auto mb-2" />
                   <h2 className="font-display text-lg font-semibold text-twinkle-ink">Your Cards</h2>
                 </div>
 
-                {/* Items */}
                 <div className="space-y-3 mb-4 max-h-48 overflow-y-auto">
                   {items.map((item) => (
                     <div key={item.productId} className="flex justify-between text-sm">
@@ -490,7 +479,6 @@ export default function CheckoutPage() {
                   ))}
                 </div>
 
-                {/* Totals */}
                 <div className="border-t border-twinkle-mist pt-4 space-y-2 mb-6">
                   <div className="flex justify-between text-sm">
                     <span className="text-twinkle-ink/50">Subtotal</span>

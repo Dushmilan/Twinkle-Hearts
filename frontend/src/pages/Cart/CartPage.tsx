@@ -1,29 +1,40 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import { Heart, Truck } from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
 import { WhatsAppIcon, formatPrice } from '../../components/UI/Icons';
 import { getImageSrc } from '../../utils/images';
 import type { CartItem as CartItemType } from '../../store/cartStore';
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, x: -20, scale: 0.95 },
-  visible: { opacity: 1, x: 0, scale: 1, transition: { type: 'spring' as const, stiffness: 200, damping: 20 } },
-  exit: { opacity: 0, x: 20, scale: 0.95, transition: { duration: 0.2 } },
-};
-
-const summaryVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.4, ease: 'easeOut' as const } },
-};
-
 export default function CartPage() {
   const navigate = useNavigate();
   const { items, updateQuantity, removeItem, getTotal, clearCart } = useCartStore();
+  const pageRef = useRef<HTMLDivElement>(null);
 
   const total = getTotal();
   const tax = total * 0.18;
   const finalTotal = total + tax;
+
+  useEffect(() => {
+    if (!pageRef.current) return;
+    gsap.fromTo(pageRef.current, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
+  }, []);
+
+  useEffect(() => {
+    const cards = pageRef.current?.querySelectorAll('.cart-item-card');
+    if (cards) {
+      gsap.fromTo(
+        cards,
+        { opacity: 0, x: -20, scale: 0.98 },
+        { opacity: 1, x: 0, scale: 1, duration: 0.45, stagger: 0.12, ease: 'power3.out' },
+      );
+    }
+    const summary = pageRef.current?.querySelector('.cart-summary');
+    if (summary) {
+      gsap.fromTo(summary, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out', delay: 0.15 });
+    }
+  }, [items.length]);
 
   const handleCheckout = () => {
     navigate('/checkout');
@@ -31,11 +42,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-twinkle-canvas min-h-screen"
-      >
+      <div className="bg-twinkle-canvas min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="empty-state">
             <div className="empty-state-icon">
@@ -50,79 +57,47 @@ export default function CartPage() {
             </Link>
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="bg-twinkle-canvas min-h-screen"
-    >
+    <div ref={pageRef} className="bg-twinkle-canvas min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <h1 className="font-display text-3xl font-bold text-twinkle-ink mb-1">
             Your Selection
           </h1>
           <p className="text-twinkle-ink/70">
             {items.length} card{items.length !== 1 ? 's' : ''} — pick the perfect ones to send
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Cart Items */}
           <div className="lg:col-span-3 space-y-4">
-            <AnimatePresence mode="popLayout">
-              {items.map((item) => (
-                <motion.div
-                  key={item.productId}
-                  layout
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                >
-                  <CartItem
-                    item={item}
-                    onUpdateQuantity={updateQuantity}
-                    onRemove={removeItem}
-                    formatPrice={formatPrice}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
+            {items.map((item) => (
+              <div key={item.productId} className="cart-item-card">
+                <CartItem
+                  item={item}
+                  onUpdateQuantity={updateQuantity}
+                  onRemove={removeItem}
+                  formatPrice={formatPrice}
+                />
+              </div>
+            ))}
 
-            {/* Clear Cart */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="flex justify-end pt-2"
-            >
+            <div className="flex justify-end pt-2">
               <button
                 onClick={clearCart}
                 className="text-sm text-twinkle-ink/50 hover:text-twinkle-rose transition-colors font-medium min-h-[44px] flex items-center"
               >
                 Clear all items
               </button>
-            </motion.div>
+            </div>
           </div>
 
-          {/* Order Summary — Gift Receipt Style */}
-          <motion.div
-            variants={summaryVariants}
-            initial="hidden"
-            animate="visible"
-            className="lg:col-span-2"
-          >
+          <div className="cart-summary lg:col-span-2">
             <div className="card rounded-xl border-2 border-dashed border-twinkle-mist p-6 sticky top-24 shadow-lg">
-              {/* Gift Receipt Header */}
               <div className="text-center mb-6 pb-4 border-b border-twinkle-mist">
                 <div className="w-12 h-12 rounded-full bg-twinkle-rose/15 flex items-center justify-center mx-auto mb-3">
                   <Heart size={20} className="text-twinkle-rose" />
@@ -135,7 +110,6 @@ export default function CartPage() {
                 </p>
               </div>
 
-              {/* Items */}
               <div className="space-y-3 mb-4">
                 {items.map((item) => (
                   <div key={item.productId} className="flex justify-between text-sm">
@@ -149,7 +123,6 @@ export default function CartPage() {
                 ))}
               </div>
 
-              {/* Totals */}
               <div className="border-t border-twinkle-mist pt-4 space-y-2 mb-6">
                 <div className="flex justify-between text-sm">
                   <span className="text-twinkle-ink/50">Subtotal</span>
@@ -172,7 +145,6 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* Checkout Button */}
               <button
                 onClick={handleCheckout}
                 className="btn-whatsapp w-full text-base py-3.5 relative overflow-hidden group"
@@ -194,14 +166,12 @@ export default function CartPage() {
                 ← Continue Shopping
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
-
-// ---- Cart Item ----
 
 interface CartItemProps {
   item: CartItemType;
@@ -213,7 +183,6 @@ interface CartItemProps {
 function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemProps) {
   return (
     <div className="card flex gap-4 p-4 group">
-      {/* Product Image */}
       <Link
         to={`/product/${item.productId}`}
         className="w-20 h-24 sm:w-24 sm:h-28 rounded-lg flex-shrink-0 overflow-hidden bg-twinkle-mist/20"
@@ -231,7 +200,6 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
         )}
       </Link>
 
-      {/* Product Details */}
       <div className="flex-1 min-w-0">
         <Link
           to={`/product/${item.productId}`}
@@ -243,7 +211,6 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
           {formatPrice(item.price)}
         </p>
 
-        {/* Quantity Controls */}
         <div className="flex items-center gap-3 mt-3">
           <div className="flex items-center gap-1 bg-twinkle-mist/20 rounded-lg">
             <button
@@ -253,14 +220,9 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
             >
               −
             </button>
-            <motion.span
-              key={item.quantity}
-              initial={{ scale: 1.3, color: '#d48a7a' }}
-              animate={{ scale: 1, color: '#1a202c' }}
-              className="w-8 text-center text-sm font-semibold"
-            >
+            <span className="w-8 text-center text-sm font-semibold">
               {item.quantity}
-            </motion.span>
+            </span>
             <button
               onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
               className="w-10 h-10 flex items-center justify-center text-twinkle-ink/50 hover:text-twinkle-ink hover:bg-twinkle-mist/30 rounded-r-lg transition-colors font-medium active:scale-90 min-w-[44px] min-h-[44px]"
@@ -282,17 +244,11 @@ function CartItem({ item, onUpdateQuantity, onRemove, formatPrice }: CartItemPro
         </div>
       </div>
 
-      {/* Item Total */}
-      <motion.div
-        key={item.quantity}
-        initial={{ scale: 1.1 }}
-        animate={{ scale: 1 }}
-        className="text-right hidden sm:block"
-      >
+      <div className="text-right hidden sm:block">
         <p className="font-bold text-twinkle-ink text-lg">
           {formatPrice(item.price * item.quantity)}
         </p>
-      </motion.div>
+      </div>
     </div>
   );
 }

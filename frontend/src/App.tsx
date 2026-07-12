@@ -5,7 +5,6 @@ import { ErrorBoundary } from './components/UI/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
 import Layout from './components/Layout/Layout';
-import { MotionConfig } from 'framer-motion';
 import HomePage from './pages/Home/HomePage';
 import ShopPage from './pages/Shop/ShopPage';
 import ProductDetailPage from './pages/ProductDetail/ProductDetailPage';
@@ -29,7 +28,6 @@ import { useCartStore } from './store/cartStore';
 function AppRoutes() {
   const syncCart = useCartStore((state) => state.syncCart);
 
-  // Sync cart on app mount
   useEffect(() => {
     syncCart();
   }, [syncCart]);
@@ -37,7 +35,6 @@ function AppRoutes() {
   return (
     <Layout>
       <Routes>
-        {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<ShopPage />} />
         <Route path="/product/:id" element={<ProductDetailPage />} />
@@ -45,7 +42,6 @@ function AppRoutes() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Protected Routes */}
         <Route
           path="/checkout"
           element={
@@ -95,7 +91,6 @@ function AppRoutes() {
           }
         />
 
-        {/* Admin Routes */}
         <Route
           path="/admin"
           element={
@@ -147,7 +142,6 @@ function AppRoutes() {
           }
         />
 
-        {/* 404 Fallback */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Layout>
@@ -164,9 +158,7 @@ function App() {
         >
           Skip to main content
         </a>
-        <MotionConfig reducedMotion="user">
-          <AppRoutes />
-        </MotionConfig>
+        <AppRoutes />
         <Toaster
           position="top-right"
           containerClassName="aria-live-polite"
