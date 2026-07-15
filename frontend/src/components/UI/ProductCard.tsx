@@ -125,6 +125,26 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
               )}
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+              {product.stock > 0 ? (
+                <CardItem translateZ={50} className="absolute bottom-3 right-3 z-10">
+                  <div className="relative">
+                    <button
+                      onClick={handleAddToCart}
+                      className="w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm border border-twinkle-mist/60 flex items-center justify-center text-twinkle-ink/60 shadow-sm hover:bg-twinkle-rose hover:text-white hover:border-twinkle-rose transition-all duration-200 active:scale-90 min-w-[44px] min-h-[44px]"
+                      aria-label="Add to cart"
+                    >
+                      <ShoppingCart size={16} />
+                    </button>
+                    <div
+                      ref={heartRef}
+                      className="absolute inset-0 flex items-center justify-center text-twinkle-rose pointer-events-none opacity-0"
+                    >
+                      <Heart size={18} fill="currentColor" />
+                    </div>
+                  </div>
+                </CardItem>
+              ) : null}
             </div>
           </Link>
 
@@ -142,24 +162,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                 <span className="font-mono text-lg font-bold text-twinkle-rose tracking-tight">
                   {formatPrice(product.price)}
                 </span>
-
-                {product.stock > 0 ? (
-                  <div className="relative">
-                    <button
-                      onClick={handleAddToCart}
-                      className="w-11 h-11 rounded-full bg-twinkle-canvas border border-twinkle-mist/60 flex items-center justify-center text-twinkle-ink/50 hover:bg-twinkle-rose hover:text-white hover:border-twinkle-rose transition-all duration-200 active:scale-95 min-w-[44px] min-h-[44px]"
-                      aria-label="Add to cart"
-                    >
-                      <ShoppingCart size={16} />
-                    </button>
-                    <div
-                      ref={heartRef}
-                      className="absolute inset-0 flex items-center justify-center text-twinkle-rose pointer-events-none opacity-0"
-                    >
-                      <Heart size={18} fill="currentColor" />
-                    </div>
-                  </div>
-                ) : (
+                {product.stock <= 0 && (
                   <span className="text-xs text-twinkle-ink/40 font-medium">Sold out</span>
                 )}
               </div>

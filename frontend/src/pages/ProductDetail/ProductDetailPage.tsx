@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { Heart, ShoppingCart, Star, MessageSquare } from 'lucide-react';
+import { Heart, ShoppingCart } from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
 import { api } from '../../api.js';
 import { getImageSrc } from '../../utils/images';
@@ -19,12 +19,6 @@ const WHO_IS_FOR_MAP: Record<string, string[]> = {
   general: ["Just because", "A thinking-of-you moment", "To brighten someone's day", "A simple hello with love"],
 };
 
-const MOCK_REVIEWS = [
-  { id: '1', name: 'Nipun S.', rating: 5, comment: 'Sent this to my mom on her birthday and she absolutely loved it! The quality is beautiful.', date: '2 weeks ago' },
-  { id: '2', name: 'Amara K.', rating: 5, comment: 'Such a meaningful card. The WhatsApp ordering made it so easy.', date: '1 month ago' },
-  { id: '3', name: 'David L.', rating: 4, comment: 'Lovely design and fast delivery. Would definitely order again.', date: '3 weeks ago' },
-];
-
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
@@ -33,13 +27,9 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [justAdded, setJustAdded] = useState(false);
-  const [reviewRating, setReviewRating] = useState(0);
-  const [reviewComment, setReviewComment] = useState('');
-  const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
   const contentRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  const reviewsRef = useRef<HTMLDivElement>(null);
   const relatedRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -58,16 +48,6 @@ export default function ProductDetailPage() {
     }
     gsap.fromTo('.detail-section', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, scrollTrigger: { trigger: '.detail-section', start: 'top 90%' } });
   }, [product]);
-
-  useEffect(() => {
-    if (reviewsRef.current) {
-      gsap.fromTo(
-        reviewsRef.current.querySelectorAll('.review-card'),
-        { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 0.45, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: reviewsRef.current, start: 'top 85%' } },
-      );
-    }
-  }, []);
 
   useEffect(() => {
     if (relatedProducts.length > 0 && relatedRef.current) {
@@ -110,15 +90,6 @@ export default function ProductDetailPage() {
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
   }
-
-  const handleReviewSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (reviewRating === 0 || !reviewComment.trim()) return;
-    setReviewSubmitted(true);
-    setReviewRating(0);
-    setReviewComment('');
-    setTimeout(() => setReviewSubmitted(false), 3000);
-  };
 
   const getCategoryBadge = (category?: string) => {
     const key = category?.toLowerCase() ?? '';
@@ -347,84 +318,6 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
-
-        <section ref={reviewsRef} className="mt-16 sm:mt-24">
-          <div className="flex items-center gap-3 mb-8">
-            <MessageSquare size={20} className="text-twinkle-rose" />
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-twinkle-ink">What others say</h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {MOCK_REVIEWS.map((review) => (
-              <div key={review.id} className="review-card card p-5">
-                <div className="flex items-center gap-1 mb-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      size={14}
-                      className={star <= review.rating ? 'text-twinkle-rose fill-twinkle-rose' : 'text-twinkle-mist/40'}
-                    />
-                  ))}
-                </div>
-                <p className="text-sm text-twinkle-ink/70 leading-relaxed mb-3">{review.comment}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-twinkle-ink/60">{review.name}</span>
-                  <span className="text-xs text-twinkle-ink/40">{review.date}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 card p-6">
-            <h3 className="font-display text-lg font-semibold text-twinkle-ink mb-4">Tell us about this card</h3>
-            {reviewSubmitted ? (
-              <div className="text-center py-4">
-                <p className="text-twinkle-sage font-medium">Thank you for your review!</p>
-              </div>
-            ) : (
-              <form onSubmit={handleReviewSubmit} className="space-y-4">
-                <div>
-                  <label className="label-text">Your rating</label>
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => setReviewRating(star)}
-                        className="p-0.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
-                        aria-label={`${star} star${star !== 1 ? 's' : ''}`}
-                      >
-                        <Star
-                          size={24}
-                          className={`transition-colors ${
-                            star <= reviewRating ? 'text-twinkle-rose fill-twinkle-rose' : 'text-twinkle-mist/40 hover:text-twinkle-rose/50'
-                          }`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="review-comment" className="label-text">Your review</label>
-                  <textarea
-                    id="review-comment"
-                    value={reviewComment}
-                    onChange={(e) => setReviewComment(e.target.value)}
-                    className="input-field min-h-[100px] resize-none"
-                    placeholder="Share your experience with this card..."
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={reviewRating === 0 || !reviewComment.trim()}
-                  className="btn-primary disabled:opacity-50"
-                >
-                  Submit Review
-                </button>
-              </form>
-            )}
-          </div>
-        </section>
 
         {relatedProducts.length > 0 && (
           <section ref={relatedRef} className="mt-16 sm:mt-24">
