@@ -19,8 +19,8 @@ sections, FAQ accordion, reviews).
 
 ## 2. Scope — basics only (this spec)
 
-ON `/rangoli`: festive hero, design gallery with Book buttons,
-how-it-works (3 steps), occasions.
+ON `/rangoli`: split hero with kolam visual, design gallery with Book
+buttons, cardless how-it-works strip, static occasion pills.
 ON `/product/:id` (only when `category==='rangoli'`): service layout touch.
 Backend: none. Admin seed of designs: later (empty state meanwhile).
 
@@ -29,17 +29,19 @@ slot scheduling, artist assignment, separate booking model.
 
 ## 3. `/rangoli` blueprint
 
-1. **Festive hero** — Diwali-toned banner, one H1 ("Rangoli Collection"),
-   subtext ≤ 20 words, single CTA "Browse designs" anchoring to gallery.
-   No search bar (gallery, not catalog).
+1. **Split hero** — text left, kolam visual right (stacks on mobile).
+   One eyebrow ("Festival special", Flame glyph, no emoji), one H1
+   ("Rangoli Collection"), subtext ≤ 20 words, single CTA "Browse designs"
+   anchoring to gallery. No search bar. Zero em-dashes in copy.
 2. **Design gallery** — grid of `category='rangoli'` products via existing
    `ProductCard`; explicit **Book this design** pill per card → `addItem`
    (qty 1) + navigate to `/cart`. Count line ("N designs"). Empty state:
    "No Rangoli cards yet" + link to `/shop`.
-3. **How it works** — 3 steps: Pick your design → Book in one tap →
+3. **How it works** — cardless 3-step strip (verb headings, ArrowRight
+   separators): Pick your design → Book in one tap →
    Artist arrives and draws.
-4. **Occasions** — Diwali, Weddings, Pooja, Housewarming; static cards
-   anchoring back to the gallery.
+4. **Occasions** — Diwali, Weddings, Pooja, Housewarming as static pills
+   (not links; gallery anchor already owns the browse intent).
 
 ## 4. Detail-page service rules (`ProductDetailPage`, rangoli only)
 
@@ -56,15 +58,15 @@ slot scheduling, artist assignment, separate booking model.
 
 ## 5. Copy deck (locked for v1)
 
-- Hero eyebrow: "Festival special"; subtext:
-  "Pick a design, book in one tap — our artist draws it at your home."
-- Steps: as §3.3. No emojis in UI copy except the 🪔 hero marker (festive intent).
+- Hero eyebrow: "Festival special" with Flame glyph; subtext:
+  "Pick a design and book in one tap. Our artist draws it at your home."
+- Steps: as §3.3. Zero em-dashes anywhere in page copy.
 
 ## 6. Testing
 
 - Extend `RangoliPage.test.tsx`: category fetch, hero H1, empty state
   (existing) + Book button per design calls `addItem` with qty 1,
-  3 steps, 4 occasions render.
+  3 steps, 4 static occasion pills (not links), no em-dashes in copy.
 - New `ProductDetailPage.rangoli.test.tsx`: Book CTA, no quantity
   stepper, artist-visit copy for `category='rangoli'`; control case
   (birthday) keeps Add to Cart + stepper.

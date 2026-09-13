@@ -81,7 +81,7 @@ describe('RangoliPage', () => {
       </MemoryRouter>
     );
 
-    expect(await screen.findByText(/no rangoli cards yet/i)).toBeInTheDocument();
+    expect(await screen.findByText(/no rangoli designs yet/i)).toBeInTheDocument();
   });
 
   it('renders how-it-works steps', async () => {
@@ -96,7 +96,7 @@ describe('RangoliPage', () => {
     expect(screen.getByText(/artist arrives and draws/i)).toBeInTheDocument();
   });
 
-  it('renders occasion cards', async () => {
+  it('renders occasion pills as static text, not links', async () => {
     render(
       <MemoryRouter>
         <RangoliPage />
@@ -104,8 +104,21 @@ describe('RangoliPage', () => {
     );
 
     for (const occasion of ['Diwali', 'Weddings', 'Pooja', 'Housewarmings']) {
-      expect(await screen.findByText(occasion)).toBeInTheDocument();
+      const pill = await screen.findByText(occasion);
+      expect(pill.closest('a')).toBeNull();
     }
+  });
+
+  it('uses no em-dashes in page copy', async () => {
+    render(
+      <MemoryRouter>
+        <RangoliPage />
+      </MemoryRouter>
+    );
+
+    await screen.findByRole('heading', { name: /rangoli collection/i });
+    expect(document.body.textContent).not.toContain('—');
+    expect(document.body.textContent).not.toContain('–');
   });
 
   it('books a design with quantity 1 via Book button', async () => {

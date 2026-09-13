@@ -229,7 +229,7 @@ export default function ProductDetailPage() {
               <div className="product-info-item flex items-center gap-2 mb-6 text-emerald-600">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 <span className="text-sm font-medium">
-                  Artist visit — arranged over WhatsApp after booking
+                  Artist visit. Date and time arranged over WhatsApp after booking
                 </span>
               </div>
             ) : (
