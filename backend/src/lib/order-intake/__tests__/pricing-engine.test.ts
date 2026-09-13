@@ -57,3 +57,50 @@ describe('computePricing', () => {
     expect(result.total).toBe(392.94);
   });
 });
+
+describe('computePricing VAT rounding edges', () => {
+  it('applies 18% VAT with exact LKR amounts', () => {
+    const result = computePricing(
+      [{ currentPrice: 1000, quantity: 1 }],
+      0.18
+    );
+
+    expect(result.subtotal).toBe(1000);
+    expect(result.tax).toBe(180);
+    expect(result.total).toBe(1180);
+  });
+
+  it('rounds fractional VAT to cents with total == subtotal + tax', () => {
+    const result = computePricing(
+      [{ currentPrice: 333, quantity: 1 }],
+      0.18
+    );
+
+    expect(result.subtotal).toBe(333);
+    expect(result.tax).toBe(59.94);
+    expect(result.total).toBe(result.subtotal + result.tax);
+  });
+
+  it('computes tax once on the summed subtotal, not per line', () => {
+    const result = computePricing(
+      [
+        { currentPrice: 333, quantity: 2 },
+        { currentPrice: 1499, quantity: 1 },
+      ],
+      0.18
+    );
+
+    expect(result.subtotal).toBe(2165);
+    expect(result.tax).toBe(Math.round(2165 * 0.18 * 100) / 100);
+    expect(result.total).toBe(result.subtotal + result.tax);
+  });
+
+  it('returns zeros for an empty cart', () => {
+    expect(computePricing([], 0.18)).toEqual({
+      subtotal: 0,
+      taxRate: 0.18,
+      tax: 0,
+      total: 0,
+    });
+  });
+});
