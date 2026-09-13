@@ -4,8 +4,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from '../../utils/gsap-utils';
 import {
   Heart,
-  Gift,
-  Handshake,
   Star,
   Sparkle,
   ShoppingCart,
@@ -24,16 +22,6 @@ function WhatsappLogo({ size = 24, className }: { size?: number; className?: str
     </svg>
   );
 }
-
-const CATEGORIES = [
-  { key: 'birthday', label: 'Birthday', icon: Gift, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
-  { key: 'love', label: 'Love', icon: Heart, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
-  { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-twinkle-sage', bg: 'bg-twinkle-sage/20' },
-  { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-twinkle-ink/50', bg: 'bg-twinkle-ink/10' },
-  { key: 'festival', label: 'Festival', icon: Star, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
-  { key: 'rangoli', label: 'Rangoli', icon: Sparkle, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
-  { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-twinkle-mist', bg: 'bg-twinkle-mist/20' },
-] as const;
 
 const TESTIMONIALS = [
   {
@@ -63,7 +51,6 @@ export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<ProductListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const heroRef = useRef<HTMLDivElement>(null);
-  const categoriesRef = useRef<HTMLDivElement>(null);
   const featuredRef = useRef<HTMLDivElement>(null);
   const testimonialsRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
@@ -94,12 +81,6 @@ export default function HomePage() {
       );
       gsap.to(floaters, { y: '+=12', duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1, stagger: 1 });
     }
-  }, []);
-
-  useEffect(() => {
-    if (!categoriesRef.current) return;
-    const items = categoriesRef.current.querySelectorAll('.category-item');
-    gsap.fromTo(items, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: categoriesRef.current, start: 'top 85%' } });
   }, []);
 
   useEffect(() => {
@@ -241,54 +222,6 @@ export default function HomePage() {
                 textColor="text-twinkle-sage"
               />
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section ref={categoriesRef} className="bg-twinkle-canvas">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <span className="section-eyebrow mb-3">Categories</span>
-              <h2 className="section-heading mt-2">Shop by occasion</h2>
-            </div>
-            <Link
-              to="/shop"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors font-body min-h-[44px]"
-            >
-              View all <ArrowRight size={14} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-            {CATEGORIES.map((cat) => (
-              <div key={cat.key} className="category-item col-span-1">
-                <Link
-                  to={`/shop?category=${cat.key}`}
-                  className={`flex flex-col items-start gap-4 p-5 rounded-2xl border transition-all duration-300 active:scale-[0.97] min-h-[44px] ${
-                    cat.key === 'birthday'
-                      ? `${cat.bg} ${cat.color} border-twinkle-mist hover:shadow-lg`
-                      : 'bg-white border-twinkle-mist hover:bg-twinkle-sage/20 hover:shadow-lg'
-                  }`}
-                >
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-twinkle-mist/20">
-                    <cat.icon size={22} className={cat.key === 'birthday' ? cat.color : 'text-twinkle-ink/50'} />
-                  </div>
-                  <div>
-                    <h3 className={`font-semibold text-sm ${cat.key === 'birthday' ? cat.color : 'text-twinkle-ink/70'}`}>
-                      {cat.label}
-                    </h3>
-                    <p className="text-xs text-twinkle-ink/40 mt-0.5">Browse cards</p>
-                  </div>
-                </Link>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 sm:hidden text-center">
-            <Link to="/shop" className="text-sm font-semibold text-twinkle-ink hover:text-twinkle-rose transition-colors inline-flex items-center gap-1 font-body min-h-[44px]">
-              View all categories <ArrowRight size={14} />
-            </Link>
           </div>
         </div>
       </section>

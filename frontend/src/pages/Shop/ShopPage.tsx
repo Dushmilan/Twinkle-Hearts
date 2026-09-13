@@ -1,21 +1,10 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { Search, X, SlidersHorizontal } from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
 import { api } from '../../api.js';
 import ProductCard from '../../components/UI/ProductCard';
 import type { ProductListItem as Product } from '@twinkle-hearts/shared';
-
-const CATEGORIES = [
-  { key: 'all', label: 'All Cards', emoji: '✨' },
-  { key: 'birthday', label: 'Birthday', emoji: '🎂' },
-  { key: 'love', label: 'Love', emoji: '💕' },
-  { key: 'anniversary', label: 'Anniversary', emoji: '🥂' },
-  { key: 'friendship', label: 'Friendship', emoji: '🤝' },
-  { key: 'festival', label: 'Festival', emoji: '🎊' },
-  { key: 'sympathy', label: 'Sympathy', emoji: '🕊️' },
-] as const;
 
 const PRODUCTS_PER_PAGE = 12;
 
@@ -24,7 +13,6 @@ export default function ShopPage() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeCategory, setActiveCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [priceMin, setPriceMin] = useState('');
@@ -32,7 +20,6 @@ export default function ShopPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [searchParams, setSearchParams] = useSearchParams();
   const addItem = useCartStore((state) => state.addItem);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const headerRef = useRef<HTMLDivElement>(null);
@@ -51,15 +38,8 @@ export default function ShopPage() {
   }, [searchQuery]);
 
   useEffect(() => {
-    const categoryFromUrl = searchParams.get('category');
-    if (categoryFromUrl && categoryFromUrl !== activeCategory) {
-      setActiveCategory(categoryFromUrl);
-    }
-  }, [searchParams]);
-
-  useEffect(() => {
     fetchProducts(true);
-  }, [activeCategory, debouncedSearch]);
+  }, [debouncedSearch]);
 
   useEffect(() => {
     if (headerRef.current) {
@@ -75,7 +55,7 @@ export default function ShopPage() {
       { opacity: 0, y: 20, scale: 0.95 },
       { opacity: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.12, ease: 'power3.out' },
     );
-  }, [products.length, activeCategory, debouncedSearch, priceMin, priceMax]);
+  }, [products.length, debouncedSearch, priceMin, priceMax]);
 
   useEffect(() => {
     if (!filterRef.current) return;
@@ -90,8 +70,7 @@ export default function ShopPage() {
     setLoading(true);
     setError(null);
     try {
-      const category = activeCategory === 'all' ? undefined : activeCategory;
-      const data = await api.products.list({ limit: 100, category, search: debouncedSearch || undefined });
+      const data = await api.products.list({ limit: 100, search: debouncedSearch || undefined });
       const fetched = data.products || [];
       setAllProducts(fetched);
 
@@ -123,16 +102,6 @@ export default function ShopPage() {
     setHasMore(filtered.length > sliced.length);
   }, [priceMin, priceMax, page, allProducts]);
 
-  const handleCategoryChange = (category: string) => {
-    setActiveCategory(category);
-    setPage(1);
-    if (category === 'all') {
-      setSearchParams({});
-    } else {
-      setSearchParams({ category });
-    }
-  };
-
   const handleAddToCart = useCallback(
     async (product: Product) => {
       await addItem({
@@ -155,18 +124,13 @@ export default function ShopPage() {
     setDebouncedSearch('');
     setPriceMin('');
     setPriceMax('');
-    setActiveCategory('all');
     setPage(1);
-    setSearchParams({});
   };
 
   const activeFilterCount =
     (debouncedSearch ? 1 : 0) +
-    (activeCategory !== 'all' ? 1 : 0) +
     (priceMin ? 1 : 0) +
     (priceMax ? 1 : 0);
-
-  const getCategoryLabel = (key: string) => CATEGORIES.find((c) => c.key === key)?.label || key;
 
   return (
     <div className="bg-twinkle-canvas min-h-screen">
@@ -218,20 +182,6 @@ export default function ShopPage() {
       <section className="bg-white border-b border-twinkle-mist/50 sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="hidden sm:flex items-center gap-4">
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide flex-1">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat.key}
-                  onClick={() => handleCategoryChange(cat.key)}
-                  className={`category-pill whitespace-nowrap ${
-                    activeCategory === cat.key ? 'category-pill-active' : ''
-                  }`}
-                >
-                  <span className="text-base">{cat.emoji}</span>
-                  <span>{cat.label}</span>
-                </button>
-              ))}
-            </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className="category-pill gap-2 flex-shrink-0"
@@ -244,21 +194,6 @@ export default function ShopPage() {
                 </span>
               )}
             </button>
-          </div>
-
-          <div className="sm:hidden flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat.key}
-                onClick={() => handleCategoryChange(cat.key)}
-                className={`category-pill whitespace-nowrap ${
-                  activeCategory === cat.key ? 'category-pill-active' : ''
-                }`}
-              >
-                <span className="text-base">{cat.emoji}</span>
-                <span>{cat.label}</span>
-              </button>
-            ))}
           </div>
 
           {showFilters && (
@@ -310,14 +245,6 @@ export default function ShopPage() {
                 </button>
               </span>
             )}
-            {activeCategory !== 'all' && (
-              <span className="filter-badge">
-                {getCategoryLabel(activeCategory)}
-                <button onClick={() => handleCategoryChange('all')} className="filter-badge-remove" aria-label="Remove category filter">
-                  <X size={10} />
-                </button>
-              </span>
-            )}
             {priceMin && (
               <span className="filter-badge">
                 Min: LKR {Number(priceMin).toLocaleString()}
@@ -349,7 +276,7 @@ export default function ShopPage() {
           <div className="flex items-end justify-between mb-8">
             <div>
               <h2 className="font-display text-2xl sm:text-3xl font-bold text-twinkle-ink">
-                {activeCategory === 'all' ? 'All Greeting Cards' : `${getCategoryLabel(activeCategory)} Cards`}
+                All Greeting Cards
               </h2>
               <p className="text-twinkle-ink/60 mt-1 text-sm">
                 {products.length} card{products.length !== 1 ? 's' : ''} found
@@ -390,7 +317,7 @@ export default function ShopPage() {
               </div>
               <h3 className="empty-state-title">No cards match your search</h3>
               <p className="empty-state-text">
-                Try a different search term, browse by category, or clear your filters.
+                Try a different search term or clear your filters.
               </p>
               <button onClick={clearAllFilters} className="btn-primary mt-6">
                 Clear All Filters
@@ -400,7 +327,7 @@ export default function ShopPage() {
             <>
               <div
                 ref={gridRef}
-                key={`${activeCategory}-${debouncedSearch}-${priceMin}-${priceMax}`}
+                key={`${debouncedSearch}-${priceMin}-${priceMax}`}
                 className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
               >
                 {products.map((product) => (

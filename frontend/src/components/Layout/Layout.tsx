@@ -282,10 +282,6 @@ export default function Layout({ children }: LayoutProps) {
               <ul className="space-y-2.5">
                 <FooterLink to="/shop">All Cards</FooterLink>
                 <FooterLink to="/rangoli">Rangoli</FooterLink>
-                <FooterLink to="/shop?category=birthday">Birthday</FooterLink>
-                <FooterLink to="/shop?category=love">Love</FooterLink>
-                <FooterLink to="/shop?category=anniversary">Anniversary</FooterLink>
-                <FooterLink to="/shop?category=festival">Festival</FooterLink>
               </ul>
             </div>
 
