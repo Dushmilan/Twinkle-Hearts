@@ -19,6 +19,7 @@ export function normalizeImages(images: unknown): string[] {
       try {
         const parsed = JSON.parse(trimmed);
         if (Array.isArray(parsed)) arr = parsed.filter((i): i is string => typeof i === 'string');
+        /* istanbul ignore else: valid JSON starting with '[' always parses to an array */
         else arr = [];
       } catch {
         arr = trimmed.split(',').map((s) => s.trim()).filter(Boolean);
