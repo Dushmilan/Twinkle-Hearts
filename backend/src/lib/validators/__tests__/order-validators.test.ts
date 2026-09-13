@@ -24,6 +24,7 @@ describe('hydrateOrderItems', () => {
       frontendPrice: 2500,
       productName: 'Test Product',
       stockAvailable: 10,
+      category: null,
     });
   });
 
@@ -112,6 +113,23 @@ describe('hydrateOrderItems', () => {
     ])).rejects.toThrow('Only 1 available');
   });
 
+  it('should hydrate service-category items regardless of stock', async () => {
+    const prisma = {
+      product: {
+        findMany: vi.fn().mockResolvedValue([
+          { id: 'r1', name: 'Lotus Rangoli', price: 4500, stock: 0, category: 'rangoli' },
+        ]),
+      },
+    };
+
+    const result = await hydrateOrderItems(prisma as any, [
+      { productId: 'r1', quantity: 1 },
+    ]);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].category).toBe('rangoli');
+  });
+
   it('should handle multiple valid items', async () => {
     const prisma = {
       product: {
@@ -145,7 +163,7 @@ describe('hydrateOrderItems', () => {
         id: { in: ['p1'] },
         isActive: true,
       },
-      select: { id: true, name: true, price: true, stock: true },
+      select: { id: true, name: true, price: true, stock: true, category: true },
     });
   });
 });
@@ -203,6 +221,22 @@ describe('hydrateCartItems', () => {
 
     expect(result[0].currentPrice).toBe(0);
     expect(result[0].inStock).toBe(false);
+  });
+
+  it('should mark service-category items inStock regardless of stock', async () => {
+    const prisma = {
+      product: {
+        findMany: vi.fn().mockResolvedValue([
+          { id: 'r1', price: 4500, stock: 0, category: 'rangoli' },
+        ]),
+      },
+    };
+
+    const result = await hydrateCartItems(prisma as any, [
+      { productId: 'r1', quantity: 1 },
+    ]);
+
+    expect(result[0].inStock).toBe(true);
   });
 
   it('should handle multiple items', async () => {

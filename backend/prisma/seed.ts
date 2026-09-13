@@ -121,6 +121,45 @@ async function main() {
       category: 'Festival',
       images: ['https://picsum.photos/seed/christmas-joy/600/800'],
     },
+    // Rangoli designs (service: artist draws at the customer's home)
+    {
+      name: 'Lotus Diwali Rangoli',
+      description: 'A radiant lotus rangoli for Diwali, drawn at your home by our artist. Colours and materials included. Date and time arranged over WhatsApp after booking.',
+      price: 4500,
+      stock: 20,
+
+      category: 'rangoli',
+      images: ['https://picsum.photos/seed/rangoli-lotus/600/800'],
+      isFeatured: true,
+    },
+    {
+      name: 'Peacock Wedding Rangoli',
+      description: 'A grand peacock-motif rangoli for weddings and receptions, drawn at your venue by our artist. Colours and materials included.',
+      price: 6500,
+      stock: 10,
+
+      category: 'rangoli',
+      images: ['https://picsum.photos/seed/rangoli-peacock/600/800'],
+      isFeatured: true,
+    },
+    {
+      name: 'Sacred Pooja Kolam',
+      description: 'A traditional pulli-kolam for pooja rooms and daily prayers, drawn at your home. Simple, auspicious, and mess-free for you.',
+      price: 3500,
+      stock: 20,
+
+      category: 'rangoli',
+      images: ['https://picsum.photos/seed/rangoli-kolam/600/800'],
+    },
+    {
+      name: 'Floral Housewarming Rangoli',
+      description: 'A welcoming floral rangoli for housewarmings and new beginnings, drawn at your doorstep by our artist. Colours and materials included.',
+      price: 5000,
+      stock: 15,
+
+      category: 'rangoli',
+      images: ['https://picsum.photos/seed/rangoli-floral/600/800'],
+    },
   ];
 
   for (const product of products) {
@@ -133,7 +172,7 @@ async function main() {
     }
   }
 
-  console.log('🎉 Seeding completed with 12 greeting cards!');
+  console.log(`🎉 Seeding completed with ${products.length} products!`);
 }
 
 main()
