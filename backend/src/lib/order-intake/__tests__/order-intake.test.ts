@@ -36,7 +36,6 @@ describe('processOrder', () => {
     };
 
     return {
-      $transaction: vi.fn(async (callback: any) => callback(mockTx)),
       order: mockTx.order,
     };
   }
@@ -115,7 +114,7 @@ describe('processOrder', () => {
         }),
       },
     };
-    const prisma = { $transaction: vi.fn(async (callback: any) => callback(mockTx)) };
+    const prisma = { order: mockTx.order };
 
     const result = await processOrder(prisma as any, mockEnv, multiInput);
 

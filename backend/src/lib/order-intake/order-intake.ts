@@ -13,8 +13,9 @@ export async function processOrder(
   const taxRate = parseFloat(env.TAX_RATE || '0.18');
   const pricing = computePricing(items, taxRate);
 
-  const order = await prisma.$transaction(async (tx) => {
-    return tx.order.create({
+  // Single nested write: Prisma executes order + items atomically in one
+  // statement. No interactive $transaction wrapper — Cloudflare D1 rejects it.
+  const order = await prisma.order.create({
       data: {
         userId,
         customerName,
@@ -39,7 +40,6 @@ export async function processOrder(
         ),
       },
       include: { items: true },
-    });
   });
 
   const whatsappMessage = formatOrderMessage(order);
