@@ -20,8 +20,6 @@ export interface ValidatedCartItem {
   currentPrice: number;
   frontendPrice?: number;
   productName: string;
-  stockAvailable: number;
-  inStock: boolean;
 }
 
 export interface CartSyncResponse {

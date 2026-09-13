@@ -8,7 +8,7 @@ import { getPrisma, getPrismaRepository } from '../../lib/prisma.js';
 import { getCacheRepository } from '../../lib/cache/index.js';
 import * as orderIntake from '../../lib/order-intake/index.js';
 import { createOrder, getOrderById, getUserOrders } from '../orderService.js';
-import { StockUnavailableError } from '../../middleware/errorHandler.js';
+import { BadRequestError } from '../../middleware/errorHandler.js';
 
 describe('orderService', () => {
   let mockPrisma: any;
@@ -93,9 +93,9 @@ describe('orderService', () => {
     });
 
     it('should throw if facade throws', async () => {
-      vi.mocked(orderIntake.processOrder).mockRejectedValue(new StockUnavailableError('Insufficient stock'));
+      vi.mocked(orderIntake.processOrder).mockRejectedValue(new BadRequestError('Invalid items'));
 
-      await expect(createOrder(mockEnv, orderInput)).rejects.toThrow(StockUnavailableError);
+      await expect(createOrder(mockEnv, orderInput)).rejects.toThrow(BadRequestError);
     });
 
     it('should handle multiple items', async () => {

@@ -5,7 +5,7 @@ vi.mock('../../lib/prisma.js');
 vi.mock('../../middleware/validation.js', () => ({
   validateCartSync: vi.fn((c, next) => {
     c.set('validatedItems', [
-      { productId: 'prod-1', quantity: 2, currentPrice: 100, inStock: true },
+      { productId: 'prod-1', quantity: 2, currentPrice: 100 },
     ]);
     return next();
   }),

@@ -16,6 +16,7 @@ const WHO_IS_FOR_MAP: Record<string, string[]> = {
   friendship: ["A best friend", "A colleague leaving", "A thank-you for being you", "Reconnecting after years"],
   festival: ["Christmas wishes", "New Year blessings", "Diwali greetings", "Eid Mubarak"],
   sympathy: ["A heartfelt condolence", "Thinking of you", "Sending comfort", "A warm embrace from afar"],
+  rangoli: ["Diwali at home", "A wedding celebration", "Pooja and prayers", "A new housewarming"],
   general: ["Just because", "A thinking-of-you moment", "To brighten someone's day", "A simple hello with love"],
 };
 
@@ -80,10 +81,11 @@ export default function ProductDetailPage() {
 
   async function handleAddToCart() {
     if (!product) return;
+    const isService = product.category?.toLowerCase() === 'rangoli';
     await addItem({
       productId: product.id,
       productName: product.name,
-      quantity,
+      quantity: isService ? 1 : quantity,
       price: product.price,
       image: Array.isArray(product.images) ? product.images[0] : undefined,
     });
@@ -143,12 +145,17 @@ export default function ProductDetailPage() {
   }
 
   const images = Array.isArray(product.images) ? product.images : [];
+  const isRangoli = product.category?.toLowerCase() === 'rangoli';
 
   return (
     <div className="bg-twinkle-canvas min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <nav className="flex items-center gap-2 text-sm text-twinkle-ink/70 mb-8" aria-label="Breadcrumb">
-          <Link to="/shop" className="hover:text-twinkle-rose transition-colors">Shop</Link>
+          {isRangoli ? (
+            <Link to="/rangoli" className="hover:text-twinkle-rose transition-colors">Rangoli</Link>
+          ) : (
+            <Link to="/shop" className="hover:text-twinkle-rose transition-colors">Shop</Link>
+          )}
           <svg className="w-4 h-4 text-twinkle-ink/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
@@ -218,18 +225,14 @@ export default function ProductDetailPage() {
               <p className="text-twinkle-ink/70 leading-relaxed">{product.description}</p>
             </div>
 
-            <div className={`product-info-item flex items-center gap-2 mb-6 ${
-              product.stock > 0 ? 'text-emerald-600' : 'text-red-500'
-            }`}>
-              <span className={`w-2 h-2 rounded-full ${product.stock > 0 ? 'bg-emerald-500' : 'bg-red-500'}`} />
-              <span className="text-sm font-medium">
-                {product.stock > 0
-                  ? product.stock <= 3
-                    ? `Only ${product.stock} remaining — hurry!`
-                    : `In Stock — ${product.stock} available`
-                  : 'Currently out of stock'}
-              </span>
-            </div>
+            {isRangoli && (
+              <div className="product-info-item flex items-center gap-2 mb-6 text-emerald-600">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className="text-sm font-medium">
+                  Artist visit. Date and time arranged over WhatsApp after booking
+                </span>
+              </div>
+            )}
 
             <div className="product-info-item who-is-for mb-6">
               <p className="who-is-for-title">Perfect for:</p>
@@ -243,7 +246,7 @@ export default function ProductDetailPage() {
               </ul>
             </div>
 
-            {product.stock > 0 && (
+            {!isRangoli && (
               <div className="product-info-item mb-6">
                 <label className="label-text">Quantity</label>
                 <div className="flex items-center gap-3">
@@ -256,7 +259,7 @@ export default function ProductDetailPage() {
                   </button>
                   <span className="w-12 text-center font-body text-lg font-semibold">{quantity}</span>
                   <button
-                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                    onClick={() => setQuantity(quantity + 1)}
                     className="w-11 h-11 rounded-lg border border-twinkle-mist flex items-center justify-center hover:bg-twinkle-mist/30 hover:border-twinkle-rose transition-all text-twinkle-ink/50 font-medium min-w-[44px] min-h-[44px]"
                     aria-label="Increase quantity"
                   >
@@ -269,20 +272,22 @@ export default function ProductDetailPage() {
             <div className="product-info-item">
               <button
                 onClick={handleAddToCart}
-                disabled={product.stock === 0}
                 className={`btn-primary w-full py-3.5 text-base ${
                   justAdded ? 'animate-heart-pop bg-emerald-500' : ''
-                } ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                }`}
               >
                 {justAdded ? (
                   <>
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    Added to Cart!
+                    {isRangoli ? 'Added. Continue to cart' : 'Added to Cart!'}
                   </>
-                ) : product.stock === 0 ? (
-                  'Out of Stock'
+                ) : isRangoli ? (
+                  <>
+                    <ShoppingCart className="w-5 h-5" />
+                    Book this design
+                  </>
                 ) : (
                   <>
                     <ShoppingCart className="w-5 h-5" />
@@ -310,10 +315,17 @@ export default function ProductDetailPage() {
                   <dt className="text-twinkle-ink/50">Category</dt>
                   <dd className="font-medium text-twinkle-ink/70 capitalize">{product.category || '—'}</dd>
                 </div>
-                <div className="flex justify-between">
-                  <dt className="text-twinkle-ink/50">Delivery</dt>
-                  <dd className="font-medium text-emerald-600">Free via WhatsApp delivery</dd>
-                </div>
+                {isRangoli ? (
+                  <div className="flex justify-between">
+                    <dt className="text-twinkle-ink/50">Service</dt>
+                    <dd className="font-medium text-emerald-600">Our artist draws it at your home</dd>
+                  </div>
+                ) : (
+                  <div className="flex justify-between">
+                    <dt className="text-twinkle-ink/50">Delivery</dt>
+                    <dd className="font-medium text-emerald-600">Free via WhatsApp delivery</dd>
+                  </div>
+                )}
               </dl>
             </div>
           </div>

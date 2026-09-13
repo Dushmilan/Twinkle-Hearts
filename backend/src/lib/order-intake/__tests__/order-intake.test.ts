@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
 import { processOrder } from '../order-intake.js';
-import { StockUnavailableError } from '../../../middleware/errorHandler.js';
 
 describe('processOrder', () => {
   const mockInput = {
@@ -19,7 +18,6 @@ describe('processOrder', () => {
 
   function createMockPrisma(txResult?: any) {
     const mockTx = {
-      product: { updateMany: vi.fn().mockResolvedValue({ count: 1 }) },
       order: {
         create: vi.fn().mockResolvedValue(txResult || {
           id: 'order-1',
@@ -39,7 +37,6 @@ describe('processOrder', () => {
 
     return {
       $transaction: vi.fn(async (callback: any) => callback(mockTx)),
-      product: mockTx.product,
       order: mockTx.order,
     };
   }
@@ -63,18 +60,6 @@ describe('processOrder', () => {
     expect(result.order.items[0].productName).toBe('Test Product');
     expect(result.order.items[0].quantity).toBe(2);
     expect(result.order.items[0].price).toBe(2999);
-  });
-
-  it('should throw StockUnavailableError when stock insufficient', async () => {
-    const mockTx = {
-      product: { updateMany: vi.fn().mockResolvedValue({ count: 0 }) },
-      order: { create: vi.fn() },
-    };
-    const prisma = {
-      $transaction: vi.fn(async (callback: any) => callback(mockTx)),
-    };
-
-    await expect(processOrder(prisma as any, mockEnv, mockInput)).rejects.toThrow(StockUnavailableError);
   });
 
   it('should use TAX_RATE from env', async () => {
@@ -121,7 +106,6 @@ describe('processOrder', () => {
     };
 
     const mockTx = {
-      product: { updateMany: vi.fn().mockResolvedValue({ count: 1 }) },
       order: {
         create: vi.fn().mockResolvedValue({
           id: 'order-3', subtotal: 10996, tax: 1979.28, total: 12975.28,
@@ -136,6 +120,6 @@ describe('processOrder', () => {
     const result = await processOrder(prisma as any, mockEnv, multiInput);
 
     expect(result.order.subtotal).toBe(10996);
-    expect(mockTx.product.updateMany).toHaveBeenCalledTimes(2);
+    expect(mockTx.order.create).toHaveBeenCalledTimes(1);
   });
 });

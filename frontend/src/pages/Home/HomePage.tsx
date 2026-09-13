@@ -31,6 +31,7 @@ const CATEGORIES = [
   { key: 'anniversary', label: 'Anniversary', icon: Heart, color: 'text-twinkle-sage', bg: 'bg-twinkle-sage/20' },
   { key: 'friendship', label: 'Friendship', icon: Handshake, color: 'text-twinkle-ink/50', bg: 'bg-twinkle-ink/10' },
   { key: 'festival', label: 'Festival', icon: Star, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
+  { key: 'rangoli', label: 'Rangoli', icon: Sparkle, color: 'text-twinkle-rose', bg: 'bg-twinkle-rose/20' },
   { key: 'sympathy', label: 'Sympathy', icon: Sparkle, color: 'text-twinkle-mist', bg: 'bg-twinkle-mist/20' },
 ] as const;
 

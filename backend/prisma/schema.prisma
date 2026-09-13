@@ -88,7 +88,6 @@ model Product {
   name        String
   description String
   price       Float
-  stock       Int      @default(0)
   sku         String?
   category    String?
   images      String   @default("[]")

@@ -35,7 +35,6 @@ export interface AdminProductsResponse {
       id: string;
       name: string;
       price: number;
-      stock: number;
       category: string;
       isActive: boolean;
       images: string[];

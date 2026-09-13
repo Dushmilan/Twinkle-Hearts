@@ -11,7 +11,6 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  stock: number;
   category: string;
   images: string[];
   isActive: boolean;
@@ -34,7 +33,6 @@ function AdminProducts() {
     name: '',
     description: '',
     price: '',
-    stock: '',
     category: '',
     isActive: true,
   });
@@ -91,7 +89,6 @@ function AdminProducts() {
         name: formData.name,
         description: formData.description,
         price: parseFloat(formData.price),
-        stock: parseInt(formData.stock),
         category: formData.category,
         images: allImages,
         isActive: formData.isActive,
@@ -144,7 +141,6 @@ function AdminProducts() {
       name: product.name,
       description: product.description,
       price: product.price.toString(),
-      stock: product.stock.toString(),
       category: product.category,
       isActive: product.isActive,
     });
@@ -160,7 +156,6 @@ function AdminProducts() {
       name: '',
       description: '',
       price: '',
-      stock: '',
       category: '',
       isActive: true,
     });
@@ -274,20 +269,6 @@ function AdminProducts() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-twinkle-ink/70 mb-2">
-                    Stock
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={formData.stock}
-                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                    className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-rose focus:border-transparent"
-                    disabled={isUploadingImages}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-twinkle-ink/70 mb-2">
                     Category
                   </label>
                   <input
@@ -389,9 +370,6 @@ function AdminProducts() {
                     Price
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
-                    Stock
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
@@ -402,7 +380,7 @@ function AdminProducts() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center">
+                    <td colSpan={5} className="px-6 py-12 text-center">
                       <div className="flex justify-center">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose"></div>
                       </div>
@@ -410,7 +388,7 @@ function AdminProducts() {
                   </tr>
                 ) : products.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-twinkle-ink/40">
+                    <td colSpan={5} className="px-6 py-12 text-center text-twinkle-ink/40">
                       No products found
                     </td>
                   </tr>
@@ -436,9 +414,6 @@ function AdminProducts() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {formatCurrency(product.price)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-twinkle-ink/50">
-                        {product.stock} in stock
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${

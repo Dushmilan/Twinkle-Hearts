@@ -45,13 +45,6 @@ export class ConflictError extends AppError {
   }
 }
 
-export class StockUnavailableError extends AppError {
-  constructor(message: string) {
-    super(message, 400);
-    this.name = 'StockUnavailableError';
-  }
-}
-
 export const errorHandler: ErrorHandler = (err, c: Context) => {
   const requestId = c.get('requestId') as string | undefined;
 

@@ -85,7 +85,7 @@ describe('validateOrder middleware', () => {
 
   it('should validate and set validatedItems on context', async () => {
     const hydratedItems = [
-      { productId: 'prod-1', quantity: 2, currentPrice: 2999, frontendPrice: 2500, productName: 'Test Product', stockAvailable: 10 },
+      { productId: 'prod-1', quantity: 2, currentPrice: 2999, frontendPrice: 2500, productName: 'Test Product' },
     ];
     vi.mocked(hydrateOrderItems).mockResolvedValue(hydratedItems as any);
 
@@ -157,7 +157,7 @@ describe('validateCartSync middleware', () => {
 
   it('should validate cart items', async () => {
     const hydratedItems = [
-      { productId: 'prod-1', quantity: 2, currentPrice: 2999, inStock: true },
+      { productId: 'prod-1', quantity: 2, currentPrice: 2999 },
     ];
     vi.mocked(hydrateCartItems).mockResolvedValue(hydratedItems as any);
 

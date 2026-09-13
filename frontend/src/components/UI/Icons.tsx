@@ -33,6 +33,7 @@ export const CATEGORY_MAP: Record<string, string> = {
   new_baby: 'New Baby',
   valentine: 'Valentine',
   christmas: 'Christmas',
+  rangoli: 'Rangoli',
   general: 'General',
 };
 
@@ -47,6 +48,7 @@ export const CATEGORY_BADGE: Record<string, string> = {
   new_baby: 'badge-bronze',
   valentine: 'badge-plum',
   christmas: 'badge-bronze',
+  rangoli: 'badge-plum',
   general: 'badge-bronze',
 };
 

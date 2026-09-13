@@ -112,6 +112,10 @@ export default function Layout({ children }: LayoutProps) {
                 <Sparkle size={14} />
                 Shop
               </NavLink>
+              <NavLink to="/rangoli" active={location.pathname === '/rangoli'}>
+                <Sparkle size={14} />
+                Rangoli
+              </NavLink>
             </nav>
 
             <div className="flex items-center gap-2">
@@ -217,6 +221,7 @@ export default function Layout({ children }: LayoutProps) {
           <div className="mobile-nav md:hidden border-t border-twinkle-mist/40 overflow-hidden" style={{ height: 0, opacity: 0 }}>
             <div className="py-4 px-4 space-y-1">
               <MobileNavItem to="/shop" label="Shop" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
+              <MobileNavItem to="/rangoli" label="Rangoli" location={location.pathname} onClick={() => setIsMobileNavOpen(false)} />
 
               <div className="pt-3 pb-2">
                 <p className="text-[11px] font-semibold text-twinkle-ink/40 uppercase tracking-widest px-3">Account</p>
@@ -276,6 +281,7 @@ export default function Layout({ children }: LayoutProps) {
               <h3 className="text-xs font-semibold text-twinkle-ink mb-4 uppercase tracking-widest">Shop</h3>
               <ul className="space-y-2.5">
                 <FooterLink to="/shop">All Cards</FooterLink>
+                <FooterLink to="/rangoli">Rangoli</FooterLink>
                 <FooterLink to="/shop?category=birthday">Birthday</FooterLink>
                 <FooterLink to="/shop?category=love">Love</FooterLink>
                 <FooterLink to="/shop?category=anniversary">Anniversary</FooterLink>
