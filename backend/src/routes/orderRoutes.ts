@@ -8,13 +8,16 @@ import { formatOrderMessage, buildWhatsAppDeepLink } from '../lib/order-intake/i
 import {
   IdempotencyStore,
   hashRequestBody,
+  IDEMPOTENCY_PENDING_TTL_SECONDS,
   type IdempotencyCache,
+  type IdempotencyOrderResponse,
   type IdempotencyRecord,
 } from '../lib/idempotency/idempotency-store.js';
 import type { Env, Variables } from '../types.js';
 
 type OrderEnv = { Bindings: Env; Variables: Variables };
 type OrderContext = Context<OrderEnv>;
+type CreatedOrder = Awaited<ReturnType<typeof createOrder>>;
 const router = new Hono<OrderEnv>();
 
 // Same-isolate guard for concurrent double-submits sharing one Idempotency-Key.
@@ -40,7 +43,10 @@ async function waitForSettledResult(
   for (;;) {
     await new Promise((resolve) => setTimeout(resolve, 100));
     const record = await store.get(userId, key);
-    if (record && !record.pending) return record;
+    // Null means the marker vanished mid-wait (leader failed and deleted it):
+    // return immediately so the caller retries as leader instead of 409ing.
+    if (record === null) return null;
+    if (!record.pending) return record;
     if (Date.now() >= deadline) return record;
   }
 }
@@ -69,26 +75,30 @@ async function createOrderWithIdempotency(
       return c.json({ error: 'Idempotency key was already used with a different request payload' }, 422);
     }
     if (!existing.pending) {
-      if (existing.orderId === undefined) {
+      if (existing.orderId === undefined || existing.response === undefined) {
         return c.json({ error: 'Stored idempotency record is incomplete; retry with a new Idempotency-Key' }, 409);
       }
-      return c.json({ orderId: existing.orderId }, 200, { 'Idempotent-Replayed': 'true' });
+      return c.json(existing.response, 200, { 'Idempotent-Replayed': 'true' });
     }
     const settled = await waitForSettledResult(store, userId, idempotencyKey);
-    if (settled && !settled.pending && settled.orderId !== undefined) {
-      return c.json({ orderId: settled.orderId }, 200, { 'Idempotent-Replayed': 'true' });
+    if (settled !== null) {
+      if (!settled.pending && settled.response !== undefined) {
+        return c.json(settled.response, 200, { 'Idempotent-Replayed': 'true' });
+      }
+      return c.json({ error: 'Order is still being processed; retry with the same Idempotency-Key' }, 409);
     }
-    return c.json({ error: 'Order is still being processed; retry with the same Idempotency-Key' }, 409);
+    // Marker vanished mid-wait (leader failed and deleted it): fall through,
+    // save a fresh pending marker and create below.
   }
 
   await store.save(userId, idempotencyKey, {
     requestHash,
     statusCode: 200,
     pending: true,
-  });
+  }, IDEMPOTENCY_PENDING_TTL_SECONDS);
 
   try {
-    const order: any = await createOrder(c.env, {
+    const order: CreatedOrder = await createOrder(c.env, {
       userId,
       customerName,
       customerPhone,
@@ -98,9 +108,9 @@ async function createOrderWithIdempotency(
     const whatsappMessage = formatOrderMessage(order);
     const whatsappDeepLink = buildWhatsAppDeepLink(c.env.WHATSAPP_BUSINESS_NUMBER, whatsappMessage);
 
-    const responseBody = {
-      orderId: order.id,
-      items: order.items.map((item: any) => ({
+    const responseBody: IdempotencyOrderResponse = {
+      orderId: String(order.id),
+      items: order.items.map((item) => ({
         productId: item.productId,
         productName: item.productName,
         quantity: item.quantity,
@@ -110,14 +120,15 @@ async function createOrderWithIdempotency(
       tax: Number(order.tax),
       total: Number(order.total),
       whatsappDeepLink,
-      createdAt: order.createdAt,
+      createdAt: new Date(order.createdAt).toISOString(),
     };
 
     await store.save(userId, idempotencyKey, {
       requestHash,
-      orderId: String(order.id),
+      orderId: responseBody.orderId,
       statusCode: 200,
       pending: false,
+      response: responseBody,
     });
 
     return c.json(responseBody);
@@ -159,7 +170,7 @@ router.post('/create', orderRateLimit, validateOrder, async (c) => {
   const customerName = c.get('customerName');
   const customerPhone = c.get('customerPhone');
 
-  const order: any = await createOrder(c.env, {
+  const order: CreatedOrder = await createOrder(c.env, {
     userId: user.userId,
     customerName,
     customerPhone,
@@ -171,7 +182,7 @@ router.post('/create', orderRateLimit, validateOrder, async (c) => {
 
   return c.json({
     orderId: order.id,
-    items: order.items.map((item: any) => ({
+    items: order.items.map((item) => ({
       productId: item.productId,
       productName: item.productName,
       quantity: item.quantity,

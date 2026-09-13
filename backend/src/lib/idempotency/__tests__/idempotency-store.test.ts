@@ -40,4 +40,27 @@ describe('IdempotencyStore', () => {
     await store.delete('u1', 'k1');
     expect(await store.get('u1', 'k1')).toBeNull();
   });
+
+  it('treats a corrupt cache value as a miss', async () => {
+    const cache = makeCache();
+    await cache.put('idempotency:order:u1:k1', 'not-json{{{', 86400);
+    const store = new IdempotencyStore(cache);
+    expect(await store.get('u1', 'k1')).toBeNull();
+  });
+
+  it('supports a per-call TTL override', async () => {
+    let savedTtl = 0;
+    const cache = {
+      get: async (): Promise<string | null> => null,
+      put: async (_key: string, _value: string, ttlSeconds: number): Promise<void> => {
+        savedTtl = ttlSeconds;
+      },
+      delete: async (): Promise<void> => {},
+    };
+    const store = new IdempotencyStore(cache);
+    await store.save('u1', 'k1', { requestHash: 'hash-a', statusCode: 200, pending: true }, 120);
+    expect(savedTtl).toBe(120);
+    await store.save('u1', 'k1', { requestHash: 'hash-a', statusCode: 200, pending: false });
+    expect(savedTtl).toBe(86400);
+  });
 });
