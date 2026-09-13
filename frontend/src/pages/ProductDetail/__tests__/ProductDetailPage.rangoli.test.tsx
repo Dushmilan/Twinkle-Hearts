@@ -53,7 +53,7 @@ describe('ProductDetailPage rangoli service layout', () => {
   });
 
   it('shows Book CTA instead of Add to Cart for rangoli designs', async () => {
-    mockGet.mockResolvedValue({ product: { ...baseProduct, category: 'rangoli' } });
+    mockGet.mockResolvedValue({ product: { ...baseProduct, productType: 'service' } });
     renderDetail();
 
     expect(await screen.findByRole('button', { name: /book this design/i })).toBeInTheDocument();
@@ -61,7 +61,7 @@ describe('ProductDetailPage rangoli service layout', () => {
   });
 
   it('hides the quantity stepper for rangoli designs', async () => {
-    mockGet.mockResolvedValue({ product: { ...baseProduct, category: 'rangoli' } });
+    mockGet.mockResolvedValue({ product: { ...baseProduct, productType: 'service' } });
     renderDetail();
 
     await screen.findByRole('button', { name: /book this design/i });
@@ -70,7 +70,7 @@ describe('ProductDetailPage rangoli service layout', () => {
   });
 
   it('shows artist-visit copy for rangoli designs', async () => {
-    mockGet.mockResolvedValue({ product: { ...baseProduct, category: 'rangoli' } });
+    mockGet.mockResolvedValue({ product: { ...baseProduct, productType: 'service' } });
     renderDetail();
 
     expect(await screen.findByText(/arranged over WhatsApp after booking/i)).toBeInTheDocument();
@@ -78,7 +78,7 @@ describe('ProductDetailPage rangoli service layout', () => {
   });
 
   it('keeps Add to Cart and stepper for greeting cards', async () => {
-    mockGet.mockResolvedValue({ product: { ...baseProduct, category: 'birthday' } });
+    mockGet.mockResolvedValue({ product: { ...baseProduct, productType: 'card' } });
     renderDetail();
 
     expect(await screen.findByRole('button', { name: /add to cart/i })).toBeInTheDocument();

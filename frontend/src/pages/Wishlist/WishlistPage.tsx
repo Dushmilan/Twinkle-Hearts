@@ -16,7 +16,6 @@ interface Product {
   description: string;
   price: number;
   images: string[];
-  category: string;
 }
 
 interface WishlistItem {
@@ -183,7 +182,6 @@ export default function WishlistPage() {
                   </button>
                 </div>
                 <div className="p-4">
-                  <p className="text-xs text-twinkle-ink/40 mb-1 capitalize">{item.product.category}</p>
                   <Link to={`/product/${item.product.id}`}>
                     <h3 className="font-display text-sm font-semibold text-twinkle-ink mb-2 line-clamp-2 hover:text-twinkle-rose transition-colors">
                       {item.product.name}

@@ -19,7 +19,7 @@ const productSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   description: z.string().min(10, 'Description must be at least 10 characters'),
   price: z.number().positive('Price must be positive'),
-  category: z.string().min(1, 'Category is required'),
+  productType: z.enum(['card', 'service']).default('card'),
   images: z.preprocess(
     (val) => {
       if (typeof val === 'string') {
@@ -125,12 +125,12 @@ router.get('/orders', async (c) => {
 router.get('/products', async (c) => {
   const page = parseInt(c.req.query('page') || '1');
   const limit = parseInt(c.req.query('limit') || '20');
-  const category = c.req.query('category');
+  const productType = c.req.query('productType');
   const search = c.req.query('search');
   const prisma = getPrismaRepository(c.env.DB);
 
   const where: any = {};
-  if (category) where.category = category;
+  if (productType) where.productType = productType;
   if (search) {
     where.OR = [
       { name: { contains: search } },

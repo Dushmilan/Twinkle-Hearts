@@ -6,18 +6,12 @@ import { useCartStore } from '../../store/cartStore';
 import { api } from '../../api.js';
 import { getImageSrc } from '../../utils/images';
 import type { Product, ProductListItem } from '@twinkle-hearts/shared';
-import { WhatsAppIcon, formatPrice, CATEGORY_MAP, CATEGORY_BADGE } from '../../components/UI/Icons';
+import { WhatsAppIcon, formatPrice } from '../../components/UI/Icons';
 import ProductCard from '../../components/UI/ProductCard';
 
-const WHO_IS_FOR_MAP: Record<string, string[]> = {
-  birthday: ["Mom's birthday", "A friend turning 30", "Your child's first birthday", "Grandma's 80th"],
-  love: ["Your partner", "A long-distance friend", "Someone you miss", "A first date anniversary"],
-  anniversary: ["25th wedding anniversary", "Parents' anniversary", "A milestone year together", "Your best friend's anniversary"],
-  friendship: ["A best friend", "A colleague leaving", "A thank-you for being you", "Reconnecting after years"],
-  festival: ["Christmas wishes", "New Year blessings", "Diwali greetings", "Eid Mubarak"],
-  sympathy: ["A heartfelt condolence", "Thinking of you", "Sending comfort", "A warm embrace from afar"],
-  rangoli: ["Diwali at home", "A wedding celebration", "Pooja and prayers", "A new housewarming"],
-  general: ["Just because", "A thinking-of-you moment", "To brighten someone's day", "A simple hello with love"],
+const WHO_IS_FOR: Record<'service' | 'card', string[]> = {
+  service: ["Diwali at home", "A wedding celebration", "Pooja and prayers", "A new housewarming"],
+  card: ["Just because", "A thinking-of-you moment", "To brighten someone's day", "A simple hello with love"],
 };
 
 export default function ProductDetailPage() {
@@ -64,9 +58,9 @@ export default function ProductDetailPage() {
     try {
       const data = await api.products.get(productId);
       setProduct(data.product);
-      if (data.product?.category) {
+      if (data.product?.productType) {
         try {
-          const related = await api.products.list({ category: data.product.category, limit: 5 });
+          const related = await api.products.list({ productType: data.product.productType, limit: 5 });
           setRelatedProducts((related.products || []).filter((p: ProductListItem) => p.id !== productId).slice(0, 4));
         } catch {
           // silently fail
@@ -81,7 +75,7 @@ export default function ProductDetailPage() {
 
   async function handleAddToCart() {
     if (!product) return;
-    const isService = product.category?.toLowerCase() === 'rangoli';
+    const isService = product.productType === 'service';
     await addItem({
       productId: product.id,
       productName: product.name,
@@ -93,14 +87,7 @@ export default function ProductDetailPage() {
     setTimeout(() => setJustAdded(false), 1500);
   }
 
-  const getCategoryBadge = (category?: string) => {
-    const key = category?.toLowerCase() ?? '';
-    const label = CATEGORY_MAP[key] || category || 'General';
-    const variant = CATEGORY_BADGE[key] || 'badge-plum';
-    return <span className={`badge ${variant}`}>{label}</span>;
-  };
-
-  const whoIsFor = WHO_IS_FOR_MAP[product?.category?.toLowerCase() ?? ''] || WHO_IS_FOR_MAP.general;
+  const whoIsFor = (product && WHO_IS_FOR[product.productType]) || WHO_IS_FOR.card;
 
   if (loading) {
     return (
@@ -145,7 +132,7 @@ export default function ProductDetailPage() {
   }
 
   const images = Array.isArray(product.images) ? product.images : [];
-  const isRangoli = product.category?.toLowerCase() === 'rangoli';
+  const isRangoli = product.productType === 'service';
 
   return (
     <div className="bg-twinkle-canvas min-h-screen">
@@ -206,10 +193,6 @@ export default function ProductDetailPage() {
           </div>
 
           <div ref={contentRef} className="flex flex-col">
-            <div className="product-info-item mb-3">
-              {getCategoryBadge(product.category)}
-            </div>
-
             <h1 className="product-info-item font-display text-3xl sm:text-4xl font-bold text-twinkle-ink mb-3">
               {product.name}
             </h1>
@@ -312,8 +295,8 @@ export default function ProductDetailPage() {
             <div className="detail-section mt-8 pt-8 border-t border-twinkle-mist">
               <dl className="space-y-4 text-sm">
                 <div className="flex justify-between">
-                  <dt className="text-twinkle-ink/50">Category</dt>
-                  <dd className="font-medium text-twinkle-ink/70 capitalize">{product.category || '—'}</dd>
+                  <dt className="text-twinkle-ink/50">Type</dt>
+                  <dd className="font-medium text-twinkle-ink/70">{isRangoli ? 'Rangoli service' : 'Greeting card'}</dd>
                 </div>
                 {isRangoli ? (
                   <div className="flex justify-between">

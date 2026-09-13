@@ -89,7 +89,7 @@ model Product {
   description String
   price       Float
   sku         String?
-  category    String?
+  productType String  @default("card")
   images      String   @default("[]")
   isFeatured  Boolean  @default(false)
   isActive    Boolean  @default(true)
@@ -100,7 +100,7 @@ model Product {
   wishlistBy  Wishlist[] @relation("ProductWishlist")
 
   @@index([name])
-  @@index([category])
+  @@index([productType])
   @@index([isFeatured])
   @@index([isActive])
 }

@@ -37,7 +37,7 @@ describe('productService', () => {
 
   describe('listProducts', () => {
     const mockProducts = [
-      { id: 'prod-1', name: 'Product 1', description: 'Desc 1', price: 100, category: 'Cat1', images: [], isActive: true, createdAt: new Date() },
+      { id: 'prod-1', name: 'Product 1', description: 'Desc 1', price: 100, productType: 'card', images: [], isActive: true, createdAt: new Date() },
     ];
 
     it('should return paginated product list', async () => {
@@ -85,15 +85,15 @@ describe('productService', () => {
       );
     });
 
-    it('should filter by category', async () => {
+    it('should filter by productType', async () => {
       mockPrisma.product.findMany.mockResolvedValue([]);
       mockPrisma.product.count.mockResolvedValue(0);
 
-      await productService.listProducts(mockEnv, { page: 1, limit: 20, category: 'Electronics' });
+      await productService.listProducts(mockEnv, { page: 1, limit: 20, productType: 'service' });
 
       expect(mockPrisma.product.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { category: 'Electronics' },
+          where: { productType: 'service' },
         })
       );
     });
@@ -119,7 +119,7 @@ describe('productService', () => {
     });
 
     it('should normalize images from JSON string to array', async () => {
-      const dbProduct = { id: 'prod-1', name: 'P', description: 'd', price: 100, category: 'Cat', images: '["a.jpg","b.jpg"]', isActive: true, createdAt: new Date() };
+      const dbProduct = { id: 'prod-1', name: 'P', description: 'd', price: 100, productType: 'card', images: '["a.jpg","b.jpg"]', isActive: true, createdAt: new Date() };
       mockPrisma.product.findMany.mockResolvedValue([dbProduct]);
       mockPrisma.product.count.mockResolvedValue(1);
 
@@ -130,7 +130,7 @@ describe('productService', () => {
     });
 
     it('should normalize images from comma-joined string to array', async () => {
-      const dbProduct = { id: 'prod-1', name: 'P', description: 'd', price: 100, category: 'Cat', images: '/x.jpg,/y.jpg', isActive: true, createdAt: new Date() };
+      const dbProduct = { id: 'prod-1', name: 'P', description: 'd', price: 100, productType: 'card', images: '/x.jpg,/y.jpg', isActive: true, createdAt: new Date() };
       mockPrisma.product.findMany.mockResolvedValue([dbProduct]);
       mockPrisma.product.count.mockResolvedValue(1);
 
@@ -192,7 +192,7 @@ describe('productService', () => {
   });
 
   describe('getProductById', () => {
-    const mockProduct = { id: 'prod-1', name: 'Test Product', description: 'Test description', price: 2999, images: [], category: 'Cat1', isActive: true, createdAt: new Date() };
+    const mockProduct = { id: 'prod-1', name: 'Test Product', description: 'Test description', price: 2999, images: [], productType: 'card', isActive: true, createdAt: new Date() };
 
     it('should return product by id', async () => {
       mockPrisma.product.findUnique.mockResolvedValue(mockProduct);

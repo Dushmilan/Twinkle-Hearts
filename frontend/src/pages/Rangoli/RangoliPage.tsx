@@ -6,7 +6,7 @@ import { api } from '../../api.js';
 import ProductCard from '../../components/UI/ProductCard';
 import type { ProductListItem as Product } from '@twinkle-hearts/shared';
 
-export const RANGOLI_CATEGORY = 'rangoli';
+export const RANGOLI_PRODUCT_TYPE = 'service';
 
 const STEPS = [
   { title: 'Pick your design', text: 'Browse the gallery and choose the one you love.' },
@@ -77,7 +77,7 @@ export default function RangoliPage() {
       setLoading(true);
       setError(null);
       try {
-        const data = await api.products.list({ limit: 100, category: RANGOLI_CATEGORY });
+        const data = await api.products.list({ limit: 100, productType: RANGOLI_PRODUCT_TYPE });
         if (!cancelled) setProducts(data.products || []);
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Something went wrong');

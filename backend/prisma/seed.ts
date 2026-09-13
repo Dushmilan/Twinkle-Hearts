@@ -13,7 +13,7 @@ async function main() {
       description: 'A vibrant birthday card with colorful confetti and sparkle accents. "Another year of being amazing!" — perfect for celebrating someone special.',
       price: 250,
 
-      category: 'Birthday',
+      productType: 'card',
       images: ['https://picsum.photos/seed/birthday-sparkles/600/800'],
       isFeatured: true,
     },
@@ -22,7 +22,7 @@ async function main() {
       description: 'An elegant romantic card with soft watercolor hearts and a heartfelt message. "You are my today and all of my tomorrows."',
       price: 300,
 
-      category: 'Love',
+      productType: 'card',
       images: ['https://picsum.photos/seed/forever-yours/600/800'],
       isFeatured: true,
     },
@@ -31,7 +31,7 @@ async function main() {
       description: 'A premium anniversary card with gold foil accents and a timeless message. "Celebrating the beautiful journey of your love."',
       price: 400,
 
-      category: 'Anniversary',
+      productType: 'card',
       images: ['https://picsum.photos/seed/golden-anniversary/600/800'],
       isFeatured: true,
     },
@@ -40,7 +40,7 @@ async function main() {
       description: 'A cheerful friendship card with tropical flowers and a warm message. "Friends like you make everything brighter."',
       price: 200,
 
-      category: 'Friendship',
+      productType: 'card',
       images: ['https://picsum.photos/seed/friends-like-you/600/800'],
     },
     {
@@ -48,7 +48,7 @@ async function main() {
       description: 'A traditional Sinhala Avurudu greeting card with beautiful motifs of oil lamp and kiribath. "Suba Aluth Avuruddak Wewa!"',
       price: 250,
 
-      category: 'Festival',
+      productType: 'card',
       images: ['https://picsum.photos/seed/avurudu-blessings/600/800'],
       isFeatured: true,
     },
@@ -57,7 +57,7 @@ async function main() {
       description: 'A gentle sympathy card with soft lavender and a comforting message. "Sending you love and strength during this difficult time."',
       price: 250,
 
-      category: 'Sympathy',
+      productType: 'card',
       images: ['https://picsum.photos/seed/thinking-of-you/600/800'],
     },
     {
@@ -65,7 +65,7 @@ async function main() {
       description: 'A beautiful birthday card with Sinhala text "සුබ උපන්දින සුභ පැතුම්!" and floral decorations. Bilingual message inside.',
       price: 250,
 
-      category: 'Birthday',
+      productType: 'card',
       images: ['https://picsum.photos/seed/birthday-wishes-sinhala/600/800'],
     },
     {
@@ -73,7 +73,7 @@ async function main() {
       description: 'A romantic card with Tamil text "நான் உன்னை காதலிக்கிறேன்" and elegant peacock feather design.',
       price: 300,
 
-      category: 'Love',
+      productType: 'card',
       images: ['https://picsum.photos/seed/love-tamil/600/800'],
     },
     {
@@ -81,7 +81,7 @@ async function main() {
       description: 'A sweet baby shower card with pastel colors and tiny footprints. "Welcome little one — you are already so loved!"',
       price: 250,
 
-      category: 'Birthday',
+      productType: 'card',
       images: ['https://picsum.photos/seed/baby-shower/600/800'],
     },
     {
@@ -89,7 +89,7 @@ async function main() {
       description: 'A serene Vesak greeting card with lotus flower and lantern design. "Suba Vesak Purnima Wewa!" with Dharma message.',
       price: 250,
 
-      category: 'Festival',
+      productType: 'card',
       images: ['https://picsum.photos/seed/vesak-blessings/600/800'],
       isFeatured: true,
     },
@@ -98,7 +98,7 @@ async function main() {
       description: 'A cheerful recovery card with sunflowers and an uplifting message. "Sending sunshine your way — get well soon!"',
       price: 200,
 
-      category: 'Sympathy',
+      productType: 'card',
       images: ['https://picsum.photos/seed/get-well-soon/600/800'],
     },
     {
@@ -106,7 +106,7 @@ async function main() {
       description: 'A festive Christmas card with star and holly design. "Wishing you joy, peace, and all the love this holiday season."',
       price: 300,
 
-      category: 'Festival',
+      productType: 'card',
       images: ['https://picsum.photos/seed/christmas-joy/600/800'],
     },
     // Rangoli designs (service: artist draws at the customer's home)
@@ -115,7 +115,7 @@ async function main() {
       description: 'A radiant lotus rangoli for Diwali, drawn at your home by our artist. Colours and materials included. Date and time arranged over WhatsApp after booking.',
       price: 4500,
 
-      category: 'rangoli',
+      productType: 'service',
       images: ['https://picsum.photos/seed/rangoli-lotus/600/800'],
       isFeatured: true,
     },
@@ -124,7 +124,7 @@ async function main() {
       description: 'A grand peacock-motif rangoli for weddings and receptions, drawn at your venue by our artist. Colours and materials included.',
       price: 6500,
 
-      category: 'rangoli',
+      productType: 'service',
       images: ['https://picsum.photos/seed/rangoli-peacock/600/800'],
       isFeatured: true,
     },
@@ -133,7 +133,7 @@ async function main() {
       description: 'A traditional pulli-kolam for pooja rooms and daily prayers, drawn at your home. Simple, auspicious, and mess-free for you.',
       price: 3500,
 
-      category: 'rangoli',
+      productType: 'service',
       images: ['https://picsum.photos/seed/rangoli-kolam/600/800'],
     },
     {
@@ -141,7 +141,7 @@ async function main() {
       description: 'A welcoming floral rangoli for housewarmings and new beginnings, drawn at your doorstep by our artist. Colours and materials included.',
       price: 5000,
 
-      category: 'rangoli',
+      productType: 'service',
       images: ['https://picsum.photos/seed/rangoli-floral/600/800'],
     },
   ];

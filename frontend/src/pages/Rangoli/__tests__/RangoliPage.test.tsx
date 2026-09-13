@@ -48,7 +48,7 @@ describe('RangoliPage', () => {
     mockList.mockResolvedValue({ products: [], pagination: { page: 1, limit: 100, total: 0, totalPages: 0 } });
   });
 
-  it('fetches products filtered by rangoli category', async () => {
+  it('fetches products filtered by service productType', async () => {
     render(
       <MemoryRouter>
         <RangoliPage />
@@ -57,7 +57,7 @@ describe('RangoliPage', () => {
 
     await waitFor(() => {
       expect(mockList).toHaveBeenCalledWith(
-        expect.objectContaining({ category: 'rangoli' })
+        expect.objectContaining({ productType: 'service' })
       );
     });
   });

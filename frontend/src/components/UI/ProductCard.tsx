@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Heart } from 'lucide-react';
 import gsap from 'gsap';
 import { getImageSrc } from '../../utils/images';
-import { formatPrice, CATEGORY_MAP } from './Icons';
+import { formatPrice } from './Icons';
 import type { ProductListItem } from '@twinkle-hearts/shared';
 import { CardContainer, CardBody, CardItem } from '../UI/3d-card';
 import { useAuthStore } from '../../store/authStore';
@@ -22,8 +22,6 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const heartRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-
-  const categoryLabel = CATEGORY_MAP[product.category?.toLowerCase() ?? ''] || product.category || 'General';
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -107,7 +105,9 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                 </div>
               )}
               <CardItem translateZ={40} className="absolute top-3 left-3 z-10">
-                <span className="badge badge-plum">{categoryLabel}</span>
+                {product.productType === 'service' && (
+                  <span className="badge badge-plum">Rangoli service</span>
+                )}
               </CardItem>
 
               {isAuthenticated && (

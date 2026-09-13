@@ -39,7 +39,7 @@ interface ProductListItem {
   name: string;
   description: string;
   price: number;
-  category?: string;
+  productType: 'card' | 'service';
   images: string[];
 }
 
@@ -74,7 +74,7 @@ type Api = {
     updateProfile: (data: { name: string; phone: string; avatar: string }) => Promise<ApiEnvelope<AuthResponse['user']>>;
   };
   products: {
-    list: (params?: { page?: number; limit?: number; search?: string; category?: string }) => Promise<ProductsResponse>;
+    list: (params?: { page?: number; limit?: number; search?: string; productType?: string }) => Promise<ProductsResponse>;
     search: (query: string) => Promise<{ products: ProductListItem[] }>;
     get: (id: string) => Promise<ProductDetailResponse>;
   };
@@ -103,12 +103,12 @@ type Api = {
     orderDetail: (id: string) => Promise<AdminOrderDetailResponse>;
     updateOrderStatus: (id: string, status: string) => Promise<AdminOrderDetailResponse>;
     products: {
-      list: (params?: { page?: number; limit?: number; search?: string; category?: string }) => Promise<AdminProductsResponse>;
+      list: (params?: { page?: number; limit?: number; search?: string; productType?: string }) => Promise<AdminProductsResponse>;
       create: (product: {
         name: string;
         description: string;
         price: number;
-        category: string;
+        productType: 'card' | 'service';
         images: string[];
         isActive?: boolean;
       }) => Promise<{ success: boolean; data: unknown }>;
@@ -116,7 +116,7 @@ type Api = {
         name: string;
         description: string;
         price: number;
-        category: string;
+        productType: 'card' | 'service';
         images: string[];
         isActive: boolean;
       }>) => Promise<{ success: boolean; data: unknown }>;
@@ -146,7 +146,7 @@ export const api: Api = {
       if (params?.page) query.set('page', String(params.page));
       if (params?.limit) query.set('limit', String(params.limit));
       if (params?.search) query.set('search', params.search);
-      if (params?.category) query.set('category', params.category);
+      if (params?.productType) query.set('productType', params.productType);
       const qs = query.toString();
       return request(`/api/products${qs ? `?${qs}` : ''}`);
     },
@@ -194,7 +194,7 @@ export const api: Api = {
         if (params?.page) query.set('page', String(params.page));
         if (params?.limit) query.set('limit', String(params.limit));
         if (params?.search) query.set('search', params.search);
-        if (params?.category) query.set('category', params.category);
+        if (params?.productType) query.set('productType', params.productType);
         const qs = query.toString();
         return request(`/api/admin/products${qs ? `?${qs}` : ''}`, { authenticated: true });
       },

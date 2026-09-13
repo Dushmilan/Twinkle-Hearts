@@ -64,7 +64,7 @@ describe('adminService', () => {
   });
 
   describe('createProduct', () => {
-    const productInput = { name: 'New Product', description: 'A great product description', price: 2999, stock: 10, category: 'Electronics', images: JSON.stringify(['https://example.com/img.jpg']), isActive: true };
+    const productInput = { name: 'New Product', description: 'A great product description', price: 2999, productType: 'card', images: JSON.stringify(['https://example.com/img.jpg']), isActive: true };
 
     it('should create a product', async () => {
       mockPrisma.product.create.mockResolvedValue({ id: 'prod-1', ...productInput });

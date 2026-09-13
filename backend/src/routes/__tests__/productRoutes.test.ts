@@ -28,7 +28,7 @@ describe('Product Routes (Integration)', () => {
   describe('GET /api/products', () => {
     it('should return product list with pagination', async () => {
       vi.mocked(productService.productService.listProducts).mockResolvedValue({
-        products: [{ id: 'prod-1', name: 'Test', description: 'Desc', price: 100, stock: 10, category: 'Cat', images: [], createdAt: new Date() }],
+        products: [{ id: 'prod-1', name: 'Test', description: 'Desc', price: 100, productType: 'card', images: [], createdAt: new Date() }],
         pagination: { page: 1, limit: 20, total: 1, totalPages: 1 },
       });
 
@@ -49,13 +49,13 @@ describe('Product Routes (Integration)', () => {
       });
 
       await app.fetch(
-        new Request('http://localhost/api/products?page=2&limit=10&search=test&category=Electronics'),
+        new Request('http://localhost/api/products?page=2&limit=10&search=test&productType=service'),
         mockEnv
       );
 
       expect(productService.productService.listProducts).toHaveBeenCalledWith(
         mockEnv,
-        expect.objectContaining({ page: 2, limit: 10, search: 'test', category: 'Electronics', activeOnly: true })
+        expect.objectContaining({ page: 2, limit: 10, search: 'test', productType: 'service', activeOnly: true })
       );
     });
   });
@@ -87,7 +87,7 @@ describe('Product Routes (Integration)', () => {
     it('should return a product by id', async () => {
       vi.mocked(productService.productService.getProductById).mockResolvedValue({
         id: 'prod-1', name: 'Test Product', description: 'Desc', price: 2999,
-        stock: 10, images: [], category: 'Cat', isActive: true, createdAt: new Date(),
+        images: [], productType: 'card', isActive: true, createdAt: new Date(),
       });
 
       const res = await app.fetch(

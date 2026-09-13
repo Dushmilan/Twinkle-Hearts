@@ -35,7 +35,7 @@ export interface AdminProductsResponse {
       id: string;
       name: string;
       price: number;
-      category: string;
+      productType: 'card' | 'service';
       isActive: boolean;
       images: string[];
       createdAt: string;

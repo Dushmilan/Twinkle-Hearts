@@ -3,7 +3,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  category?: string;
+  productType: 'card' | 'service';
   images: string[];
   isActive: boolean;
   createdAt: string;
@@ -15,7 +15,7 @@ export interface ProductListItem {
   name: string;
   description: string;
   price: number;
-  category?: string;
+  productType: 'card' | 'service';
   images: string[];
 }
 

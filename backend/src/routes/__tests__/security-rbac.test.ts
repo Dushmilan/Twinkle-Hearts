@@ -35,7 +35,7 @@ const validProductBody = {
   name: 'New Card',
   description: 'A beautiful greeting card for testing',
   price: 1500,
-  category: 'Birthday',
+  productType: 'card',
   images: ['https://example.com/img.jpg'],
 };
 
@@ -116,7 +116,7 @@ describe('admin RBAC boundary (real authenticate + requireAdmin)', () => {
       name: validProductBody.name,
       description: validProductBody.description,
       price: validProductBody.price,
-      category: validProductBody.category,
+      productType: validProductBody.productType,
       images: JSON.stringify(validProductBody.images),
       isActive: true,
     };

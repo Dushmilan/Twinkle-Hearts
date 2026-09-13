@@ -80,8 +80,8 @@ describe('Admin Routes (Integration)', () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: 'New Product', description: 'A great product description', price: 2999, stock: 10,
-            category: 'Electronics', images: ['https://img.jpg'],
+            name: 'New Product', description: 'A great product description', price: 2999,
+            productType: 'card', images: ['https://img.jpg'],
           }),
         }),
         mockEnv
@@ -203,7 +203,7 @@ describe('Admin Routes (Integration)', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: 'String Images', description: 'A great product description', price: 999,
-            category: 'Cards', images: JSON.stringify(['a.jpg']),
+            productType: 'card', images: JSON.stringify(['a.jpg']),
           }),
         }),
         mockEnv

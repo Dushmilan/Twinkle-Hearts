@@ -22,36 +22,6 @@ export function HeartSparkle({ className }: { className?: string }) {
   );
 }
 
-export const CATEGORY_MAP: Record<string, string> = {
-  birthday: 'Birthday',
-  wedding: 'Wedding',
-  anniversary: 'Anniversary',
-  sympathy: 'Sympathy',
-  congratulations: 'Congratulations',
-  thank_you: 'Thank You',
-  get_well: 'Get Well',
-  new_baby: 'New Baby',
-  valentine: 'Valentine',
-  christmas: 'Christmas',
-  rangoli: 'Rangoli',
-  general: 'General',
-};
-
-export const CATEGORY_BADGE: Record<string, string> = {
-  birthday: 'badge-plum',
-  wedding: 'badge-bronze',
-  anniversary: 'badge-bronze',
-  sympathy: 'badge-bronze',
-  congratulations: 'badge-bronze',
-  thank_you: 'badge-plum',
-  get_well: 'badge-bronze',
-  new_baby: 'badge-bronze',
-  valentine: 'badge-plum',
-  christmas: 'badge-bronze',
-  rangoli: 'badge-plum',
-  general: 'badge-bronze',
-};
-
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat('en-LK', {
     style: 'currency',

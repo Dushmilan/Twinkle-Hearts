@@ -36,10 +36,10 @@ function normalizeProduct<T extends { images: unknown }>(product: T): T {
 }
 
 export const productService = {
-  async listProducts(env: Env, params: { page: number; limit: number; search?: string; category?: string; activeOnly?: boolean }) {
-    const { page, limit, search, category, activeOnly } = params;
+  async listProducts(env: Env, params: { page: number; limit: number; search?: string; productType?: string; activeOnly?: boolean }) {
+    const { page, limit, search, productType, activeOnly } = params;
     const skip = (page - 1) * limit;
-    const cacheKey = CacheKeys.productsCatalog(page, limit) + (search ? `:s:${search}` : '') + (category ? `:c:${category}` : '');
+    const cacheKey = CacheKeys.productsCatalog(page, limit) + (search ? `:s:${search}` : '') + (productType ? `:t:${productType}` : '');
     const cache = getCacheRepository(env.KV);
 
     const cached = await cache.get(cacheKey) as { products: any[]; pagination: any } | null;
@@ -59,7 +59,7 @@ export const productService = {
         { description: { contains: search } },
       ];
     }
-    if (category) where.category = category;
+    if (productType) where.productType = productType;
     if (activeOnly !== undefined) where.isActive = activeOnly;
 
     const [products, total] = await Promise.all([

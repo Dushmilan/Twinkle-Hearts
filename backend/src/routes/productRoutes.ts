@@ -9,10 +9,10 @@ router.get('/', async (c) => {
   const page = parseInt(c.req.query('page') || '1');
   const limit = parseInt(c.req.query('limit') || '20');
   const search = c.req.query('search');
-  const category = c.req.query('category');
+  const productType = c.req.query('productType');
 
   const result = await productService.listProducts(c.env, {
-    page, limit, search, category, activeOnly: true,
+    page, limit, search, productType, activeOnly: true,
   });
 
   return c.json(result);

@@ -94,13 +94,13 @@ describe('api client', () => {
         json: async () => ({ products: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 0 } }),
       });
 
-      await api.products.list({ page: 2, limit: 10, search: 'test', category: 'Electronics' });
+      await api.products.list({ page: 2, limit: 10, search: 'test', productType: 'service' });
 
       const url = mockFetch.mock.calls[0][0];
       expect(url).toContain('page=2');
       expect(url).toContain('limit=10');
       expect(url).toContain('search=test');
-      expect(url).toContain('category=Electronics');
+      expect(url).toContain('productType=service');
     });
 
     it('should encode search query for product search', async () => {

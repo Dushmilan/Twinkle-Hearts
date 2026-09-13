@@ -11,7 +11,7 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  category: string;
+  productType: 'card' | 'service';
   images: string[];
   isActive: boolean;
   createdAt: string;
@@ -33,7 +33,7 @@ function AdminProducts() {
     name: '',
     description: '',
     price: '',
-    category: '',
+    productType: 'card' as 'card' | 'service',
     isActive: true,
   });
 
@@ -89,7 +89,7 @@ function AdminProducts() {
         name: formData.name,
         description: formData.description,
         price: parseFloat(formData.price),
-        category: formData.category,
+        productType: formData.productType,
         images: allImages,
         isActive: formData.isActive,
       };
@@ -141,7 +141,7 @@ function AdminProducts() {
       name: product.name,
       description: product.description,
       price: product.price.toString(),
-      category: product.category,
+      productType: product.productType,
       isActive: product.isActive,
     });
     setExistingImages(product.images);
@@ -156,7 +156,7 @@ function AdminProducts() {
       name: '',
       description: '',
       price: '',
-      category: '',
+      productType: 'card' as 'card' | 'service',
       isActive: true,
     });
     setExistingImages([]);
@@ -269,16 +269,18 @@ function AdminProducts() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-twinkle-ink/70 mb-2">
-                    Category
+                    Type
                   </label>
-                  <input
-                    type="text"
+                  <select
                     required
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    value={formData.productType}
+                    onChange={(e) => setFormData({ ...formData, productType: e.target.value as 'card' | 'service' })}
                     className="w-full px-4 py-3 border border-twinkle-mist rounded-lg focus:ring-2 focus:ring-twinkle-rose focus:border-transparent"
                     disabled={isUploadingImages}
-                  />
+                  >
+                    <option value="card">Greeting card</option>
+                    <option value="service">Rangoli service</option>
+                  </select>
                 </div>
               </div>
 
@@ -364,7 +366,7 @@ function AdminProducts() {
                     Product
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
-                    Category
+                    Type
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-twinkle-ink/50 uppercase tracking-wider">
                     Price
@@ -410,7 +412,7 @@ function AdminProducts() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-twinkle-ink/50">
-                        {product.category}
+                        {product.productType === 'service' ? 'Rangoli service' : 'Greeting card'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {formatCurrency(product.price)}
