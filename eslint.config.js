@@ -1,4 +1,5 @@
 // Root ESLint configuration for monorepo
+import path from 'node:path';
 import globals from 'globals';
 import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
@@ -22,6 +23,26 @@ export default [
   },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
+  // Type-aware rules (prefer-nullish-coalescing, prefer-optional-chain)
+  // need per-workspace project service; each tsconfig includes its own src/.
+  {
+    files: ['frontend/src/**/*.{ts,tsx}'],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: path.join(import.meta.dirname, 'frontend'),
+      },
+    },
+  },
+  {
+    files: ['backend/src/**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: path.join(import.meta.dirname, 'backend'),
+      },
+    },
+  },
   pluginReact.configs.flat.recommended,
   {
     plugins: {

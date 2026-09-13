@@ -36,7 +36,7 @@ Object.defineProperty(navigator, 'onLine', {
 
 vi.mock('dexie', () => {
   const promiseWithCatch = () => ({
-    catch: vi.fn((cb: any) => { try { cb?.(new Error('mock')); } catch {} }),
+    catch: vi.fn((cb: any) => { try { cb?.(new Error('mock')); } catch { /* mock errors are swallowed */ } }),
     then: vi.fn(),
     finally: vi.fn(),
   });
