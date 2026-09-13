@@ -110,19 +110,9 @@ vi.mock('../../middleware/auth.js', () => ({
     return next();
   }),
 }));
-// Product-list follow-up uses a stubbed productService (same pattern as
-// productRoutes.test.ts); the order path under test never touches it.
-vi.mock('../../services/productService.js', () => ({
-  productService: {
-    listProducts: vi.fn(),
-    searchProducts: vi.fn(),
-    getProductById: vi.fn(),
-  },
-}));
-
 import orderRoutes from '../orderRoutes.js';
-import productRoutes from '../productRoutes.js';
-import { productService } from '../../services/productService.js';
+import { getPrismaRepository } from '../../lib/prisma.js';
+import { hydrateOrderItems } from '../../lib/validators/index.js';
 import { errorHandler } from '../../middleware/errorHandler.js';
 import type { Env } from '../../types.js';
 
@@ -148,13 +138,6 @@ function testEnv(): Env {
 function orderApp(): Hono<{ Bindings: Env }> {
   const app = new Hono<{ Bindings: Env }>();
   app.route('/api/orders', orderRoutes);
-  app.onError(errorHandler);
-  return app;
-}
-
-function productApp(): Hono<{ Bindings: Env }> {
-  const app = new Hono<{ Bindings: Env }>();
-  app.route('/api/products', productRoutes);
   app.onError(errorHandler);
   return app;
 }
@@ -219,26 +202,11 @@ describe('validation edges', () => {
     const body = (await res.json()) as OrderCreateBody;
     expect(body.items[0].productName).toBe(EVIL_NAME);
 
-    // The catalog is unharmed: the product-list path still serves 200.
-    vi.mocked(productService.listProducts).mockResolvedValue({
-      products: [
-        {
-          id: 'prod-evil',
-          name: EVIL_NAME,
-          description: 'Desc',
-          price: 1000,
-          stock: 10,
-          category: 'Cat',
-          images: [],
-          createdAt: new Date(),
-        },
-      ],
-      pagination: { page: 1, limit: 20, total: 1, totalPages: 1 },
-    });
-    const listRes = await productApp().fetch(
-      new Request('http://localhost/api/products'),
-      testEnv(),
-    );
-    expect(listRes.status).toBe(200);
+    // The catalog query path is unharmed: a second real-hydrate read through
+    // the same findMany seam round-trips the evil name byte-identical.
+    const reread = await hydrateOrderItems(getPrismaRepository(testEnv().DB), [
+      { productId: 'prod-evil', quantity: 2 },
+    ]);
+    expect(reread[0].productName).toBe(EVIL_NAME);
   });
 });
