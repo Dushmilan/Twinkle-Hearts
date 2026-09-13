@@ -202,6 +202,41 @@ describe('order idempotency', () => {
     expect(vi.mocked(orderService.createOrder)).toHaveBeenCalledTimes(1);
   });
 
+  it('dedupes when KV lags behind the first write', async () => {
+    const store = new Map<string, string>();
+    const base = testEnv(store);
+    const app = testApp();
+    const key = randomUUID();
+    const kvKey = `idempotency:order:user-1:${key}`;
+    const body = orderBody(1);
+
+    const first = await postOrder(app, store, body, key, base);
+    expect(first.status).toBe(200);
+
+    // Simulate propagation lag: hide the stored record for the first 2 reads.
+    let lagReads = 2;
+    const laggyEnv = {
+      ...base,
+      KV: {
+        ...base.KV,
+        get: async (key: string, _type?: string): Promise<string | null> => {
+          if (key === kvKey && lagReads > 0) {
+            lagReads -= 1;
+            return null;
+          }
+          return store.has(key) ? (store.get(key) as string) : null;
+        },
+      },
+    } as unknown as Env;
+
+    const second = await postOrder(app, store, body, key, laggyEnv);
+    expect(second.status).toBe(200);
+    const secondJson = (await second.json()) as OrderResponseBody;
+    expect(secondJson.orderId).toBe('o-1');
+    expect(second.headers.get('Idempotent-Replayed')).toBe('true');
+    expect(vi.mocked(orderService.createOrder)).toHaveBeenCalledTimes(1);
+  });
+
   it('rejects same key with different payload', async () => {
     const store = new Map<string, string>();
     const app = testApp();

@@ -38,6 +38,24 @@ function idempotencyCache(kv: KVNamespace): IdempotencyCache {
   };
 }
 
+async function getWithReread(
+  store: IdempotencyStore,
+  userId: string,
+  key: string,
+): Promise<IdempotencyRecord | null> {
+  // Cloudflare KV is eventually consistent: a record written seconds ago may
+  // briefly read as null. Re-read on a bounded backoff before assuming no
+  // prior request exists, or a lagging read creates a duplicate order.
+  const delaysMs = [300, 700];
+  for (;;) {
+    const record = await store.get(userId, key);
+    if (record !== null) return record;
+    const delay = delaysMs.shift();
+    if (delay === undefined) return null;
+    await new Promise((resolve) => setTimeout(resolve, delay));
+  }
+}
+
 async function waitForSettledResult(
   store: IdempotencyStore,
   userId: string,
@@ -75,7 +93,7 @@ async function createOrderWithIdempotency(
   // Canonical hash over the validated payload: no second body read (validation
   // already consumed the body), and re-serialized retries replay correctly.
   const requestHash = hashIdempotencyPayload({ items: validatedItems, customerName, customerPhone });
-  const existing = await store.get(userId, idempotencyKey);
+  const existing = await getWithReread(store, userId, idempotencyKey);
   if (existing) {
     if (existing.requestHash !== requestHash) {
       return c.json({ error: 'Idempotency key was already used with a different request payload' }, 422);
