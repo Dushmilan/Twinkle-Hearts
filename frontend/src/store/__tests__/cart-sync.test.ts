@@ -6,7 +6,6 @@ global.fetch = mockFetch;
 
 describe('cart sync trust boundary', () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
     useCartStore.setState({
       items: [],
       lastSyncedAt: null,
@@ -36,7 +35,6 @@ describe('cart sync trust boundary', () => {
     const items = useCartStore.getState().items;
     expect(items).toHaveLength(1);
     expect(items[0].price).toBe(2500);
-    expect(items[0].price).not.toBe(1);
     expect(useCartStore.getState().getTotal()).toBe(5000);
   });
 });

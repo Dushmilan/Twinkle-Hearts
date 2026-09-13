@@ -166,4 +166,122 @@ describe('Admin Routes (Integration)', () => {
       expect(res.status).toBe(200);
     });
   });
+
+  describe('POST /api/admin/products/upload', () => {
+    it('should reject uploads with no files', async () => {
+      const res = await app.fetch(
+        new Request('http://localhost/api/admin/products/upload', {
+          method: 'POST',
+          body: new FormData(),
+        }),
+        mockEnv
+      );
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should upload images and return urls', async () => {
+      vi.mocked(adminService.uploadProductImages).mockResolvedValue({ urls: ['k.jpg'], count: 1 });
+      const form = new FormData();
+      form.append('images', 'placeholder');
+
+      const res = await app.fetch(
+        new Request('http://localhost/api/admin/products/upload', { method: 'POST', body: form }),
+        mockEnv
+      );
+
+      expect(res.status).toBe(200);
+      expect(adminService.uploadProductImages).toHaveBeenCalled();
+    });
+
+    it('should parse stringified image arrays in the product schema', async () => {
+      vi.mocked(adminService.createProduct).mockResolvedValue({} as Awaited<ReturnType<typeof adminService.createProduct>>);
+
+      const res = await app.fetch(
+        new Request('http://localhost/api/admin/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'String Images', description: 'A great product description', price: 999,
+            category: 'Cards', images: JSON.stringify(['a.jpg']),
+          }),
+        }),
+        mockEnv
+      );
+
+      expect(res.status).toBe(201);
+    });
+  });
+
+  describe('GET /api/admin/orders/:id', () => {
+    it('should return the order with items and user', async () => {
+      mockPrisma.order.findUnique = vi.fn().mockResolvedValue({ id: 'o1', items: [] });
+
+      const res = await app.fetch(new Request('http://localhost/api/admin/orders/o1'), mockEnv);
+
+      expect(res.status).toBe(200);
+    });
+
+    it('should 404 for an unknown order', async () => {
+      mockPrisma.order.findUnique = vi.fn().mockResolvedValue(null);
+
+      const res = await app.fetch(new Request('http://localhost/api/admin/orders/nope'), mockEnv);
+
+      expect(res.status).toBe(404);
+    });
+  });
+
+  describe('PUT /api/admin/orders/:id/status', () => {
+    const putStatus = (id: string, status: string) =>
+      app.fetch(
+        new Request(`http://localhost/api/admin/orders/${id}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status }),
+        }),
+        mockEnv
+      );
+
+    it('should update to a valid status', async () => {
+      mockPrisma.order.findUnique = vi.fn().mockResolvedValue({ id: 'o1', status: 'PENDING_WHATSAPP_CONFIRMATION' });
+      mockPrisma.order.update = vi.fn().mockResolvedValue({ id: 'o1', status: 'CONFIRMED' });
+
+      const res = await putStatus('o1', 'CONFIRMED');
+
+      expect(res.status).toBe(200);
+    });
+
+    it('should reject an invalid status', async () => {
+      const res = await putStatus('o1', 'FROBNICATED');
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should 404 for an unknown order', async () => {
+      mockPrisma.order.findUnique = vi.fn().mockResolvedValue(null);
+
+      const res = await putStatus('nope', 'CONFIRMED');
+
+      expect(res.status).toBe(404);
+    });
+  });
+
+  describe('GET /api/admin/products with search', () => {
+    it('should filter by name or description', async () => {
+      mockPrisma.product.findMany = vi.fn().mockResolvedValue([{ id: 'p1', images: '[]' }]);
+      mockPrisma.product.count = vi.fn().mockResolvedValue(1);
+
+      const res = await app.fetch(
+        new Request('http://localhost/api/admin/products?search=birthday'),
+        mockEnv
+      );
+
+      expect(res.status).toBe(200);
+      expect(mockPrisma.product.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: expect.objectContaining({ OR: expect.any(Array) }) })
+      );
+      const body = (await res.json()) as { data: { products: Array<{ images: string[] }> } };
+      expect(body.data.products[0].images).toEqual([]);
+    });
+  });
 });

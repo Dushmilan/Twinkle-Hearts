@@ -5,7 +5,7 @@ vi.mock('../../lib/cache/index.js');
 
 import { getPrisma, getPrismaRepository } from '../../lib/prisma.js';
 import { getCacheRepository } from '../../lib/cache/index.js';
-import { productService } from '../productService.js';
+import { productService, normalizeImages } from '../productService.js';
 import { NotFoundError } from '../../middleware/errorHandler.js';
 
 describe('productService', () => {
@@ -37,7 +37,7 @@ describe('productService', () => {
 
   describe('listProducts', () => {
     const mockProducts = [
-      { id: 'prod-1', name: 'Product 1', description: 'Desc 1', price: 100, stock: 10, category: 'Cat1', images: [], isActive: true, createdAt: new Date() },
+      { id: 'prod-1', name: 'Product 1', description: 'Desc 1', price: 100, category: 'Cat1', images: [], isActive: true, createdAt: new Date() },
     ];
 
     it('should return paginated product list', async () => {
@@ -119,7 +119,7 @@ describe('productService', () => {
     });
 
     it('should normalize images from JSON string to array', async () => {
-      const dbProduct = { id: 'prod-1', name: 'P', description: 'd', price: 100, stock: 10, category: 'Cat', images: '["a.jpg","b.jpg"]', isActive: true, createdAt: new Date() };
+      const dbProduct = { id: 'prod-1', name: 'P', description: 'd', price: 100, category: 'Cat', images: '["a.jpg","b.jpg"]', isActive: true, createdAt: new Date() };
       mockPrisma.product.findMany.mockResolvedValue([dbProduct]);
       mockPrisma.product.count.mockResolvedValue(1);
 
@@ -130,13 +130,34 @@ describe('productService', () => {
     });
 
     it('should normalize images from comma-joined string to array', async () => {
-      const dbProduct = { id: 'prod-1', name: 'P', description: 'd', price: 100, stock: 10, category: 'Cat', images: '/x.jpg,/y.jpg', isActive: true, createdAt: new Date() };
+      const dbProduct = { id: 'prod-1', name: 'P', description: 'd', price: 100, category: 'Cat', images: '/x.jpg,/y.jpg', isActive: true, createdAt: new Date() };
       mockPrisma.product.findMany.mockResolvedValue([dbProduct]);
       mockPrisma.product.count.mockResolvedValue(1);
 
       const result = await productService.listProducts(mockEnv, { page: 1, limit: 20 });
 
       expect(result.products[0].images).toEqual(['/images//x.jpg', '/images//y.jpg']);
+    });
+
+    it('should return [] for non-string image payloads', () => {
+      expect(normalizeImages(42)).toEqual([]);
+      expect(normalizeImages(null)).toEqual([]);
+      expect(normalizeImages(undefined)).toEqual([]);
+    });
+
+    it('should return [] for empty or empty-array strings', () => {
+      expect(normalizeImages('')).toEqual([]);
+      expect(normalizeImages('   ')).toEqual([]);
+      expect(normalizeImages('[]')).toEqual([]);
+    });
+
+    it('should fall back to comma-split when JSON parsing fails', () => {
+      expect(normalizeImages('[broken')).toEqual(['/images/[broken']);
+    });
+
+    it('should drop non-string entries from parsed arrays and keep absolute urls', () => {
+      expect(normalizeImages('["a.jpg", 5, null]')).toEqual(['/images/a.jpg']);
+      expect(normalizeImages(['https://cdn.example/x.jpg', 7])).toEqual(['https://cdn.example/x.jpg']);
     });
   });
 
@@ -171,7 +192,7 @@ describe('productService', () => {
   });
 
   describe('getProductById', () => {
-    const mockProduct = { id: 'prod-1', name: 'Test Product', description: 'Test description', price: 2999, stock: 10, images: [], category: 'Cat1', isActive: true, createdAt: new Date() };
+    const mockProduct = { id: 'prod-1', name: 'Test Product', description: 'Test description', price: 2999, images: [], category: 'Cat1', isActive: true, createdAt: new Date() };
 
     it('should return product by id', async () => {
       mockPrisma.product.findUnique.mockResolvedValue(mockProduct);

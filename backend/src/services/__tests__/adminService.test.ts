@@ -119,6 +119,22 @@ describe('adminService', () => {
 
       await expect(deleteProduct(mockEnv, 'unknown')).rejects.toThrow(NotFoundError);
     });
+
+    it('should delete R2 images belonging to the product', async () => {
+      mockPrisma.product.findUnique.mockResolvedValue({
+        id: 'prod-1',
+        images: JSON.stringify(['/images/k1.jpg', 'https://cdn.example/x.jpg']),
+      });
+      mockPrisma.orderItem.findFirst.mockResolvedValue(null);
+      mockPrisma.product.delete.mockResolvedValue({ id: 'prod-1' });
+      vi.mocked(imageLib.isR2Url).mockImplementation((url: string) => url.startsWith('/images/'));
+      vi.mocked(imageLib.extractR2Key).mockImplementation((url: string) => url.replace('/images/', ''));
+      vi.mocked(imageLib.deleteMultipleFromR2).mockResolvedValue(undefined);
+
+      await deleteProduct(mockEnv, 'prod-1');
+
+      expect(imageLib.deleteMultipleFromR2).toHaveBeenCalledWith(mockEnv.R2, ['k1.jpg']);
+    });
   });
 
   describe('updateUserRole', () => {

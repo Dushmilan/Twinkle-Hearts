@@ -292,4 +292,101 @@ describe('order idempotency', () => {
     expect(firstJson.orderId).not.toBe(secondJson.orderId);
     expect(vi.mocked(orderService.createOrder)).toHaveBeenCalledTimes(2);
   });
+
+  it('rejects a completed marker that stored no result', async () => {
+    const store = new Map<string, string>();
+    const app = testApp();
+    const key = randomUUID();
+    const body = orderBody(1);
+    store.set(
+      `idempotency:order:user-1:${key}`,
+      JSON.stringify({ requestHash: hashRequestBody(body), statusCode: 200, pending: false }),
+    );
+
+    const res = await postOrder(app, store, body, key);
+
+    expect(res.status).toBe(409);
+    expect(await res.text()).toContain('incomplete');
+    expect(vi.mocked(orderService.createOrder)).not.toHaveBeenCalled();
+  });
+
+  it('replays a result that settles while waiting on a pending marker', async () => {
+    const store = new Map<string, string>();
+    const app = testApp();
+    const key = randomUUID();
+    const body = orderBody(1);
+    const kvKey = `idempotency:order:user-1:${key}`;
+    const settledResponse = {
+      orderId: 'o-leader',
+      items: [{ productId: 'prod-1', productName: 'Test', quantity: 1, price: 2999 }],
+      subtotal: 2999,
+      tax: 539.82,
+      total: 3538.82,
+      whatsappDeepLink: 'https://wa.me/94771234567?text=hi',
+      createdAt: new Date('2026-01-01').toISOString(),
+    };
+    store.set(
+      kvKey,
+      JSON.stringify({ requestHash: hashRequestBody(body), statusCode: 200, pending: true }),
+    );
+    // The cross-isolate leader finishes mid-wait: the next poll sees completed.
+    setTimeout(() => {
+      store.set(
+        kvKey,
+        JSON.stringify({
+          requestHash: hashRequestBody(body),
+          orderId: 'o-leader',
+          statusCode: 200,
+          pending: false,
+          response: settledResponse,
+        }),
+      );
+    }, 150);
+
+    const res = await postOrder(app, store, body, key);
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Idempotent-Replayed')).toBe('true');
+    expect(await res.json()).toEqual(settledResponse);
+    expect(vi.mocked(orderService.createOrder)).not.toHaveBeenCalled();
+  });
+
+  it('409s when the pending marker never settles', async () => {
+    const store = new Map<string, string>();
+    const app = testApp();
+    const key = randomUUID();
+    const body = orderBody(1);
+    store.set(
+      `idempotency:order:user-1:${key}`,
+      JSON.stringify({ requestHash: hashRequestBody(body), statusCode: 200, pending: true }),
+    );
+
+    const res = await postOrder(app, store, body, key);
+
+    expect(res.status).toBe(409);
+    expect(await res.text()).toContain('still being processed');
+    expect(vi.mocked(orderService.createOrder)).not.toHaveBeenCalled();
+  });
+
+  it('409s a same-isolate follower while the leader is still creating', async () => {
+    const store = new Map<string, string>();
+    const app = testApp();
+    const key = randomUUID();
+    const body = orderBody(1);
+    const base = vi.mocked(orderService.createOrder).getMockImplementation();
+    if (!base) throw new Error('base createOrder mock missing');
+    vi.mocked(orderService.createOrder).mockImplementationOnce(async (env, input) => {
+      await new Promise((resolve) => setTimeout(resolve, 2500));
+      return base(env, input);
+    });
+
+    const leader = postOrder(app, store, body, key);
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    const follower = await postOrder(app, store, body, key);
+
+    expect(follower.status).toBe(409);
+    expect(await follower.text()).toContain('still being processed');
+    expect((await leader).status).toBe(200);
+    expect(vi.mocked(orderService.createOrder)).toHaveBeenCalledTimes(1);
+  });
 });

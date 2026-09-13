@@ -175,6 +175,18 @@ describe('userService', () => {
 
       await expect(updateAddress(mockEnv, 'user-1', 'unknown', { label: 'Test' })).rejects.toThrow(NotFoundError);
     });
+
+    it('should clear other defaults when setting a new default', async () => {
+      mockPrisma.address.findFirst.mockResolvedValue({ id: 'addr-1', userId: 'user-1' });
+      mockPrisma.address.update.mockResolvedValue({ id: 'addr-1', isDefault: true });
+
+      await updateAddress(mockEnv, 'user-1', 'addr-1', { isDefault: true });
+
+      expect(mockPrisma.address.updateMany).toHaveBeenCalledWith({
+        where: { userId: 'user-1', isDefault: true, id: { not: 'addr-1' } },
+        data: { isDefault: false },
+      });
+    });
   });
 
   describe('deleteAddress', () => {

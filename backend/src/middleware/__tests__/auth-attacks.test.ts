@@ -87,4 +87,17 @@ describe('jwt attacks', () => {
     const forged = await mint({}, other.privateKey as CryptoKey);
     expect((await callAuthed(forged)).status).toBe(401);
   });
+
+  it('maps unexpected session-store failures to Authentication failed', async () => {
+    vi.mocked(getCacheRepository).mockReturnValueOnce({
+      getSession: vi.fn(async () => {
+        throw new Error('kv down');
+      }),
+    } as unknown as CacheRepository);
+
+    const res = await callAuthed(await mint({}));
+
+    expect(res.status).toBe(401);
+    expect(await res.text()).toContain('Authentication failed');
+  });
 });
