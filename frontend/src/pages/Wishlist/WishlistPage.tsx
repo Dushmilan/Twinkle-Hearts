@@ -16,7 +16,6 @@ interface Product {
   description: string;
   price: number;
   images: string[];
-  stock: number;
   category: string;
 }
 
@@ -84,17 +83,15 @@ export default function WishlistPage() {
 
   const handleAddAllToCart = async () => {
     for (const item of wishlist) {
-      if (item.product.stock > 0) {
-        await addItem({
-          productId: item.product.id,
-          productName: item.product.name,
-          quantity: 1,
-          price: item.product.price,
-          image: item.product.images[0],
-        });
-      }
+      await addItem({
+        productId: item.product.id,
+        productName: item.product.name,
+        quantity: 1,
+        price: item.product.price,
+        image: item.product.images[0],
+      });
     }
-    toastService.success('All available cards added to cart');
+    toastService.success('All saved cards added to cart');
   };
 
   if (!isAuthenticated) {
@@ -204,8 +201,7 @@ export default function WishlistPage() {
                     </Link>
                     <button
                       onClick={() => handleAddToCart(item.product)}
-                      disabled={item.product.stock === 0}
-                      className="flex-1 text-center px-3 py-2.5 bg-twinkle-ink text-white rounded-full text-sm font-medium hover:bg-twinkle-ink/90 transition-colors min-h-[44px] flex items-center justify-center disabled:opacity-50"
+                      className="flex-1 text-center px-3 py-2.5 bg-twinkle-ink text-white rounded-full text-sm font-medium hover:bg-twinkle-ink/90 transition-colors min-h-[44px] flex items-center justify-center"
                     >
                       Add
                     </button>

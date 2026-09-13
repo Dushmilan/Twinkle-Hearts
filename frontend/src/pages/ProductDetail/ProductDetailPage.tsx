@@ -225,26 +225,13 @@ export default function ProductDetailPage() {
               <p className="text-twinkle-ink/70 leading-relaxed">{product.description}</p>
             </div>
 
-            {isRangoli ? (
+            {isRangoli && (
               <div className="product-info-item flex items-center gap-2 mb-6 text-emerald-600">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 <span className="text-sm font-medium">
                   Artist visit. Date and time arranged over WhatsApp after booking
                 </span>
               </div>
-            ) : (
-            <div className={`product-info-item flex items-center gap-2 mb-6 ${
-              product.stock > 0 ? 'text-emerald-600' : 'text-red-500'
-            }`}>
-              <span className={`w-2 h-2 rounded-full ${product.stock > 0 ? 'bg-emerald-500' : 'bg-red-500'}`} />
-              <span className="text-sm font-medium">
-                {product.stock > 0
-                  ? product.stock <= 3
-                    ? `Only ${product.stock} remaining — hurry!`
-                    : `In Stock — ${product.stock} available`
-                  : 'Currently out of stock'}
-              </span>
-            </div>
             )}
 
             <div className="product-info-item who-is-for mb-6">
@@ -259,7 +246,7 @@ export default function ProductDetailPage() {
               </ul>
             </div>
 
-            {product.stock > 0 && !isRangoli && (
+            {!isRangoli && (
               <div className="product-info-item mb-6">
                 <label className="label-text">Quantity</label>
                 <div className="flex items-center gap-3">
@@ -272,7 +259,7 @@ export default function ProductDetailPage() {
                   </button>
                   <span className="w-12 text-center font-body text-lg font-semibold">{quantity}</span>
                   <button
-                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                    onClick={() => setQuantity(quantity + 1)}
                     className="w-11 h-11 rounded-lg border border-twinkle-mist flex items-center justify-center hover:bg-twinkle-mist/30 hover:border-twinkle-rose transition-all text-twinkle-ink/50 font-medium min-w-[44px] min-h-[44px]"
                     aria-label="Increase quantity"
                   >
@@ -285,20 +272,17 @@ export default function ProductDetailPage() {
             <div className="product-info-item">
               <button
                 onClick={handleAddToCart}
-                disabled={product.stock === 0}
                 className={`btn-primary w-full py-3.5 text-base ${
                   justAdded ? 'animate-heart-pop bg-emerald-500' : ''
-                } ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                }`}
               >
                 {justAdded ? (
                   <>
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    {isRangoli ? 'Added — continue to cart' : 'Added to Cart!'}
+                    {isRangoli ? 'Added. Continue to cart' : 'Added to Cart!'}
                   </>
-                ) : product.stock === 0 ? (
-                  'Out of Stock'
                 ) : isRangoli ? (
                   <>
                     <ShoppingCart className="w-5 h-5" />

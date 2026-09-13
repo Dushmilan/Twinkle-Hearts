@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
 import { processOrder } from '../order-intake.js';
-import { StockUnavailableError } from '../../../middleware/errorHandler.js';
 
 describe('processOrder', () => {
   const mockInput = {
@@ -19,7 +18,6 @@ describe('processOrder', () => {
 
   function createMockPrisma(txResult?: any) {
     const mockTx = {
-      product: { updateMany: vi.fn().mockResolvedValue({ count: 1 }) },
       order: {
         create: vi.fn().mockResolvedValue(txResult || {
           id: 'order-1',
@@ -39,7 +37,6 @@ describe('processOrder', () => {
 
     return {
       $transaction: vi.fn(async (callback: any) => callback(mockTx)),
-      product: mockTx.product,
       order: mockTx.order,
     };
   }
@@ -63,18 +60,6 @@ describe('processOrder', () => {
     expect(result.order.items[0].productName).toBe('Test Product');
     expect(result.order.items[0].quantity).toBe(2);
     expect(result.order.items[0].price).toBe(2999);
-  });
-
-  it('should throw StockUnavailableError when stock insufficient', async () => {
-    const mockTx = {
-      product: { updateMany: vi.fn().mockResolvedValue({ count: 0 }) },
-      order: { create: vi.fn() },
-    };
-    const prisma = {
-      $transaction: vi.fn(async (callback: any) => callback(mockTx)),
-    };
-
-    await expect(processOrder(prisma as any, mockEnv, mockInput)).rejects.toThrow(StockUnavailableError);
   });
 
   it('should use TAX_RATE from env', async () => {
@@ -109,58 +94,6 @@ describe('processOrder', () => {
     expect(result.order.tax).toBe(180);
   });
 
-  it('should skip stock reservation for service-category items', async () => {
-    const mockTx = {
-      product: { updateMany: vi.fn().mockResolvedValue({ count: 1 }) },
-      order: {
-        create: vi.fn().mockResolvedValue({
-          id: 'order-rangoli', subtotal: 4500, tax: 810, total: 5310,
-          status: 'PENDING_WHATSAPP_CONFIRMATION', items: [],
-          priceSnapshot: '[]', createdAt: new Date(),
-          userId: 'user-1', customerName: 'John Doe', customerPhone: '+919876543210',
-        }),
-      },
-    };
-    const prisma = { $transaction: vi.fn(async (callback: any) => callback(mockTx)) };
-
-    const result = await processOrder(prisma as any, mockEnv, {
-      ...mockInput,
-      items: [{ productId: 'r1', quantity: 1, currentPrice: 4500, productName: 'Lotus Rangoli', category: 'rangoli' }],
-    });
-
-    expect(result.order.id).toBe('order-rangoli');
-    expect(mockTx.product.updateMany).not.toHaveBeenCalled();
-    expect(mockTx.order.create).toHaveBeenCalled();
-  });
-
-  it('should reserve stock only for non-service items in a mixed order', async () => {
-    const mockTx = {
-      product: { updateMany: vi.fn().mockResolvedValue({ count: 1 }) },
-      order: {
-        create: vi.fn().mockResolvedValue({
-          id: 'order-mixed', subtotal: 9499, tax: 1709.82, total: 11208.82,
-          status: 'PENDING_WHATSAPP_CONFIRMATION', items: [],
-          priceSnapshot: '[]', createdAt: new Date(),
-          userId: 'user-1', customerName: 'John Doe', customerPhone: '+919876543210',
-        }),
-      },
-    };
-    const prisma = { $transaction: vi.fn(async (callback: any) => callback(mockTx)) };
-
-    await processOrder(prisma as any, mockEnv, {
-      ...mockInput,
-      items: [
-        { productId: 'prod-1', quantity: 2, currentPrice: 2499.5, productName: 'Card', category: 'Birthday' },
-        { productId: 'r1', quantity: 1, currentPrice: 4500, productName: 'Lotus Rangoli', category: 'rangoli' },
-      ],
-    });
-
-    expect(mockTx.product.updateMany).toHaveBeenCalledTimes(1);
-    expect(mockTx.product.updateMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: expect.objectContaining({ id: 'prod-1' }) })
-    );
-  });
-
   it('should handle multiple items with correct pricing', async () => {
     const multiInput = {
       userId: 'user-1',
@@ -173,7 +106,6 @@ describe('processOrder', () => {
     };
 
     const mockTx = {
-      product: { updateMany: vi.fn().mockResolvedValue({ count: 1 }) },
       order: {
         create: vi.fn().mockResolvedValue({
           id: 'order-3', subtotal: 10996, tax: 1979.28, total: 12975.28,
@@ -188,6 +120,6 @@ describe('processOrder', () => {
     const result = await processOrder(prisma as any, mockEnv, multiInput);
 
     expect(result.order.subtotal).toBe(10996);
-    expect(mockTx.product.updateMany).toHaveBeenCalledTimes(2);
+    expect(mockTx.order.create).toHaveBeenCalledTimes(1);
   });
 });

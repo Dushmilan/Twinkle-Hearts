@@ -1,6 +1,5 @@
 import type { PrismaRepository } from '../prisma.js';
 import { computePricing } from './pricing-engine.js';
-import { reserveStock } from './stock-reservation.js';
 import { formatOrderMessage, buildWhatsAppDeepLink } from './whatsapp-formatter.js';
 import type { OrderIntakeInput, OrderIntakeResult } from './types.js';
 
@@ -15,8 +14,6 @@ export async function processOrder(
   const pricing = computePricing(items, taxRate);
 
   const order = await prisma.$transaction(async (tx) => {
-    await reserveStock(tx, items);
-
     return tx.order.create({
       data: {
         userId,

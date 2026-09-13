@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HTTPException } from 'hono/http-exception';
-import { AppError, NotFoundError, BadRequestError, UnauthorizedError, ForbiddenError, ConflictError, StockUnavailableError, errorHandler } from '../errorHandler.js';
+import { AppError, NotFoundError, BadRequestError, UnauthorizedError, ForbiddenError, ConflictError, errorHandler } from '../errorHandler.js';
 
 describe('Error Classes', () => {
   it('AppError should set statusCode and message', () => {
@@ -41,13 +41,6 @@ describe('Error Classes', () => {
     const err = new ConflictError();
     expect(err.statusCode).toBe(409);
     expect(err.message).toBe('Resource conflict');
-  });
-
-  it('StockUnavailableError should have 400 status', () => {
-    const err = new StockUnavailableError('Not enough stock');
-    expect(err.statusCode).toBe(400);
-    expect(err.message).toBe('Not enough stock');
-    expect(err.name).toBe('StockUnavailableError');
   });
 });
 

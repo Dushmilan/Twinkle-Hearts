@@ -30,7 +30,6 @@ const baseProduct = {
   name: 'Lotus Diwali Rangoli',
   description: 'Large doorstep lotus drawn at your home',
   price: 4500,
-  stock: 10,
   images: ['lotus.jpg'],
   isActive: true,
   createdAt: '2026-09-01',

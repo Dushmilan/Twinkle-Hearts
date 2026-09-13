@@ -5,7 +5,7 @@ vi.mock('../../services/orderService.js');
 vi.mock('../../lib/prisma.js');
 vi.mock('../../middleware/validation.js', () => ({
   validateOrder: vi.fn((c, next) => {
-    c.set('validatedItems', [{ productId: 'prod-1', quantity: 2, currentPrice: 2999, productName: 'Test', stockAvailable: 10 }]);
+    c.set('validatedItems', [{ productId: 'prod-1', quantity: 2, currentPrice: 2999, productName: 'Test' }]);
     c.set('customerName', 'John Doe');
     c.set('customerPhone', '+919876543210');
     return next();

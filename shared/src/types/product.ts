@@ -3,7 +3,6 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  stock: number;
   category?: string;
   images: string[];
   isActive: boolean;
@@ -16,7 +15,6 @@ export interface ProductListItem {
   name: string;
   description: string;
   price: number;
-  stock: number;
   category?: string;
   images: string[];
 }

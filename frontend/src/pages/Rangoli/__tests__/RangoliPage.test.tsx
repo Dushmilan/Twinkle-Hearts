@@ -32,8 +32,6 @@ const rangoliDesign = {
   name: 'Lotus Diwali Rangoli',
   description: 'Large doorstep lotus',
   price: 4500,
-  stock: 10,
-  category: 'rangoli',
   images: ['lotus.jpg'],
 };
 

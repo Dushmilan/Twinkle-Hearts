@@ -4,16 +4,6 @@ export interface ValidatedItem {
   currentPrice: number;
   frontendPrice?: number;
   productName: string;
-  stockAvailable: number;
-  category: string | null;
-}
-
-// Product categories fulfilled as a service (artist visit, no inventory).
-// Bookings for these skip stock-availability checks and reservation.
-export const SERVICE_CATEGORIES: ReadonlySet<string> = new Set(['rangoli']);
-
-export function isServiceCategory(category: string | null | undefined): boolean {
-  return typeof category === 'string' && SERVICE_CATEGORIES.has(category);
 }
 
 export interface PricingResult {
@@ -32,7 +22,6 @@ export interface OrderIntakeInput {
     quantity: number;
     currentPrice: number;
     productName: string;
-    category?: string | null;
   }>;
 }
 

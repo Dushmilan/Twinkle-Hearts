@@ -134,7 +134,7 @@ export async function getUserWishlist(env: Env, userId: string) {
   const prisma = getPrismaRepository(env.DB);
   const wishlist = await prisma.wishlist.findMany({
     where: { userId },
-    include: { product: { select: { id: true, name: true, price: true, images: true, stock: true, isActive: true } } },
+    include: { product: { select: { id: true, name: true, price: true, images: true, isActive: true } } },
     orderBy: { createdAt: 'desc' },
   });
 
@@ -160,7 +160,7 @@ export async function addToWishlist(env: Env, userId: string, productId: string)
 
   const wishlist = await prisma.wishlist.create({
     data: { userId, productId },
-    include: { product: { select: { id: true, name: true, price: true, images: true, stock: true } } },
+    include: { product: { select: { id: true, name: true, price: true, images: true } } },
   });
 
   await getCacheRepository(env.KV).delete( CacheKeys.userWishlist(userId));

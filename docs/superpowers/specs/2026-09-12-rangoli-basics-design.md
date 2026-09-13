@@ -46,8 +46,9 @@ slot scheduling, artist assignment, separate booking model.
 ## 4. Detail-page service rules (`ProductDetailPage`, rangoli only)
 
 - Breadcrumb root links to `/rangoli` (label Rangoli), not `/shop`.
-- Stock line replaced with service-availability line ("Artist visit —
-  arranged over WhatsApp after booking").
+- Rangoli shows a service-availability line ("Artist visit. Date and
+  time arranged over WhatsApp after booking"); greeting cards show
+  no stock line (stock removed site-wide).
 - Quantity stepper hidden; bookings are always quantity 1.
 - CTA label "Book this design" / booked-state "Added — continue to cart".
 - "Perfect for" list gains a `rangoli` entry (Diwali, weddings, pooja,

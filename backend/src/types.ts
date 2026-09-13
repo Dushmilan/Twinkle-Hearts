@@ -40,7 +40,6 @@ export interface ValidatedCartItem {
   currentPrice: number;
   frontendPrice?: number;
   productName: string;
-  stockAvailable: number;
 }
 
 export type Variables = {

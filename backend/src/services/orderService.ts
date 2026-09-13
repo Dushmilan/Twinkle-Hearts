@@ -9,7 +9,7 @@ export async function createOrder(
     userId: string;
     customerName: string;
     customerPhone: string;
-    items: Array<{ productId: string; quantity: number; currentPrice: number; productName: string; category?: string | null }>;
+    items: Array<{ productId: string; quantity: number; currentPrice: number; productName: string }>;
   }
 ) {
   const prisma = getPrismaRepository(env.DB);
