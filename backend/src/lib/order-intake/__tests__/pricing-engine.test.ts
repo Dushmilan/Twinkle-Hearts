@@ -91,7 +91,8 @@ describe('computePricing VAT rounding edges', () => {
     );
 
     expect(result.subtotal).toBe(2165);
-    expect(result.tax).toBe(Math.round(2165 * 0.18 * 100) / 100);
+    // 2165 * 0.18 = 389.7 exactly in IEEE754 (verified in node/python) — hardcoded, not restated.
+    expect(result.tax).toBe(389.7);
     expect(result.total).toBe(result.subtotal + result.tax);
   });
 
