@@ -104,7 +104,7 @@ describe('admin RBAC boundary (real authenticate + requireAdmin)', () => {
       testEnv,
     );
 
-    expect([401, 403]).toContain(res.status);
+    expect(res.status).toBe(403);
     expect(vi.mocked(adminService.createProduct)).not.toHaveBeenCalled();
   });
 
@@ -158,7 +158,7 @@ describe('admin RBAC boundary (real authenticate + requireAdmin)', () => {
       testEnv,
     );
 
-    expect([401, 403, 404]).toContain(res.status);
+    expect(res.status).toBe(403);
     // Blocked by requireAdmin before the handler, so the order update never runs.
     expect(vi.mocked(getPrismaRepository)).not.toHaveBeenCalled();
   });
