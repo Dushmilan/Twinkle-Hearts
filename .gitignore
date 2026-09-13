@@ -318,3 +318,5 @@ graph.html
 
 # Temporary files from debugging
 temp-*
+
+.worktrees/
