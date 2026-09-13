@@ -215,4 +215,56 @@ describe('price tampering', () => {
     });
     expect(res.status).toBe(400);
   });
+
+  it('creates + replays under Idempotency-Key with real validation (no double body-read)', async () => {
+    // Real validateOrder consumes the body via c.req.json(); the idempotency
+    // path must not re-read it (canonical hash over validated payload) and
+    // must replay on retry. Random UUID key also proves the format guard
+    // accepts valid keys end-to-end.
+    const backing = new Map<string, string>();
+    const key = '550e8400-e29b-41d4-a716-446655440000';
+    const env = {
+      DB: {},
+      KV: {
+        get: async (k: string): Promise<string | null> => backing.get(k) ?? null,
+        put: async (k: string, v: string): Promise<void> => {
+          backing.set(k, v);
+        },
+        delete: async (k: string): Promise<void> => {
+          backing.delete(k);
+        },
+      },
+      TAX_RATE: '0.18',
+      WHATSAPP_BUSINESS_NUMBER: '94771234567',
+    } as unknown as Env;
+    const payload = {
+      ...CUSTOMER,
+      items: [{ productId: 'prod-1', quantity: 2 }],
+    };
+    const send = (): Promise<Response> =>
+      Promise.resolve(
+        orderApp().fetch(
+          new Request('http://localhost/api/orders/create', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Idempotency-Key': key,
+            },
+            body: JSON.stringify(payload),
+          }),
+          env,
+        ),
+      );
+
+    const first = await send();
+    expect(first.status).toBe(200);
+    const firstJson = (await first.json()) as OrderCreateBody;
+    expect(firstJson.subtotal).toBe(5000);
+    expect(first.headers.get('Idempotent-Replayed')).toBeNull();
+
+    const second = await send();
+    expect(second.status).toBe(200);
+    expect((await second.json()) as OrderCreateBody).toEqual(firstJson);
+    expect(second.headers.get('Idempotent-Replayed')).toBe('true');
+  });
 });

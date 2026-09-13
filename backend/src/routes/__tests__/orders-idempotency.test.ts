@@ -1,7 +1,10 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { Hono } from 'hono';
 import { randomUUID } from 'node:crypto';
-import { hashRequestBody } from '../../lib/idempotency/idempotency-store.js';
+import {
+  hashIdempotencyPayload,
+  stableStringify,
+} from '../../lib/idempotency/idempotency-store.js';
 
 vi.mock('../../middleware/rateLimiter.js', () => ({
   orderRateLimit: vi.fn((_c: unknown, next: () => Promise<void>) => next()),
@@ -26,21 +29,30 @@ vi.mock('../../middleware/auth.js', () => ({
 }));
 
 vi.mock('../../middleware/validation.js', () => ({
+  // Body-aware fake: derives the validated payload from the request body the
+  // way real validateOrder + hydrateOrderItems would (server price 2999), so
+  // genuinely different payloads hash differently under the canonical hash.
   validateOrder: vi.fn(
-    (
-      c: { set: (key: string, value: unknown) => void },
+    async (
+      c: {
+        req: { json: () => Promise<Record<string, unknown>> };
+        set: (key: string, value: unknown) => void;
+      },
       next: () => Promise<void>,
     ) => {
-      c.set('validatedItems', [
-        {
-          productId: 'prod-1',
-          quantity: 2,
+      const body = await c.req.json();
+      const rawItems = (body.items ?? []) as Array<{ productId: string; quantity: number }>;
+      c.set(
+        'validatedItems',
+        rawItems.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
           currentPrice: 2999,
           productName: 'Test',
-        },
-      ]);
-      c.set('customerName', 'John Doe');
-      c.set('customerPhone', '+94771234567');
+        })),
+      );
+      c.set('customerName', (body.customerName as string) ?? 'John Doe');
+      c.set('customerPhone', (body.customerPhone as string) ?? '+94771234567');
       return next();
     },
   ),
@@ -105,6 +117,22 @@ function testEnv(store: Map<string, string>): Env {
 const orderBody = (quantity: number): string =>
   JSON.stringify({
     items: [{ productId: 'prod-1', quantity }],
+    customerName: 'John Doe',
+    customerPhone: '+94771234567',
+  });
+
+// Canonical hash of the validated payload the body-aware validateOrder fake
+// above derives from orderBody(quantity).
+const canonicalHash = (quantity: number): string =>
+  hashIdempotencyPayload({
+    items: [
+      {
+        productId: 'prod-1',
+        quantity,
+        currentPrice: 2999,
+        productName: 'Test',
+      },
+    ],
     customerName: 'John Doe',
     customerPhone: '+94771234567',
   });
@@ -234,7 +262,7 @@ describe('order idempotency', () => {
     // Seed a pending marker as a crashed leader would have left it.
     backing.set(
       kvKey,
-      JSON.stringify({ requestHash: hashRequestBody(body), statusCode: 200, pending: true }),
+      JSON.stringify({ requestHash: canonicalHash(1), statusCode: 200, pending: true }),
     );
     // First read sees pending; the second read sees null (failed leader deleted
     // it); later reads behave normally against the backing map.
@@ -300,7 +328,7 @@ describe('order idempotency', () => {
     const body = orderBody(1);
     store.set(
       `idempotency:order:user-1:${key}`,
-      JSON.stringify({ requestHash: hashRequestBody(body), statusCode: 200, pending: false }),
+      JSON.stringify({ requestHash: canonicalHash(1), statusCode: 200, pending: false }),
     );
 
     const res = await postOrder(app, store, body, key);
@@ -327,14 +355,14 @@ describe('order idempotency', () => {
     };
     store.set(
       kvKey,
-      JSON.stringify({ requestHash: hashRequestBody(body), statusCode: 200, pending: true }),
+      JSON.stringify({ requestHash: canonicalHash(1), statusCode: 200, pending: true }),
     );
     // The cross-isolate leader finishes mid-wait: the next poll sees completed.
     setTimeout(() => {
       store.set(
         kvKey,
         JSON.stringify({
-          requestHash: hashRequestBody(body),
+          requestHash: canonicalHash(1),
           orderId: 'o-leader',
           statusCode: 200,
           pending: false,
@@ -358,7 +386,7 @@ describe('order idempotency', () => {
     const body = orderBody(1);
     store.set(
       `idempotency:order:user-1:${key}`,
-      JSON.stringify({ requestHash: hashRequestBody(body), statusCode: 200, pending: true }),
+      JSON.stringify({ requestHash: canonicalHash(1), statusCode: 200, pending: true }),
     );
 
     const res = await postOrder(app, store, body, key);
@@ -388,5 +416,60 @@ describe('order idempotency', () => {
     expect(await follower.text()).toContain('still being processed');
     expect((await leader).status).toBe(200);
     expect(vi.mocked(orderService.createOrder)).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects overlong and garbage Idempotency-Key values with 400', async () => {
+    const store = new Map<string, string>();
+    const app = testApp();
+    const body = orderBody(1);
+
+    for (const badKey of ['x'.repeat(129), 'not a key!!', 'short']) {
+      const res = await postOrder(app, store, body, badKey);
+      expect(res.status).toBe(400);
+      expect(await res.text()).toContain('Invalid Idempotency-Key');
+    }
+    expect(vi.mocked(orderService.createOrder)).not.toHaveBeenCalled();
+  });
+
+  it('accepts a valid uuid key (boundary: 8-char minimum)', async () => {
+    const store = new Map<string, string>();
+    const app = testApp();
+    const body = orderBody(1);
+
+    const first = await postOrder(app, store, body, 'abcd-123');
+    expect(first.status).toBe(200);
+    const replay = await postOrder(app, store, body, 'abcd-123');
+    expect(replay.status).toBe(200);
+    expect(replay.headers.get('Idempotent-Replayed')).toBe('true');
+    expect(vi.mocked(orderService.createOrder)).toHaveBeenCalledTimes(1);
+  });
+
+  it('replays the same semantic payload re-serialized with different key order/whitespace', async () => {
+    const store = new Map<string, string>();
+    const app = testApp();
+    const key = randomUUID();
+    const body = orderBody(1);
+    // Same semantic payload, different serialization: reordered keys + spaces.
+    const reserialized = JSON.stringify({
+      customerPhone: '+94771234567',
+      customerName: 'John Doe',
+      items: [{ quantity: 1, productId: 'prod-1' }],
+    });
+    expect(reserialized).not.toBe(body);
+
+    const first = await postOrder(app, store, body, key);
+    expect(first.status).toBe(200);
+    const firstJson = (await first.json()) as OrderResponseBody;
+
+    const second = await postOrder(app, store, reserialized, key);
+    expect(second.status).toBe(200);
+    expect((await second.json()) as OrderResponseBody).toEqual(firstJson);
+    expect(second.headers.get('Idempotent-Replayed')).toBe('true');
+    expect(vi.mocked(orderService.createOrder)).toHaveBeenCalledTimes(1);
+  });
+
+  it('stableStringify sorts object keys recursively', () => {
+    expect(stableStringify({ b: 1, a: { d: 4, c: 3 } })).toBe('{"a":{"c":3,"d":4},"b":1}');
+    expect(stableStringify({ b: 1, a: 2 })).toBe(stableStringify({ a: 2, b: 1 }));
   });
 });

@@ -7,7 +7,7 @@ import { createOrder, getOrderById, getUserOrders } from '../services/orderServi
 import { formatOrderMessage, buildWhatsAppDeepLink } from '../lib/order-intake/index.js';
 import {
   IdempotencyStore,
-  hashRequestBody,
+  hashIdempotencyPayload,
   IDEMPOTENCY_PENDING_TTL_SECONDS,
   type IdempotencyCache,
   type IdempotencyOrderResponse,
@@ -25,6 +25,10 @@ const router = new Hono<OrderEnv>();
 // so the first request becomes leader and followers wait for it. KV `pending`
 // polling below covers the cross-isolate case.
 const inflightOrders = new Map<string, Promise<void>>();
+
+// Idempotency-Key format guard: opaque client token, bounded so it is safe to
+// embed in the KV key. Rejects empty / overlong / garbage keys with 400.
+export const IDEMPOTENCY_KEY_PATTERN = /^[A-Za-z0-9-]{8,128}$/;
 
 function idempotencyCache(kv: KVNamespace): IdempotencyCache {
   return {
@@ -68,7 +72,9 @@ async function createOrderWithIdempotency(
   const customerName = c.get('customerName');
   const customerPhone = c.get('customerPhone');
 
-  const requestHash = hashRequestBody(await c.req.text());
+  // Canonical hash over the validated payload: no second body read (validation
+  // already consumed the body), and re-serialized retries replay correctly.
+  const requestHash = hashIdempotencyPayload({ items: validatedItems, customerName, customerPhone });
   const existing = await store.get(userId, idempotencyKey);
   if (existing) {
     if (existing.requestHash !== requestHash) {
@@ -145,6 +151,9 @@ router.post('/create', orderRateLimit, validateOrder, async (c) => {
 
   const idempotencyKey = c.req.header('Idempotency-Key');
   if (idempotencyKey) {
+    if (!IDEMPOTENCY_KEY_PATTERN.test(idempotencyKey)) {
+      return c.json({ error: 'Invalid Idempotency-Key format' }, 400);
+    }
     const store = new IdempotencyStore(idempotencyCache(c.env.KV));
     const scope = `${user.userId}:${idempotencyKey}`;
     for (;;) {

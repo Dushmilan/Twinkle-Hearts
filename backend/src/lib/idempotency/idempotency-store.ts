@@ -66,12 +66,40 @@ export class IdempotencyStore {
   }
 }
 
-// FNV-1a 64-bit over the RAW request body bytes (sync; node:crypto is forbidden
-// on the Workers runtime). Canonical-body requirement: the hash is
-// whitespace- and key-order-sensitive, so logically identical payloads that are
-// serialized differently hash differently. Clients must retry with a
-// byte-identical body under the same Idempotency-Key; otherwise a same-key
-// retry is correctly rejected with 422 as a payload mismatch.
+// Deterministic JSON canonicalization: object keys sorted recursively, so
+// semantically identical payloads hash identically regardless of key order or
+// whitespace. Arrays keep order (item order is semantically significant).
+export function stableStringify(value: unknown): string {
+  if (value === null || typeof value !== 'object') {
+    return JSON.stringify(value) ?? 'null';
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map((item) => stableStringify(item)).join(',')}]`;
+  }
+  const entries = Object.entries(value as Record<string, unknown>).sort(
+    ([a], [b]) => (a < b ? -1 : a > b ? 1 : 0),
+  );
+  return `{${entries.map(([k, v]) => `${JSON.stringify(k)}:${stableStringify(v)}`).join(',')}}`;
+}
+
+export interface IdempotencyRequestPayload {
+  items: Array<{ productId: string; quantity: number; currentPrice: number; productName: string; frontendPrice?: number }>;
+  customerName: string;
+  customerPhone: string;
+}
+
+// Canonical hash over the VALIDATED payload (server-hydrated items + customer
+// fields), not the raw body bytes. A client retry that re-stringifies identical
+// JSON (different key order / whitespace) replays; a genuinely different
+// payload still 422s. Hashing validated data also removes the second body read
+// in the route (validation already consumed the body via c.req.json()).
+export function hashIdempotencyPayload(payload: IdempotencyRequestPayload): string {
+  return hashRequestBody(stableStringify(payload));
+}
+
+// FNV-1a 64-bit over a string (sync; node:crypto is forbidden on the Workers
+// runtime). Low-level primitive — prefer hashIdempotencyPayload for request
+// comparison.
 export function hashRequestBody(raw: string): string {
   let hash = 0xcbf29ce484222325n;
   const prime = 0x100000001b3n;
